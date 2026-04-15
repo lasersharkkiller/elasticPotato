@@ -3258,27 +3258,8 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         # Tier 4 - Process hashes only (file hashes excluded from attribution  -  too numerous, bottom of pyramid)
         foreach ($x in $procHashes)  { [void]$attrObs.Add($x) }
 
-        $attributionText = "THREAT ATTRIBUTION: Insufficient indicators."
+        $attributionText = "THREAT ATTRIBUTION: Not available (indicator-based attribution disabled)."
         $topActors = @()
-        if ($attrObs.Count -gt 0) {
-            try {
-                $attrResults = Get-ThreatAttribution -Observations $attrObs.ToArray() -PassThru -MinRarityScore 90 -ErrorAction Stop
-                $tier1 = @($attrResults | Where-Object { $_.MatchCount -gt 1 } | Sort-Object MatchCount -Descending | Select-Object -First 5)
-                if ($tier1.Count -gt 0) {
-                    $topActors = @($tier1 | ForEach-Object { $_.Actor } | Select-Object -Unique)
-                    $sb2 = [System.Text.StringBuilder]::new()
-                    [void]$sb2.AppendLine("THREAT ATTRIBUTION (MinRarityScore=90, multi-indicator matches):")
-                    foreach ($r2 in $tier1) {
-                        [void]$sb2.AppendLine("  [$($r2.Type)] $($r2.Actor) -- $($r2.MatchCount) match(es):")
-                        foreach ($m in $r2.Matches) { [void]$sb2.AppendLine("    - [$($m.Source)] $($m.Indicator)") }
-                    }
-                    $attributionText = $sb2.ToString()
-                    Write-Host "  Attribution: $($tier1.Count) Tier-1 match(es)" -ForegroundColor Yellow
-                } else {
-                    $attributionText = "THREAT ATTRIBUTION: No high-confidence multi-indicator matches."
-                }
-            } catch { $attributionText = "THREAT ATTRIBUTION: Unavailable." }
-        }
 
         # -----------------------------------------------------------------------
         # DIRECT HASH ATTRIBUTION  -  cross-reference observed hashes against
@@ -4684,24 +4665,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closePanel()
         foreach ($x in $AlertContext.AnomalousDNS)        { if ($x) { [void]$attrObs.Add($x) } }
         foreach ($x in $AlertContext.AnomalousIPs)        { if ($x) { [void]$attrObs.Add($x) } }
         foreach ($x in $AlertContext.AnomalousIndicators) { if ($x) { [void]$attrObs.Add($x) } }
-        $attributionText = "THREAT ATTRIBUTION: Insufficient indicators."
-        if ($attrObs.Count -gt 0) {
-            Write-Host "[Elastic Alert Agent] Running threat attribution..." -ForegroundColor DarkCyan
-            try {
-                $attrResults = Get-ThreatAttribution -Observations $attrObs.ToArray() -PassThru -MinRarityScore 90 -ErrorAction Stop
-                $tier1 = @($attrResults | Where-Object { $_.MatchCount -gt 1 } | Sort-Object MatchCount -Descending | Select-Object -First 5)
-                if ($tier1.Count -gt 0) {
-                    $sb2 = [System.Text.StringBuilder]::new()
-                    [void]$sb2.AppendLine("THREAT ATTRIBUTION (high-rarity indicator matches, MinRarityScore=90):")
-                    foreach ($r in $tier1) {
-                        [void]$sb2.AppendLine("  [$($r.Type)] $($r.Actor) -- $($r.MatchCount) matched indicator(s):")
-                        foreach ($m in $r.Matches) { [void]$sb2.AppendLine("    - [$($m.Source)] $($m.Indicator)") }
-                    }
-                    $attributionText = $sb2.ToString()
-                    Write-Host "  Attribution: $($tier1.Count) Tier-1 match(es)" -ForegroundColor Yellow
-                } else { $attributionText = "THREAT ATTRIBUTION: No high-confidence multi-indicator matches." }
-            } catch { $attributionText = "THREAT ATTRIBUTION: Unavailable." }
-        }
+        $attributionText = "THREAT ATTRIBUTION: Not available (indicator-based attribution disabled)."
 
         $sigStatus = if ($AlertContext.ProcessSigned) { if ($AlertContext.ProcessTrusted) { "Signed + Verified" } else { "Signed but NOT Verified" } } else { "UNSIGNED" }
     }

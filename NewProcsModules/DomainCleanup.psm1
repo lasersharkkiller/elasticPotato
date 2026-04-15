@@ -1,22 +1,35 @@
-function Get-DomainCleanup{
-
-    param (
-        [Parameter(Mandatory=$true)]
-        $domain
+function ConvertFrom-UrlDomainExtract {
+    [CmdletBinding()]
+    [OutputType([string[]])]
+    param(
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [AllowEmptyString()]
+        [string] $InputText
     )
 
-# Improved regex to capture full domain with subdomains
-$regex = '(?i)(?:https?|ftp|ssh):\/\/((?:[a-z0-9-]+\.)+[a-z]{2,63})(?:[:\/\s"\x00]|$)|\b((?:[a-z0-9-]+\.)+[a-z]{2,63})(?=\b|[^a-z0-9.-])'
-                  
-# Extract both from URL and standalone
-$matches = [regex]::Matches($domain, $regex)
+    begin {
+        $found = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+        $hostPattern = '(?i)(?:(?:https?|ftp|ssh)://)?((?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,63})'
+    }
 
-# Normalize and deduplicate
-$domains = $matches | ForEach-Object {
-    if ($_.Groups[1].Success) { $_.Groups[1].Value.ToLower() }
-    elseif ($_.Groups[2].Success) { $_.Groups[2].Value.ToLower() }
-} | Sort-Object -Unique
+    process {
+        if ([string]::IsNullOrWhiteSpace($InputText)) { return }
+        try {
+            $regexMatches = [regex]::Matches($InputText, $hostPattern)
+            foreach ($m in $regexMatches) {
+                $h = $m.Groups[1].Value.Trim().Trim('.', ',', ';', ':', ')', ']', '}', '"', "'").ToLowerInvariant()
+                if ($h) { [void] $found.Add($h) }
+            }
+        } catch {
+            return
+        }
+    }
 
-# Output
-return $domains
+    end {
+        if ($found.Count -eq 0) { return ,([string[]]@()) }
+        $sorted = [string[]] ($found | Sort-Object)
+        return ,$sorted
+    }
 }
+
+Export-ModuleMember -Function ConvertFrom-UrlDomainExtract

@@ -1,132 +1,134 @@
-function Get-CheckApiVoid{
-    
-param (
-        [Parameter(Mandatory=$true)]
-        $artifacts,
-        $type
+$script:PrivateIpPatterns = @(
+    '^10\.',
+    '^127\.',
+    '^192\.168\.',
+    '^172\.(1[6-9]|2[0-9]|3[0-1])\.',
+    '^169\.254\.',
+    '^0\.0\.0\.0$',
+    '^255\.255\.255\.255$'
+)
+
+function Test-IsPrivateIpApiVoid {
+    param([string] $Ip)
+    foreach ($p in $script:PrivateIpPatterns) {
+        if ($Ip -match $p) { return $true }
+    }
+    return $false
+}
+
+function Invoke-ApiVoidReputation {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [string[]] $Artifacts,
+
+        [Parameter(Mandatory)]
+        [ValidateSet('IPAddress', 'DomainName')]
+        [string] $Type
     )
 
-$ApiVoidApi = Get-Secret -Name 'APIVoid_API_Key' -AsPlainText
-
-Import-Module -Name ".\NewProcsModules\CheckBlockedCountries.psm1"
-Import-Module -Name ".\NewProcsModules\CheckSuspiciousASNs.psm1"
-    
-foreach ($artifact in $artifacts) {
-    $ApiVoid_headers = @{
-        "X-API-Key" = $ApiVoidApi
-        "Content-Type" = "application/json"
+    $apiKey = Get-Secret -Name 'APIVoid_API_Key' -AsPlainText -ErrorAction Stop
+    if ([string]::IsNullOrWhiteSpace($apiKey)) {
+        throw "APIVoid secret 'APIVoid_API_Key' is missing or empty."
     }
 
-    $apivoid_url
-    $ApiVoid_body
-    if ($type -eq "IPAddress") {
-        $apivoid_url = 'https://api.apivoid.com/v2/ip-reputation'
-        $ApiVoid_body = @{ ip = $artifact } | ConvertTo-Json -Depth 3
-    } elseif ($type -eq "DomainName") {
-        $apivoid_url = 'https://api.apivoid.com/v2/domain-reputation'
-        $ApiVoid_body = @{ host = $artifact } | ConvertTo-Json
+    $headers = @{
+        'X-API-Key'    = $apiKey
+        'Content-Type' = 'application/json'
     }
-    
-    $privateIpsAndBogons = "^(10\.|127\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|169\.254\.|0\.0\.0\.0|255\.255\.255\.255)$"
-    if (-not ($artifact -match $privateIpsAndBogons)) {try {
-        $response = Invoke-RestMethod -Method "POST" -Uri $apivoid_url -Headers $ApiVoid_headers -Body $ApiVoid_body
-        
-        #json response is different for ip addr vs domain
-        if ($type -eq "IPAddress") {
-            
-            #Check if it's in the blocked country list
-            $existsInCountryBlockList = Get-CheckBlockedCountries -country $response.information.country_name.Trim().ToLower()
-            if ($existsInCountryBlockList -eq $true) {
-                Write-Host "Country: " $response.information.country_name "exists in geo-block list." -ForegroundColor Red
-            } else {
-                Write-Host "Country: " $response.information.country_name
-            }
 
-            #Check if it's in the suspicious ASNs list
-            $existsInASNList = Get-CheckSuspiciousASNs -asn $response.information.asn
-            if ($existsInASNList -eq $true) {
-                Write-Host "ISP is in suspicious list: " $response.information.isp -ForegroundColor Yellow
-                Write-Host "ASN is in suspicious list: " $response.information.asn -ForegroundColor Yellow
-            } else {
-                Write-Host "ISP: " $response.information.isp
-                Write-Host "ASN: " $response.information.asn
-            }
+    $lastResponse = $null
 
-            if ($response.anonymity.is_proxy -eq "true"){
-                Write-Host "Is Proxy: " $response.anonymity.is_proxy -ForegroundColor Yellow
-            }
-            if ($response.anonymity.is_webproxy -eq "true"){
-                Write-Host "Is Web Proxy: " $response.anonymity.is_webproxy -ForegroundColor Yellow
-            }
-            if ($response.anonymity.is_vpn -eq "true"){
-                Write-Host "Is VPN: " $response.anonymity.is_vpn -ForegroundColor Yellow
-            }
-            if ($response.anonymity.is_hosting -eq "true"){
-                Write-Host "Is Hosting: " $response.anonymity.is_hosting -ForegroundColor Yellow
-            }
-            if ($response.anonymity.is_proxy -eq "true"){
-                Write-Host "Is Tor: " $response.anonymity.is_tor -ForegroundColor Yellow
-            }
-        } elseif ($type -eq "DomainName") {
-            #Check if it's in the Blocked Countries list
-            $existsInCountryBlockList = Get-CheckBlockedCountries -country $response.server_details.country_name.Trim().ToLower()
-            
-            if ($existsInCountryBlockList -eq $true) {
-                Write-Host "Country: " $response.server_details.country_name "exists in geo-block list." -ForegroundColor Red
-            } else {
-                Write-Host "Country: " $response.server_details.country_name
-            }
+    foreach ($artifact in $Artifacts) {
+        if ([string]::IsNullOrWhiteSpace($artifact)) { continue }
+        $a = $artifact.Trim()
 
-            #Check if it's in the suspicious ASNs list
-            $existsInASNList = Get-CheckSuspiciousASNs -asn $response.server_details.asn
-            if ($existsInASNList -eq $true) {
-                Write-Host "ISP is in suspicious list: " $response.server_details.isp -ForegroundColor Yellow
-                Write-Host "ASN is in suspicious list: " $response.server_details.asn -ForegroundColor Yellow
-            } else {
-                Write-Host "ISP: " $response.server_details.isp
-                Write-Host "ASN: " $response.server_details.asn
-            }
-
-            if ($response.category.is_free_hosting -eq "true"){
-                Write-Host "Is Free Hosting: " $response.category.is_free_hosting -ForegroundColor Yellow
-            }
-            if ($response.category.is_anonymizer -eq "true"){
-                Write-Host "Is Anonymizer: " $response.category.is_anonymizer -ForegroundColor Yellow
-            }
-            if ($response.category.is_url_shortener -eq "true"){
-                Write-Host "Is URL Shortener: " $response.category.is_url_shortener -ForegroundColor Yellow
-            }
-            if ($response.category.is_free_dynamic_dns -eq "true"){
-                Write-Host "Is Free Dynamic DNS: " $response.category.is_free_dynamic_dns -ForegroundColor Yellow
-            }
-            if ($response.category.is_code_sandbox -eq "true"){
-                Write-Host "Is code sandbox: " $response.category.is_code_sandbox -ForegroundColor Yellow
-            }
-            if ($response.category.is_form_builder -eq "true"){
-                Write-Host "Is form builder: " $response.category.is_form_builder -ForegroundColor Yellow
-            }
-            if ($response.category.is_free_file_sharing -eq "true"){
-                Write-Host "Is free file sharing: " $response.category.is_free_file_sharing -ForegroundColor Yellow
-            }
-            if ($response.category.is_pastebin -eq "true"){
-                Write-Host "Is pastebin: " $response.category.is_pastebin -ForegroundColor Yellow
-            }
+        if ($Type -eq 'IPAddress' -and (Test-IsPrivateIpApiVoid -Ip $a)) {
+            Write-Host "Skipping private/bogon IP: $a"
+            continue
         }
-        
-        #Now highlight the overall risk score
-        if ($response.risk_score.result -eq 0) {
-            Write-Host "ApiVoid Risk Score: " $response.risk_score.result -ForegroundColor Green
-        } elseif ($response.risk_score.result -lt 50) {
-            Write-Host "ApiVoid Risk Score: " $response.risk_score.result -ForegroundColor Yellow
+
+        $url = if ($Type -eq 'IPAddress') {
+            'https://api.apivoid.com/v2/ip-reputation'
         } else {
-            Write-Host "ApiVoid Risk Score: " $response.risk_score.result -ForegroundColor Red
+            'https://api.apivoid.com/v2/domain-reputation'
         }
-        
-        return $response
-    } catch {
-        Write-Error "Request failed: $_"
-    }} else {
-        Write-Host $artifact " was a private ip or bogon, not sending for analysis"
+
+        $body = if ($Type -eq 'IPAddress') {
+            @{ ip = $a } | ConvertTo-Json -Compress
+        } else {
+            @{ host = $a } | ConvertTo-Json -Compress
+        }
+
+        try {
+            $resp = Invoke-RestMethod -Uri $url -Headers $headers -Method Post -Body $body -ErrorAction Stop
+        } catch {
+            Write-Error "APIVoid lookup failed for '$a': $($_.Exception.Message)" -ErrorAction Continue
+            continue
+        }
+
+        $lastResponse = $resp
+        $response = $resp.response
+
+        if ($Type -eq 'IPAddress') {
+            $info      = $response.information
+            $anonymity = $response.anonymity
+            $risk      = $response.risk_score
+
+            $asnRaw = [string] $info.asn
+            $isWatch = $false
+            if (-not [string]::IsNullOrWhiteSpace($asnRaw)) {
+                $isWatch = Test-AsnWatchlist -Asn $asnRaw
+            }
+            $color = if ($isWatch) { 'Yellow' } else { [System.ConsoleColor]::Gray }
+
+            Write-Host ("Country: {0}" -f $info.country_name)
+            Write-Host ("ISP: {0}" -f $info.isp) -ForegroundColor $color
+            Write-Host ("ASN: {0}" -f $info.asn) -ForegroundColor $color
+
+            foreach ($flag in 'is_proxy','is_webproxy','is_vpn','is_hosting','is_tor') {
+                if ($anonymity.$flag) {
+                    $label = ($flag -replace '^is_', '') -replace '_', ' '
+                    $label = (Get-Culture).TextInfo.ToTitleCase($label)
+                    Write-Host ("Is {0}: true" -f $label) -ForegroundColor Yellow
+                }
+            }
+
+            $score = [int] $risk.result
+            $scoreColor = if ($score -eq 0) { 'Green' } elseif ($score -lt 50) { 'Yellow' } else { 'Red' }
+            Write-Host ("ApiVoid Risk Score: {0}" -f $score) -ForegroundColor $scoreColor
+        }
+        else {
+            $srv   = $response.server_details
+            $cat   = $response.category
+            $risk  = $response.risk_score
+
+            $asnRaw = [string] $srv.asn
+            $isWatch = $false
+            if (-not [string]::IsNullOrWhiteSpace($asnRaw)) {
+                $isWatch = Test-AsnWatchlist -Asn $asnRaw
+            }
+            $color = if ($isWatch) { 'Yellow' } else { [System.ConsoleColor]::Gray }
+
+            Write-Host ("Country: {0}" -f $srv.country_name)
+            Write-Host ("ISP: {0}" -f $srv.isp) -ForegroundColor $color
+            Write-Host ("ASN: {0}" -f $srv.asn) -ForegroundColor $color
+
+            foreach ($flag in 'is_free_hosting','is_anonymizer','is_url_shortener','is_free_dynamic_dns','is_code_sandbox','is_form_builder','is_free_file_sharing','is_pastebin') {
+                if ($cat.$flag) {
+                    $label = ($flag -replace '^is_', '') -replace '_', ' '
+                    $label = (Get-Culture).TextInfo.ToTitleCase($label)
+                    Write-Host ("Is {0}: true" -f $label) -ForegroundColor Yellow
+                }
+            }
+
+            $score = [int] $risk.result
+            $scoreColor = if ($score -eq 0) { 'Green' } elseif ($score -lt 50) { 'Yellow' } else { 'Red' }
+            Write-Host ("ApiVoid Risk Score: {0}" -f $score) -ForegroundColor $scoreColor
+        }
     }
+
+    return $lastResponse
 }
-}
+
+Export-ModuleMember -Function Invoke-ApiVoidReputation

@@ -1,477 +1,271 @@
-﻿# NsrlTools.psm1
-# Setup and OS-filtered extraction for the NIST NSRL RDS SQLite database.
-# Uses sqlite3.exe (auto-downloaded from sqlite.org) - no PSSQLite module required.
-#
-# Workflow:
-#   1. Install-NsrlDatabase   -- download NSRL RDS SQLite DB + sqlite3.exe
-#   2. Get-NsrlOsSummary      -- inspect OS categories in the DB
-#   3. Export-NsrlHashList    -- extract hashes filtered by OS, excluding offensive distros
-#      -> outputs CSVs ready to feed into Update-NsrlBaseline (NsrlEnrichment.psm1)
+$script:ModuleRoot = $PSScriptRoot
 
-$script:DefaultOffensivePatterns = @(
-    'Kali', 'BlackArch', 'Parrot', 'BackBox', 'Pentoo',
-    'DEFT', 'REMnux', 'Tails', 'Whonix', 'Offensive Security',
-    'ArchStrike', 'Demon Linux', 'Dragon OS', 'Cyborg',
-    'Network Security Toolkit', 'NST', 'Fedora Security'
-)
+function Get-PlatformClassification {
+    param([string] $OsName)
+    if ([string]::IsNullOrWhiteSpace($OsName)) { return 'Other' }
+    if ($OsName -match '(?i)windows') { return 'Windows' }
+    if ($OsName -match '(?i)linux|ubuntu|debian|centos|rhel|red\s*hat|fedora|suse|alpine|arch') { return 'Linux' }
+    return 'Other'
+}
 
-# ── SQLITE3.EXE MANAGEMENT ────────────────────────────────────────────────────
-
-function Install-Sqlite3 {
-    <#
-    .SYNOPSIS
-        Downloads sqlite3.exe from sqlite.org into the NSRL directory.
-        Returns the full path to sqlite3.exe, or $null on failure.
-    #>
+function Install-Sqlite3Tool {
     [CmdletBinding()]
-    param([string]$DestinationPath = ".\NSRL")
+    param()
 
-    if (-not (Test-Path $DestinationPath)) {
-        New-Item -ItemType Directory -Path $DestinationPath -Force | Out-Null
+    $toolsDir = Join-Path $script:ModuleRoot 'tools/sqlite'
+    $exePath  = Join-Path $toolsDir 'sqlite3.exe'
+
+    if (Test-Path -LiteralPath $exePath) { return $exePath }
+
+    if (-not (Test-Path -LiteralPath $toolsDir)) {
+        New-Item -ItemType Directory -Force -Path $toolsDir | Out-Null
     }
 
-    $exe = Join-Path (Resolve-Path $DestinationPath).Path "sqlite3.exe"
-    if (Test-Path $exe) {
-        Write-Host "sqlite3.exe already present." -ForegroundColor DarkGray
-        return $exe
-    }
-
-    Write-Host "Fetching sqlite3.exe download link from sqlite.org..." -ForegroundColor DarkCyan
+    $downloadPage = 'https://www.sqlite.org/download.html'
     try {
-        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
-        $page = (New-Object System.Net.WebClient).DownloadString("https://www.sqlite.org/download.html")
-        # Page footer has: PRODUCT,3.51.3,2026/sqlite-tools-win-x64-3510300.zip,...
-        if ($page -match 'PRODUCT,[^,]+,((\d{4})/sqlite-tools-win-x64-\d+\.zip)') {
-            $zipUrl = "https://www.sqlite.org/$($matches[1])"
-            Write-Host "  Downloading: $zipUrl" -ForegroundColor DarkGray
-        } elseif ($page -match 'PRODUCT,[^,]+,((\d{4})/sqlite-tools-win32-x86-\d+\.zip)') {
-            $zipUrl = "https://www.sqlite.org/$($matches[1])"
-            Write-Host "  Downloading (x86 fallback): $zipUrl" -ForegroundColor DarkGray
-        } else {
-            throw "Could not find sqlite-tools-win link on sqlite.org/download.html"
-        }
+        $page = Invoke-WebRequest -Uri $downloadPage -UseBasicParsing -ErrorAction Stop
     } catch {
-        Write-Warning "Auto-detect failed: $_"
-        Write-Host @"
+        throw "Failed to fetch sqlite.org download page: $($_.Exception.Message)"
+    }
 
-Manual steps:
-  1. Browse to: https://www.sqlite.org/download.html
-  2. Under 'Precompiled Binaries for Windows', download 'sqlite-tools-win-x64-*.zip'
-  3. Extract sqlite3.exe to: $DestinationPath
-  4. Re-run Install-NsrlDatabase -SkipDownload
-"@ -ForegroundColor Yellow
+    $rel = $null
+    if ($page.Content -match 'href="(?<u>\d{4}/sqlite-tools-win(?:-x64)?-[0-9]+\.zip)"') {
+        $rel = $Matches['u']
+    }
+    if (-not $rel) {
+        throw "Could not locate sqlite tools archive in download page."
+    }
+    $zipUrl = "https://www.sqlite.org/$rel"
+    $zipPath = Join-Path $env:TEMP ("sqlite-tools-{0}.zip" -f ([Guid]::NewGuid().ToString('N')))
+
+    try {
+        Invoke-WebRequest -Uri $zipUrl -OutFile $zipPath -UseBasicParsing -ErrorAction Stop
+        $extractDir = Join-Path $env:TEMP ("sqlite-extract-{0}" -f ([Guid]::NewGuid().ToString('N')))
+        New-Item -ItemType Directory -Force -Path $extractDir | Out-Null
+        Expand-Archive -LiteralPath $zipPath -DestinationPath $extractDir -Force
+        $found = Get-ChildItem -Path $extractDir -Filter 'sqlite3.exe' -Recurse | Select-Object -First 1
+        if (-not $found) { throw "sqlite3.exe not found in downloaded archive." }
+        Copy-Item -LiteralPath $found.FullName -Destination $exePath -Force
+    } finally {
+        if (Test-Path -LiteralPath $zipPath) { Remove-Item -LiteralPath $zipPath -Force -ErrorAction SilentlyContinue }
+        if ($extractDir -and (Test-Path -LiteralPath $extractDir)) {
+            Remove-Item -LiteralPath $extractDir -Recurse -Force -ErrorAction SilentlyContinue
+        }
+    }
+
+    return $exePath
+}
+
+function Get-NsrlDbPath {
+    param([string] $InstallPath)
+    if (-not (Test-Path -LiteralPath $InstallPath)) { return $null }
+    $db = Get-ChildItem -Path $InstallPath -Filter '*.db' -File -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($db) { return $db.FullName }
+    return $null
+}
+
+function Invoke-Sqlite {
+    param(
+        [string] $Sqlite,
+        [string] $DbPath,
+        [string] $Query
+    )
+    $output = & $Sqlite -separator "`t" $DbPath $Query
+    if ($LASTEXITCODE -ne 0) {
+        throw "sqlite3 query failed (exit $LASTEXITCODE): $Query"
+    }
+    return $output
+}
+
+function Initialize-NsrlCatalog {
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [string] $InstallPath = './tools/nsrl/',
+        [switch] $Force
+    )
+
+    if (-not (Test-Path -LiteralPath $InstallPath)) {
+        New-Item -ItemType Directory -Force -Path $InstallPath | Out-Null
+    }
+
+    $existing = Get-NsrlDbPath -InstallPath $InstallPath
+    if ($existing -and -not $Force) {
+        Install-Sqlite3Tool | Out-Null
+        return $existing
+    }
+
+    $archiveListing = 'https://s3.amazonaws.com/rds.nsrl.nist.gov/'
+    try {
+        $listing = Invoke-WebRequest -Uri $archiveListing -UseBasicParsing -ErrorAction Stop
+    } catch {
+        throw "Failed to list NSRL S3 bucket: $($_.Exception.Message)"
+    }
+
+    $candidates = [regex]::Matches($listing.Content, '<Key>([^<]+modern[^<]*minimal[^<]*\.zip)</Key>', 'IgnoreCase') |
+        ForEach-Object { $_.Groups[1].Value } |
+        Sort-Object -Descending
+
+    $archiveKey = $candidates | Select-Object -First 1
+    if (-not $archiveKey) {
+        throw "Could not locate current NSRL Modern Minimal archive in S3 listing."
+    }
+
+    $zipUrl = "$archiveListing$archiveKey"
+    $zipPath = Join-Path $env:TEMP ("nsrl-{0}.zip" -f ([Guid]::NewGuid().ToString('N')))
+    $extractDir = Join-Path $env:TEMP ("nsrl-extract-{0}" -f ([Guid]::NewGuid().ToString('N')))
+
+    if (-not $PSCmdlet.ShouldProcess($InstallPath, "Download and install NSRL DB")) {
         return $null
     }
 
-    $zipPath = Join-Path (Resolve-Path $DestinationPath).Path "sqlite-tools.zip"
     try {
-        $wc = [System.Net.WebClient]::new()
-        $wc.DownloadFile($zipUrl, $zipPath)
-    } catch {
-        Write-Error "Download failed: $_"; return $null
-    }
-
-    Add-Type -AssemblyName System.IO.Compression.FileSystem
-    $tmpDir = Join-Path (Resolve-Path $DestinationPath).Path "sqlite_tmp"
-    if (Test-Path $tmpDir) { Remove-Item $tmpDir -Recurse -Force }
-    [System.IO.Compression.ZipFile]::ExtractToDirectory($zipPath, $tmpDir)
-
-    $foundExe = Get-ChildItem $tmpDir -Filter "sqlite3.exe" -Recurse | Select-Object -First 1
-    if ($foundExe) {
-        Copy-Item $foundExe.FullName $exe -Force
-        Write-Host "sqlite3.exe installed: $exe" -ForegroundColor Green
-    } else {
-        Write-Error "sqlite3.exe not found in downloaded archive."
-        $exe = $null
-    }
-
-    Remove-Item $zipPath -ErrorAction SilentlyContinue
-    Remove-Item $tmpDir  -Recurse -ErrorAction SilentlyContinue
-    return $exe
-}
-
-function Resolve-Sqlite3 {
-    param([string]$NsrlDir = ".\NSRL")
-
-    # 1. NSRL directory
-    $nsrlFull = if (Test-Path $NsrlDir) { (Resolve-Path $NsrlDir).Path } else { $null }
-    if ($nsrlFull) {
-        $local = Join-Path $nsrlFull "sqlite3.exe"
-        if (Test-Path $local) { return $local }
-    }
-
-    # 2. PATH
-    $inPath = Get-Command "sqlite3.exe" -ErrorAction SilentlyContinue
-    if ($inPath) { return $inPath.Source }
-
-    # 3. Auto-download
-    return Install-Sqlite3 -DestinationPath $NsrlDir
-}
-
-function Invoke-Sqlite3Query {
-    <#
-    .SYNOPSIS
-        Runs a SQL query against a SQLite DB file via sqlite3.exe.
-        Writes results to a CSV file (via sqlite3 .output directive).
-        Returns imported PSObjects, or $null if DirectOutputCsv is specified (caller reads file).
-    #>
-    param(
-        [string]$Sqlite3,
-        [string]$DbPath,
-        [string]$Query,
-        [string]$DirectOutputCsv = ""    # if non-empty, write here and return $null
-    )
-
-    # sqlite3 prefers forward slashes on Windows
-    $dbFwd  = $DbPath.Replace('\','/')
-    $sqlTmp = [System.IO.Path]::ChangeExtension([System.IO.Path]::GetTempFileName(), ".sql")
-    $useDirectOut = $DirectOutputCsv -ne ""
-    $csvOut = if ($useDirectOut) { $DirectOutputCsv } `
-              else { [System.IO.Path]::ChangeExtension([System.IO.Path]::GetTempFileName(), ".csv") }
-    $csvFwd = $csvOut.Replace('\','/')
-    $errTmp = [System.IO.Path]::ChangeExtension([System.IO.Path]::GetTempFileName(), ".err")
-
-    try {
-        # ASCII encoding avoids the UTF-8 BOM that PowerShell 5 adds with -Encoding UTF8
-        # (sqlite3 rejects BOM as a parse error on line 1)
-        [System.IO.File]::WriteAllText($sqlTmp,
-            ".mode csv`n.headers on`n.output $csvFwd`n$Query`n.quit`n",
-            [System.Text.Encoding]::ASCII)
-
-        # Redirect stdin from the SQL file so sqlite3 runs in batch mode (no interactive prompt)
-        $proc = Start-Process -FilePath $Sqlite3 `
-                              -ArgumentList @($dbFwd) `
-                              -NoNewWindow -Wait -PassThru `
-                              -RedirectStandardInput  $sqlTmp `
-                              -RedirectStandardError  $errTmp
-
-        if ($proc.ExitCode -ne 0) {
-            $errMsg = Get-Content $errTmp -Raw -ErrorAction SilentlyContinue
-            Write-Warning "sqlite3 exited $($proc.ExitCode): $($errMsg.Trim())"
-        }
-
-        if ($useDirectOut) { return $null }
-        if (Test-Path $csvOut) { return Import-Csv -Path $csvOut -Encoding UTF8 }
-        return @()
-    }
-    finally {
-        Remove-Item $sqlTmp -ErrorAction SilentlyContinue
-        Remove-Item $errTmp -ErrorAction SilentlyContinue
-        if (-not $useDirectOut) { Remove-Item $csvOut -ErrorAction SilentlyContinue }
-    }
-}
-
-# ── PUBLIC FUNCTIONS ──────────────────────────────────────────────────────────
-
-function Install-NsrlDatabase {
-    <#
-    .SYNOPSIS
-        Downloads sqlite3.exe and the NIST NSRL RDS Modern SQLite database.
-
-    .PARAMETER DestinationPath
-        Folder for the .db file and sqlite3.exe. Default: .\NSRL
-
-    .PARAMETER IncludeLegacy
-        Also download the Legacy RDS (Win9x/XP era - much larger).
-
-    .PARAMETER SkipDownload
-        Skip the download step; only extract an already-present ZIP.
-
-    .PARAMETER ZipPath
-        Full path to an already-downloaded NSRL ZIP (e.g. C:\Downloads\RDS_2026.03.1_modern.zip).
-        Implies -SkipDownload. The file is read in-place; nothing is copied.
-    #>
-    [CmdletBinding()]
-    param(
-        [string]$DestinationPath = ".\NSRL",
-        [switch]$IncludeLegacy,
-        [switch]$SkipDownload,
-        [string]$ZipPath
-    )
-
-    if ($ZipPath) { $SkipDownload = $true }
-
-    if (-not (Test-Path $DestinationPath)) {
-        New-Item -ItemType Directory -Path $DestinationPath -Force | Out-Null
-    }
-
-    # Always ensure sqlite3.exe is present
-    $null = Install-Sqlite3 -DestinationPath $DestinationPath
-
-    # NSRL moved to versioned release paths. URL format:
-    #   https://s3.amazonaws.com/rds.nsrl.nist.gov/RDS/rds_YYYY.MM.V/RDS_YYYY.MM.V_modern.zip
-    # Update these when NIST publishes a new quarterly release.
-    $urls = @{
-        Modern = "https://s3.amazonaws.com/rds.nsrl.nist.gov/RDS/rds_2026.03.1/RDS_2026.03.1_modern.zip"
-        Legacy = "https://s3.amazonaws.com/rds.nsrl.nist.gov/RDS/rds_2026.03.1/RDS_2026.03.1_legacy.zip"
-    }
-
-    $toDownload = @("Modern")
-    if ($IncludeLegacy) { $toDownload += "Legacy" }
-
-    foreach ($edition in $toDownload) {
-        $url = $urls[$edition]
-
-        # Accept any zip in the destination that looks like an NSRL modern/legacy archive
-        $zipPattern  = if ($edition -eq "Modern") { "*modern*", "*modernm*" } else { "*legacy*" }
-        $destFull    = (Resolve-Path $DestinationPath).Path
-        $autoZipPath = Get-ChildItem -Path $destFull -Filter "*.zip" |
-                           Where-Object { foreach ($p in $zipPattern) { if ($_.Name -like $p) { return $true } } } |
-                           Select-Object -First 1 -ExpandProperty FullName
-
-        if (-not $autoZipPath) {
-            $autoZipPath = Join-Path $destFull "rds_$($edition.ToLower()).zip"
-        }
-
-        if (-not $SkipDownload) {
-            Write-Host "Downloading NSRL RDS $edition from NIST..." -ForegroundColor DarkCyan
-            Write-Host "  URL : $url"           -ForegroundColor DarkGray
-            Write-Host "  Dest: $autoZipPath"   -ForegroundColor DarkGray
-            Write-Host "  (Several GB - may take a while)" -ForegroundColor DarkYellow
-
-            try {
-                [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
-                $wc = [System.Net.WebClient]::new()
-                $wc.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
-                $wc.DownloadFile($url, $autoZipPath)
-                Write-Host "Download complete." -ForegroundColor Green
-            } catch {
-                Write-Error "Download failed: $_"
-                Write-Host @"
-
-Manual download:
-  Browse: https://s3.amazonaws.com/rds.nsrl.nist.gov/RDS/
-  Find the latest rds_YYYY.MM.V folder and download RDS_YYYY.MM.V_modern.zip
-  Save it anywhere inside: $destFull
-  Then re-run: Install-NsrlDatabase -SkipDownload
-"@ -ForegroundColor Yellow
-                continue
-            }
-        }
-
-        # Resolve zip: explicit -ZipPath wins, then auto-detected path
-        $resolvedZip = if ($PSBoundParameters.ContainsKey('ZipPath') -and (Test-Path $ZipPath)) {
-            $ZipPath
-        } elseif (Test-Path $autoZipPath) {
-            $autoZipPath
-        } else {
-            $null
-        }
-
-        if (-not $resolvedZip) {
-            Write-Warning "No $edition ZIP found. Use -ZipPath 'C:\path\to\RDS_modern.zip' or place it in $destFull and re-run with -SkipDownload."
-            continue
-        }
-
-        # Extract only .db files  -  avoids unpacking the full 100+ GB archive
-        Write-Host "Extracting .db from $resolvedZip ..." -ForegroundColor DarkCyan
-        Write-Host "  (Scanning zip entries  -  this may take a moment on large archives)" -ForegroundColor DarkGray
-        Add-Type -AssemblyName System.IO.Compression.FileSystem
-        $destDb = Join-Path $destFull "$($edition)_RDS.db"
-        $found  = $false
-        $zf     = [System.IO.Compression.ZipFile]::OpenRead($resolvedZip)
+        Invoke-WebRequest -Uri $zipUrl -OutFile $zipPath -UseBasicParsing -ErrorAction Stop
+        New-Item -ItemType Directory -Force -Path $extractDir | Out-Null
         try {
-            foreach ($entry in $zf.Entries) {
-                if ($entry.Name -like "*.db") {
-                    Write-Host "  Found: $($entry.FullName)  ($([math]::Round($entry.Length/1GB,2)) GB uncompressed)" -ForegroundColor DarkGray
-                    $stream = $entry.Open()
-                    $fs     = [System.IO.File]::Create($destDb)
-                    try   { $stream.CopyTo($fs) }
-                    finally { $fs.Close(); $stream.Close() }
-                    $found = $true
-                    break
-                }
-            }
-        } finally { $zf.Dispose() }
-
-        if ($found) {
-            Write-Host "Database ready: $destDb" -ForegroundColor Green
-        } else {
-            Write-Warning "No .db file found inside $resolvedZip"
+            Expand-Archive -LiteralPath $zipPath -DestinationPath $extractDir -Force -ErrorAction Stop
+        } catch {
+            throw "NSRL archive is corrupt or not readable: $($_.Exception.Message)"
         }
+        $db = Get-ChildItem -Path $extractDir -Filter '*.db' -Recurse -File | Select-Object -First 1
+        if (-not $db) { throw "No .db file found inside NSRL archive." }
+        $destPath = Join-Path $InstallPath $db.Name
+        Move-Item -LiteralPath $db.FullName -Destination $destPath -Force
+        $installed = (Resolve-Path -LiteralPath $destPath).Path
+    } finally {
+        if (Test-Path -LiteralPath $zipPath) { Remove-Item -LiteralPath $zipPath -Force -ErrorAction SilentlyContinue }
+        if (Test-Path -LiteralPath $extractDir) { Remove-Item -LiteralPath $extractDir -Recurse -Force -ErrorAction SilentlyContinue }
+    }
+
+    Install-Sqlite3Tool | Out-Null
+    return $installed
+}
+
+function Resolve-DbPath {
+    param([string] $DbPath)
+    if ($DbPath) {
+        if (-not (Test-Path -LiteralPath $DbPath)) {
+            throw "NSRL database not found at '$DbPath'. Run Initialize-NsrlCatalog first."
+        }
+        return (Resolve-Path -LiteralPath $DbPath).Path
+    }
+    $auto = Get-NsrlDbPath -InstallPath './tools/nsrl/'
+    if (-not $auto) {
+        throw "NSRL database not located. Run Initialize-NsrlCatalog first."
+    }
+    return $auto
+}
+
+function Get-NsrlPlatformSummary {
+    [CmdletBinding()]
+    param(
+        [string] $DbPath
+    )
+
+    $db = Resolve-DbPath -DbPath $DbPath
+    $sqlite = Install-Sqlite3Tool
+
+    $totalRaw = Invoke-Sqlite -Sqlite $sqlite -DbPath $db -Query "SELECT COUNT(DISTINCT sha1) FROM FILE;"
+    $total = [int64] ($totalRaw | Select-Object -First 1)
+
+    $osQuery = @'
+SELECT o.OpSystemName, COUNT(DISTINCT f.sha1)
+FROM FILE f
+JOIN OS o ON f.OpSystemCode = o.OpSystemCode
+GROUP BY o.OpSystemName
+ORDER BY COUNT(DISTINCT f.sha1) DESC;
+'@
+    $rows = Invoke-Sqlite -Sqlite $sqlite -DbPath $db -Query $osQuery
+
+    $windows = 0L; $linux = 0L; $other = 0L
+    $breakdown = @()
+    foreach ($row in $rows) {
+        if ([string]::IsNullOrWhiteSpace($row)) { continue }
+        $parts = $row -split "`t", 2
+        if ($parts.Count -lt 2) { continue }
+        $osName = $parts[0]
+        $count  = [int64] $parts[1]
+        $plat   = Get-PlatformClassification -OsName $osName
+        switch ($plat) {
+            'Windows' { $windows += $count }
+            'Linux'   { $linux   += $count }
+            default   { $other   += $count }
+        }
+        $breakdown += [pscustomobject]@{ OsName = $osName; HashCount = $count }
+    }
+
+    [pscustomobject]@{
+        TotalHashes    = $total
+        WindowsHashes  = $windows
+        LinuxHashes    = $linux
+        OtherHashes    = $other
+        TopOsBreakdown = ($breakdown | Select-Object -First 20)
     }
 }
 
-function Get-NsrlOsSummary {
-    <#
-    .SYNOPSIS
-        Shows OS categories and hash counts in the NSRL database.
-        Run after Install-NsrlDatabase to review OS names before Export-NsrlHashList.
-    #>
+function Export-NsrlHashManifest {
     [CmdletBinding()]
     param(
-        [string]$DbPath,
-        [int]$TopN = 50
+        [string] $DbPath,
+        [string] $OutputDir = './output/',
+        [int] $MaxHashes = 0
     )
 
-    $DbPath  = Resolve-NsrlDb -DbPath $DbPath;   if (-not $DbPath)  { return }
-    $sqlite3 = Resolve-Sqlite3;                   if (-not $sqlite3) { return }
+    $db = Resolve-DbPath -DbPath $DbPath
+    $sqlite = Install-Sqlite3Tool
+
+    if (-not (Test-Path -LiteralPath $OutputDir)) {
+        New-Item -ItemType Directory -Force -Path $OutputDir | Out-Null
+    }
+
+    $limitClause = ''
+    if ($MaxHashes -gt 0) { $limitClause = " LIMIT $MaxHashes" }
 
     $query = @"
-SELECT
-    operating_system_id AS ID,
-    name                AS OS,
-    version             AS Version,
-    architecture        AS Architecture
-FROM OPERATING_SYSTEM
-ORDER BY name
-LIMIT $TopN;
-"@
-
-    $results = Invoke-Sqlite3Query -Sqlite3 $sqlite3 -DbPath $DbPath -Query $query
-
-    Write-Host "`nNSRL OS Summary (Top $TopN by hash count):" -ForegroundColor DarkCyan
-    Write-Host "─────────────────────────────────────────────────────" -ForegroundColor DarkGray
-    $results | Format-Table -AutoSize
-
-    Write-Host "`nCurrent offensive exclusion patterns:" -ForegroundColor Yellow
-    $script:DefaultOffensivePatterns | ForEach-Object { Write-Host "  - $_" -ForegroundColor DarkYellow }
-    Write-Host "`nTo customize, pass -OffensiveOsPatterns to Export-NsrlHashList" -ForegroundColor DarkGray
-}
-
-function Export-NsrlHashList {
-    <#
-    .SYNOPSIS
-        Exports OS-categorized, offensive-filtered hash CSVs from the NSRL DB.
-
-    .DESCRIPTION
-        Produces three CSV files (columns: Hash, FileName, OsCode, OsName, OsCategory):
-          nsrl_input_windows.csv   -- Windows / MS-DOS hashes
-          nsrl_input_linux.csv     -- Linux, Unix, BSD, macOS, Android (non-offensive)
-          nsrl_input_other.csv     -- Everything else not classified above
-
-        Offensive OS images (Kali, BlackArch, etc.) are excluded from all outputs.
-        These CSVs feed directly into Update-NsrlBaseline (NsrlEnrichment.psm1).
-
-    .PARAMETER MaxHashesPerCategory
-        Row cap per output file. -1 = unlimited. Default 50000.
-
-    .PARAMETER OffensiveOsPatterns
-        Overrides the default offensive OS exclusion list.
-    #>
-    [CmdletBinding()]
-    param(
-        [string]$DbPath,
-        [string]$OutputDir              = ".\output",
-        [int]$MaxHashesPerCategory      = 50000,
-        [string[]]$OffensiveOsPatterns  = $script:DefaultOffensivePatterns
-    )
-
-    $DbPath  = Resolve-NsrlDb -DbPath $DbPath;   if (-not $DbPath)  { return }
-    $sqlite3 = Resolve-Sqlite3;                   if (-not $sqlite3) { return }
-
-    if (-not (Test-Path $OutputDir)) {
-        New-Item -ItemType Directory -Path $OutputDir -Force | Out-Null
-    }
-    $outFull = (Resolve-Path $OutputDir).Path
-
-    # ── Build SQL fragments ───────────────────────────────────────────────────
-
-    # Offensive exclusion on os.name
-    $offExclude = ($OffensiveOsPatterns | ForEach-Object {
-        $p = $_.Replace("'", "''")
-        "  AND COALESCE(os.name,'') NOT LIKE '%$p%'"
-    }) -join "`n"
-
-    $limitClause = if ($MaxHashesPerCategory -gt 0) { "LIMIT $MaxHashesPerCategory" } else { "" }
-
-    # Schema: FILE.package_id -> PKG.operating_system_id -> OPERATING_SYSTEM.name
-    $selectBase = @"
-SELECT DISTINCT
-    lower(f.sha256)          AS Hash,
-    f.file_name              AS FileName,
-    os.operating_system_id   AS OsCode,
-    os.name                  AS OsName,
-    '{CAT}'                  AS OsCategory
+SELECT DISTINCT UPPER(f.sha1), f.FileName, o.OpSystemCode, o.OpSystemName
 FROM FILE f
-JOIN PKG              p  ON f.package_id          = p.package_id
-JOIN OPERATING_SYSTEM os ON p.operating_system_id = os.operating_system_id
-WHERE f.sha256 IS NOT NULL
-$offExclude
+JOIN OS o ON f.OpSystemCode = o.OpSystemCode$limitClause;
 "@
 
-    # Windows patterns
-    $winInclude = @"
-  AND (
-       COALESCE(os.name,'') LIKE '%Windows%'
-    OR COALESCE(os.name,'') LIKE '%MS-DOS%'
-    OR COALESCE(os.name,'') LIKE '%Microsoft DOS%'
-  )
-"@
+    $rows = Invoke-Sqlite -Sqlite $sqlite -DbPath $db -Query $query
 
-    # Linux/Unix patterns
-    $linuxPatterns = @(
-        'Linux','Ubuntu','Debian','Fedora','CentOS','RedHat','RHEL',
-        'SUSE','Arch','Gentoo','Mint','Alpine','Android','UNIX',
-        'BSD','FreeBSD','OpenBSD','NetBSD','Solaris','macOS','MacOSX','Darwin'
-    )
-    $linuxOr = ($linuxPatterns | ForEach-Object {
-        $p = $_.Replace("'","''")
-        "COALESCE(os.name,'') LIKE '%$p%'"
-    }) -join "`n    OR "
-    $linuxInclude = @"
-  AND (
-    $linuxOr
-  )
-  AND COALESCE(os.name,'') NOT LIKE '%Windows%'
-  AND COALESCE(os.name,'') NOT LIKE '%MS-DOS%'
-"@
+    $winRows = [System.Collections.Generic.List[object]]::new()
+    $lnxRows = [System.Collections.Generic.List[object]]::new()
+    $othRows = [System.Collections.Generic.List[object]]::new()
 
-    # "Other" = not Windows, not Linux
-    $notWin = @"
-  AND COALESCE(os.name,'') NOT LIKE '%Windows%'
-  AND COALESCE(os.name,'') NOT LIKE '%MS-DOS%'
-  AND COALESCE(os.name,'') NOT LIKE '%Microsoft DOS%'
-"@
-    $notLinux = ($linuxPatterns | ForEach-Object {
-        $p = $_.Replace("'","''")
-        "  AND COALESCE(os.name,'') NOT LIKE '%$p%'"
-    }) -join "`n"
-
-    # ── Run queries ───────────────────────────────────────────────────────────
-
-    $categories = @(
-        @{ Name = "Windows"; File = "nsrl_input_windows.csv"; Where = $winInclude }
-        @{ Name = "Linux";   File = "nsrl_input_linux.csv";   Where = $linuxInclude }
-        @{ Name = "Unknown"; File = "nsrl_input_other.csv";   Where = "$notWin`n$notLinux" }
-    )
-
-    $counts = @{}
-    foreach ($cat in $categories) {
-        Write-Host "Exporting $($cat.Name) hashes..." -ForegroundColor DarkCyan
-        $outCsv = Join-Path $outFull $cat.File
-        $sql    = ($selectBase.Replace('{CAT}', $cat.Name)) + $cat.Where + "`n$limitClause;"
-
-        Invoke-Sqlite3Query -Sqlite3 $sqlite3 -DbPath $DbPath `
-                            -Query $sql -DirectOutputCsv $outCsv
-
-        $count = if (Test-Path $outCsv) {
-            # Count lines minus header row (fast - no full Import-Csv)
-            [System.IO.File]::ReadAllLines($outCsv).Count - 1
-        } else { 0 }
-        $counts[$cat.Name] = $count
-        Write-Host "  -> $count rows : $outCsv" -ForegroundColor Green
+    foreach ($row in $rows) {
+        if ([string]::IsNullOrWhiteSpace($row)) { continue }
+        $parts = $row -split "`t", 4
+        if ($parts.Count -lt 4) { continue }
+        $obj = [pscustomobject]@{
+            FileHash = $parts[0]
+            FileName = $parts[1]
+            OsCode   = $parts[2]
+            OsName   = $parts[3]
+            Platform = Get-PlatformClassification -OsName $parts[3]
+        }
+        switch ($obj.Platform) {
+            'Windows' { $winRows.Add($obj) }
+            'Linux'   { $lnxRows.Add($obj) }
+            default   { $othRows.Add($obj) }
+        }
     }
 
-    Write-Host "`nNSRL export complete." -ForegroundColor DarkCyan
-    Write-Host ("  Windows : {0,7}"  -f $counts['Windows']) -ForegroundColor White
-    Write-Host ("  Linux   : {0,7}"  -f $counts['Linux'])   -ForegroundColor White
-    Write-Host ("  Other   : {0,7}"  -f $counts['Unknown']) -ForegroundColor White
-    Write-Host "`nNext: Update-NsrlBaseline -InputCsv (NsrlEnrichment.psm1)" -ForegroundColor DarkCyan
-}
+    $winPath = Join-Path $OutputDir 'nsrl_input_windows.csv'
+    $lnxPath = Join-Path $OutputDir 'nsrl_input_linux.csv'
+    $othPath = Join-Path $OutputDir 'nsrl_input_other.csv'
 
-# ── PRIVATE HELPERS ───────────────────────────────────────────────────────────
+    $winRows | Export-Csv -LiteralPath $winPath -NoTypeInformation -Encoding UTF8
+    $lnxRows | Export-Csv -LiteralPath $lnxPath -NoTypeInformation -Encoding UTF8
+    $othRows | Export-Csv -LiteralPath $othPath -NoTypeInformation -Encoding UTF8
 
-function Resolve-NsrlDb {
-    param([string]$DbPath)
-    if ($DbPath -and (Test-Path $DbPath)) { return (Resolve-Path $DbPath).Path }
-    $found = Get-ChildItem -Path ".\NSRL" -Filter "*.db" -Recurse -ErrorAction SilentlyContinue |
-             Select-Object -First 1
-    if (-not $found) {
-        Write-Error "NSRL .db not found. Run Install-NsrlDatabase first."
-        return $null
+    [pscustomobject]@{
+        WindowsRows = $winRows.Count
+        LinuxRows   = $lnxRows.Count
+        OtherRows   = $othRows.Count
+        WindowsFile = $winPath
+        LinuxFile   = $lnxPath
+        OtherFile   = $othPath
     }
-    return $found.FullName
 }
 
-Export-ModuleMember -Function Install-NsrlDatabase, Get-NsrlOsSummary, Export-NsrlHashList
+Export-ModuleMember -Function Initialize-NsrlCatalog, Get-NsrlPlatformSummary, Export-NsrlHashManifest

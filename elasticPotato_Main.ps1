@@ -24,18 +24,7 @@
 #sigma plugin install elasticsearch
 
 
-# Alerts (Group 4)
-Import-Module -Name ".\AlertsModules\Alerts_Main.psm1"
-Import-Module -Name ".\AlertsModules\elasticalertsandthreats.psm1"
-Import-Module -Name ".\AlertsModules\Get-ThreatAttribution.psm1"
-
-# ascii / console
-Import-Module -Name ".\asciiArt\resizeConsole.psm1"
-Import-Module -Name ".\asciiArt\sashaPotato.psm1"
-
-# Baseline / enrichment (shared by Group 4 + 5)
-Import-Module -Name ".\baseline\BaseLineStrings_with_Intezer.psm1" -ErrorAction SilentlyContinue
-Import-Module -Name ".\baseline\Invoke-LokiScan.psm1"
+# Baseline / enrichment
 Import-Module -Name ".\baseline\NsrlEnrichment.psm1" -ErrorAction SilentlyContinue
 Import-Module -Name ".\baseline\NsrlTools.psm1" -ErrorAction SilentlyContinue
 
@@ -47,29 +36,19 @@ Import-Module -Name ".\agentic\Invoke-ElasticLinuxTriage.psm1"
 Import-Module -Name ".\forensics\Invoke-UACTriage.psm1"
 Import-Module -Name ".\forensics\Invoke-RouterTriage.psm1"
 
-# Group 5 (Elastic Baseline) -- process baseline + enrichment deps
-Import-Module -Name ".\NewProcsModules\BlockedCountryPull.psm1"
+# Group 5 (Elastic Baseline) -- remaining enrichment deps
 Import-Module -Name ".\NewProcsModules\CheckAgainstVT.psm1"
 Import-Module -Name ".\NewProcsModules\CheckApiVoid.psm1"
-Import-Module -Name ".\NewProcsModules\CheckThreatGrid.psm1"
+Import-Module -Name ".\NewProcsModules\CheckSuspiciousASNs.psm1"
+Import-Module -Name ".\NewProcsModules\DomainCleanup.psm1"
 Import-Module -Name ".\NewProcsModules\elasticProcessBaseline.psm1"
-Import-Module -Name ".\NewProcsModules\GetASN-Cymru.psm1"
-Import-Module -Name ".\NewProcsModules\Intezer_Analyze_By_Hash.psm1"
-Import-Module -Name ".\NewProcsModules\IntezerCheckUrl.psm1"
-Import-Module -Name ".\NewProcsModules\MispPull.psm1"
-Import-Module -Name ".\NewProcsModules\PullFromVT.psm1"
 
-# Elastic detonation logs + detection pack refresh used by Group 4
-Import-Module -Name ".\purpleTeaming\GetElasticDetonationLogs.psm1"
-Import-Module -Name ".\detections\Update-ElasticYaraRules.psm1"
-Import-Module -Name ".\detections\Update-LolDriversCache.psm1"
+# Elastic detonation logs used by Group 4
+Import-Module -Name ".\purpleTeaming\GetElasticDetonationLogs.psm1" -ErrorAction SilentlyContinue
 
 # Hardening modules (Group 1)
 Import-Module -Name ".\Hardening\ComplianceScan\ComplianceScan.psd1"
 Import-Module -Name ".\Hardening\HardenedGPO\HardenedGPO.psd1"
-
-Resize-Console -Width 150
-Get-SashaPotato
 
 # Connectivity check
 try {
@@ -138,7 +117,6 @@ Write-Host ""
 Write-Host "  $([char]27)[4m+----------------------------------------------+$([char]27)[24m" -ForegroundColor DarkRed
 Write-Host "  $([char]27)[4m|  (Elastic env) Analyze Artifacts for An Alert |$([char]27)[24m" -ForegroundColor DarkRed
 Write-Host "  $([char]27)[4m+----------------------------------------------+$([char]27)[24m" -ForegroundColor DarkRed
-Write-Host "4a) Alerts and Threats" -ForegroundColor DarkRed
 Write-Host "4b) [AI Agent] Elastic Alert Triage (Windows) - Offline VT Enrichment" -ForegroundColor DarkRed
 Write-Host "4c) [AI Agent] Elastic Alert Triage (Linux)   - Offline Forensic Analysis" -ForegroundColor DarkRed
 Write-Host "4d) Pull Elastic Logs from Detonation Window" -ForegroundColor DarkRed
@@ -366,9 +344,6 @@ elseif ($functionChoice -eq "3c") {
 }
 
 # -- GROUP 4: Elastic Alerts ---------------------------------------------------
-elseif ($functionChoice -eq "4a") {
-    Get-AlertsandThreatsFunction
-}
 elseif ($functionChoice -eq "4b") {
     $detonationLogPath = Read-Host "[?] Path to detonation log directory (NDJSON files)"
     if ($detonationLogPath -and (Test-Path -LiteralPath $detonationLogPath)) {
@@ -389,35 +364,28 @@ elseif ($functionChoice -eq "4d") {
     Get-ElasticDetonationLogs
 }
 elseif ($functionChoice -eq "4e") {
-    Invoke-LokiScan
+    Write-Host "Option 4e is unavailable (Invoke-LokiScan module removed)." -ForegroundColor Yellow
 }
 elseif ($functionChoice -eq "4f") {
-    $chosenDir = (Read-Host "[?] Enter full path to detonation log directory").Trim()
-    if ($chosenDir -and (Test-Path $chosenDir)) {
-        Update-ElasticYaraRules
-        Update-LolDriversCache
-        Invoke-ElasticAlertAgentAnalysis -DetonationLogsDir $chosenDir
-    } else {
-        Write-Host "Path not found or not specified: $chosenDir" -ForegroundColor Red
-    }
+    Write-Host "Option 4f is unavailable (detection-pack refresh modules removed)." -ForegroundColor Yellow
 }
 
 # -- GROUP 5: Elastic Baseline (was Group 12 in Loaded-Potato) ----------------
 elseif ($functionChoice -eq "5a") {
     $procToQuery = Read-Host -Prompt "Enter process name (i.e. lsass.exe)"
-    Get-ElasticProcessBaseline -Mode SpecificProc -ProcName $procToQuery
+    Invoke-ElasticProcessSurvey -Mode SpecificProc -ProcName $procToQuery
 }
 elseif ($functionChoice -eq "5b") {
-    Get-ElasticProcessBaseline -Mode Drivers -QueryDays -30
+    Invoke-ElasticProcessSurvey -Mode Drivers -QueryDays -30
 }
 elseif ($functionChoice -eq "5c") {
-    Get-ElasticProcessBaseline -Mode UnverifiedProcs
+    Invoke-ElasticProcessSurvey -Mode UnverifiedProcs
 }
 elseif ($functionChoice -eq "5d") {
-    Get-ElasticProcessBaseline -Mode UnsignedWin -QueryDays -2
+    Invoke-ElasticProcessSurvey -Mode UnsignedWin -QueryDays -2
 }
 elseif ($functionChoice -eq "5e") {
-    Get-ElasticProcessBaseline -Mode UnsignedLinux
+    Invoke-ElasticProcessSurvey -Mode UnsignedLinux
 }
 else {
     Write-Host "Unknown option: $functionChoice" -ForegroundColor Red

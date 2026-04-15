@@ -1,198 +1,218 @@
-function Get-GitHubRiskScore {
-    param (
-        [Parameter(Mandatory=$true)]
-        [string]$GitHubUrl
+$script:ModuleRoot = $PSScriptRoot
+
+function Get-ToolsDir {
+    $p = Join-Path $script:ModuleRoot 'tools'
+    if (-not (Test-Path -LiteralPath $p)) {
+        New-Item -ItemType Directory -Force -Path $p | Out-Null
+    }
+    return $p
+}
+
+function Install-FromGitHubRelease {
+    param(
+        [string] $RepoApiUrl,
+        [string] $AssetPattern,
+        [string] $DestinationExe,
+        [string] $ExeInsideArchive
     )
 
-    # --- 1. SETUP PATHS ---
-    $RootFolder      = Resolve-Path "$PSScriptRoot\.."
-    $ScanFolder      = "$PSScriptRoot"
-    
-    # Outputs
-    $ScorecardCsv    = Join-Path -Path $ScanFolder -ChildPath "scorecardScanResults.csv"
-    $YaraCsv         = Join-Path -Path $ScanFolder -ChildPath "yaraScanResults.csv"
-    
-    # Tools
-    $ScorecardExe    = Join-Path -Path $ScanFolder -ChildPath "scorecard.exe"
-    $YaraExe         = Join-Path -Path $ScanFolder -ChildPath "yara64.exe"
-    $YaraRulesFolder = Join-Path -Path $RootFolder -ChildPath "detections\yara"
+    if (Test-Path -LiteralPath $DestinationExe) { return $DestinationExe }
 
-    # --- 2. ENSURE TOOLS EXIST ---
-    # (Scorecard Download Logic - Same as before)
-    if (-not (Test-Path -Path $ScorecardExe)) {
-        Write-Host " [INSTALL] Scorecard missing. Downloading..." -ForegroundColor Yellow
-        try {
-            $Headers = @{}
-            if ($env:GITHUB_AUTH_TOKEN) { $Headers["Authorization"] = "token $env:GITHUB_AUTH_TOKEN" }
-            $ReleaseUrl = "https://api.github.com/repos/ossf/scorecard/releases/latest"
-            $ReleaseInfo = Invoke-RestMethod -Uri $ReleaseUrl -Headers $Headers -Method Get
-            $Asset = $ReleaseInfo.assets | Where-Object { $_.name -like "*windows_amd64.exe" } | Select-Object -First 1
-            Invoke-WebRequest -Uri $Asset.browser_download_url -OutFile $ScorecardExe -PassThru | Out-Null
-        } catch { Write-Warning "Failed to download Scorecard." }
-    }
-
-    # (YARA Download Logic - Same as before)
-    if (-not (Test-Path -Path $YaraExe)) {
-        Write-Host " [INSTALL] YARA missing. Downloading..." -ForegroundColor Yellow
-        try {
-            $YaraZip = Join-Path $ScanFolder "yara.zip"
-            $YaraUrl = "https://github.com/VirusTotal/yara/releases/download/v4.5.0/yara-v4.5.0-2298-win64.zip"
-            Invoke-WebRequest -Uri $YaraUrl -OutFile $YaraZip
-            Expand-Archive -Path $YaraZip -DestinationPath $ScanFolder -Force
-            $ExtractedExe = Get-ChildItem -Path $ScanFolder -Recurse -Filter "yara64.exe" | Select-Object -First 1
-            if ($ExtractedExe.DirectoryName -ne $ScanFolder) { Move-Item -Path $ExtractedExe.FullName -Destination $YaraExe -Force }
-            Remove-Item $YaraZip -Force
-            Get-ChildItem -Path $ScanFolder -Directory | Where-Object { $_.Name -like "yara-*" } | Remove-Item -Recurse -Force
-        } catch { Write-Warning "Failed to download YARA." }
-    }
-
-    # --- 3. PARSE URL & DETECT DOMAIN ---
     try {
-        $Uri = [System.Uri]$GitHubUrl
-        $Domain = $Uri.Host.ToLower()
-        $Segments = $Uri.Segments
-        
-        # Basic validation for git structure (needs at least /user/repo)
-        if ($Segments.Count -lt 3) { throw }
-
-        $Owner = $Segments[1].Trim('/')
-        $Repo = $Segments[2].Trim('/')
-    } catch { 
-        Write-Error "Invalid or unsupported URL format: $GitHubUrl"
-        return 
+        $rel = Invoke-RestMethod -Uri $RepoApiUrl -Headers @{ 'User-Agent' = 'elasticPotato' } -ErrorAction Stop
+    } catch {
+        throw "Failed to query GitHub releases ($RepoApiUrl): $($_.Exception.Message)"
     }
 
-    Write-Host "Checking $Domain ($Owner/$Repo)..." -NoNewline
+    $asset = $rel.assets | Where-Object { $_.name -match $AssetPattern } | Select-Object -First 1
+    if (-not $asset) {
+        throw "No asset matching '$AssetPattern' in latest release at $RepoApiUrl"
+    }
 
-    # =========================================================================
-    # PART A: OPENSSF SCORECARD (GITHUB ONLY)
-    # =========================================================================
-    $Score = "N/A"
-    
-    if ($Domain -like "*github.com*") {
-        try {
-            # 1. API Check
-            $ApiUrl = "https://api.securityscorecards.dev/projects/github.com/$Owner/$Repo"
-            $Response = Invoke-RestMethod -Uri $ApiUrl -Method Get -ErrorAction Stop
-            $Score = $Response.score
-            Write-Host " [SCORECARD] API: $Score" -ForegroundColor Green
+    $tmp = Join-Path $env:TEMP $asset.name
+    try {
+        Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $tmp -UseBasicParsing -ErrorAction Stop
+        if ($asset.name -match '\.zip$') {
+            $extractDir = Join-Path $env:TEMP ("rel-{0}" -f ([Guid]::NewGuid().ToString('N')))
+            New-Item -ItemType Directory -Force -Path $extractDir | Out-Null
+            Expand-Archive -LiteralPath $tmp -DestinationPath $extractDir -Force
+            $exe = Get-ChildItem -Path $extractDir -Filter $ExeInsideArchive -Recurse -File | Select-Object -First 1
+            if (-not $exe) { throw "Expected '$ExeInsideArchive' not found inside $($asset.name)" }
+            Copy-Item -LiteralPath $exe.FullName -Destination $DestinationExe -Force
+            Remove-Item -LiteralPath $extractDir -Recurse -Force -ErrorAction SilentlyContinue
+        } else {
+            Copy-Item -LiteralPath $tmp -Destination $DestinationExe -Force
         }
-        catch {
-            # 2. Local Check
-            if (Test-Path $ScorecardExe) {
-                try {
-                    $SecretToken = Get-Secret -Name 'Github_Access_Token' -AsPlainText
-                    $env:GITHUB_AUTH_TOKEN = $SecretToken
-                    $ProcInfo = New-Object System.Diagnostics.ProcessStartInfo
-                    $ProcInfo.FileName = $ScorecardExe
-                    $ProcInfo.Arguments = "--repo=github.com/$Owner/$Repo --format=json"
-                    $ProcInfo.RedirectStandardOutput = $true
-                    $ProcInfo.UseShellExecute = $false
-                    $Process = [System.Diagnostics.Process]::Start($ProcInfo)
-                    $JsonOutput = $Process.StandardOutput.ReadToEnd()
-                    $Process.WaitForExit()
-                    $env:GITHUB_AUTH_TOKEN = $null
-                    $LocalData = $JsonOutput | ConvertFrom-Json
-                    $Score = $LocalData.score
-                    Write-Host " [SCORECARD] Local: $Score" -ForegroundColor DarkCyan
-                } catch { 
-                    Write-Host " [SCORECARD] Failed/Private" -ForegroundColor DarkGray 
-                    $env:GITHUB_AUTH_TOKEN = $null
+    } finally {
+        if (Test-Path -LiteralPath $tmp) { Remove-Item -LiteralPath $tmp -Force -ErrorAction SilentlyContinue }
+    }
+
+    return $DestinationExe
+}
+
+function Install-ScorecardTool {
+    $dir = Get-ToolsDir
+    $exe = Join-Path $dir 'scorecard.exe'
+    try {
+        return Install-FromGitHubRelease -RepoApiUrl 'https://api.github.com/repos/ossf/scorecard/releases/latest' `
+            -AssetPattern 'windows.*amd64\.exe$' `
+            -DestinationExe $exe `
+            -ExeInsideArchive 'scorecard*.exe'
+    } catch {
+        throw "Scorecard install failed: $($_.Exception.Message)"
+    }
+}
+
+function Install-YaraTool {
+    $dir = Get-ToolsDir
+    $exe = Join-Path $dir 'yara64.exe'
+    try {
+        return Install-FromGitHubRelease -RepoApiUrl 'https://api.github.com/repos/VirusTotal/yara/releases/latest' `
+            -AssetPattern 'win64.*\.zip$' `
+            -DestinationExe $exe `
+            -ExeInsideArchive 'yara64.exe'
+    } catch {
+        throw "YARA install failed: $($_.Exception.Message)"
+    }
+}
+
+function ConvertTo-RiskLabel {
+    param([double] $Score)
+    if ($Score -ge 7.5) { return 'Low' }
+    if ($Score -ge 5.0) { return 'Medium' }
+    return 'High'
+}
+
+function Invoke-RepoSupplyChainAudit {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [string] $GitHubUrl
+    )
+
+    if ($GitHubUrl -notmatch '^(?<proto>https?)://(?<host>[^/]+)/(?<owner>[^/]+)/(?<repo>[^/]+?)(?:\.git)?/?$') {
+        throw "Invalid GitHub URL: $GitHubUrl"
+    }
+    $urlHost = $Matches['host']
+    $owner = $Matches['owner']
+    $repoName = $Matches['repo']
+    $repoSlug = "$owner/$repoName"
+
+    $scorecardExe = Install-ScorecardTool
+    $yaraExe = $null
+    try { $yaraExe = Install-YaraTool } catch { Write-Warning $_.Exception.Message }
+
+    $score = $null
+    try {
+        $api = "https://api.securityscorecards.dev/projects/github.com/$owner/$repoName"
+        $resp = Invoke-RestMethod -Uri $api -ErrorAction Stop
+        $score = [double] $resp.score
+    } catch {
+        $statusCode = $_.Exception.Response.StatusCode.value__
+        if ($statusCode -eq 404) {
+            try {
+                $raw = & $scorecardExe --repo="$GitHubUrl" --format=json 2>$null
+                if ($LASTEXITCODE -eq 0 -and $raw) {
+                    $obj = $raw | ConvertFrom-Json
+                    $score = [double] $obj.score
                 }
+            } catch {
+                Write-Warning "Scorecard CLI failed: $($_.Exception.Message)"
             }
+        } else {
+            Write-Warning "Scorecard API failed: $($_.Exception.Message)"
         }
-    } else {
-        Write-Host " [SCORECARD] Skipped (Not GitHub)" -ForegroundColor Gray
-        $Score = "NotSupported"
     }
 
-    # >> SAVE SCORECARD RESULTS <<
-    $ScoreObj = [PSCustomObject]@{
-        Timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-        Repo      = "$Owner/$Repo"
-        Domain    = $Domain
-        Score     = $Score
-        Risk      = if ($Score -eq "N/A" -or $Score -eq "NotSupported") { "Unknown" } elseif ($Score -lt 5) { "High" } elseif ($Score -lt 8) { "Medium" } else { "Low" }
+    $risk = 'Unknown'
+    $scoreVal = -1.0
+    if ($null -ne $score) {
+        $scoreVal = [double] $score
+        $risk = ConvertTo-RiskLabel -Score $scoreVal
+    }
+
+    $outputDir = Join-Path (Get-Location) 'output'
+    if (-not (Test-Path -LiteralPath $outputDir)) {
+        New-Item -ItemType Directory -Force -Path $outputDir | Out-Null
+    }
+
+    $scorecardCsv = Join-Path $outputDir 'scorecardScanResults.csv'
+    $yaraCsv      = Join-Path $outputDir 'yaraScanResults.csv'
+    $timestamp = (Get-Date).ToString('o')
+
+    if (-not (Test-Path -LiteralPath $scorecardCsv)) {
+        Set-Content -LiteralPath $scorecardCsv -Value 'Timestamp,Repo,Domain,Score,Risk,URL' -Encoding UTF8
+    }
+    $scRow = [pscustomobject]@{
+        Timestamp = $timestamp
+        Repo      = $repoSlug
+        Domain    = $urlHost
+        Score     = $scoreVal
+        Risk      = $risk
         URL       = $GitHubUrl
     }
-    $ScoreObj | Export-Csv -Path $ScorecardCsv -Append -NoTypeInformation -Force
+    $scRow | Export-Csv -LiteralPath $scorecardCsv -NoTypeInformation -Append -Encoding UTF8
 
-    # =========================================================================
-    # PART B: YARA MALWARE SCAN (ANY GIT REPO)
-    # =========================================================================
-    if ((Test-Path $YaraExe) -and (Test-Path $YaraRulesFolder)) {
-        
-        # 1. Build Master Rule File
-        $MasterRuleFile = Join-Path $ScanFolder "temp_master_rules.yar"
-        $RuleFiles = Get-ChildItem -Path $YaraRulesFolder -Filter "*.yar" -Recurse
-        
-        if ($RuleFiles.Count -gt 0) {
-            Set-Content -Path $MasterRuleFile -Value "// Auto-Generated Master Rule File"
-            foreach ($Rule in $RuleFiles) {
-                $EscapedPath = $Rule.FullName.Replace("\", "\\")
-                Add-Content -Path $MasterRuleFile -Value "include `"$EscapedPath`""
+    $yaraMatches = @()
+    $yaraMatchCount = 0
+    $cloneDir = Join-Path $env:TEMP ("repoaudit-{0}" -f ([Guid]::NewGuid().ToString('N')))
+    $cloneOk = $false
+    try {
+        git clone --depth 1 $GitHubUrl $cloneDir 2>$null
+        if ($LASTEXITCODE -eq 0) { $cloneOk = $true }
+    } catch {
+        Write-Warning "git clone failed: $($_.Exception.Message)"
+    }
+
+    if (-not $cloneOk) {
+        Write-Warning "Skipping YARA pass - clone failed for $GitHubUrl"
+    } else {
+        $rulesDir = Join-Path (Get-Location) 'detections/yara'
+        if (-not (Test-Path -LiteralPath $rulesDir)) {
+            Write-Warning "YARA rules directory '$rulesDir' missing - skipping YARA scan."
+        } elseif (-not $yaraExe -or -not (Test-Path -LiteralPath $yaraExe)) {
+            Write-Warning "yara64.exe not available - skipping YARA scan."
+        } else {
+            try {
+                $yaraOut = & $yaraExe -r $rulesDir $cloneDir 2>$null
+                foreach ($line in @($yaraOut)) {
+                    if ([string]::IsNullOrWhiteSpace($line)) { continue }
+                    $parts = ($line -split '\s+', 2)
+                    if ($parts.Count -ge 1 -and $parts[0]) {
+                        $yaraMatches += $parts[0]
+                    }
+                }
+                $yaraMatches = @($yaraMatches | Sort-Object -Unique)
+                $yaraMatchCount = $yaraMatches.Count
+            } catch {
+                Write-Warning "yara scan failed: $($_.Exception.Message)"
             }
 
-            # 2. Clone Repo
-            Write-Host " [CLONING]" -NoNewline -ForegroundColor Gray
-            $Guid = New-Guid
-            $ClonePath = Join-Path $ScanFolder "temp_clone_$Guid"
-            
-            try {
-                # Generic Git Clone (Works for GitHub, GitLab, Bitbucket)
-                $GitArgs = "clone --depth 1 $GitHubUrl $ClonePath"
-                Start-Process "git" -ArgumentList $GitArgs -NoNewWindow -Wait -ErrorAction Stop
-                
-                if (Test-Path $ClonePath) {
-                    Write-Host " [SCANNING]" -NoNewline -ForegroundColor Gray
-                    
-                    # 3. Run YARA
-                    $YaraProc = New-Object System.Diagnostics.ProcessStartInfo
-                    $YaraProc.FileName = $YaraExe
-                    $YaraProc.Arguments = "-w -r `"$MasterRuleFile`" `"$ClonePath`""
-                    $YaraProc.RedirectStandardOutput = $true
-                    $YaraProc.UseShellExecute = $false
-                    
-                    $YaraProcess = [System.Diagnostics.Process]::Start($YaraProc)
-                    $YaraOutput = $YaraProcess.StandardOutput.ReadToEnd()
-                    $YaraProcess.WaitForExit()
-                    
-                    # 4. Cleanup
-                    Remove-Item -Path $ClonePath -Recurse -Force -ErrorAction SilentlyContinue
-                    Remove-Item -Path $MasterRuleFile -Force -ErrorAction SilentlyContinue
-
-                    # 5. Parse Matches
-                    $YaraHits = "Clean"
-                    if (-not [string]::IsNullOrWhiteSpace($YaraOutput)) {
-                        $Lines = $YaraOutput -split "`r`n"
-                        $HitRules = @()
-                        foreach ($Line in $Lines) {
-                            if (-not [string]::IsNullOrWhiteSpace($Line)) {
-                                $RuleName = $Line.Split(" ")[0]
-                                $HitRules += $RuleName
-                            }
-                        }
-                        $UniqueHits = $HitRules | Select-Object -Unique
-                        $YaraHits = ($UniqueHits -join "; ")
-                        Write-Host " [YARA DETECT] $YaraHits" -ForegroundColor Red
-                    } else {
-                        Write-Host " [YARA] Clean" -ForegroundColor Green
-                    }
-
-                    # >> SAVE YARA RESULTS <<
-                    $YaraObj = [PSCustomObject]@{
-                        Timestamp   = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-                        Repo        = "$Owner/$Repo"
-                        Domain      = $Domain
-                        YaraMatches = $YaraHits
-                        URL         = $GitHubUrl
-                    }
-                    $YaraObj | Export-Csv -Path $YaraCsv -Append -NoTypeInformation -Force
-
-                } else { Write-Host " [ERROR] Clone Failed" -ForegroundColor Red }
-            } catch { Write-Host " [ERROR] Git failure" -ForegroundColor Red }
-        } else { Write-Host " [YARA] No .yar files found" -ForegroundColor Yellow }
+            if (-not (Test-Path -LiteralPath $yaraCsv)) {
+                Set-Content -LiteralPath $yaraCsv -Value 'Timestamp,Repo,Domain,YaraMatches,URL' -Encoding UTF8
+            }
+            $yaraRow = [pscustomobject]@{
+                Timestamp   = $timestamp
+                Repo        = $repoSlug
+                Domain      = $urlHost
+                YaraMatches = ($yaraMatches -join ';')
+                URL         = $GitHubUrl
+            }
+            $yaraRow | Export-Csv -LiteralPath $yaraCsv -NoTypeInformation -Append -Encoding UTF8
+        }
     }
-    
-    Write-Host ""
+
+    if (Test-Path -LiteralPath $cloneDir) {
+        Remove-Item -LiteralPath $cloneDir -Recurse -Force -ErrorAction SilentlyContinue
+    }
+
+    [pscustomobject]@{
+        Repo           = $repoSlug
+        Score          = $scoreVal
+        Risk           = $risk
+        YaraMatchCount = $yaraMatchCount
+        YaraMatches    = [string[]] $yaraMatches
+    }
 }
+
+Export-ModuleMember -Function Invoke-RepoSupplyChainAudit

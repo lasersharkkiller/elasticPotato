@@ -1,77 +1,94 @@
-function Get-CheckAgainstVT{
+$script:PrivateIpPatterns = @(
+    '^10\.',
+    '^127\.',
+    '^192\.168\.',
+    '^172\.(1[6-9]|2[0-9]|3[0-1])\.',
+    '^169\.254\.',
+    '^0\.0\.0\.0$',
+    '^255\.255\.255\.255$'
+)
 
-param (
-        [Parameter(Mandatory=$true)]
-        $artifacts,
-        $type
+function Test-IsPrivateIp {
+    param([string] $Ip)
+    foreach ($p in $script:PrivateIpPatterns) {
+        if ($Ip -match $p) { return $true }
+    }
+    return $false
+}
+
+function Invoke-VtArtifactLookup {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)]
+        [string[]] $Artifacts,
+
+        [Parameter(Mandatory)]
+        [ValidateSet('IPAddress', 'DomainName')]
+        [string] $Type
     )
 
-#Import-Module VirusTotalAnalyzer -Force
-#https://github.com/EvotecIT/VirusTotalAnalyzer
-# Threat Intel API Key
-$VTApi = Get-Secret -Name 'VT_API_Key_1' -AsPlainText
-
-# Create an array to store the results
-$VTresults = @()
-Write-Host ""
-# Loop through each hash
-foreach ($artifact in $artifacts) {
-    $report
-    # Get the report from VirusTotal
-    if ($type -eq "DomainName") {
-        $report = Get-VirusReport -ApiKey $VTApi -DomainName $artifact
-    } elseif ($type -eq "IPAddress") {
-        $report = Get-VirusReport -ApiKey $VTApi -IPAddress $artifact
-    } 
-        # Extract Creation or Registration Date
-        $parsedDate
-        $ageDays
-
-        # Match possible creation/registration date line
-        $regPattern = 'Creation Date:\s*(.+)|Registered On:\s*(.+)|RegDate:\s*(.+)'
-        $whoisText = $report.data.attributes.whois
-        $classification
-        $regDate
-
-        if ($whoisText -match $regPattern) {
-            if ($matches[1]) {
-                $regDate = $matches[1]
-            } elseif ($matches[2]) {
-                $regDate = $matches[2]
-            } elseif ($matches[3]) {
-                $regDate = $matches[3]
-            } else {
-                $regDate = $null
-        }
-        }
-
-        #VT Tags can be useful
-        $tags = ($report.data.attributes.tags | ForEach-Object { $_.name }) -join ", "
-        Write-Host "Tags: $tags"
-
-        if ($regDate -ne $null) {
-            Write-Host "Reg date: "
-            Write-Host $regDate
-            $parsedDate = [datetime]::Parse($regDate)
-            Write-Host "Domain registered on: $parsedDate"
-        }
-
-        # Create an object to store the results
-        Start-Sleep -Seconds 0.2
-        $VTresult = [PSCustomObject]@{
-            Artifact = $artifact
-            Malicious = $report.data.attributes.last_analysis_stats.malicious
-            Suspicious = $report.data.attributes.last_analysis_stats.suspicious
-            Undetected = $report.data.attributes.last_analysis_stats.undetected
-            Harmless = $report.data.attributes.last_analysis_stats.harmless
-            ASN = $report.data.attributes.asn
-            ASN_Owner = $report.data.attributes.as_owner
-            Country = $report.data.attributes.country
-        }
-
-    # Add the result to the array
-    $VTresults += $VTresult
+    $apiKey = Get-Secret -Name 'VT_API_Key_1' -AsPlainText -ErrorAction Stop
+    if ([string]::IsNullOrWhiteSpace($apiKey)) {
+        throw "VirusTotal API secret 'VT_API_Key_1' is missing or empty."
     }
 
-Write-Host $VTresults
+    $headers = @{ 'x-apikey' = $apiKey }
+
+    $effective = @()
+    if ($Type -eq 'IPAddress') {
+        foreach ($a in $Artifacts) {
+            if ([string]::IsNullOrWhiteSpace($a)) { continue }
+            $ip = $a.Trim()
+            if (Test-IsPrivateIp -Ip $ip) {
+                Write-Verbose "Skipping private/bogon IP: $ip"
+                continue
+            }
+            $effective += $ip
+        }
+    } else {
+        $extractorAvailable = Get-Command -Name ConvertFrom-UrlDomainExtract -ErrorAction SilentlyContinue
+        foreach ($a in $Artifacts) {
+            if ([string]::IsNullOrWhiteSpace($a)) { continue }
+            if ($extractorAvailable) {
+                $extracted = ConvertFrom-UrlDomainExtract -InputText $a
+                foreach ($d in $extracted) { $effective += $d }
+            } else {
+                $effective += $a.Trim().ToLowerInvariant()
+            }
+        }
+        $effective = $effective | Sort-Object -Unique
+    }
+
+    $results = foreach ($artifact in $effective) {
+        $url = if ($Type -eq 'IPAddress') {
+            "https://www.virustotal.com/api/v3/ip_addresses/$artifact"
+        } else {
+            "https://www.virustotal.com/api/v3/domains/$artifact"
+        }
+
+        try {
+            $resp = Invoke-RestMethod -Uri $url -Headers $headers -Method Get -ErrorAction Stop
+        } catch {
+            Write-Warning "VT lookup failed for '$artifact': $($_.Exception.Message)"
+            continue
+        }
+
+        $attrs = $resp.data.attributes
+        $stats = $attrs.last_analysis_stats
+
+        [pscustomobject]@{
+            Artifact   = $artifact
+            Malicious  = [int] ($stats.malicious  | ForEach-Object { $_ })
+            Suspicious = [int] ($stats.suspicious | ForEach-Object { $_ })
+            Undetected = [int] ($stats.undetected | ForEach-Object { $_ })
+            Harmless   = [int] ($stats.harmless   | ForEach-Object { $_ })
+            ASN        = if ($Type -eq 'IPAddress') { $attrs.asn } else { '' }
+            ASN_Owner  = if ($Type -eq 'IPAddress') { $attrs.as_owner } else { '' }
+            Country    = [string] $attrs.country
+        }
+    }
+
+    return $results
 }
+
+Export-ModuleMember -Function Invoke-VtArtifactLookup
