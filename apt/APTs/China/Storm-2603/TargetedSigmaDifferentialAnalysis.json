@@ -1,0 +1,93 @@
+[
+    {
+        "Item_Name":  "Usage Of Web Request Commands And Cmdlets",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-12-17"
+    },
+    {
+        "Item_Name":  "Blackbyte Ransomware Registry",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-12-17"
+    },
+    {
+        "Item_Name":  "Change PowerShell Policies to an Insecure Level",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-12-03"
+    },
+    {
+        "Item_Name":  "NetNTLM Downgrade Attack - Registry",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "Suspicious SYSTEM User Process Creation",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-12-17"
+    },
+    {
+        "Item_Name":  "Office Macro File Creation",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-12-03"
+    },
+    {
+        "Item_Name":  "WannaCry Ransomware Activity",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-12-17"
+    },
+    {
+        "Item_Name":  "Suspicious MsiExec Embedding Parent",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-12-03"
+    },
+    {
+        "Item_Name":  "Suspicious Binaries and Scripts in Public Folder",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-12-17"
+    },
+    {
+        "Item_Name":  "PowerShell DownloadFile",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-12-17"
+    },
+    {
+        "Item_Name":  "Suspicious Script Execution From Temp Folder",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-12-03"
+    },
+    {
+        "Item_Name":  "Non Interactive PowerShell Process Spawned",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-12-17"
+    },
+    {
+        "Item_Name":  "Script Interpreter Execution From Suspicious Folder",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-12-03"
+    }
+]

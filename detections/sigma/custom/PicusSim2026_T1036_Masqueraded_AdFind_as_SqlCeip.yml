@@ -1,0 +1,39 @@
+title: Masqueraded AdFind Execution as sqlceip.exe (Picus Sim 2026-04-12)
+id: d4e5f6a7-2008-4bbb-c008-picus20260412
+status: experimental
+description: >
+    Detects AdFind.exe renamed to sqlceip.exe (SQL Server CEIP) to evade
+    process name-based detections. The masqueraded binary is invoked with
+    typical AdFind arguments (-f objectcategory=*) for Active Directory
+    reconnaissance. Observed in Picus simulation 2026-04-12 where the renamed
+    binary was staged in AppData\Local\Temp and output redirected to a CSV.
+    T1036.005 - Masquerading: Match Legitimate Resource Name or Location.
+references:
+    - https://attack.mitre.org/techniques/T1036/005/
+author: Loaded Potato - Picus Simulation 2026-04-12
+date: 2026-04-13
+tags:
+    - attack.defense-evasion
+    - attack.t1036.005
+    - picus.simulation.2026-04-12
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_masqueraded:
+        Image|endswith: '\sqlceip.exe'
+        CommandLine|contains:
+            - 'objectcategory'
+            - '-f '
+            - '-gcb '
+            - '-sc '
+    selection_renamed_adfind:
+        OriginalFileName: 'AdFind.exe'
+        Image|endswith:
+            - '\sqlceip.exe'
+            - '\svchost.exe'
+            - '\csrss.exe'
+    condition: selection_masqueraded or selection_renamed_adfind
+falsepositives:
+    - None expected - sqlceip.exe should never run AD queries
+level: critical

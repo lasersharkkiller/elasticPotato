@@ -1,0 +1,54 @@
+title: VS Code Remote Tunnel Abuse for Persistence (Picus Red Report 2026 - T1219)
+id: a1b2c3d4-1012-4aaa-b012-000000000012
+status: experimental
+description: >
+    Detects the use of Visual Studio Code Remote Tunnels (code.exe tunnel) as a
+    persistence and remote access mechanism. Picus Red Report 2026 (#9 technique,
+    T1219) documents attackers weaponizing legitimate tools like VS Code Tunnels,
+    AnyDesk, and TeamViewer for persistence. DPRK operatives also used IPKVM
+    hardware (PiKVM) for BIOS-level control. This rule specifically targets
+    unauthorized VS Code tunnel creation which should be correlated with
+    authorized developer accounts. Chaos, Akira, and DeadLock ransomware
+    families also abuse remote access tools.
+references:
+    - https://www.picussecurity.com/red-report-2026
+    - https://attack.mitre.org/techniques/T1219/
+author: Loaded Potato - Picus Red Report 2026 Analysis
+date: 2026-04-09
+tags:
+    - attack.command-and-control
+    - attack.persistence
+    - attack.t1219
+    - picus.redreport.2026
+    - DPRK
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_vscode_tunnel:
+        Image|endswith:
+            - '\code.exe'
+            - '\code-insiders.exe'
+        CommandLine|contains: 'tunnel'
+    selection_vscode_cli_tunnel:
+        Image|endswith: '\code.exe'
+        CommandLine|contains:
+            - 'tunnel --accept-server-license-terms'
+            - 'tunnel user login'
+            - 'tunnel service install'
+    selection_portable_remote:
+        Image|contains:
+            - '\Temp\'
+            - '\AppData\'
+            - '\Downloads\'
+            - '\ProgramData\'
+        Image|endswith:
+            - '\AnyDesk.exe'
+            - '\TeamViewer.exe'
+            - '\ScreenConnect.exe'
+            - '\rustdesk.exe'
+    condition: selection_vscode_tunnel or selection_vscode_cli_tunnel or selection_portable_remote
+falsepositives:
+    - Authorized developers using VS Code tunnels for legitimate remote work
+    - Sanctioned IT remote support tools
+level: high

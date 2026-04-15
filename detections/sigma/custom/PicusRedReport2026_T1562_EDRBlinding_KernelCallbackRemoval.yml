@@ -1,0 +1,50 @@
+title: EDR Blinding - Kernel Callback Removal or Driver Tampering (Picus Red Report 2026 - T1562)
+id: a1b2c3d4-1011-4aaa-b011-000000000011
+status: experimental
+description: >
+    Detects attempts to blind EDR sensors by removing kernel callbacks or loading
+    vulnerable drivers (BYOVD). RealBlindingEDR tools surgically remove kernel
+    callbacks, putting EDR sensors into a coma without crashing the system.
+    SplatCloak (Mustang Panda) and multiple ransomware families (Deadlock,
+    Crypto24, Mimic, LockBit, RansomHub, Medusa) use defense impairment as a
+    standard first step. T1562 ranked #8 in Picus Red Report 2026. PlusDaemon
+    and SkidMap target Linux systems. Plague Linux backdoor observed in similar
+    campaigns.
+references:
+    - https://www.picussecurity.com/red-report-2026
+    - https://attack.mitre.org/techniques/T1562/001/
+author: Loaded Potato - Picus Red Report 2026 Analysis
+date: 2026-04-09
+tags:
+    - attack.defense-evasion
+    - attack.t1562.001
+    - picus.redreport.2026
+    - SplatCloak
+    - Mustang.Panda
+    - RealBlindingEDR
+logsource:
+    category: driver_load
+    product: windows
+detection:
+    selection_vuln_driver:
+        ImageLoaded|endswith:
+            - '\RTCore64.sys'
+            - '\DBUtil_2_3.sys'
+            - '\gdrv.sys'
+            - '\PROCEXP152.sys'
+            - '\ene.sys'
+            - '\WinRing0.sys'
+            - '\speedfan.sys'
+            - '\phymem64.sys'
+            - '\AsmMap64.sys'
+    selection_unsigned_driver:
+        Signed: 'false'
+        ImageLoaded|contains:
+            - '\Temp\'
+            - '\AppData\'
+            - '\Downloads\'
+            - '\ProgramData\'
+    condition: selection_vuln_driver or selection_unsigned_driver
+falsepositives:
+    - Legitimate hardware monitoring tools using known-vulnerable drivers
+level: critical

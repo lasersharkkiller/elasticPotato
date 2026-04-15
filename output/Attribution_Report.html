@@ -1,0 +1,1702 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Attribution Analysis</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep:    #0f1117;
+            --bg-card:    #1a1d27;
+            --bg-card2:   #22263a;
+            --border:     #2e334d;
+            --text:       #d4d8f0;
+            --muted:      #6b7280;
+            --green:      #4ade80;
+            --yellow:     #facc15;
+            --red:        #f87171;
+            --orange:     #fb923c;
+            --blue:       #60a5fa;
+            --teal:       #2dd4bf;
+        }
+        * { box-sizing: border-box; }
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text);
+            font-family: 'Segoe UI', 'Consolas', monospace;
+            padding: 30px;
+            font-size: 0.9rem;
+        }
+        h2 { color: var(--teal); letter-spacing: 2px; text-transform: uppercase; font-size: 1.2rem; }
+        h4 { font-size: 0.95rem; letter-spacing: 1px; text-transform: uppercase; }
+
+        /* ---- Summary Table ---- */
+        .summary-outer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 2rem;
+        }
+        .summary-half {
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .summary-col-header {
+            padding: 8px 14px;
+            font-size: 0.72rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border);
+        }
+        .summary-col-header.apt { background: rgba(220,53,69,0.15); color: var(--red); }
+        .summary-col-header.mal { background: rgba(251,146,60,0.10); color: var(--orange); }
+        .sum-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 0;
+        }
+        .sum-cell {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px 12px;
+            border-bottom: 1px solid #1a1e2e;
+            border-right: 1px solid #1a1e2e;
+        }
+        .actor-name { font-weight: 600; color: var(--text); font-size: 0.82rem; }
+        .hit-pill {
+            display: inline-block;
+            font-size: 0.68rem;
+            padding: 1px 6px;
+            border-radius: 10px;
+            margin-left: 6px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .apt-pill { background: rgba(220,53,69,0.2); color: var(--red); }
+        .mal-pill { background: rgba(251,146,60,0.2); color: var(--orange); }
+
+        /* ---- Cards ---- */
+        .card { background-color: var(--bg-card); border: 1px solid var(--border); margin-bottom: 20px; border-radius: 6px; overflow: hidden; }
+        .card-header { font-weight: bold; padding: 10px 16px; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; }
+        .card-header.tier1-apt { background: rgba(220,53,69,0.18); border-bottom: 1px solid rgba(220,53,69,0.3); }
+        .card-header.tier1-mal { background: rgba(251,146,60,0.15); border-bottom: 1px solid rgba(251,146,60,0.3); }
+        .card-header.tier2     { background: var(--bg-card2); border-bottom: 1px solid var(--border); }
+        .card-body { padding: 14px 16px; }
+        .badge-apt { background-color: rgba(220,53,69,0.25); color: var(--red); border: 1px solid rgba(220,53,69,0.4); font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; }
+        .badge-mal { background-color: rgba(251,146,60,0.2); color: var(--orange); border: 1px solid rgba(251,146,60,0.3); font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; }
+        h6 { font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+        ul { padding-left: 1.2rem; margin-bottom: 0; }
+        li { margin-bottom: 4px; }
+        .match-highlight { color: var(--green); font-family: 'Consolas', monospace; font-size: 0.82rem; }
+        .source-tag { color: var(--muted); font-size: 0.75rem; margin-right: 4px; }
+        hr { border-color: var(--border); margin: 12px 0; }
+
+        /* ---- Recommendations â€” links only ---- */
+        .rec-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+        .rec-link {
+            font-size: 0.75rem;
+            color: var(--blue);
+            text-decoration: none;
+            background: rgba(96,165,250,0.1);
+            border: 1px solid rgba(96,165,250,0.25);
+            border-radius: 4px;
+            padding: 3px 9px;
+        }
+        .rec-link:hover { background: rgba(96,165,250,0.2); text-decoration: none; }
+
+        .alert-secondary { background: var(--bg-card2); border: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; }
+        .section-header { font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; padding: 6px 0 6px 0; margin: 2rem 0 1rem 0; border-bottom: 1px solid var(--border); }
+        .section-header.t1 { color: var(--green); }
+        .section-header.t2 { color: var(--yellow); }
+    </style>
+</head>
+<body>
+<div class="container-fluid" style="max-width:1400px">
+
+    <h2 class="mb-3 text-center">Attribution Analysis Report</h2>
+    <div class="alert alert-secondary mb-4">
+        <strong>Observations Analyzed:</strong> Suspicious PowerShell Download - Powershell Script &nbsp;|&nbsp; Usage Of Web Request Commands And Cmdlets - ScriptBlock
+    </div>
+
+    <!-- ===== SUMMARY TABLE ===== -->
+    <div class="section-header t1">Hit Summary</div>
+    <div class="summary-outer mb-4">
+        <div class="summary-half">
+            <div class="summary-col-header apt">APT Groups</div>
+            <div class="sum-grid"><div class='sum-cell'><span class='actor-name'>APT35</span><span class='hit-pill apt-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>Akira</span><span class='hit-pill apt-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>APT35 (Charming Kitten)</span><span class='hit-pill apt-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>Ke3chang</span><span class='hit-pill apt-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>RansomHub</span><span class='hit-pill apt-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>kimsuky</span><span class='hit-pill apt-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>Lotus Blossom</span><span class='hit-pill apt-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>FIN7</span><span class='hit-pill apt-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>APT33</span><span class='hit-pill apt-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>Fox Kitten</span><span class='hit-pill apt-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>Salt Typhoon</span><span class='hit-pill apt-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>Carbanak</span><span class='hit-pill apt-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>Star Blizzard</span><span class='hit-pill apt-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>Sandworm</span><span class='hit-pill apt-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>APT34 (OilRig)</span><span class='hit-pill apt-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>Earth Lamia</span><span class='hit-pill apt-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>ALLANITE</span><span class='hit-pill apt-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>APT32</span><span class='hit-pill apt-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>TA551</span><span class='hit-pill apt-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>apt42</span><span class='hit-pill apt-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>MuddyWater</span><span class='hit-pill apt-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>lazarus</span><span class='hit-pill apt-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>Blind Eagle</span><span class='hit-pill apt-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>oilrig</span><span class='hit-pill apt-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>APT37</span><span class='hit-pill apt-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>Hafnium</span><span class='hit-pill apt-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>Cleaver</span><span class='hit-pill apt-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>dev-1084_MuddyWater</span><span class='hit-pill apt-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>BlackByte</span><span class='hit-pill apt-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>Konni Group</span><span class='hit-pill apt-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>apt28</span><span class='hit-pill apt-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>Turla</span><span class='hit-pill apt-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>Agrius</span><span class='hit-pill apt-pill'>2</span></div></div>
+        </div>
+        <div class="summary-half">
+            <div class="summary-col-header mal">Malware Families</div>
+            <div class="sum-grid"><div class='sum-cell'><span class='actor-name'>XorDDoS</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>GuLoader</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>SmokeLoader</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>ShadowPad</span><span class='hit-pill mal-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>IcedID</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>CoinMiner</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>BianLian</span><span class='hit-pill mal-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>Mars Stealer</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>BitRAT</span><span class='hit-pill mal-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>Rclone</span><span class='hit-pill mal-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>Amadey</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>Bumblebee</span><span class='hit-pill mal-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>RedLine</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>DWAgent</span><span class='hit-pill mal-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>Ducktail</span><span class='hit-pill mal-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>Chisel</span><span class='hit-pill mal-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>DcRAT</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>Meta Stealer</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>Babuk</span><span class='hit-pill mal-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>Qilin</span><span class='hit-pill mal-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>Pikabot</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>Metasploit</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>BlackSuit</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>Lumma Stealer</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>DarkGate</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>Azorult</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>Remcos</span><span class='hit-pill mal-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>Vidar</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>Dharma</span><span class='hit-pill mal-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>XWorm</span><span class='hit-pill mal-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>Rhysida</span><span class='hit-pill mal-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>Konni RAT</span><span class='hit-pill mal-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>StopDjvu</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>Kinsing</span><span class='hit-pill mal-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>Parallax</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>Clop</span><span class='hit-pill mal-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>SocGholish</span><span class='hit-pill mal-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>QakBot</span><span class='hit-pill mal-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>AsyncRAT</span><span class='hit-pill mal-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>ZLoader</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>Emotet</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>Ursnif</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>Havoc</span><span class='hit-pill mal-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>Mallox</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>TrickBot</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>SystemBC</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>Meduza</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>Sliver</span><span class='hit-pill mal-pill'>2</span></div><div class='sum-cell'><span class='actor-name'>Ligolo</span><span class='hit-pill mal-pill'>1</span></div><div class='sum-cell'><span class='actor-name'>StormKitty</span><span class='hit-pill mal-pill'>2</span></div></div>
+        </div>
+    </div>
+
+    <!-- ===== TIER 1 ===== -->
+    <div class="section-header t1">Tier 1 -- Multi-Indicator Matches (High Confidence)</div>
+    <div class="row">        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-apt">
+                    <span>Blind Eagle</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is Blind Eagle, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/SouthAmerica/Blind Eagle/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/SouthAmerica/Blind Eagle/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/SouthAmerica/Blind Eagle/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/SouthAmerica/Blind Eagle/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/SouthAmerica/Blind Eagle/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-mal">
+                    <span>Kinsing</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is Kinsing, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Kinsing/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Kinsing/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Kinsing/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Kinsing/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Kinsing/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Kinsing/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Kinsing/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Kinsing/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-apt">
+                    <span>APT37</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is APT37, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/NorthKorea/APT37/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/NorthKorea/APT37/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/NorthKorea/APT37/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/NorthKorea/APT37/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/NorthKorea/APT37/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/NorthKorea/APT37/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/NorthKorea/APT37/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/NorthKorea/APT37/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-apt">
+                    <span>oilrig</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is oilrig, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/oilrig/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/oilrig/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/oilrig/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/oilrig/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/oilrig/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/oilrig/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/oilrig/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/oilrig/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/oilrig/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-mal">
+                    <span>Konni RAT</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is Konni RAT, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Konni RAT/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Konni RAT/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Konni RAT/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Konni RAT/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Konni RAT/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Konni RAT/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Konni RAT/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Konni RAT/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Konni RAT/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-mal">
+                    <span>SocGholish</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is SocGholish, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/SocGholish/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/SocGholish/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/SocGholish/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/SocGholish/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/SocGholish/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/SocGholish/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/SocGholish/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/SocGholish/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/SocGholish/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-mal">
+                    <span>Clop</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is Clop, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Clop/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Clop/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Clop/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Clop/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Clop/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Clop/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-apt">
+                    <span>APT32</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is APT32, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Vietnam/APT32/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Vietnam/APT32/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Vietnam/APT32/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Vietnam/APT32/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Vietnam/APT32/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Vietnam/APT32/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Vietnam/APT32/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Vietnam/APT32/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Vietnam/APT32/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-apt">
+                    <span>MuddyWater</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is MuddyWater, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/MuddyWater/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/MuddyWater/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/MuddyWater/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/MuddyWater/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/MuddyWater/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/MuddyWater/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/MuddyWater/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/MuddyWater/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/MuddyWater/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-mal">
+                    <span>Remcos</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is Remcos, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Remcos/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Remcos/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Remcos/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Remcos/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Remcos/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Remcos/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Remcos/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Remcos/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Remcos/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-apt">
+                    <span>apt42</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is apt42, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/apt42/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/apt42/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/apt42/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/apt42/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/apt42/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/apt42/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/apt42/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/apt42/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/apt42/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-apt">
+                    <span>apt28</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is apt28, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/apt28/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/apt28/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/apt28/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/apt28/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/apt28/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/apt28/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/apt28/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/apt28/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/apt28/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-mal">
+                    <span>Rhysida</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is Rhysida, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Rhysida/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Rhysida/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Rhysida/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Rhysida/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Rhysida/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Rhysida/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Rhysida/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Rhysida/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-mal">
+                    <span>XWorm</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is XWorm, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/XWorm/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/XWorm/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/XWorm/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/XWorm/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/XWorm/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-mal">
+                    <span>Dharma</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is Dharma, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Dharma/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Dharma/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Dharma/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Dharma/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Dharma/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Dharma/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Dharma/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Dharma/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-apt">
+                    <span>Agrius</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is Agrius, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/Agrius/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/Agrius/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/Agrius/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/Agrius/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/Agrius/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/Agrius/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/Agrius/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/Agrius/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-mal">
+                    <span>QakBot</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is QakBot, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/QakBot/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/QakBot/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/QakBot/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/QakBot/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/QakBot/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/QakBot/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/QakBot/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/QakBot/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/QakBot/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-apt">
+                    <span>Cleaver</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is Cleaver, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/Cleaver/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/Cleaver/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/Cleaver/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/Cleaver/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/Cleaver/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/Cleaver/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/Cleaver/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/Cleaver/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/Cleaver/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-mal">
+                    <span>StormKitty</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is StormKitty, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/StormKitty/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/StormKitty/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/StormKitty/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/StormKitty/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/StormKitty/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-mal">
+                    <span>Sliver</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is Sliver, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Sliver/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Sliver/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Sliver/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Sliver/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Sliver/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Sliver/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Sliver/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Sliver/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Sliver/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-apt">
+                    <span>dev-1084_MuddyWater</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is dev-1084_MuddyWater, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/dev-1084_MuddyWater/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/dev-1084_MuddyWater/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/dev-1084_MuddyWater/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/dev-1084_MuddyWater/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/dev-1084_MuddyWater/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/dev-1084_MuddyWater/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/dev-1084_MuddyWater/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/dev-1084_MuddyWater/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/dev-1084_MuddyWater/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-mal">
+                    <span>AsyncRAT</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is AsyncRAT, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/AsyncRAT/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/AsyncRAT/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/AsyncRAT/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/AsyncRAT/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/AsyncRAT/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/AsyncRAT/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/AsyncRAT/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/AsyncRAT/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/AsyncRAT/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-mal">
+                    <span>Havoc</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is Havoc, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Havoc/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Havoc/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Havoc/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Havoc/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Havoc/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-apt">
+                    <span>ALLANITE</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is ALLANITE, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/ALLANITE/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/ALLANITE/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/ALLANITE/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/ALLANITE/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/ALLANITE/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/ALLANITE/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/ALLANITE/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/ALLANITE/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-mal">
+                    <span>BitRAT</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is BitRAT, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/BitRAT/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/BitRAT/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/BitRAT/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/BitRAT/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/BitRAT/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/BitRAT/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/BitRAT/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/BitRAT/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/BitRAT/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-apt">
+                    <span>kimsuky</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is kimsuky, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/NorthKorea/kimsuky/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/NorthKorea/kimsuky/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/NorthKorea/kimsuky/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/NorthKorea/kimsuky/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/NorthKorea/kimsuky/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/NorthKorea/kimsuky/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/NorthKorea/kimsuky/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/NorthKorea/kimsuky/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/NorthKorea/kimsuky/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-apt">
+                    <span>RansomHub</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is RansomHub, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/RansomHub/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/RansomHub/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/RansomHub/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/RansomHub/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/RansomHub/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/RansomHub/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/RansomHub/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/RansomHub/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/RansomHub/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-mal">
+                    <span>BianLian</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is BianLian, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/BianLian/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/BianLian/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/BianLian/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/BianLian/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/BianLian/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-mal">
+                    <span>Bumblebee</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is Bumblebee, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Bumblebee/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Bumblebee/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Bumblebee/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Bumblebee/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Bumblebee/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Bumblebee/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Bumblebee/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Bumblebee/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Bumblebee/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-apt">
+                    <span>FIN7</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is FIN7, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/FIN7/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/FIN7/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/FIN7/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/FIN7/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/FIN7/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/FIN7/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/FIN7/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/FIN7/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-mal">
+                    <span>Rclone</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is Rclone, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Rclone/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Rclone/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Rclone/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Rclone/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Rclone/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-mal">
+                    <span>ShadowPad</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is ShadowPad, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/ShadowPad/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/ShadowPad/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/ShadowPad/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/ShadowPad/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/ShadowPad/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/ShadowPad/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/ShadowPad/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/ShadowPad/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/ShadowPad/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-apt">
+                    <span>Lotus Blossom</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is Lotus Blossom, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/China/Lotus Blossom/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/China/Lotus Blossom/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/China/Lotus Blossom/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/China/Lotus Blossom/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/China/Lotus Blossom/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/China/Lotus Blossom/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/China/Lotus Blossom/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/China/Lotus Blossom/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/China/Lotus Blossom/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-apt">
+                    <span>Akira</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is Akira, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/Akira/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/Akira/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/Akira/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/Akira/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/Akira/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/Akira/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/Akira/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/Akira/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/Akira/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-apt">
+                    <span>APT35</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is APT35, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT35/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT35/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT35/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT35/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT35/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT35/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT35/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT35/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-apt">
+                    <span>Ke3chang</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is Ke3chang, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/China/Ke3chang/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/China/Ke3chang/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/China/Ke3chang/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/China/Ke3chang/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/China/Ke3chang/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/China/Ke3chang/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/China/Ke3chang/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/China/Ke3chang/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-mal">
+                    <span>Qilin</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is Qilin, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Qilin/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Qilin/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Qilin/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Qilin/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Qilin/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Qilin/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Qilin/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Qilin/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Qilin/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-apt">
+                    <span>APT35 (Charming Kitten)</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is APT35 (Charming Kitten), pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT35 (Charming Kitten)/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT35 (Charming Kitten)/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT35 (Charming Kitten)/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT35 (Charming Kitten)/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT35 (Charming Kitten)/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT35 (Charming Kitten)/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT35 (Charming Kitten)/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT35 (Charming Kitten)/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT35 (Charming Kitten)/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-mal">
+                    <span>Chisel</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is Chisel, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Chisel/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Chisel/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Chisel/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Chisel/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Chisel/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Chisel/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Chisel/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Chisel/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Chisel/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-apt">
+                    <span>Sandworm</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is Sandworm, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/Sandworm/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/Sandworm/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/Sandworm/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/Sandworm/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/Sandworm/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/Sandworm/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/Sandworm/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/Sandworm/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Russia/Sandworm/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-mal">
+                    <span>Ducktail</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is Ducktail, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Ducktail/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Ducktail/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Ducktail/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Ducktail/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Ducktail/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-apt">
+                    <span>APT34 (OilRig)</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is APT34 (OilRig), pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT34 (OilRig)/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT34 (OilRig)/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT34 (OilRig)/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT34 (OilRig)/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT34 (OilRig)/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT34 (OilRig)/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT34 (OilRig)/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT34 (OilRig)/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-apt">
+                    <span>APT33</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is APT33, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT33/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT33/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT33/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT33/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT33/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT33/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT33/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/Iran/APT33/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-mal">
+                    <span>DWAgent</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is DWAgent, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/DWAgent/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/DWAgent/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/DWAgent/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/DWAgent/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/DWAgent/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-mal">
+                    <span>Babuk</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is Babuk, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Babuk/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Babuk/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Babuk/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Babuk/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Babuk/TargetedProcessDifferentialAnalysis.json'>Process</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Babuk/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Babuk/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Babuk/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/Malware Families/Babuk/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>        <div class="col-xl-4 col-lg-6">
+            <div class="card h-100">
+                <div class="card-header tier1-apt">
+                    <span>Carbanak</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <h6>Matched Indicators</h6>
+                    <ul>                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Suspicious PowerShell Download - Powershell Script</span></li>
+                        <li><span class='source-tag'>[Sigma Rule]</span><span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span></li>
+                    </ul>
+                    <hr>
+                    <h6>Hunting Recommendations -- Pivot</h6>
+                    <p class="small" style="color:var(--muted);margin-bottom:8px">If this is Carbanak, pivot into these artifact categories:</p>
+                    <div class="rec-links">                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/Carbanak/TargetedAPIDifferentialAnalysis.json'>API</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/Carbanak/TargetedCertificateDifferentialAnalysis.json'>Certificate</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/Carbanak/TargetedMitreDifferentialAnalysis.json'>Mitre</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/Carbanak/TargetedMutexDifferentialAnalysis.json'>Mutex</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/Carbanak/TargetedRegistryDifferentialAnalysis.json'>Registry</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/Carbanak/TargetedSigmaDifferentialAnalysis.json'>Sigma</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/Carbanak/TargetedTagsDifferentialAnalysis.json'>Tags</a>
+                        <a class='rec-link' href='file:///D:/Loaded-Potato/apt/APTs/eCrime/Carbanak/TargetedYaraDifferentialAnalysis.json'>Yara</a>
+                    </div>
+                </div>
+            </div>
+        </div>    </div>
+
+    <!-- ===== TIER 2 ===== -->
+    <div class="section-header t2">Tier 2 -- Single Indicator Matches (Leads)</div>
+    <div class="row">        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>lazarus</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>StopDjvu</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>Parallax</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>Vidar</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>TA551</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>Azorult</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>Konni Group</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>Turla</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>Meduza</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>SystemBC</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>TrickBot</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>Hafnium</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>Ligolo</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>BlackByte</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>Emotet</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>ZLoader</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>Mallox</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>Ursnif</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>Mars Stealer</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>Amadey</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>SmokeLoader</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>GuLoader</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>XorDDoS</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>CoinMiner</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>IcedID</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>RedLine</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>Metasploit</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>Pikabot</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>DarkGate</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>Lumma Stealer</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>BlackSuit</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>Star Blizzard</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>Earth Lamia</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>Fox Kitten</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>Meta Stealer</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>Salt Typhoon</span>
+                    <span class="badge-apt">APT</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100">
+                <div class="card-header tier2">
+                    <span>DcRAT</span>
+                    <span class="badge-mal">Malware</span>
+                </div>
+                <div class="card-body">
+                    <span class='source-tag'>[Sigma Rule]</span><br>
+                    <span class='match-highlight'>Usage Of Web Request Commands And Cmdlets - ScriptBlock</span>
+                </div>
+            </div>
+        </div>    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+title: DPRK Laptop Farm - IPKVM Hardware Indicators (Picus Red Report 2026 - T1219.003)
+id: a1b2c3d4-1019-4aaa-b019-000000000019
+status: experimental
+description: >
+    Detects indicators of DPRK-operated laptop farms using IPKVM devices (PiKVM,
+    TinyPilot) for BIOS-level remote access. Picus Red Report 2026 documents
+    North Korean operatives using Remote Access Hardware (T1219.003) plugged into
+    HDMI and USB ports for below-OS control that renders EDR blind. This rule
+    detects suspicious USB device enumeration patterns and known IPKVM-related
+    artifacts including keyboard/video HID device connections.
+references:
+    - https://www.picussecurity.com/red-report-2026
+    - https://attack.mitre.org/techniques/T1219/003/
+author: Loaded Potato - Picus Red Report 2026 Analysis
+date: 2026-04-09
+tags:
+    - attack.command-and-control
+    - attack.t1219.003
+    - picus.redreport.2026
+    - DPRK
+logsource:
+    category: registry_event
+    product: windows
+detection:
+    selection_usb_hid_video:
+        TargetObject|contains:
+            - 'SYSTEM\CurrentControlSet\Enum\USB\VID_1D6B'
+            - 'SYSTEM\CurrentControlSet\Enum\USB\VID_534D'
+            - 'PiKVM'
+            - 'TinyPilot'
+            - 'JetKVM'
+    selection_usb_composite:
+        TargetObject|contains:
+            - 'USBSTOR'
+            - 'USB\VID_'
+        TargetObject|contains:
+            - 'HID'
+            - 'Video'
+            - 'Keyboard'
+    condition: selection_usb_hid_video or selection_usb_composite
+falsepositives:
+    - Legitimate KVM switches in data centers
+    - USB docking stations with video passthrough
+level: medium

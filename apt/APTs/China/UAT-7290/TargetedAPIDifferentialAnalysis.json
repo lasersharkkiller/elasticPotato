@@ -1,0 +1,772 @@
+[
+    {
+        "Item_Name":  "KERNEL32.dll!WriteFile",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetSystemDEPPolicy",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!IsValidLocale",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!SetHandleCount",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!FlsSetValue",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetLocaleInfoW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!RaiseException",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!FlsAlloc",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetCPInfo",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!SetEnvironmentVariableA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-03-10"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetStdHandle",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!EnterCriticalSection",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!InitializeCriticalSectionAndSpinCount",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetCommandLineA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!WaitForDebugEvent",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!SetCommBreak",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetProcAddress",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!UnhandledExceptionFilter",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!CreateSemaphoreA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetUserDefaultLCID",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!FindResourceA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!HeapSetInformation",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!EnumSystemLocalesA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!RtlLookupFunctionEntry",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!FreeEnvironmentStringsW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetWriteWatch",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetEnvironmentStringsW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetExitCodeProcess",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-03-10"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetTickCount",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!MultiByteToWideChar",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetModuleFileNameW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!ReadFile",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!CreateJobSet",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!ChangeTimerQueueTimer",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetStringTypeW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!HeapSize",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!SetFilePointer",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetConsoleTitleW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!IsValidCodePage",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!PeekConsoleInputW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!IsDebuggerPresent",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetConsoleOutputCP",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!HeapDestroy",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!InitializeCriticalSection",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "USER32.dll!EnumDisplaySettingsW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-03-10"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!FindNextFileA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetACP",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!FlushViewOfFile",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "GDI32.dll!CreateDCW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-03-10"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!WriteConsoleW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!WaitForSingleObject",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-03-10"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetSystemTimeAsFileTime",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!RtlPcToFileHeader",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "USER32.dll!MonitorFromWindow",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-03-10"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetConsoleScreenBufferInfo",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-03-10"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetNumaHighestNodeNumber",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!CloseHandle",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!LeaveCriticalSection",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!RtlUnwindEx",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetModuleFileNameA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!FlushFileBuffers",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!RtlCaptureContext",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!TerminateThread",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!LoadLibraryW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!LCMapStringW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!TerminateProcess",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!SetLastError",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!VirtualAlloc",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-03-10"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetLastError",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!ExitProcess",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!QueryPerformanceCounter",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetOEMCP",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!FlsFree",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!EncodePointer",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!Sleep",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetFileAttributesA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-03-10"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetCurrentProcess",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!DeleteCriticalSection",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetConsoleMode",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetCurrentThreadId",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetVersion",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!SetStdHandle",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!DecodePointer",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!CreateFileW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!EnumSystemCodePagesW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetProcessVersion",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetTempPathA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "USER32.dll!GetDesktopWindow",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-03-10"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!SetUnhandledExceptionFilter",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "USER32.dll!GetMonitorInfoW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-03-10"
+    },
+    {
+        "Item_Name":  "GDI32.dll!GetDeviceCaps",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-03-10"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetCurrentConsoleFontEx",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-03-10"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!CreateProcessA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-03-10"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!FlsGetValue",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!TlsSetValue",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!HeapAlloc",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!WideCharToMultiByte",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetFileType",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!HeapFree",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!HeapCreate",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetModuleHandleW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!CompareStringW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-03-10"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!ReadConsoleOutputW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-03-10"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!HeapReAlloc",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetConsoleCP",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!IsBadWritePtr",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!RtlVirtualUnwind",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetLocaleInfoA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetStartupInfoW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetCurrentProcessId",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    }
+]

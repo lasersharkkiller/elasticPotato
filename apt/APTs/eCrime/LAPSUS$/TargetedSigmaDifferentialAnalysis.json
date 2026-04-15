@@ -1,0 +1,226 @@
+[
+    {
+        "Item_Name":  "Powershell Defender Exclusion",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-08-25"
+    },
+    {
+        "Item_Name":  "Disable Microsoft Defender Firewall via Registry",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-08-25"
+    },
+    {
+        "Item_Name":  "Non Interactive PowerShell Process Spawned",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  4,
+        "Last_Seen":  "2025-08-25"
+    },
+    {
+        "Item_Name":  "Hidden Executable In NTFS Alternate Data Stream",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-08-25"
+    },
+    {
+        "Item_Name":  "Malicious PowerShell Keywords",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-14"
+    },
+    {
+        "Item_Name":  "Wow6432Node CurrentVersion Autorun Keys Modification",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2026-01-01"
+    },
+    {
+        "Item_Name":  "Change PowerShell Policies to an Insecure Level - PowerShell",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-05-25"
+    },
+    {
+        "Item_Name":  "Execute Invoke-command on Remote Host",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-14"
+    },
+    {
+        "Item_Name":  "Potential Persistence Attempt Via Run Keys Using Reg.EXE",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-01"
+    },
+    {
+        "Item_Name":  "Startup Folder File Write",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-01"
+    },
+    {
+        "Item_Name":  "Execution of Suspicious File Type Extension",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-10-04"
+    },
+    {
+        "Item_Name":  "Direct Autorun Keys Modification",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-01"
+    },
+    {
+        "Item_Name":  "Windows Defender Exclusions Added - PowerShell",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-08-25"
+    },
+    {
+        "Item_Name":  "Creation of an Executable by an Executable",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-07-05"
+    },
+    {
+        "Item_Name":  "Mimikatz Use",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-14"
+    },
+    {
+        "Item_Name":  "Suspicious Get-WmiObject",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-05-25"
+    },
+    {
+        "Item_Name":  "Potentially Suspicious Malware Callback Communication",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-05"
+    },
+    {
+        "Item_Name":  "PSScriptPolicyTest Creation By Uncommon Process",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  4,
+        "Last_Seen":  "2025-08-25"
+    },
+    {
+        "Item_Name":  "Suspicious Screensaver Binary File Creation",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-19"
+    },
+    {
+        "Item_Name":  "Office Macro File Creation",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2017-02-20"
+    },
+    {
+        "Item_Name":  "Malicious Nishang PowerShell Commandlets",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-14"
+    },
+    {
+        "Item_Name":  "Firewall Disabled via Netsh.EXE",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-08-25"
+    },
+    {
+        "Item_Name":  "CurrentVersion Autorun Keys Modification",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-01"
+    },
+    {
+        "Item_Name":  "Password Protected Compressed File Extraction Via 7Zip",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-07-05"
+    },
+    {
+        "Item_Name":  "Potential Invoke-Mimikatz PowerShell Script",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-14"
+    },
+    {
+        "Item_Name":  "Modification of IE Registry Settings",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-08-25"
+    },
+    {
+        "Item_Name":  "HackTool - Mimikatz Execution",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2026-01-05"
+    },
+    {
+        "Item_Name":  "Potential Suspicious PowerShell Keywords",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-14"
+    },
+    {
+        "Item_Name":  "Suspicious Process Discovery With Get-Process",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-14"
+    },
+    {
+        "Item_Name":  "Credential Manager Access By Uncommon Applications",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-11-25"
+    },
+    {
+        "Item_Name":  "Potential WinAPI Calls Via PowerShell Scripts",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-14"
+    },
+    {
+        "Item_Name":  "SCR File Write Event",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-19"
+    }
+]

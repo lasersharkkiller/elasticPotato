@@ -1,0 +1,41 @@
+title: Process Execution from Fake Vendor Path in ProgramData
+id: b2345678-c901-d234-e567-f89012345678
+status: experimental
+description: Detects process execution from ProgramData subdirectories with fabricated vendor names that don't correspond to legitimate software companies. Threat actors stage malware in ProgramData under fake company names to evade casual inspection. Observed in APT10 detonation 2026-03-30 where malware was staged under "Microsoft PA" (not a legitimate Microsoft directory). This rule fires on unexpected vendor-like paths in ProgramData that are not whitelisted legitimate applications.
+references:
+    - https://thedfirreport.com/2024/01/15/apt10-detonation-analysis/
+author: Loaded Potato APT10 Analysis Team
+date: 2026-04-08
+modified: 2026-04-08
+tags:
+    - attack.defense-evasion
+    - attack.t1036.005
+    - attack.execution
+    - APT10
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|startswith: 'C:\ProgramData\'
+        Image|contains:
+            - '\*.exe'
+    filter_legitimate_vendors:
+        Image|startswith:
+            - 'C:\ProgramData\Microsoft\'
+            - 'C:\ProgramData\Adobe\'
+            - 'C:\ProgramData\Avast\'
+            - 'C:\ProgramData\AVAST Software\'
+            - 'C:\ProgramData\Malwarebytes\'
+            - 'C:\ProgramData\CrowdStrike\'
+            - 'C:\ProgramData\Elastic\'
+            - 'C:\ProgramData\VMware\'
+    filter_installers:
+        ParentImage|endswith:
+            - 'msiexec.exe'
+            - 'wix*.exe'
+            - 'innosetup*.exe'
+    condition: selection and not filter_legitimate_vendors and not filter_installers
+falsepositives:
+    - Legitimate third-party software installation in ProgramData
+level: high

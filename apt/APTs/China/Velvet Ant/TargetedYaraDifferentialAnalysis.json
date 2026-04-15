@@ -1,0 +1,184 @@
+[
+    {
+        "Item_Name":  "ScanBox_Malware_Generic",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  53,
+        "Last_Seen":  "2021-02-28"
+    },
+    {
+        "Item_Name":  "skip20_sqllang_hook",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  4,
+        "Last_Seen":  "2025-10-02"
+    },
+    {
+        "Item_Name":  "win_plugx_auto",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  9,
+        "Last_Seen":  "2023-11-30"
+    },
+    {
+        "Item_Name":  "UPX",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2021-07-27"
+    },
+    {
+        "Item_Name":  "INDICATOR_SUSPICIOUS_EXE_UACBypass_CMSTPCOM",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-05-28"
+    },
+    {
+        "Item_Name":  "Windows_Trojan_PlugX_5f3844ff",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-05-28"
+    },
+    {
+        "Item_Name":  "INDICATOR_EXE_Packed_ASPack",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-12"
+    },
+    {
+        "Item_Name":  "APT_Area1_SSF_PlugX",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-11-30"
+    },
+    {
+        "Item_Name":  "Windows_Trojan_CobaltStrike_f0b627fc",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  7,
+        "Last_Seen":  "2021-08-06"
+    },
+    {
+        "Item_Name":  "PlugX_J16_Gen",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  5,
+        "Last_Seen":  "2023-11-30"
+    },
+    {
+        "Item_Name":  "Microsoft_Excel_Hidden_Macrosheet",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "win_unidentified_075_auto",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  5,
+        "Last_Seen":  "2021-08-06"
+    },
+    {
+        "Item_Name":  "Windows_Trojan_PlugX_f338dab5",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  4,
+        "Last_Seen":  "2026-01-18"
+    },
+    {
+        "Item_Name":  "win_proto8_rat_auto",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2020-08-25"
+    },
+    {
+        "Item_Name":  "malware_sakula_xorloop",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  58,
+        "Last_Seen":  "2023-11-08"
+    },
+    {
+        "Item_Name":  "PoisonIvy",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-12"
+    },
+    {
+        "Item_Name":  "WinosStager",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  13,
+        "Last_Seen":  "2025-10-02"
+    },
+    {
+        "Item_Name":  "SUSP_XORed_URL_in_EXE",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  75,
+        "Last_Seen":  "2023-11-08"
+    },
+    {
+        "Item_Name":  "RAT_Sakula",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  59,
+        "Last_Seen":  "2023-11-08"
+    },
+    {
+        "Item_Name":  "plugx_final_payload",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  4,
+        "Last_Seen":  "2026-01-18"
+    },
+    {
+        "Item_Name":  "Windows_API_Function",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-14"
+    },
+    {
+        "Item_Name":  "FormhookB",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-10-20"
+    },
+    {
+        "Item_Name":  "PlugX_J16_Gen2",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-11-30"
+    },
+    {
+        "Item_Name":  "NSIS",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  5,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "RAT_PoisonIvy",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-12"
+    },
+    {
+        "Item_Name":  "Windows_Backdoor_DragonCastling_4ecf6f9f",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2020-08-25"
+    }
+]

@@ -1,0 +1,226 @@
+[
+    {
+        "Item_Name":  "\\Registry\\Machine\\Software\\Microsoft\\Windows NT\\CurrentVersion\\GRE_Initialize",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\Local Settings\\Software\\Microsoft",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Policies\\Microsoft\\Cryptography\\Configuration",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\file.exe",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\Nls\\Sorting\\Versions",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\software.exe",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\GRE_Initialize\\DisableMetaFiles",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\OLE",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\OLE\\Tracing",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\Local Settings\\Software\\Microsoft\\Ole",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Windows",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\FileSystem\\",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\Lsa\\FipsAlgorithmPolicy",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\GRE_Initialize\\DisableUmpdBufferSizeCheck",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\program.exe",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows NT\\CurrentVersion\\GRE_Initialize",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\Lsa",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\Local Settings\\Software\\Microsoft\\Ole\\FeatureDevelopmentProperties",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\executable.exe",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\AppModel\\Lookaside\\Packages",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Ole\\FeatureDevelopmentProperties",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\Srp\\GP\\DLL",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\SafeBoot\\Option",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\Error Message Instrument\\",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Policies\\Microsoft\\Windows\\Display",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Classes\\Local Settings",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Policies\\Microsoft\\Windows\\Safer\\CodeIdentifiers",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Segment Heap",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    }
+]

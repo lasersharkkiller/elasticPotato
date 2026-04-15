@@ -1,0 +1,28 @@
+{
+    "type": "tanium-signal",
+    "typeVersion": "1.0",
+    "isSchemaValid": true,
+    "createdAt": "2026-04-14T00:00:00.000Z",
+    "updatedAt": "2026-04-14T00:00:00.000Z",
+    "data": {
+        "id": "TR-PICUS-EXECUTION-002: Suspicious Rundll32 and WScript Execution Patterns",
+        "name": "TR-PICUS-EXECUTION-002: Suspicious Rundll32 and WScript Execution Patterns",
+        "description": "Detects suspicious rundll32.exe and wscript.exe execution patterns used to execute arbitrary DLL or VBS files. Monitors for rundll32 loading non-standard DLLs, and WScript executing downloaded or temp-located scripts. Common bypass for execution restrictions. MITRE T1218.011, T1059.005.",
+        "contents": "(process.name contains 'rundll32.exe' OR process.name contains 'wscript.exe' OR process.name contains 'cscript.exe') AND ((process.command_line contains '.dll' OR process.command_line contains '.vbs' OR process.command_line contains '.js') AND (process.path contains '\\\\Temp\\\\' OR process.path contains '\\\\AppData\\\\' OR process.parent.path contains '\\\\Temp\\\\' OR process.parent.path contains '\\\\AppData\\\\'))",
+        "syntax_version": 1,
+        "mitreAttack": {
+            "techniques": [
+                {
+                    "id": "T1218.011",
+                    "name": "System Binary Proxy Execution: Rundll32"
+                },
+                {
+                    "id": "T1059.005",
+                    "name": "Command and Scripting Interpreter: VBScript"
+                }
+            ]
+        },
+        "platforms": ["windows"],
+        "labels": ["Windows", "Execution", "Picus", "Living off the Land"]
+    }
+}

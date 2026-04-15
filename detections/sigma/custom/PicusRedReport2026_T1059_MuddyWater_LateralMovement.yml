@@ -1,0 +1,45 @@
+title: MuddyWater SMB/WMI Remote Execution for Lateral Movement (Picus Red Report 2026)
+id: a1b2c3d4-1021-4aaa-b021-000000000021
+status: experimental
+description: >
+    Detects MuddyWater (Iran-nexus) lateral movement techniques using SMB-based
+    remote execution and WMI. Picus Red Report 2026 documents MuddyWater using
+    Invoke-SMBExec with NTLM hashes and wmic /node: process call create for
+    hands-off lateral spread. Used to run PowerShell payloads remotely.
+    MuddyWater appears under T1059 in the 2026 report.
+references:
+    - https://www.picussecurity.com/red-report-2026
+    - https://attack.mitre.org/groups/G0069/
+author: Loaded Potato - Picus Red Report 2026 Analysis
+date: 2026-04-09
+tags:
+    - attack.lateral-movement
+    - attack.execution
+    - attack.t1059.001
+    - attack.t1021.002
+    - picus.redreport.2026
+    - MuddyWater
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_smb_exec:
+        CommandLine|contains:
+            - 'Invoke-SMBExec'
+            - 'Invoke-WMIExec'
+            - 'Invoke-TheHash'
+    selection_wmic_remote:
+        CommandLine|contains|all:
+            - 'wmic'
+            - '/node:'
+            - 'process call create'
+    selection_remote_ps:
+        CommandLine|contains|all:
+            - 'Invoke-Command'
+            - '-ComputerName'
+            - '-ScriptBlock'
+    condition: selection_smb_exec or selection_wmic_remote or selection_remote_ps
+falsepositives:
+    - Legitimate WMI remote management
+    - Authorized PowerShell remoting
+level: high

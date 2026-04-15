@@ -1,0 +1,12 @@
+.claude/settings.local.json
+.claude/worktrees/
+tools/**/*.lic
+*.lic
+ComplianceScan_Output/
+CISScan_Output/
+CMMCScan_Output/
+NIST171Scan_Output/
+HardenedGPO_Output/
+reports/
+*.log
+*.tmp

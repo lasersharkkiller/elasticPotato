@@ -1,0 +1,65 @@
+[
+    {
+        "Item_Name":  "detect-debug-environment",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "checks-bios",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "calls-wmi",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "peexe",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "persistence",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "long-sleeps",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "spreader",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "checks-disk-space",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "malware",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    }
+]

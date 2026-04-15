@@ -1,0 +1,62 @@
+title: WMI-Spawned Process Execution (Unhooked Exec via IWbemServices)
+id: f7a8b9c0-d1e2-3456-bcde-888999000111
+status: experimental
+description: |
+    Detects processes spawned by WMI Provider Host (WmiPrvSE.exe), which is
+    the observable artefact of WMI-based process execution via
+    IWbemServices::ExecMethod or Win32_Process::Create.
+
+    Attackers use WMI execution to avoid CreateRemoteThread / CreateProcess
+    hooks entirely — the spawn happens inside the WMI subsystem which most
+    EDRs do not inline-hook. The technique is COM-interface-based
+    (IWbemServices, IDispatch), so it cannot be detected via PE import table
+    analysis and has no named-DLL hook surface.
+
+    EDR gap context (api_call_matrix.ps1):
+      IWbemServices::ExecQuery / ExecMethod: no named DLL import hook possible
+      (COM interface dispatch, no kernel32/ntdll import entry).
+      All 7 EDRs rely on behavioral/process-tree detection only.
+
+    Process-tree detection via Sysmon process_creation is the only reliable
+    compensating control available when EDR behavioral coverage is absent.
+
+references:
+    - https://attack.mitre.org/techniques/T1047/
+    - https://www.ired.team/offensive-security/lateral-movement/t1047-wmi-for-lateral-movement
+    - https://github.com/redcanaryco/atomic-red-team/blob/master/atomics/T1047/T1047.md
+author: Loaded Potato / lasersharkkiller
+date: 2026-04-06
+tags:
+    - attack.execution
+    - attack.t1047
+    - attack.lateral_movement
+    - attack.defense_evasion
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        ParentImage|endswith: '\WmiPrvSE.exe'
+    filter_known_legitimate:
+        Image|endswith:
+            # WMI management infrastructure — spawns these during normal operations
+            - '\msiexec.exe'
+            - '\scrcons.exe'
+            - '\wmiadap.exe'
+            - '\WmiApSrv.exe'
+            # SCCM / ConfigMgr uses WMI heavily for software deployment
+            - '\ccmexec.exe'
+            - '\CcmSetup.exe'
+    filter_system_maintenance:
+        # Windows Update and maintenance tasks that legitimately use WMI
+        CommandLine|contains:
+            - 'WinSAT.exe'
+            - 'DiskDiagnostic'
+            - 'defrag'
+    condition: selection and not (filter_known_legitimate or filter_system_maintenance)
+falsepositives:
+    - SCCM/ConfigMgr software distribution that uses WMI for deployment
+    - Enterprise monitoring tools (SCOM, Nagios, Zabbix) that query/execute via WMI
+    - Legitimate remote administration via WMI (document and tune per environment)
+    - Windows in-box diagnostics (WinSAT, disk diagnostics) — covered by filter above
+level: medium

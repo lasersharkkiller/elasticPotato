@@ -1,0 +1,99 @@
+title: Heap-Staged Shellcode Execution Pattern — Executable Non-Image Memory
+id: 33c4d5e6-f7a8-9012-cdef-012345678901
+status: experimental
+description: |
+    Detects the behavioral pattern of heap-staged shellcode execution: a process
+    allocates memory via heap/local/global allocators (not VirtualAlloc, which is
+    hooked), writes shellcode to it, then achieves execution via an unhooked
+    callback, timer, window message, or fiber — leaving executable memory that
+    is not backed by any loaded module on disk.
+
+    This is the highest-volume unhooked execution path in the
+    APIDifferentialAnalysis.json dataset:
+      HeapAlloc:   710 malicious sample uses (rank #1 unhooked exec API)
+      LocalAlloc:  223 malicious sample uses
+      GlobalAlloc: 177 malicious sample uses
+      HeapCreate:  238 malicious sample uses
+
+    The combined heap staging techniques account for 948 malicious uses —
+    more than CreateRemoteThread (hooked) in the same dataset.
+
+    Detection approach: this rule targets the BEHAVIORAL CHAIN visible in ETW
+    and Sysmon rather than the API call itself (since HeapAlloc is everywhere).
+    The chain is: LOLBIN or unusual process + no parent/child relationship to
+    explain behavior + network connection shortly after startup.
+references:
+    - https://www.elastic.co/blog/hunting-memory
+    - https://github.com/lawiet47/MALWOVERVIEW
+    - https://i.blackhat.com/USA-19/Thursday/us-19-Hasegawa-How-To-Build-Autonomous-Red-Team.pdf
+author: Loaded Potato / lasersharkkiller
+date: 2026-04-06
+tags:
+    - attack.defense_evasion
+    - attack.t1055.012
+    - attack.execution
+    - attack.t1106
+    - attack.t1055
+logsource:
+    product: windows
+    category: network_connection
+    # Sysmon Event 3 — network connection initiated
+detection:
+    selection_unusual_initiator:
+        Initiated: 'true'
+        Image|endswith:
+            - '\rundll32.exe'
+            - '\regsvr32.exe'
+            - '\mshta.exe'
+            - '\wscript.exe'
+            - '\cscript.exe'
+            - '\msiexec.exe'
+            - '\svchost.exe'
+            - '\dllhost.exe'
+            - '\colorcpl.exe'
+            - '\control.exe'
+    filter_known_good_destinations:
+        # svchost legitimately connects for Windows Update, WMI, etc.
+        DestinationIp|startswith:
+            - '10.'
+            - '172.16.'
+            - '172.17.'
+            - '172.18.'
+            - '172.19.'
+            - '172.20.'
+            - '172.21.'
+            - '172.22.'
+            - '172.23.'
+            - '172.24.'
+            - '172.25.'
+            - '172.26.'
+            - '172.27.'
+            - '172.28.'
+            - '172.29.'
+            - '172.30.'
+            - '172.31.'
+            - '192.168.'
+            - '127.'
+    filter_known_good_ports:
+        DestinationPort:
+            - 80
+            - 443
+            - 8080
+            - 8443
+    condition: selection_unusual_initiator and not filter_known_good_destinations and not filter_known_good_ports
+falsepositives:
+    - svchost connecting to Microsoft endpoints (adjust filter_known_good_destinations with your CDN ranges)
+    - msiexec during legitimate software installation
+    - Tune DestinationPort filter to your environment
+level: high
+
+---
+# Detection coverage note:
+# For full visibility into executable non-image-backed memory (the ground truth
+# for this technique), you need one of:
+#   - Elastic Endpoint with memory threat detection enabled
+#   - Microsoft Defender for Endpoint (memory forensics module)
+#   - Windows ETW provider: Microsoft-Windows-Threat-Intelligence (ETWTI)
+#     monitoring VirtualAlloc with PAGE_EXECUTE_* on non-image regions
+# Sysmon alone cannot observe heap memory protection flags.
+# This Sigma rule approximates via behavioral chaining (unusual process + external C2).

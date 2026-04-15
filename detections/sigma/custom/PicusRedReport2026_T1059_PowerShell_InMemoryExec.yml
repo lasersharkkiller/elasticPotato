@@ -1,0 +1,65 @@
+title: PowerShell In-Memory Payload Download and Execution (Picus Red Report 2026 - T1059.001)
+id: a1b2c3d4-1015-4aaa-b015-000000000015
+status: experimental
+description: >
+    Detects PowerShell one-liners that download and execute payloads directly in
+    memory, a technique heavily documented in Picus Red Report 2026 (#2 technique,
+    T1059, 27% prevalence). DragonForce used "powershell -nop -w hidden -c IEX
+    (New-Object Net.WebClient).DownloadString()" to deliver remote stagers.
+    HellCat ransomware used multi-stage PowerShell chains with Invoke-WebRequest
+    and ScriptBlock::Create for in-memory execution with Run-key persistence.
+    Chihuahua Stealer used Base64-decoded in-memory execution. Also covers
+    Mocha Manakin, MuddyWater, APT36, UNC3886, and UNC3944 PowerShell abuse.
+references:
+    - https://www.picussecurity.com/red-report-2026
+    - https://attack.mitre.org/techniques/T1059/001/
+author: Loaded Potato - Picus Red Report 2026 Analysis
+date: 2026-04-09
+tags:
+    - attack.execution
+    - attack.t1059.001
+    - picus.redreport.2026
+    - DragonForce
+    - HellCat
+    - MuddyWater
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_download_exec:
+        CommandLine|contains:
+            - 'IEX'
+            - 'Invoke-Expression'
+            - 'iex'
+        CommandLine|contains:
+            - 'DownloadString'
+            - 'DownloadData'
+            - 'Invoke-WebRequest'
+            - 'iwr'
+            - 'Net.WebClient'
+            - 'WebClient'
+    selection_base64_exec:
+        CommandLine|contains:
+            - 'FromBase64String'
+            - '-EncodedCommand'
+            - '-enc '
+            - '-ec '
+        CommandLine|contains:
+            - 'Invoke-Expression'
+            - 'IEX'
+            - 'iex'
+    selection_hidden_nop:
+        CommandLine|contains|all:
+            - 'powershell'
+            - '-w hidden'
+            - '-nop'
+    selection_scriptblock_create:
+        CommandLine|contains|all:
+            - 'ScriptBlock'
+            - 'Create'
+            - 'iwr'
+    condition: selection_download_exec or selection_base64_exec or selection_hidden_nop or selection_scriptblock_create
+falsepositives:
+    - Legitimate PowerShell management scripts using web requests
+    - Software deployment tools
+level: high

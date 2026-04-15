@@ -1,0 +1,23 @@
+[
+    {
+        "Item_Name":  "Universitat Jaume I  (Verified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-03-17"
+    },
+    {
+        "Item_Name":  "Whizzimo, LLC; Go Daddy Secure Certificate Authority - G2; Go Daddy Root Certificate Authority – G2 (Verified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  4,
+        "Last_Seen":  "2024-12-05"
+    },
+    {
+        "Item_Name":  "Ball Game (Verified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-01-05"
+    }
+]

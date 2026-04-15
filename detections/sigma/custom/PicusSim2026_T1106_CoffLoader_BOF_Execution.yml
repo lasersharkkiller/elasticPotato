@@ -1,0 +1,37 @@
+title: CoffLoader Beacon Object File Execution (Picus Sim 2026-04-12)
+id: d4e5f6a7-2005-4bbb-c005-picus20260412
+status: experimental
+description: >
+    Detects execution of CoffLoader, a tool for running Beacon Object Files (BOFs)
+    outside of Cobalt Strike. BOFs are compiled COFF object files that execute
+    in-process, enabling attackers to run post-exploitation modules (ADCS
+    enumeration, credential harvesting) without spawning new processes. Observed
+    in Picus simulation 2026-04-12 loading adcs_enum.bof, adcs_enum_com.bof,
+    and adcs_enum_com2.bof for AD Certificate Services reconnaissance.
+    T1106 - Native API.
+references:
+    - https://attack.mitre.org/techniques/T1106/
+author: Loaded Potato - Picus Simulation 2026-04-12
+date: 2026-04-13
+tags:
+    - attack.execution
+    - attack.t1106
+    - picus.simulation.2026-04-12
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_coffloader:
+        Image|endswith:
+            - '\coffloader.exe'
+            - '\coffloader64.exe'
+            - '\COFFLoader.exe'
+        CommandLine|contains: '.bof'
+    selection_generic_bof:
+        CommandLine|contains|all:
+            - '.bof'
+            - ' go '
+    condition: selection_coffloader or selection_generic_bof
+falsepositives:
+    - Authorized red team or penetration testing exercises
+level: critical

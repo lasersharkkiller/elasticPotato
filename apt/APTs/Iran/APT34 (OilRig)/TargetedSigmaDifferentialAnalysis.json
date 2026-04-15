@@ -1,0 +1,100 @@
+[
+    {
+        "Item_Name":  "Usage Of Web Request Commands And Cmdlets",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "Suspicious Msbuild Execution By Uncommon Parent Process",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "Telegram Bot API Request",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "Change Winevt Channel Access Permission Via Registry",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "File Deletion Via Del",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "Wow6432Node CurrentVersion Autorun Keys Modification",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "PowerShell Web Download",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "CurrentVersion Autorun Keys Modification",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "Powershell Defender Exclusion",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "Use Short Name Path in Command Line",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "Non Interactive PowerShell Process Spawned",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "Suspicious Non-Browser Network Communication With Telegram API",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "Modification of IE Registry Settings",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "Suspicious Double Extension File Execution",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    }
+]

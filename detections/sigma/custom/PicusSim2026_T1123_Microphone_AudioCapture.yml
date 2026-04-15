@@ -1,0 +1,38 @@
+title: Audio Capture Tool Execution from Staging Path (Picus Sim 2026-04-12)
+id: d4e5f6a7-2014-4bbb-c014-picus20260412
+status: experimental
+description: >
+    Detects execution of audio/microphone capture tools from user-writable
+    staging paths. Attackers deploy custom recording tools or masquerade them
+    as legitimate applications. Observed in Picus simulation 2026-04-12 with
+    CustomMicRecorder.exe from Temp and audio.exe masquerading as Chrome from
+    an AppData staging directory.
+    T1123 - Audio Capture.
+references:
+    - https://attack.mitre.org/techniques/T1123/
+author: Loaded Potato - Picus Simulation 2026-04-12
+date: 2026-04-13
+tags:
+    - attack.collection
+    - attack.t1123
+    - picus.simulation.2026-04-12
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_known_tools:
+        Image|endswith:
+            - '\CustomMicRecorder.exe'
+            - '\MicRecorder.exe'
+            - '\AudioCapture.exe'
+    selection_generic_audio:
+        Image|endswith: '\audio.exe'
+        Image|contains:
+            - '\Temp\'
+            - '\Public\'
+            - '\AppData\'
+            - '\ProgramData\'
+    condition: selection_known_tools or selection_generic_audio
+falsepositives:
+    - Legitimate audio recording applications in staging paths
+level: high

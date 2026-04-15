@@ -1,0 +1,50 @@
+title: Sandbox Evasion - Mouse Movement Trigonometry Check (Picus Red Report 2026 - T1497)
+id: a1b2c3d4-1004-4aaa-b004-000000000004
+status: experimental
+description: >
+    Detects processes that perform sandbox evasion by analyzing mouse movement
+    patterns using trigonometric calculations. LummaC2 v4.0 calculates the
+    Euclidean distance and angles of cursor paths to distinguish human users from
+    automated sandboxes - if movement is linear (sandbox-like), the malware
+    refuses to execute. T1497 Virtualization/Sandbox Evasion surged to #4 in
+    Picus Red Report 2026. This rule detects suspicious GetCursorPos API call
+    patterns and timing-based evasion indicators common in self-aware malware.
+references:
+    - https://www.picussecurity.com/red-report-2026
+    - https://attack.mitre.org/techniques/T1497/
+author: Loaded Potato - Picus Red Report 2026 Analysis
+date: 2026-04-09
+tags:
+    - attack.defense-evasion
+    - attack.t1497
+    - attack.t1497.001
+    - picus.redreport.2026
+    - LummaC2
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_sandbox_checks:
+        CommandLine|contains:
+            - 'GetCursorPos'
+            - 'GetTickCount'
+            - 'QueryPerformanceCounter'
+            - 'GetSystemTime'
+    selection_vm_artifact_checks:
+        CommandLine|contains:
+            - 'VBOX'
+            - 'VMWARE'
+            - 'VIRTUAL'
+            - 'QEMU'
+            - 'vmtoolsd'
+            - 'vboxservice'
+    selection_sleep_evasion:
+        Image|endswith: '.exe'
+        CommandLine|contains:
+            - 'NtDelayExecution'
+            - 'kernel32.dll!Sleep'
+    condition: selection_sandbox_checks or selection_vm_artifact_checks or selection_sleep_evasion
+falsepositives:
+    - Legitimate VM management tools
+    - Performance monitoring software
+level: medium

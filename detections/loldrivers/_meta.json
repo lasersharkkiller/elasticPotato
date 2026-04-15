@@ -1,0 +1,15 @@
+﻿{
+    "last_updated":  "2026-03-31T14:49:19Z",
+    "sources":  [
+                    "loldrivers.io/api",
+                    "LOLDrivers-sigma",
+                    "SigmaHQ-sigma"
+                ],
+    "entry_count":  509,
+    "driver_count":  418,
+    "source_breakdown":  {
+                             "loldrivers_api":  370,
+                             "loldrivers_sigma":  45,
+                             "sigmahq_sigma":  3
+                         }
+}

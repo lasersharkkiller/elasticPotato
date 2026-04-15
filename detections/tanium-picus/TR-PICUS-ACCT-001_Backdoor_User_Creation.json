@@ -1,0 +1,28 @@
+{
+    "type": "tanium-signal",
+    "typeVersion": "1.0",
+    "isSchemaValid": true,
+    "createdAt": "2026-04-14T00:00:00.000Z",
+    "updatedAt": "2026-04-14T00:00:00.000Z",
+    "data": {
+        "id": "TR-PICUS-ACCT-001: Backdoor User Creation via net user Command",
+        "name": "TR-PICUS-ACCT-001: Backdoor User Creation via net user Command",
+        "description": "Detects attempts to create local user accounts using net.exe or net1.exe with unusual usernames or from suspicious processes. Attackers frequently create backdoor user accounts for persistent access. Monitors for 'net user /add' or 'net1.exe user add' patterns. MITRE T1136.001.",
+        "contents": "(process.name contains 'net.exe' OR process.name contains 'net1.exe' OR process.name contains 'cmd.exe') AND (process.command_line contains 'user' AND process.command_line contains '/add' OR process.command_line contains 'user add') AND (process.parent.name != 'svchost.exe' AND process.parent.name != 'services.exe')",
+        "syntax_version": 1,
+        "mitreAttack": {
+            "techniques": [
+                {
+                    "id": "T1136.001",
+                    "name": "Create Account: Local Account"
+                },
+                {
+                    "id": "T1087.001",
+                    "name": "Account Discovery: Local Account"
+                }
+            ]
+        },
+        "platforms": ["windows"],
+        "labels": ["Windows", "Persistence", "Picus", "Account Manipulation"]
+    }
+}

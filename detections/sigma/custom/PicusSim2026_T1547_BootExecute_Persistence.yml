@@ -1,0 +1,30 @@
+title: BootExecute Registry Modification for Persistence (Picus Sim 2026-04-12)
+id: d4e5f6a7-2016-4bbb-c016-picus20260412
+status: experimental
+description: >
+    Detects modification of the BootExecute registry value under Session Manager
+    to append malicious executables that run before Windows logon. The default
+    value is 'autocheck autochk *' and any additional entries are highly suspicious.
+    Observed in Picus simulation 2026-04-12 appending calc.exe to BootExecute.
+    T1547.001 - Boot or Logon Autostart Execution: Registry Run Keys.
+references:
+    - https://attack.mitre.org/techniques/T1547/001/
+author: Loaded Potato - Picus Simulation 2026-04-12
+date: 2026-04-13
+tags:
+    - attack.persistence
+    - attack.t1547.001
+    - picus.simulation.2026-04-12
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_reg_bootexec:
+        Image|endswith: '\reg.exe'
+        CommandLine|contains|all:
+            - 'BootExecute'
+            - 'Session Manager'
+    condition: selection_reg_bootexec
+falsepositives:
+    - Legitimate system recovery tools modifying boot configuration
+level: critical

@@ -1,0 +1,29 @@
+﻿{
+    "type":  "tanium-signal",
+    "typeVersion":  "1.0",
+    "isSchemaValid":  true,
+    "createdAt":  "2026-04-13T16:12:15.973Z",
+    "updatedAt":  "2026-04-13T16:12:15.973Z",
+    "data":  {
+                 "id":  "TR-EXEC-001: Callback-Based Shellcode Execution via Process from Staging Path",
+                 "name":  "TR-EXEC-001: Callback-Based Shellcode Execution via Process from Staging Path",
+                 "description":  "Detects processes launched from common attacker staging paths that are known to abuse callback-based shellcode execution (EnumSystemLanguageGroupsA/W). The callback parameter is set to a shellcode address in allocated memory, and the OS dispatches execution through it. Score=100, 16 malicious samples, zero baseline. No EDR hooks this callback dispatch. Observable when the process originates from Temp, AppData, Downloads, ProgramData, or Public directories.",
+                 "contents":  "(process.path contains \u0027\\Temp\\\u0027 OR process.path contains \u0027\\AppData\\Local\\Temp\\\u0027 OR process.path contains \u0027\\Downloads\\\u0027 OR process.path contains \u0027\\ProgramData\\\u0027 OR process.path contains \u0027\\Public\\\u0027)",
+                 "syntax_version":  1,
+                 "mitreAttack":  {
+                                     "techniques":  [
+                                                        {
+                                                            "id":  "T1055.004",
+                                                            "name":  "Process Injection: Asynchronous Procedure Call"
+                                                        }
+                                                    ]
+                                 },
+                 "platforms":  [
+                                   "windows"
+                               ],
+                 "labels":  [
+                                "Windows",
+                                "Defense Evasion"
+                            ]
+             }
+}

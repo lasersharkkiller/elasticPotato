@@ -1,0 +1,184 @@
+[
+    {
+        "Item_Name":  "T1083: get common file path",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1083: check if file exists",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1083: enumerate files on Windows",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1564.003: hide graphical window",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1016: monitor local IPv4 address changes",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1071: Adversaries may communicate using application layer protocols to avoid detection/network filtering by blending in with existing traffic.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1129: link function at runtime on Windows",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1115: read clipboard data",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1218.011: Runs a DLL by calling functions",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1056.001: log keystrokes",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1027: encode data using XOR",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1055: Spawns processes",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1082: get MAC address on Windows",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1083: enumerate files recursively",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1115: open clipboard",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1115: monitor clipboard content",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1055: Creates a process in suspended mode (likely to inject code)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1016: get local IPv4 addresses",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1222: set file attributes",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1129: access PEB ldr_data",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1055: Adversaries may inject code into processes in order to evade process-based defenses as well as possibly elevate privileges.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1082: Reads software policies",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1056.001: log keystrokes via polling",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1083: get file size",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1036: Creates files inside the user directory",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "T1115: list drag and drop files",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    }
+]

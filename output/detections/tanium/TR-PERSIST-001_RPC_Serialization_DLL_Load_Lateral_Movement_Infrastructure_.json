@@ -1,0 +1,29 @@
+{
+  "type": "tanium-signal",
+  "typeVersion": "1.0",
+  "isSchemaValid": true,
+  "createdAt": "2026-04-13T15:14:13.943Z",
+  "updatedAt": "2026-04-13T15:14:13.943Z",
+  "data": {
+    "id": "TR-PERSIST-001: RPC Serialization DLL Load (Lateral Movement Infrastructure)",
+    "name": "TR-PERSIST-001: RPC Serialization DLL Load (Lateral Movement Infrastructure)",
+    "description": "Detects rpcrt4.dll loaded by a process from a suspicious staging path. A cluster of RPC serialization APIs (NdrMesTypeFree2, NdrMesTypeDecode2, MesDecodeIncrementalHandleCreate, MesIncrementalHandleReset, MesHandleFree) at Score=100 with MalCount=14 indicates credential-dumping and lateral-movement tools that use DCE/RPC for remote service manipulation (secretsdump, SCM-based lateral). Since rpcrt4.dll is common in legitimate software, detection focuses on process origin path.",
+    "contents": "(process.path contains '\\Temp\\' OR process.path contains '\\AppData\\Local\\Temp\\' OR process.path contains '\\Downloads\\' OR process.path contains '\\ProgramData\\' OR process.path contains '\\Public\\') AND process.name != 'svchost.exe' AND process.name != 'services.exe' AND process.name != 'lsass.exe' AND process.name != 'csrss.exe' AND process.name != 'wmiprvse.exe'",
+    "syntax_version": 1,
+    "mitreAttack": {
+      "techniques": [
+        {
+          "id": "T1021.002",
+          "name": "Remote Services: SMB/Windows Admin Shares"
+        }
+      ]
+    },
+    "platforms": [
+      "windows"
+    ],
+    "labels": [
+      "Windows",
+      "Lateral Movement"
+    ]
+  }
+}

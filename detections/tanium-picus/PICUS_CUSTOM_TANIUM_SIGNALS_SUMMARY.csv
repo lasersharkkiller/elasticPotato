@@ -1,0 +1,13 @@
+SignalID,SignalName,Severity,MitreTactic,MitreID,MitreName,DetectionType,Purpose,Status
+TR-PICUS-PERSIST-001,Scheduled Task Creation via PowerShell Register-ScheduledTask,High,Persistence,T1053.005,Scheduled Task/Job: Scheduled Task,PowerShell Cmdlet,Detects persistence via scheduled task creation,NEW
+TR-PICUS-ACCT-001,Backdoor User Creation via net user Command,Critical,Privilege Escalation,T1136.001,Create Account: Local Account,Process Execution,Detects local account creation for backdoor access,NEW
+TR-PICUS-EVASION-001,Process Environment Block (PEB) Manipulation / Process Masquerading,Critical,Defense Evasion,T1036.004,Masquerading: Match Legitimate Process Name,API Monitoring,Detects process masquerading via PEB modification,NEW
+TR-PICUS-EXEC-001,WMI Remote Code Execution via Invoke-WmiMethod,High,Lateral Movement,T1047,Windows Management Instrumentation,PowerShell Execution,Detects WMI-based RCE for lateral movement,NEW
+TR-PICUS-LATERAL-001,DCOM/COM Object Abuse (MMC20Application CheeseDCOM),Critical,Lateral Movement,T1021.003,Remote Services: Distributed Component Object Model,COM Object Execution,Detects DCOM exploitation for lateral movement,NEW
+TR-PICUS-PAYLOAD-001,Malware Marker Mutex Creation (BlackByte Emotet etc),High,Defense Evasion,T1112,Modify System Configuration,Mutex Monitoring,Detects known malware mutex patterns,NEW
+TR-PICUS-OBFUSCATION-001,Base64 Decoding with Subsequent Execution in PowerShell,High,Defense Evasion,T1027,Obfuscated Files or Information,PowerShell Script,Detects Base64 obfuscation and execution,NEW
+TR-PICUS-DEFENSE-001,Print Spooler Privilege Escalation (PrintNightMare CVE-2021-1675),Critical,Privilege Escalation,T1548.004,Abuse Elevation Control Mechanism,API Monitoring,Detects Print Spooler privilege escalation,NEW
+TR-PICUS-DISCOVERY-001,Lateral Movement and Port Forwarding Tools (Htran Plink SigFlip),High,Lateral Movement,T1570,Lateral Tool Transfer,Process Execution,Detects port forwarding and tunneling tools,NEW
+TR-PICUS-DEFENSE-002,Unsigned Process Creating Binaries in Windows System Directory,Critical,Privilege Escalation,T1574.008,Hijack Execution Flow: Microphone Speaker Device Drivers,File Creation Monitoring,Detects privilege escalation via unsigned file creation,NEW
+TR-PICUS-DISCOVERY-002,Active Directory Reconnaissance Tools (BloodHound PowerView AdFind Ping Castle),High,Discovery,T1087,Account Discovery,Process Execution,Detects AD enumeration tools,NEW
+TR-PICUS-EXECUTION-002,Suspicious Rundll32 and WScript Execution Patterns,High,Execution,T1218.011,System Binary Proxy Execution: Rundll32,Process Execution,Detects binary proxy execution from staging paths,NEW

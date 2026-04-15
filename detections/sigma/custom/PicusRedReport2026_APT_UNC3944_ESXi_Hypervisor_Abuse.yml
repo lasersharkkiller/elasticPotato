@@ -1,0 +1,55 @@
+title: UNC3944 ESXi Hypervisor CLI Abuse - VM Manipulation and VMDK Theft (Picus Red Report 2026)
+id: a1b2c3d4-1018-4aaa-b018-000000000018
+status: experimental
+description: >
+    Detects UNC3944 (Scattered Spider) TTPs targeting VMware ESXi hypervisor CLI
+    for ransomware deployment and credential theft. After social engineering help
+    desk agents, UNC3944 enables SSH on ESXi, resets root passwords, disables
+    execInstalledOnly, powers off VMs, detaches Domain Controller VMDK to extract
+    NTDS.dit offline, then deploys ransomware. Uses SFTP staging and Teleport-based
+    C2. Documented in Picus Red Report 2026 under T1059.012 Hypervisor CLI.
+    Also attributed to UNC3944 in T1555 (credential theft) and T1059.
+references:
+    - https://www.picussecurity.com/red-report-2026
+    - https://attack.mitre.org/groups/G1015/
+author: Loaded Potato - Picus Red Report 2026 Analysis
+date: 2026-04-09
+tags:
+    - attack.execution
+    - attack.impact
+    - attack.t1059.012
+    - attack.t1486
+    - picus.redreport.2026
+    - UNC3944
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_esxi_ssh_enable:
+        CommandLine|contains:
+            - 'vim-cmd hostsvc/enable_ssh'
+            - 'esxcli system account set'
+            - 'esxcli system settings advanced set'
+    selection_execinstalledonly:
+        CommandLine|contains:
+            - 'execInstalledOnly'
+    selection_vm_poweroff:
+        CommandLine|contains:
+            - 'vim-cmd vmsvc/power.off'
+            - 'esxcli vm process kill'
+    selection_vmdk_manipulation:
+        CommandLine|contains:
+            - 'vmkfstools'
+            - 'vmdk'
+    selection_ransomware_deploy:
+        CommandLine|contains:
+            - 'nohup /tmp/'
+            - 'chmod +x /tmp/'
+        CommandLine|contains:
+            - '.vmdk'
+            - '.vmx'
+            - 'datastore'
+    condition: selection_esxi_ssh_enable or selection_execinstalledonly or selection_vm_poweroff or selection_vmdk_manipulation or selection_ransomware_deploy
+falsepositives:
+    - Legitimate VMware administration
+level: high

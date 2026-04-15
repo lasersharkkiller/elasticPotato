@@ -1,0 +1,45 @@
+title: Keylogger Tool Execution - WiretapKey and GetAsyncKeyState (Picus Sim 2026-04-12)
+id: d4e5f6a7-2007-4bbb-c007-picus20260412
+status: experimental
+description: >
+    Detects execution of known keylogging tools observed in red team simulations.
+    WiretapKey.exe is a keylogger that captures keystrokes to a file, and
+    getasynckeystate.exe uses the Win32 GetAsyncKeyState API for key capture.
+    Both were observed in Picus simulation 2026-04-12 launched from staging
+    paths (AppData\Local\Temp and Users\Public).
+    T1056.001 - Input Capture: Keylogging.
+references:
+    - https://attack.mitre.org/techniques/T1056/001/
+author: Loaded Potato - Picus Simulation 2026-04-12
+date: 2026-04-13
+tags:
+    - attack.collection
+    - attack.credential-access
+    - attack.t1056.001
+    - picus.simulation.2026-04-12
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_known_tools:
+        Image|endswith:
+            - '\WiretapKey.exe'
+            - '\getasynckeystate.exe'
+            - '\KeyLogger.exe'
+            - '\keylogger.exe'
+    selection_cmdline_indicators:
+        CommandLine|contains:
+            - 'capture_keystrokes'
+            - 'GetAsyncKeyState'
+            - 'keylog'
+    filter_staging:
+        Image|contains:
+            - '\Temp\'
+            - '\Public\'
+            - '\Downloads\'
+            - '\ProgramData\'
+    condition: selection_known_tools or (selection_cmdline_indicators and filter_staging)
+falsepositives:
+    - Authorized accessibility or input monitoring software
+    - Penetration testing exercises
+level: critical

@@ -1,0 +1,48 @@
+title: System Binary Copied to Temp for DLL Sideloading (Picus Sim 2026-04-12)
+id: d4e5f6a7-2012-4bbb-c012-picus20260412
+status: experimental
+description: >
+    Detects Windows system binaries (dism.exe, stordiag.exe, wsmprovhost.exe,
+    OneDriveUpdater.exe, deviceeject.exe, wmpnetwk.exe, imagingdevices.exe)
+    being copied to user-writable staging paths for DLL sideloading. The attacker
+    places a malicious DLL with the same name as a dependency in the staging path,
+    and when the legitimate binary is executed from there, it loads the attacker's
+    DLL. Observed in Picus simulation 2026-04-12 with 12+ different sideload chains.
+    T1574.002 - Hijack Execution Flow: DLL Side-Loading.
+references:
+    - https://attack.mitre.org/techniques/T1574/002/
+author: Loaded Potato - Picus Simulation 2026-04-12
+date: 2026-04-13
+tags:
+    - attack.persistence
+    - attack.privilege-escalation
+    - attack.defense-evasion
+    - attack.t1574.002
+    - picus.simulation.2026-04-12
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_copy:
+        CommandLine|contains: 'copy'
+    filter_system_bins:
+        CommandLine|contains:
+            - '\dism.exe'
+            - '\stordiag.exe'
+            - '\wsmprovhost.exe'
+            - '\deviceeject.exe'
+            - '\wmpnetwk.exe'
+            - '\imagingdevices.exe'
+            - '\OneDriveUpdater.exe'
+            - '\msbuild.exe'
+    filter_staging_paths:
+        CommandLine|contains:
+            - '\Temp'
+            - '\Public'
+            - '\Downloads'
+            - '\ProgramData'
+            - '\AppData'
+    condition: selection_copy and filter_system_bins and filter_staging_paths
+falsepositives:
+    - Legitimate software deployment scripts copying system binaries (should be rare)
+level: high

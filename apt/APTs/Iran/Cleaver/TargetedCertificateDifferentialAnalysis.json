@@ -1,0 +1,72 @@
+[
+    {
+        "Item_Name":  "Client (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-23"
+    },
+    {
+        "Item_Name":  "pcchekapp (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2024-02-14"
+    },
+    {
+        "Item_Name":  "OSPPSVC (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-03-24"
+    },
+    {
+        "Item_Name":  "DownloadModule (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-03-24"
+    },
+    {
+        "Item_Name":  "Platform SE 7 U25 (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-03-24"
+    },
+    {
+        "Item_Name":  "Unsigned (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2024-02-14"
+    },
+    {
+        "Item_Name":  "Mini Report Service (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-03-24"
+    },
+    {
+        "Item_Name":  "COM+ System Extentions (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2023-03-24"
+    },
+    {
+        "Item_Name":  "VBWindowsService (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2024-02-14"
+    },
+    {
+        "Item_Name":  "NetScp (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2023-03-24"
+    }
+]

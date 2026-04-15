@@ -1,0 +1,30 @@
+[
+    {
+        "Item_Name":  "/tmp/iocontrol",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-30"
+    },
+    {
+        "Item_Name":  "/tmp/base",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-30"
+    },
+    {
+        "Item_Name":  "/bin/dpkg dpkg --print-architecture",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-30"
+    },
+    {
+        "Item_Name":  "/usr/bin/python3.8 -",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-30"
+    }
+]

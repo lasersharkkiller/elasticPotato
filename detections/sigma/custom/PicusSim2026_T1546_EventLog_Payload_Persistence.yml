@@ -1,0 +1,35 @@
+title: Event Log Payload Storage Persistence (Picus Sim 2026-04-12)
+id: d4e5f6a7-2023-4bbb-c023-picus20260412
+status: experimental
+description: >
+    Detects SharpEventPersist and SharpEventLoader, tools that store shellcode
+    payloads inside Windows Event Log entries for persistence. The payload is
+    written as event log data and later retrieved and executed in-memory, evading
+    traditional file-based detection. A novel fileless persistence technique.
+    Observed in Picus simulation 2026-04-12.
+    T1546 - Event Triggered Execution.
+references:
+    - https://attack.mitre.org/techniques/T1546/
+author: Loaded Potato - Picus Simulation 2026-04-12
+date: 2026-04-13
+tags:
+    - attack.persistence
+    - attack.defense-evasion
+    - attack.t1546
+    - picus.simulation.2026-04-12
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith:
+            - '\SharpEventPersist.exe'
+            - '\SharpEventLoader.exe'
+    selection_cmdline:
+        CommandLine|contains:
+            - 'SharpEventPersist'
+            - 'SharpEventLoader'
+    condition: selection or selection_cmdline
+falsepositives:
+    - Authorized red team exercises
+level: critical

@@ -1,0 +1,29 @@
+﻿{
+    "type":  "tanium-signal",
+    "typeVersion":  "1.0",
+    "isSchemaValid":  true,
+    "createdAt":  "2026-04-13T16:12:15.973Z",
+    "updatedAt":  "2026-04-13T16:12:15.973Z",
+    "data":  {
+                 "id":  "TR-EXEC-002: CLR Hosting in Native Process (.NET In-Memory Execution)",
+                 "name":  "TR-EXEC-002: CLR Hosting in Native Process (.NET In-Memory Execution)",
+                 "description":  "Detects mscoree.dll loaded by a native (non-.NET) process, or imports of CLRCreateInstance / _CorDllMain. This is the primary mechanism for execute-assembly, Cobalt Strike BOF .NET execution, and SharpPick-style attacks. _CorDllMain: Score=100, MalCount=15. CLRCreateInstance: Score=100.",
+                 "contents":  "(process.modules contains \u0027mscoree.dll\u0027 OR process.modules contains \u0027clrjit.dll\u0027) AND process.name != \u0027powershell.exe\u0027 AND process.name != \u0027pwsh.exe\u0027 AND process.name != \u0027msbuild.exe\u0027 AND process.name != \u0027csc.exe\u0027 AND process.name != \u0027vbc.exe\u0027 AND process.name != \u0027devenv.exe\u0027 AND process.name != \u0027dotnet.exe\u0027 AND process.name != \u0027w3wp.exe\u0027 AND process.name != \u0027iisexpress.exe\u0027",
+                 "syntax_version":  1,
+                 "mitreAttack":  {
+                                     "techniques":  [
+                                                        {
+                                                            "id":  "T1620",
+                                                            "name":  "Reflective Code Loading"
+                                                        }
+                                                    ]
+                                 },
+                 "platforms":  [
+                                   "windows"
+                               ],
+                 "labels":  [
+                                "Windows",
+                                "Defense Evasion"
+                            ]
+             }
+}

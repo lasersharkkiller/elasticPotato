@@ -1,0 +1,33 @@
+{
+    "type": "tanium-signal",
+    "typeVersion": "1.0",
+    "isSchemaValid": true,
+    "createdAt": "2026-04-14T00:00:00.000Z",
+    "updatedAt": "2026-04-14T00:00:00.000Z",
+    "data": {
+        "id": "TR-PICUS-TIER1-REGISTRY_PERSISTENCE_RUNKEYS: Registry Run/RunOnce Persistence Creation",
+        "name": "TR-PICUS-TIER1-REGISTRY_PERSISTENCE_RUNKEYS: Registry Run/RunOnce Persistence Creation",
+        "description": "CRITICAL BEHAVIORAL DETECTION: Detects registry persistence via Run/RunOnce key creation, a primary post-exploitation persistence mechanism observed in 35+ Picus detonation instances. Monitors for suspicious registry modifications to HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run(Once) and HKLM equivalents from non-standard processes. This is the #1 persistence pattern used by threat actors. Observable from Picus detonation: reg.exe, cmd.exe, and powershell.exe modifying these keys in non-administrative context. Expected to catch 35+ undetected persistence attempts.",
+        "contents": "((registry.key_path contains 'Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run' OR registry.key_path contains 'Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\RunOnce') AND (process.name contains 'powershell.exe' OR process.name contains 'cmd.exe' OR process.name contains 'reg.exe' OR process.name contains 'regedit.exe') AND (process.parent.name != 'msiexec.exe' AND process.parent.name != 'explorer.exe' AND process.parent.name != 'rundll32.exe' AND process.parent.name != 'regsvcs.exe')) OR ((registry.key_path contains 'Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run' OR registry.key_path contains 'Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\RunOnce') AND registry.value_data contains '.exe' AND process.integrity_level != 'system' AND process.integrity_level != 'high')",
+        "syntax_version": 1,
+        "mitreAttack": {
+            "techniques": [
+                {
+                    "id": "T1547.001",
+                    "name": "Boot or Logon Autostart Execution: Registry Run Keys / Startup Folder"
+                },
+                {
+                    "id": "T1037",
+                    "name": "Boot or Logon Initialization Scripts"
+                },
+                {
+                    "id": "T1547",
+                    "name": "Boot or Logon Autostart Execution"
+                }
+            ]
+        },
+        "platforms": ["windows"],
+        "labels": ["Windows", "Persistence", "Registry", "Picus", "CRITICAL", "35+ Instances"],
+        "expectedCoverage": "35+ undetected persistence instances from Picus detonation"
+    }
+}

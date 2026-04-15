@@ -1,0 +1,16 @@
+[
+    {
+        "Item_Name":  "TODO: \u003cProduct name\u003e (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-01-11"
+    },
+    {
+        "Item_Name":  "D Bacte Ltd; COMODO RSA Code Signing CA; Sectigo (formerly Comodo CA) (Verified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-02-01"
+    }
+]

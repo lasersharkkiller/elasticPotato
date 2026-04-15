@@ -1,0 +1,23 @@
+[
+    {
+        "Item_Name":  "ShimCacheMutex",
+        "Type":  "Mutex",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-06-18"
+    },
+    {
+        "Item_Name":  "E7256B3F3AD6FDE5",
+        "Type":  "Mutex",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-06-18"
+    },
+    {
+        "Item_Name":  "Global\\G{C4F406E5-F024-4e3f-89A7-D5AB7663C3CD}",
+        "Type":  "Mutex",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-06-18"
+    }
+]

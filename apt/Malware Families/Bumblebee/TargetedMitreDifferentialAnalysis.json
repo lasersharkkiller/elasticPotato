@@ -1,0 +1,331 @@
+[
+    {
+        "Item_Name":  "T1129: link many functions at runtime",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1129: link function at runtime on Windows",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1027: encode data using XOR",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1082: get system information on Windows",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1055: Spawns processes",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1057: get process heap force flags",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1083: check if file exists",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1124: ",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1497: Sample may be VM or Sandbox-aware, try analysis on a native machine",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1036: Creates files inside the system directory",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1497: May sleep (evasive loops) to hinder dynamic analysis",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1614: get geographical location",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1059: Sample might require command line arguments, analyze it with the command line cookbook",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1082: ",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1082: query environment variable",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1053: Creates COM task schedule object (often to register a task for autostart)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1018: Reads the hosts file",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1071: Performs DNS lookups",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1083: Reads ini files",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1036: Creates files inside the program directory",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1080: Infects executable files (exe, dll, sys, html)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1056: Creates a DirectInput object (often for capturing keystrokes)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1012: query or enumerate registry value",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1543.003: Modifies existing windows services",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1547.001: Creates an undocumented autostart registry key",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1059: Very long command line found",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1124: Potential time zone aware malware",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1057: get process heap flags",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1082: Checks the free space of harddrives",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1095: Performs DNS lookups",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1082: Reads software policies",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1055: Creates a process in suspended mode (likely to inject code)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1057: Queries a list of all running processes",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1129: access PEB ldr_data",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1059: accept command line arguments",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1518.001: Queries disk information (often used to detect virtual machines)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1059: Very long cmdline option found, this is very uncommon (may be encrypted or packed)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1497: Queries disk information (often used to detect virtual machines)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1203: Benign windows process is dropping new PE files",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1059: Sample may offer command line options, please run it with the command line option cookbook (it\u0027s possible that the command line switches require additional characters like)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1071: Adversaries may communicate using application layer protocols to avoid detection/network filtering by blending in with existing traffic.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1082: get disk size",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1082: check OS version",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1082: Queries the volume information (name, serial number etc) of a device",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1082: Queries disk information (often used to detect virtual machines)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1574.002: Tries to load missing DLLs",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "T1083: Enumerates the file system",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-03-08"
+    }
+]

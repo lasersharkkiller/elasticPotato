@@ -1,0 +1,50 @@
+title: DLL Loaded from User Path by Non-AppX Process via LoadPackagedLibrary (UH_DLLLOAD)
+id: a6b7c8d9-e0f1-2345-abcd-666777888999
+status: experimental
+description: |
+    Detects DLL image loads from user-writable paths by processes that are
+    not legitimate AppX/UWP packages — the observable artefact of
+    LoadPackagedLibrary abuse.
+
+    LoadPackagedLibrary is an alternate DLL load path designed exclusively
+    for AppX packaged applications. It is rarely monitored by EDRs because
+    legitimate callers are always AppX processes with a package identity
+    (executable under C:\Program Files\WindowsApps\).
+
+    An unpackaged Win32 process calling LoadPackagedLibrary to load a DLL
+    from a user-writable directory has no legitimate use case and indicates
+    either a purpose-built loader or a hijacked signed binary exploiting
+    this unmonitored load path.
+
+    EDR gap context (api_call_matrix.ps1):
+      LoadPackagedLibrary (UH_DLLLOAD): unmonitored by most EDRs.
+      Sysmon image_load is the primary compensating control.
+references:
+    - https://attack.mitre.org/techniques/T1574/001/
+    - https://lolbas-project.github.io/
+author: Loaded Potato / lasersharkkiller
+date: 2026-04-07
+tags:
+    - attack.defense_evasion
+    - attack.t1574.001
+    - attack.persistence
+logsource:
+    category: image_load
+    product: windows
+detection:
+    selection_user_path:
+        ImageLoaded|startswith:
+            - 'C:\Users\'
+            - 'C:\Temp\'
+            - 'C:\Windows\Temp\'
+            - 'C:\ProgramData\'
+    filter_appx:
+        # Legitimate AppX callers live under WindowsApps
+        Image|startswith: 'C:\Program Files\WindowsApps\'
+    filter_appx_dll:
+        ImageLoaded|startswith: 'C:\Program Files\WindowsApps\'
+    condition: selection_user_path and not (filter_appx or filter_appx_dll)
+falsepositives:
+    - Legitimate AppX/MSIX bridged processes with non-standard install paths (rare)
+    - Investigate: check process code signature and whether it has an AppX package identity
+level: high

@@ -1,0 +1,50 @@
+title: CABINETRAT Persistence via Scheduled Task and Admin Check (Picus Red Report 2026)
+id: a1b2c3d4-1020-4aaa-b020-000000000020
+status: experimental
+description: >
+    Detects CABINETRAT malware TTPs documented in Picus Red Report 2026.
+    CABINETRAT creates scheduled tasks executing every 12 hours from paths
+    mimicking Microsoft Office directories. It also checks admin privileges
+    by querying whoami /groups for SID S-1-5-32-544. Uses Run registry key
+    for persistence. Part of targeted attacks across South Asia. Also creates
+    persistence via schtasks.exe from %LOCALAPPDATA%\Microsoft\Office\ paths.
+    Tagged under T1059.003 and T1547.
+references:
+    - https://www.picussecurity.com/red-report-2026
+    - https://attack.mitre.org/techniques/T1053/005/
+author: Loaded Potato - Picus Red Report 2026 Analysis
+date: 2026-04-09
+tags:
+    - attack.persistence
+    - attack.execution
+    - attack.t1053.005
+    - attack.t1059.003
+    - picus.redreport.2026
+    - CABINETRAT
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_schtask_office_path:
+        Image|endswith: '\schtasks.exe'
+        CommandLine|contains:
+            - '\Microsoft\Office\'
+            - '\Microsoft Office\'
+    selection_schtask_12hr:
+        CommandLine|contains|all:
+            - 'schtasks'
+            - '/sc hourly'
+            - '/mo 12'
+    selection_admin_sid_check:
+        CommandLine|contains|all:
+            - 'whoami /groups'
+            - 'S-1-5-32-544'
+    selection_cabinetrat_run_key:
+        CommandLine|contains|all:
+            - 'reg add'
+            - 'CurrentVersion\Run'
+            - 'ChromeUpdater'
+    condition: selection_schtask_office_path or selection_schtask_12hr or selection_admin_sid_check or selection_cabinetrat_run_key
+falsepositives:
+    - Legitimate scheduled tasks for Microsoft Office updates
+level: high

@@ -1,0 +1,54 @@
+title: Windows API Callback-Based Shellcode Execution Tools (Picus Sim 2026-04-12)
+id: d4e5f6a7-2021-4bbb-c021-picus20260412
+status: experimental
+description: >
+    Detects execution of tools that abuse Windows API callback functions to
+    execute shellcode without using CreateThread or CreateRemoteThread. These
+    tools pass shellcode as callback arguments to legitimate Windows APIs
+    (EnumWindows, EnumFontFamilies, CertEnumSystemStore, CryptEnumOIDInfo,
+    CreateThreadPoolWait, FlsAlloc, etc.). 45 unique callback execution tools
+    were observed in Picus simulation 2026-04-12, all launched from Temp staging.
+    T1106 - Native API.
+references:
+    - https://attack.mitre.org/techniques/T1106/
+author: Loaded Potato - Picus Simulation 2026-04-12
+date: 2026-04-13
+tags:
+    - attack.execution
+    - attack.defense-evasion
+    - attack.t1106
+    - picus.simulation.2026-04-12
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_callback_tools:
+        Image|endswith:
+            - '\EnumWindows.exe'
+            - '\EnumFontFamiliesExW.exe'
+            - '\CertEnumSystemStoreLocation.exe'
+            - '\CryptEnumOIDInfo.exe'
+            - '\CreateThreadPoolWait.exe'
+            - '\FlsAlloc.exe'
+            - '\EnumSystemGeoID.exe'
+            - '\EnumTimeFormatsEx.exe'
+            - '\EnumUILanguagesW.exe'
+            - '\ENUMSYSTEMCODEPAGESW.exe'
+            - '\InitOnceExecuteOnce.exe'
+            - '\ImmEnumInputContext.exe'
+            - '\SymFindFileInPath.exe'
+            - '\VerifierEnumerateResource.exe'
+            - '\AppRecoveryCallback.exe'
+            - '\FunctionCallback.exe'
+            - '\ListPlanting.exe'
+            - '\WindfarmDynamite.exe'
+            - '\ExceptionOrientedProg.exe'
+            - '\ShellcodeCopyWithMailslot.exe'
+            - '\ShellcodeCopyWithPipe.exe'
+    selection_cbt_tools:
+        Image|contains: '\CBT_'
+        Image|endswith: '.exe'
+    condition: selection_callback_tools or selection_cbt_tools
+falsepositives:
+    - Authorized red team or penetration testing exercises
+level: critical

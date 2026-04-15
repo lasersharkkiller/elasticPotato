@@ -1,0 +1,149 @@
+[
+    {
+        "Item_Name":  "SUSP_Imphash_Mar23_3",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-08-06"
+    },
+    {
+        "Item_Name":  "Windows_Trojan_Metasploit_c9773203",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-11-27"
+    },
+    {
+        "Item_Name":  "UPX",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-08-06"
+    },
+    {
+        "Item_Name":  "HKTL_Imphashes_Aug22_1",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "INDICATOR_TOOL_EXP_ApacheStrusts",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  4,
+        "Last_Seen":  "2025-08-06"
+    },
+    {
+        "Item_Name":  "win_juicy_potato_auto",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "tool_swor",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "PyInstaller",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-08-23"
+    },
+    {
+        "Item_Name":  "tool_juicypotato_exploit_strings",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "Windows_Trojan_Metasploit_0f5a852d",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-11-27"
+    },
+    {
+        "Item_Name":  "Adobe_XMP_Identifier",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-23"
+    },
+    {
+        "Item_Name":  "SUSP_GObfuscate_May21",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-01"
+    },
+    {
+        "Item_Name":  "INDICATOR_TOOL_WEDGECUT",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-23"
+    },
+    {
+        "Item_Name":  "EXPL_POC_SpringCore_0day_Indicators_Mar22_1",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  4,
+        "Last_Seen":  "2025-08-06"
+    },
+    {
+        "Item_Name":  "INDICATOR_TOOL_FScan",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-08-06"
+    },
+    {
+        "Item_Name":  "INDICATOR_TOOL_PRI_JuicyPotato",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2022-08-04"
+    },
+    {
+        "Item_Name":  "INDICATOR_SUSPICIOUS_EXE_RawGitHub_URL",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  4,
+        "Last_Seen":  "2025-08-06"
+    },
+    {
+        "Item_Name":  "tool_inswor_strings",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-03-08"
+    },
+    {
+        "Item_Name":  "EXPL_PaloAlto_CVE_2024_3400_Apr24_1",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-01"
+    },
+    {
+        "Item_Name":  "Windows_Trojan_Metasploit_1ca1e384",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-11-27"
+    },
+    {
+        "Item_Name":  "Windows_API_Function",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-06-01"
+    }
+]

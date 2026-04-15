@@ -1,0 +1,507 @@
+﻿"Date","Source","Actor","IOCType","IOCValue","Context","Link"
+"2026-04-07 11:21:52","MalwareBazaar","APT1","SHA256","843b22df66f87a587be77145da163f9615fe8164a5ea17f9e33562ff43894fbf","signature=PlugX; file=843b22df66f87a587be77145da163f9615fe8164a5ea17f9e33562ff43894fbf (tag=PlugX)",
+"2026-04-07 10:03:29","MalwareBazaar","APT1","SHA256","fff7864019b651bea2448228d6557d995edc929276bb9d8cb34c3c280a42684e","signature=; file=e-Fatura.chm (tag=PlugX)",
+"2026-04-07 09:57:34","MalwareBazaar","APT1","SHA256","fa3a1153018ac1e1a35a65e445a2bad33eac582c225cf6c38d0886802481cd43","signature=PlugX; file=photo_2026-03-01_01-20-48.pdf.lnk (tag=PlugX)",
+"2026-04-03 18:26:42","MalwareBazaar","APT1","SHA256","1daade171b2f029c80787880db2ce893e5f1252facb6980fb7a93cb0dbb014c3","signature=; file=1.zip (tag=PlugX)",
+"2026-04-02 09:19:49","MalwareBazaar","APT1","SHA256","a059d70e4f9095f167bd34ea4dfdab33be8f599907daefbd05f2ba3f2d6302be","signature=; file=ЕС-аас Хөндөж болзошгүй асуудал.zip (tag=PlugX)",
+"2026-03-31 17:52:19","MalwareBazaar","APT1","SHA256","216989f56970e3ea045773224e82b2afe78ed29e49df7d044d5a5992d622d881","signature=; file=216989f56970e3ea045773224e82b2afe78ed29e49df7d044d5a5992d622d881.bin (tag=PlugX)",
+"2026-03-31 14:25:17","MalwareBazaar","APT1","SHA256","af8bf1848b06c3a4236b13b57f88e9c2744bc3c3db2adc91dcbf320862dcc032","signature=; file=filedata.chm (tag=PlugX)",
+"2026-03-27 18:50:13","MalwareBazaar","APT1","SHA256","aee2fe7d5f91f02d6b59d53493abaa819d0e2493a8eb89bb78124a4859faeefe","signature=; file=Intelnet.rar (tag=PlugX)",""
+"2026-03-26 14:12:36","MalwareBazaar","APT1","SHA256","77472563931f3a24888298a3f770644f0d045997a20d0ccdbbac1363bbab62d0","signature=; file=crashhandler.dll (tag=PlugX)",""
+"2026-03-26 13:50:57","MalwareBazaar","APT1","SHA256","2a38b76f5f3dc6445604400228cb46f879362b2d873be63cd1252ec7d800ee13","signature=; file=2026-03-26.rar (tag=PlugX)",
+"2026-03-24 13:47:06","MalwareBazaar","APT1","SHA256","c23c9b0248323334f8706fa7890d8b8822fd3dba2aeff10aafd25033de646fa2","signature=PlugX; file=AAM UpdatesEqn.rar (tag=PlugX)",
+"2026-03-24 10:56:28 UTC","ThreatFox","APT1","Domain","coastallasercompany.com","threat=botnet_cc; malware=win.plugx (tag=PlugX)",""
+"2026-03-24 10:56:28 UTC","ThreatFox","APT1","Domain","airportcarrentalmiami.com","threat=botnet_cc; malware=win.plugx (tag=PlugX)",""
+"2026-03-19 13:36:08","MalwareBazaar","APT1","SHA256","bcd30f2116f5ba6731c628483d597b2ba3620ed464c63875855906306beb102a","signature=PlugX; file=OECD_Update_on_implications_for_energy_markets_of_events_in_the_Middle_East.zip (tag=PlugX)",""
+"2026-03-17 05:42:13","MalwareBazaar","APT1","SHA256","de13e4b4368fbe8030622f747aed107d5f6c5fec6e11c31060821a12ed2d6ccd","signature=PlugX; file=Energy_Infrastructure_Situation_Note _Tehran_Province_2026.zip (tag=PlugX)",""
+"2026-03-09 17:11:38","MalwareBazaar","APT1","SHA256","fca258cb72b64fcb64ecfe1b908b3ef43b6b2a842b18d6cd41a8b7f507d49849","signature=PlugX; file=09032026_1533_GIẤY MỜI.doc.lnk.msi (tag=PlugX)",""
+"2026-03-07 20:10:31","MalwareBazaar","APT1","SHA256","b963a90730a0ac04e07f18e1cdcf9289c9e0aed336e448d3cf670bc13d000f3e","signature=PlugX; file=Smadav.zip (tag=PlugX)",""
+"2026-03-04 06:42:29","MalwareBazaar","APT1","SHA256","44cfba85aa27265779b01f6eb8b69718462b1ca8078b21066061e8d1622dff7a","signature=PlugX; file=crashhandler.dll (tag=PlugX)",
+"2026-03-03 16:53:54","MalwareBazaar","APT1","SHA256","601ae63ee59288a2e36f0b0d4f7bc0bfb40f0489995343c955db7d9ded469478","signature=PlugX; file=6z03.msi (tag=PlugX)",
+"2026-03-03 10:47:20","MalwareBazaar","APT1","SHA256","2d018036c7d6ae9b2ee1e9cf63e5c31bc76b90fe93f6faf2485e0115e43f4316","signature=PlugX; file=IMG_20260301_0001.zip (tag=PlugX)",
+"2026-03-02 07:58:35","MalwareBazaar","APT1","SHA256","f4e2293c67c35fcbf4b07e37f6839f6fafdb52c2eaff9a435cf93e83dc331b65","signature=PlugX; file=RBGUIFramework.dll (tag=PlugX)",""
+"2026-02-22 20:49:15","MalwareBazaar","APT1","SHA256","33a98e51ccdd67b6679e571e40b990f20392c21ed1b2618e10b79c2ae4a88b23","signature=PlugX; file=AvastSvcpCP.rar (tag=PlugX)",""
+"2026-02-06 14:18:59","MalwareBazaar","APT1","SHA256","46314092c8d00ab93cbbdc824b9fc39dec9303169163b9625bae3b1717d70ebc","signature=PlugX; file=Avk.dll (tag=PlugX)",""
+"2026-02-02T08:27:01Z","Cybersixgill","APT1","Hash","d7a950fefd60dbaa01df2d85fefb3862","Confidence: 60","N/A"
+"2026-01-28T11:46:33Z","Cybersixgill","APT1","Hash","ec74b54457e12bfd849283f6d692e9fe8a537334","Confidence: 60","N/A"
+"2026-01-28T11:46:00Z","Cybersixgill","APT1","Hash","1ebbb5850ff6435351b774d425c0d345d8bc3024","Confidence: 60","N/A"
+"2026-01-27","VirusTotal (Fallback)","APT1","SHA256","cde7725f8b1bb0fe9fab5138f6d99385f584475527ac4d1908e91fe6643dc693","Text Match: Comment Crew","https://www.virustotal.com/gui/file/cde7725f8b1bb0fe9fab5138f6d99385f584475527ac4d1908e91fe6643dc693"
+"2026-01-19","VirusTotal (Fallback)","APT1","SHA256","2d86aabf5abd3ba8679bacfcd213ebd761de071a3311613d46347334035f1657","Text Match: Comment Crew","https://www.virustotal.com/gui/file/2d86aabf5abd3ba8679bacfcd213ebd761de071a3311613d46347334035f1657"
+"2026-01-18 20:25:23","MalwareBazaar","APT1","SHA256","37cd227f0d5aabed9eedbf30509b5354f075bea3af327c9c0bb8afba7b06e4f6","signature=BruteRatel; file=crashlog_decrypted.dll (tag=PlugX)",
+"2026-01-18 20:23:26","MalwareBazaar","APT1","SHA256","c6433d9aafb4400c2fb6f772534171b39eff7e1287ce95a3024c943e2310fa5f","signature=BruteRatel; file=steam_monitor_02F90000.dll (tag=PlugX)",""
+"2026-01-18 15:54:10","MalwareBazaar","APT1","SHA256","db35155d33b616d4f7c268e78c8179eb84378778a4b195df09a8c36f2e5eb38b","signature=PlugX; file=ShaderCache.zip (tag=PlugX)",""
+"2026-01-18 15:53:15","MalwareBazaar","APT1","SHA256","e1576d70328743c0efd688ffccc52b2487d097b5c8b558a34b62525509e6be5b","signature=PlugX; file=MPC-HC.zip (tag=PlugX)",""
+"2026-01-14","VirusTotal (Fallback)","APT1","SHA256","05970f2dd8bb118e2755ee9761036337024f598437a9b8fb5184b2fcc5479e7e","Text Match: Comment Crew","https://www.virustotal.com/gui/file/05970f2dd8bb118e2755ee9761036337024f598437a9b8fb5184b2fcc5479e7e"
+"2026-01-11T02:45:04Z","Cybersixgill","APT1","Hash","5a34cb996293fde2cb7a4ac89587393a","Confidence: 60","N/A"
+"2026-01-07","VirusTotal (Fallback)","APT1","SHA256","37a83058c15318b1ce58cca97d0e02b875db78115a94ff7fba77fa86661d09a7","Text Match: Comment Crew","https://www.virustotal.com/gui/file/37a83058c15318b1ce58cca97d0e02b875db78115a94ff7fba77fa86661d09a7"
+"2026-01-01 17:08:14","MalwareBazaar","APT1","SHA256","2a54d4e2cf5e15377b127c7c0a5d47f8ffde9c95ade9452d84432c797e1ffe3e","signature=PlugX; file=BEHO73UT-YPKW-5KPB-JTGK-QFJMJ1KKI2I0.zip (tag=PlugX)",""
+"2025-12-30 07:52:20","MalwareBazaar","APT1","SHA256","a7161c9a7c54a47d27459655725d2ade242d0931d6272c75a36f07df45220b08","signature=PlugX; file=evv.msi (tag=PlugX)",
+"2025-12-29 10:34:29","MalwareBazaar","APT1","SHA256","52ca5ea7095e33bd7bb8f8b23413305dacf664c9154baca80b95a957549aa4eb","signature=PlugX; file=Logitech.zip (tag=PlugX)",
+"2025-12-17 12:04:04 UTC","ThreatFox","APT1","Domain","doorforum.com","threat=botnet_cc; malware=win.plugx (tag=PlugX)",""
+"2025-12-16 21:37:29","MalwareBazaar","APT1","SHA256","f772a89fd70aa30f456b016d679f8fe62860e5f1a5a3b494e9ff8e6fd143fc8c","signature=PlugX; file=wth.malz.msi (tag=PlugX)",""
+"2025-12-07","VirusTotal (Fallback)","APT1","SHA256","4ff1038b59926396f16a0ffba0ab4e12edb419ebbc7e76ee286a71284de0a868","Text Match: Comment Crew","https://www.virustotal.com/gui/file/4ff1038b59926396f16a0ffba0ab4e12edb419ebbc7e76ee286a71284de0a868"
+"2025-11-21 22:58:48","MalwareBazaar","APT1","SHA256","e036e2ba402d808adbb7982ec8d7a207849ff40456633b2b372bc7916d9dc22f","signature=; file=ATTD-ASIA-2025.zip (tag=PlugX)",""
+"2025-11-21 22:50:12","MalwareBazaar","APT1","SHA256","0234a33c5424c3c7a3c7c8af9d5c69b116341c59efee6acdbcf6bfa07aff927b","signature=PlugX; file=gzv.msi (tag=PlugX)",""
+"2025-11-16T01:44:42Z","Cybersixgill","APT1","Hash","3c96c993500690d1a77873cd62bc639b3a10653f","Confidence: 60","N/A"
+"2025-11-10 19:32:05","MalwareBazaar","APT1","SHA256","8aebb2d4501bc4f0e682efbc5a75eb35f7ae4aa7dadfe159819f3e35f7de2ecd","signature=; file=cnapt.zip (tag=PlugX)",""
+"2025-11-10 19:27:06","MalwareBazaar","APT1","SHA256","c4e3c29367426fe4ed718ab448fbdf2cf8690c81ea539805569cdff88317db9f","signature=PlugX; file=kqb.msi (tag=PlugX)",""
+"2025-10-14 09:11:16","MalwareBazaar","APT1","SHA256","f04340f93e2f5f7d6d5521572f17c5b80f39984ee6b4b8c0899380e95a825127","signature=PlugX; file=rphbqultm.tar (tag=PlugX)",""
+"2025-10-03 07:07:42","MalwareBazaar","APT1","SHA256","f8d03814986599ed98ce8c83fbc9ce55b83095c179c54ec555c4ab372fa99700","signature=PlugX; file=aa.zip (tag=PlugX)",
+"2025-10-02 20:23:42","MalwareBazaar","APT1","SHA256","50d4e85e06048a5982d23216a37e5664d9d165da3c18c782747f71c2bd5733e3","signature=PlugX; file=gvtcqsiglutoofc.exe (tag=PlugX)",""
+"2025-10-02 17:44:59","MalwareBazaar","APT1","SHA256","218ed813d8a4d9d05473338795021c66012cd6c36368561d3aaf831a5c494740","signature=; file=utensils.zip (tag=PlugX)",""
+"2025-10-02 17:24:47","MalwareBazaar","APT1","SHA256","bb491248bb8f6067af39e196b11f4e408a7a3885704cadbd4266db52ae4b03e2","signature=; file=Agenda_Meeting 26 Sep Brussels.zip (tag=PlugX)",""
+"2025-09-25T21:46:29Z","Cybersixgill","APT1","Hash","729f451c1a65520207f9c979096f631340f59342","Confidence: 74","N/A"
+"2025-09-25T18:26:50Z","Cybersixgill","APT1","Hash","403ae71d3ab106d284068c47da58036fec5b2c162c9ca6e7f6197a5609c0d10d","Confidence: 74","N/A"
+"2025-09-24T14:06:32Z","Cybersixgill","APT1","Hash","57412782b641cf741b7655d2a93df06375ce370c","Confidence: 74","N/A"
+"2025-09-24T14:02:31Z","Cybersixgill","APT1","Hash","6082981ce6b7831c27640ff6e1d1678fe22df888","Confidence: 60","N/A"
+"2025-09-11T23:48:19Z","Cybersixgill","APT1","Hash","4face89d98745254720aafe8bdbd572fec05c3ce","Confidence: 82","N/A"
+"2025-09-11T23:48:19Z","Cybersixgill","APT1","Hash","d7944fd3fe6e490ff7ad04d9aa4e63bf","Confidence: 82","N/A"
+"2025-09-11T23:48:19Z","Cybersixgill","APT1","Hash","ebcde749c687031ac7d46b1f83601153813ab3e26abd4176565425b108367be6","Confidence: 82","N/A"
+"2025-09-05 09:37:50","MalwareBazaar","APT1","SHA256","41af7a8f3cd507a46cd3fe32f7ea17978a19ee7828ef58eb790501fb8dc6c783","signature=PlugX; file=41af7a8f3cd507a46cd3fe32f7ea17978a19ee7828ef58eb790501fb8dc6c783 (tag=PlugX)",""
+"2025-09-04 07:45:43","MalwareBazaar","APT1","SHA256","7a49310a9192cab1aa05256b6ca0d0c1a54fe084b103ff4df2d17be9effa3300","signature=PlugX; file=No.4638.hta (tag=PlugX)",""
+"2025-08-30 11:16:43","MalwareBazaar","APT1","SHA256","eb5ca49b476448362c4c86af28fcabc3e9dc5953643a7ae40c9aa154da892444","signature=Plugx; file=Installer.exe (tag=PlugX)",
+"2025-08-28T23:53:34Z","Cybersixgill","APT1","Hash","1fbb2b0c254da31710c5fc8d96f64b67684fc325282b52263366d058f59a8d93","Confidence: 74","N/A"
+"2025-08-28T23:53:34Z","Cybersixgill","APT1","Hash","6dfbdcdca9107ee0e6d338b38b485fdae1e9d6e1","Confidence: 74","N/A"
+"2025-08-28T23:53:34Z","Cybersixgill","APT1","Hash","34cb99098253afaa70f5228316656e3e","Confidence: 74","N/A"
+"2025-08-27 19:49:42","MalwareBazaar","APT1","SHA256","6042d92bb7e6c87f8116b5d7c1fbb1404b173ec54bc612d23612d4b7ea6332ec","signature=Rhadamanthys; file=Belium Updated.exe (tag=PlugX)",
+"2025-08-27 19:34:23","MalwareBazaar","APT1","SHA256","d8bc6c1e95705c24896bc610dac007c110adc0eacb8b7642bbbb97c6f502febb","signature=Rhadamanthys; file=LuxuryLoader.exe (tag=PlugX)",""
+"2025-08-27 12:09:50","MalwareBazaar","APT1","SHA256","40240267d6cbbf4fd4d513383d72166585a58f9219c401aa95138f13f1841422","signature=Rhadamanthys; file=setup.exe (tag=PlugX)",""
+"2025-08-26 14:58:23","MalwareBazaar","APT1","SHA256","6a958d6293d4eb0a6ac5c6d51e4f724331e76443e6f5e71e71d1dc3c0412f6c2","signature=Plugx; file=FlStudioV24.1.1.exe (tag=PlugX)",""
+"2025-08-26 14:18:57","MalwareBazaar","APT1","SHA256","507cbfc9955d181c36020a5babe4df81b8ee8fe8bc6ca8a1b97b10d6f408fb5e","signature=; file=LicenseVersion.exe (tag=PlugX)",""
+"2025-08-26 06:19:52","MalwareBazaar","APT1","SHA256","dbd2ce81e6afa7817841043b2454b15fa75fc23ef6e4460c7f2842a573160d4e","signature=PlugX; file=3299866538aff40ca85276f87dd0cefe4eafe167bd64732d67b06af4f3349916_unpacked (tag=PlugX)",""
+"2025-08-25T23:54:44Z","Cybersixgill","APT1","Hash","ae42877face54533a0d5fa703c217f27","Confidence: 74","N/A"
+"2025-08-25T23:51:12Z","Cybersixgill","APT1","Hash","2f1798201f223713c0b41664cd0c9646","Confidence: 78","N/A"
+"2025-08-25T23:51:12Z","Cybersixgill","APT1","Hash","f1010e6a7997720539f1a99878a35d774231e46ace67d9c3d668a35591feadf5","Confidence: 78","N/A"
+"2025-08-25T23:51:12Z","Cybersixgill","APT1","Hash","20cdafd900021b5b3040e9d0af33e3e4971911d7","Confidence: 78","N/A"
+"2025-08-25 20:43:52","MalwareBazaar","APT1","SHA256","72d7af91dd80483929fa80d1302540b4decaf36551f4eaf6c362ff1e63658065","signature=NodeLoader; file=Belium V6.2.exe (tag=PlugX)",
+"2025-08-25 16:11:13","MalwareBazaar","APT1","SHA256","d4cf072a4ec325c4b06342c894eb0dd57f5d9e9e4a675bb0460ed8aaac4eff79","signature=Plugx; file=Belium V6.2.exe (tag=PlugX)",""
+"2025-08-25 12:34:24","MalwareBazaar","APT1","SHA256","362be376eeb6b823f662ab213160cc512fda3368aed2e2a8ab6f8af8837f03f1","signature=Plugx; file=Extreme Injector.exe (tag=PlugX)",""
+"2025-08-24 20:36:30","MalwareBazaar","APT1","SHA256","42cff3f3cf97e83b7312fd5bcfa4e6aca6acd46d74b60c5e68be3d2e5ad16690","signature=Plugx; file=Belium.exe (tag=PlugX)",
+"2025-08-24 18:46:45","MalwareBazaar","APT1","SHA256","21382b355d4a7397b8d05e9ae2bb922fda100da0d30a211409454978718c0f65","signature=NodeLoader; file=Ioncore.exe (tag=PlugX)",
+"2025-08-21 20:50:59","MalwareBazaar","APT1","SHA256","44331f411c9d84ffafd882f465319c504ae87665ba3db73620537cf116f17f9f","signature=Plugx; file=NexoraLi.exe (tag=PlugX)",
+"2025-08-21 13:07:11","MalwareBazaar","APT1","SHA256","52f11b7c673ab81546f4da2e1ecb57663c5ae2e0c2d2c077b0c75fd75b4bec3a","signature=Plugx; file=launcher.exe (tag=PlugX)",""
+"2025-08-20 20:16:01","MalwareBazaar","APT1","SHA256","db3e3e3e6e836405c6f5accb97a290645365bd3c36db310259103fbc50e39e6c","signature=Plugx; file=Echelon.exe (tag=PlugX)",""
+"2025-08-20 13:41:42","MalwareBazaar","APT1","SHA256","854c8a2bc48bced68b6c8d92fe3fadfc67df4f079af0a9714731c61bf3b684d6","signature=Plugx; file=FL Studio.exe (tag=PlugX)",
+"2025-08-13 15:13:36","MalwareBazaar","APT1","SHA256","441bfa53ac594f01c4f8ef146857c6bc70d67dbf4b3659e109b3f5221f2ae3e3","signature=Plugx; file=LuxuryLoader v2.exe (tag=PlugX)",""
+"2025-08-13 01:07:18","MalwareBazaar","APT1","SHA256","f0cac587aa5c5bac1d3ef6340010e1c8da45f7057dbdabf3f4a577da2d594b4a","signature=NodeLoader; file=Aeternus.exe (tag=PlugX)",""
+"2025-08-10 21:09:44","MalwareBazaar","APT1","SHA256","f4effcce32819bfe52b0698e2ec03c158f5e762ab5cc3f00c016070e59d0eb3c","signature=NodeLoader; file=Echelon.exe (tag=PlugX)",
+"2025-08-09 02:52:12","MalwareBazaar","APT1","SHA256","6ca2f6c6a4ab28c5be4f2de9911e7c03d66a25c8bc200a777fb8416720413bc6","signature=Plugx; file=Install.exe (tag=PlugX)",
+"2025-08-06 07:35:28","MalwareBazaar","APT1","SHA256","b555cc7919a0b90376cba6919e10d1dc8f78f7c67b566c30aaaed3c1b5942d93","signature=Plugx; file=Chronos.zip (tag=PlugX)",
+"2025-08-06 07:05:34","MalwareBazaar","APT1","SHA256","93f39d2c9ba3884e450052296725746f57c8f922b5a1cc64d8af33f315ef9292","signature=Plugx; file=Setup.exe (tag=PlugX)",
+"2025-08-04 22:46:47","MalwareBazaar","APT1","SHA256","ea59900f715ccbcbe962bc2cc7eb7da7b7bc9c0bb080d7db65c4c807d3794753","signature=NodeLoader; file=GameChange.exe (tag=PlugX)",
+"2025-08-03 06:55:35","MalwareBazaar","APT1","SHA256","e7653831ba1f515f04f25ce764f23fd2140bd8fdd1d6d203dd532913a238b5d5","signature=Plugx; file=AppLauncher.exe (tag=PlugX)",
+"2025-08-02 11:34:41","MalwareBazaar","APT1","SHA256","1e44a6fa4ceb0a04c99b89984dfb501453e90e29e702e5459e9c8a4a7c99d94b","signature=Plugx; file=SkinChanger.exe (tag=PlugX)",""
+"2025-08-01 23:02:00","MalwareBazaar","APT1","SHA256","86053485079f67a5626758445e8226155b9493f2a2e4d2cbf6e4b877eaae2edb","signature=Plugx; file=PhantomStart.exe (tag=PlugX)",""
+"2025-08-01 22:45:34","MalwareBazaar","APT1","SHA256","0df00b145a9a4c2b45ca0377ce972a3680da8efdfefacfb3f30e970618143c40","signature=Plugx; file=Echelon.exe (tag=PlugX)",
+"2025-08-01 05:36:51","MalwareBazaar","APT1","SHA256","8c4322b27a96209b64b2b6d33fa53807460806f602222e5f8369ca5e476d9e05","signature=Plugx; file=Install.exe (tag=PlugX)",""
+"2025-07-30 18:30:08","MalwareBazaar","APT1","SHA256","aded9653a189b78edb5919c59484b6b200582d4820dc2aed09c6397f5c984042","signature=Plugx; file=launchеr-v2.4.2.exe (tag=PlugX)",""
+"2025-07-24T14:02:57Z","Cybersixgill","APT1","Hash","d50a7f142a53a8d2358137e74901e093e19047b66f42216163b91f26460d329b","Confidence: 75","N/A"
+"2025-07-24T14:02:57Z","Cybersixgill","APT1","Hash","fe3a3042890c1f11361368aeb2cc12647a6fdae1","Confidence: 75","N/A"
+"2025-07-24T14:02:57Z","Cybersixgill","APT1","Hash","d2a77b0b23773c5ff93bb54f03060286","Confidence: 75","N/A"
+"2025-07-14 18:28:17","MalwareBazaar","APT1","SHA256","aca7e809786e068bf306abb8dd0dd4d3325d8f9ffaca42bc6b5e506f681a0522","signature=Plugx; file=Launcher.exe (tag=PlugX)",
+"2025-07-13 19:42:24","MalwareBazaar","APT1","SHA256","f3ed5604ddecc21e574efcb1801ee0d8e95f0abf620426a383320f3cd199bd15","signature=Plugx; file=Echelon.exe (tag=PlugX)",
+"2025-07-12 15:55:30","MalwareBazaar","APT1","SHA256","ac09f1c2dc2760c312f3714ded922205a0ef941d55c1d62e0880ca2fde5c3b1f","signature=Plugx; file=Horion.zip (tag=PlugX)",
+"2025-07-06 00:39:03","MalwareBazaar","APT1","SHA256","371cdc1fc708463018c48d5d88fb1989a3cefd9b1e50cc79bb7f1bd567769c9e","signature=Plugx; file=ZoomClientSetup.exe (tag=PlugX)",""
+"2025-07-01 23:07:08","MalwareBazaar","APT1","SHA256","394ddff5aaa1c525cbe57305aad363b88b62ee6f7b1118e14a679b5a0813cbe7","signature=Plugx; file=build.exe (tag=PlugX)",
+"2025-06-29 15:34:49","MalwareBazaar","APT1","SHA256","95d144b39cf11b137229b5ddeb52187176f956293bd21ae4ad9bc9e704cce637","signature=Plugx; file=Kingdom Launcher.exe (tag=PlugX)",
+"2025-06-28 16:31:59","MalwareBazaar","APT1","SHA256","cb524b1b4528b3935fee028f30d420ae3cb023c8c2dac7e1cce8c489e9e30f99","signature=Plugx; file=SecuriteInfo.com.QD.Trojan.GenericKDQ.419A2DC37E.30685.31143 (tag=PlugX)",""
+"2025-06-16 20:58:58","MalwareBazaar","APT1","SHA256","b50d71f43e8508ffe6ee94e01d08f3d79a57a75bef3649f27ff58bf33289c4e2","signature=Plugx; file=7784981749911342.exe (tag=PlugX)",""
+"2025-05-03 08:50:49","MalwareBazaar","APT1","SHA256","92d1ec28099bbebaaf27dc5c8c12dc2bee8d0a73855359960b4ea536cb93f5c3","signature=Plugx; file=SecuriteInfo.com.Win32.Malware-gen.23818.13485 (tag=PlugX)",""
+"2025-05-01 19:44:32","MalwareBazaar","APT1","SHA256","548f177f0fb543ea66382c104806e48c1f0ad8e949b8d4956870c84abb46ff22","signature=PlugX; file=5a47b1.msi (tag=PlugX)",
+"2025-04-21T02:03:28Z","Cybersixgill","APT1","Hash","014542eafb792b98196954373b3fd13e60cb94fe","Confidence: 90","N/A"
+"2025-04-10 16:04:43","MalwareBazaar","APT1","SHA256","7a9adcece2cea83f59294a314a0b5fb055c87f5041c965d1c241d279777747de","signature=; file=fltLib.dll (tag=PlugX)",""
+"2025-03-24T14:04:58Z","Cybersixgill","APT1","Hash","3182bf1fe044060300238c19fe3a7708da044ba15296c376f351f7a31a0698ff","Confidence: 80","N/A"
+"2025-03-24T14:04:58Z","Cybersixgill","APT1","Hash","96c0f4955815ec1b544afbf2f348efc0ed26c98e","Confidence: 80","N/A"
+"2025-03-24T14:04:58Z","Cybersixgill","APT1","Hash","162d0181fafead74dadb5e61168bac39","Confidence: 80","N/A"
+"2024-12-16 22:21:19","MalwareBazaar","APT1","SHA256","37fb1400f683c427aeecfd12368f8fd30f1a693596eadab984fc04508c20992f","signature=PoisonIvy; file=1.dll (tag=PoisonIvy)",
+"2024-12-05 09:28:19","MalwareBazaar","APT1","SHA256","5fd9b41b62685961ea5fb26d81974ed2aadf6c29473e095840af260736b96a3d","signature=; file=hid.dll (tag=PlugX)",
+"2024-11-16 17:29:42","MalwareBazaar","APT1","SHA256","2e2ee75c036734c2186ddfbf5afc26364957d0f5701f28d913908cdfc29752f3","signature=; file=adb.rar (tag=PlugX)",""
+"2024-10-16 11:57:10","MalwareBazaar","APT1","SHA256","8071d15e5f9c1e57a9fa246f7731e76f017083fee4af80f4175e0b79dcf19a09","signature=Plugx; file=8071d15e5f9c1e57a9fa246f7731e76f017083fee4af80f4175e0b79dcf19a09 (tag=PlugX)",""
+"2024-10-07 17:08:09","MalwareBazaar","APT1","SHA256","c25b566d99d55fe5cb1a19290748dac70845663fe0f8bf78f741fe4440055551","signature=PlugX; file=Adobe-Setup.msi (tag=PlugX)",
+"2024-09-20 15:26:39","MalwareBazaar","APT1","SHA256","c25b3a3d7779cb89772454a756ce48ed3744cf233564d309b6f8d19bd8e26fa4","signature=PlugX; file=zzmopq.dll (tag=PlugX)",
+"2024-09-20 15:26:18","MalwareBazaar","APT1","SHA256","507aa944d77806b3f24a3337729b52168808e8d469e5253cbf889cdaabb5254e","signature=PlugX; file=5ec990.msi (tag=PlugX)",""
+"2024-09-14 02:39:36","MalwareBazaar","APT1","SHA256","eb84360ca4e33b8bb60df47ab5ce962501ef3420bc7aab90655fd507d2ffcedd","signature=PoisonIvy; file=Lab03-01.exe (tag=PoisonIvy)",
+"2024-09-04 16:04:04","MalwareBazaar","APT1","SHA256","7831e1f23a0db14de5a031598bce081b346d9b145563e5253cbc042c9b7ab95a","signature=PlugX; file=hid.dll (tag=PlugX)",
+"2024-08-27 11:24:06","MalwareBazaar","APT1","SHA256","3fd019d3bc905bc41e760a00ce4748e25b7ba660dd08a96181a4a60671a05f5b","signature=PoisonIvy; file=3fd019d3bc905bc41e760a00ce4748e25b7ba660dd08a96181a4a60671a05f5b (tag=PoisonIvy)",""
+"2024-08-22T20:08:45Z","Cybersixgill","APT1","Hash","5a9f78f075a3a5f6442d2b956e499330502eb641","Confidence: 60","N/A"
+"2024-08-21 17:48:49","MalwareBazaar","APT1","SHA256","ee6febf6f1a088dd965ba800989fcf27e2392454c15370f3231a8cefd7934969","signature=PlugX; file=msedge_pwa_launcher.exe (tag=PlugX)",""
+"2024-08-12 20:58:55","MalwareBazaar","APT1","SHA256","86ef578ca5923119e65049f3d26bff7ea41cea12f8c425f06786b406c8dfaf9a","signature=PoisonIvy; file=Helpstore.exe (tag=PoisonIvy)",
+"2024-08-01 23:34:51","MalwareBazaar","APT1","SHA256","6a763b5fd967351959d3114a239a008f051c14d6cb9e7faad478547dcfa53c2b","signature=Plugx; file=SecuriteInfo.com.Trojan.Crypt.19956.21636 (tag=PlugX)",
+"2024-08-01 15:56:20","MalwareBazaar","APT1","SHA256","787068dbddb206099e05a8d05d203706b9345340db7331d1eb5aeae1419afcb9","signature=; file=Meeting invitation.zip (tag=PlugX)",""
+"2024-06-06 07:36:21","MalwareBazaar","APT1","SHA256","51d38688ae91d2f1dd91a042861073491989b2cbcd4a85ab6ff92948c2d1ddf9","signature=PlugX; file=uleuodmm.msi (tag=PlugX)",""
+"2024-06-05 09:41:44","MalwareBazaar","APT1","SHA256","12e69a8cbb43fd1cb8bbcbc8ea4e93a11096244753c6e463201db4086e346ca2","signature=Poisonivy; file=SecuriteInfo.com.Trojan.Siggen23.13161.15240.4676 (tag=PoisonIvy)",
+"2024-04-04 15:46:41","MalwareBazaar","APT1","SHA256","6b35d16ab649078c24b669aafaafdcafc5a527b9a7a9e5ac1ad90d751e377a41","signature=PlugX; file=xlbrowser.dll (tag=PlugX)",""
+"2024-03-08 15:57:46","MalwareBazaar","APT1","SHA256","9e4ea8ec8b01400bf65120de422df7a1bf3405eb9c526567302f5df9a0105b7e","signature=Poisonivy; file=hiao0k.exe (tag=PoisonIvy)",
+"2024-03-08 15:42:52","MalwareBazaar","APT1","SHA256","a92d321b4a095f295fc30816a53b6076b184ba87553d874b268aebb48c2fc570","signature=Poisonivy; file=baif4.exe (tag=PoisonIvy)",
+"2024-02-20T02:56:15Z","Cybersixgill","APT1","Hash","5bc5dbe3a2ffd5ed1cd9f0c562564c8b72ae2055","Confidence: 90","N/A"
+"2024-02-20T02:56:15Z","Cybersixgill","APT1","Hash","15336340db8b73bf73a17c227eb0c59b5a4dece2","Confidence: 90","N/A"
+"2024-02-19T09:59:54Z","Cybersixgill","APT1","Hash","31529b8b86d4b6a99d8f3b5f4b1f1b67f3c713c11b83b71d8df7d963275c5203","Confidence: 90","N/A"
+"2024-02-14T04:14:20Z","Cybersixgill","APT1","Hash","995239a00a5220fae691199692aea70967f6cc14","Confidence: 90","N/A"
+"2024-02-14T04:14:20Z","Cybersixgill","APT1","Hash","480e7039da17306a7eec814571f2b9bd","Confidence: 90","N/A"
+"2024-02-08T07:30:31Z","Cybersixgill","APT1","Hash","0152de452f92423829e041af2d783e3f","Confidence: 90","N/A"
+"2024-01-03 09:41:24","MalwareBazaar","APT1","SHA256","25533568bd447e6b298d644fe78779096102bd5d4ad35d5ae2116c316b63ebb1","signature=Poisonivy; file=11.exe (tag=PoisonIvy)",
+"2023-12-28T13:15:00Z","Cybersixgill","APT1","Hash","a291305f181e24fe7194154b4cd355ccb039d5765709c80999e392efec69c90a","Confidence: 90","N/A"
+"2023-12-28T13:15:00Z","Cybersixgill","APT1","Hash","201e4e9910dcdc8c4ffad84b60b328978db8848d265c0b9ba8473cf65dcd0c41","Confidence: 90","N/A"
+"2023-12-28T13:15:00Z","Cybersixgill","APT1","Hash","dd29e8d47dde124c7d14e614e03ccaab3ecaa50e0a0bef985ed59e98928bc13d","Confidence: 90","N/A"
+"2023-11-30 19:39:34","MalwareBazaar","APT1","SHA256","66bca3f92841b7bffae4d27c3ddb5adbf8084ad40ee0edda1edc1d25f5e1b967","signature=PlugX; file=66bca3f92841b7bffae4d27c3ddb5adbf8084ad40ee0edda1edc1d25f5e1b967.file (tag=PlugX)",""
+"2023-11-08 13:44:40","MalwareBazaar","APT1","SHA256","45d89ec308ca69ab82df464b7166f53aed8be43f3702c65a711bcf72bb72974f","signature=Plugx; file=45d89ec308ca69ab82df464b7166f53aed8be43f3702c65a711bcf72bb72974f (tag=PlugX)",
+"2023-11-08 13:44:16","MalwareBazaar","APT1","SHA256","87d289e296b3779a744d2ceac8ef592c510b7c6a34157a7f88ba19fa36113fbc","signature=Plugx; file=87d289e296b3779a744d2ceac8ef592c510b7c6a34157a7f88ba19fa36113fbc (tag=PlugX)",""
+"2023-11-08 13:42:50","MalwareBazaar","APT1","SHA256","6de45d12ecbb43adb995681c0fa32fef9aeeebc3b645105ce9d0d94a9781fdc8","signature=Plugx; file=6de45d12ecbb43adb995681c0fa32fef9aeeebc3b645105ce9d0d94a9781fdc8 (tag=PlugX)",
+"2023-09-24T14:05:10Z","Cybersixgill","APT1","Hash","6e9e869db832bd70f6e6103ddc9604345fd8f71c","Confidence: 75","N/A"
+"2023-09-24T14:05:10Z","Cybersixgill","APT1","Hash","0455652838addb0884de69719465ebd6","Confidence: 75","N/A"
+"2023-09-24T14:01:52Z","Cybersixgill","APT1","Hash","5b7fa45977d4378397854ee8595bb13f7fff93fbb7c301141862d4943066bb64","Confidence: 60","N/A"
+"2023-09-24T14:01:52Z","Cybersixgill","APT1","Hash","b42fef6a5eee64c95e5c6f2f100165737bf0d438","Confidence: 60","N/A"
+"2023-09-24T14:01:52Z","Cybersixgill","APT1","Hash","84514715e1689ccac734a6c1a9759d34","Confidence: 60","N/A"
+"2023-08-26 10:35:18","MalwareBazaar","APT1","SHA256","3259e6cd69dd0acd2c2d257865859302f3910b077775490cd281ac09fe51338c","signature=Poisonivy; file=SecuriteInfo.com.Trojan.DownLoader14.22811.25335.22863 (tag=PoisonIvy)",
+"2023-08-15 20:10:00","MalwareBazaar","APT1","SHA256","31f73090908b52bfd810589fc8d6a6212edda8bd2c378e3a6d556221b92922a2","signature=PlugX; file=data.dll (tag=PlugX)",""
+"2023-02-24 18:58:08","MalwareBazaar","APT1","SHA256","86a77f7599cfc657dcd4e8c7da3fca28831b1c55d6d7bbdcd0530c8178828e25","signature=PoisonIvy; file=PDF_Voucher.vbs (tag=PoisonIvy)",""
+"2023-02-24 13:38:26","MalwareBazaar","APT1","SHA256","bc4096fc2241907a747764d2f4407823d5ca9a8367f5ce07610a3b070b18e2b4","signature=PoisonIvy; file=PDF_Reserva.vbs (tag=PoisonIvy)",""
+"2023-01-09 08:29:13","MalwareBazaar","APT1","SHA256","05cfaec6d958fbfa4f98284309bf1060aca69d7d4a464aa2e5647e73abd0a8ca","signature=PlugX; file=230105-nr9ncsbg69_pw_infected.zip (tag=PlugX)",""
+"2022-12-21T11:34:43Z","Cybersixgill","APT1","Hash","d2b48aaec03bf32977581e7ec00834e6f58de9eb","Confidence: 75","N/A"
+"2022-12-21T11:34:43Z","Cybersixgill","APT1","Hash","5a2b42f395e836e2de823d8a19acf85ebc580b9e6b44270eee5af0ba023b91e2","Confidence: 75","N/A"
+"2022-10-20 20:02:26","MalwareBazaar","APT1","SHA256","a2a0ce67c239385c1ec1d5d29ff91a7daf91cf2b4368dc91d84dbb598becdc5d","signature=Plugx; file=a2a0ce67c239385c1ec1d5d29ff91a7daf91cf2b4368dc91d84dbb598becdc5d.bin (tag=PlugX)",""
+"2022-10-20 20:02:19","MalwareBazaar","APT1","SHA256","9aff1e12a1b447ca8ab3076f684716a859c906f9b2d0e870d59d0f06fc548d0d","signature=Plugx; file=9aff1e12a1b447ca8ab3076f684716a859c906f9b2d0e870d59d0f06fc548d0d.bin (tag=PlugX)",
+"2022-10-20 20:02:11","MalwareBazaar","APT1","SHA256","5a9468a87997f2363995e264505105f6a235b66543bb28635fb74f78704e9111","signature=Plugx; file=5a9468a87997f2363995e264505105f6a235b66543bb28635fb74f78704e9111.bin (tag=PlugX)",""
+"2022-10-03 12:21:42","MalwareBazaar","APT1","SHA256","e4b36a1d4e70d988efa2ec27e5a639be5eb0880474f746851c13e56f007a8377","signature=PoisonIvy; file=BsTool.exe (tag=PoisonIvy)",""
+"2022-10-03 12:21:36","MalwareBazaar","APT1","SHA256","a62d084b20038628de0a95906a8e9fed08ef5d345de795bc438eaeacbd6123af","signature=PoisonIvy; file=a62d084b20038628de0a95906a8e9fed08ef5d345de795bc438eaeacbd6123af (tag=PoisonIvy)",""
+"2022-09-24T14:07:28Z","Cybersixgill","APT1","Hash","ef3d04bdd68b45d0570be6f1f9e4567775490dd5","Confidence: 75","N/A"
+"2022-09-24T14:07:28Z","Cybersixgill","APT1","Hash","95e87731f2f1c60c2b1ef15c56139181408564461c0977f4ac5bb1ce14cda50a","Confidence: 75","N/A"
+"2022-09-24T14:07:28Z","Cybersixgill","APT1","Hash","c802dd3d8732d9834c5a558e9d39ed37","Confidence: 75","N/A"
+"2022-09-19 03:47:33","MalwareBazaar","APT1","SHA256","3c5d9ac0741850b5e6bf3af8c807b7ccfdb1bfc702cd75d8897a27b1387031c7","signature=PlugX; file=2021-02-16_07-49_86950b81df2003d08ae4a7869ecf88fe (tag=PlugX)",""
+"2022-08-31 05:18:23","MalwareBazaar","APT1","SHA256","6947aa04290d34cfce1448af5f5586ee12535b9761bbd55f6f5410aad3826db0","signature=PoisonIvy; file=Trojan.Win32.VBKrypt.ckbx-6947aa04290d34cfce1448af5f5586ee12535b9761bbd55f6f5410aad3826db0 (tag=PoisonIvy)",""
+"2022-08-31 05:18:00","MalwareBazaar","APT1","SHA256","4e878b60ead62faa654b222adfa5ed94674d00388835e4e21eb164d34ed9eb15","signature=PoisonIvy; file=HEUR-Trojan.Win32.Generic-4e878b60ead62faa654b222adfa5ed94674d00388835e4e21eb164d34ed9eb15 (tag=PoisonIvy)",
+"2022-08-31 02:16:25","MalwareBazaar","APT1","SHA256","d31b2bc25b3d1286edf43149286d5be8121a3f73b830dccab120b66c4d7f9a88","signature=PoisonIvy; file=Trojan.Win32.VBKrypt.uuvz-d31b2bc25b3d1286edf43149286d5be8121a3f73b830dccab120b66c4d7f9a88 (tag=PoisonIvy)",""
+"2022-08-12 06:45:13","MalwareBazaar","APT1","SHA256","4094db927542c7b1d4a770d30231fcc34687a47058821001f4a46808692fcdba","signature=Plugx; file=4094db927542c7b1d4a770d30231fcc34687a47058821001f4a46808692fcdba (tag=PlugX)",""
+"2022-08-12 06:44:53","MalwareBazaar","APT1","SHA256","ac758e6ad91120d1c98248ed2582c1ab472d83ef354f9c4b2f62167a699565f2","signature=PlugX; file=ac758e6ad91120d1c98248ed2582c1ab472d83ef354f9c4b2f62167a699565f2 (tag=PlugX)",""
+"2022-07-15 14:45:26","MalwareBazaar","APT1","SHA256","d6a97f90030a981a1495196f2fdf99f70d333abe165eecafc5b08302f70a6ea3","signature=PlugX; file=kdump64.dll (tag=PlugX)",""
+"2022-07-01 11:31:52","MalwareBazaar","APT1","SHA256","e99ce4fc9697335549cab26717d75abbaf75895c3cd0e77a844769fe9674e3bc","signature=PlugX; file=e99ce4fc9697335549cab26717d75abbaf75895c3cd0e77a844769fe9674e3bc (tag=PlugX)",
+"2022-07-01 11:31:09","MalwareBazaar","APT1","SHA256","c9f7248e64b531031822e3cda468bf52fcfe169ad15d7d8ddf379cb27ad8b63b","signature=PlugX; file=c9f7248e64b531031822e3cda468bf52fcfe169ad15d7d8ddf379cb27ad8b63b (tag=PlugX)",""
+"2022-04-12 12:27:55","MalwareBazaar","APT1","SHA256","f74fddab404e8ea4b99143cef693822b21f069633cd5a458e9fa49692e29ae68","signature=PoisonIvy; file=vbs.vbs (tag=PoisonIvy)",
+"2022-04-11 22:15:05","MalwareBazaar","APT1","SHA256","8fcfbcab9f13ddc4989295f374607020b0624b3936a48c8f0d532edf8e7d14cc","signature=PoisonIvy; file=8fcfbcab9f13ddc4989295f374607020b0624b3936a48c8f0d532edf8e7d14cc (tag=PoisonIvy)",
+"2022-03-29 09:36:36","MalwareBazaar","APT1","SHA256","344fc6c3211e169593ab1345a5cfa9bcb46a4604fe61ab212c9316c0d72b0865","signature=PlugX; file=talisman (tag=PlugX)",""
+"2022-03-03 08:32:31","MalwareBazaar","APT1","SHA256","2b7e4e5758699f924f50615e8fe48e13bf428d7aa1fcbfb2ed4f64a0fd6a8f93","signature=TrochilusRAT; file=2b7e4e5758699f924f50615e8fe48e13bf428d7aa1fcbfb2ed4f64a0fd6a8f93.exe (tag=PlugX)",
+"2022-02-22 08:32:56","MalwareBazaar","APT1","SHA256","a8e2b38c576bf19f6b0bed69c85c2a64445337087257cf566388f7b0d6d583a3","signature=PlugX; file=a8e2b38c576bf19f6b0bed69c85c2a64445337087257cf566388f7b0d6d583a3 (tag=PlugX)",
+"2022-02-22 08:32:49","MalwareBazaar","APT1","SHA256","8df2949d77aff0ef84af7c2a892602e05d3518d85b87fa5ed56493199efd2143","signature=PlugX; file=8df2949d77aff0ef84af7c2a892602e05d3518d85b87fa5ed56493199efd2143 (tag=PlugX)",
+"2022-02-22 08:32:46","MalwareBazaar","APT1","SHA256","e94d4acd1b3de7df03878ba8fef4080c08150c9485fef05cc87c13efd8f71c03","signature=PlugX; file=e94d4acd1b3de7df03878ba8fef4080c08150c9485fef05cc87c13efd8f71c03 (tag=PlugX)",
+"2022-02-22 08:28:53","MalwareBazaar","APT1","SHA256","9857e40be1fb5b9b6db93dc03f96f6b3ff0ffab85af7944dddcac0e37775ab02","signature=PlugX; file=9857e40be1fb5b9b6db93dc03f96f6b3ff0ffab85af7944dddcac0e37775ab02 (tag=PlugX)",
+"2022-02-22 08:28:50","MalwareBazaar","APT1","SHA256","6e6bfcbc22644d060670718dea2c5a7d860edc55cf8bd6100e277e53a8b0fc92","signature=PlugX; file=6e6bfcbc22644d060670718dea2c5a7d860edc55cf8bd6100e277e53a8b0fc92 (tag=PlugX)",""
+"2022-02-04 12:52:19","MalwareBazaar","APT1","SHA256","f650372e00f6c16633c4e07d202d6c1d5e94c6dd7e19154498654689c90cf278","signature=PoisonIvy; file=myfile3.exe (tag=PoisonIvy)",""
+"2022-02-04 12:32:58","MalwareBazaar","APT1","SHA256","b7943b81e7cedd89e9d0e38813c5773b6e02878571cfa6f55599777aea9313cf","signature=PoisonIvy; file=Curriculum Vitae-PDF.vbs (tag=PoisonIvy)",""
+"2022-01-11 04:51:24","MalwareBazaar","APT1","SHA256","382b3d3bb1be4f14dbc1e82a34946a52795288867ed86c6c43e4f981729be4fc","signature=PlugX; file=#TokyoX #RAT #PlugX.sample (tag=PlugX)",""
+"2021-12-17 15:17:47","MalwareBazaar","APT1","SHA256","97193126a40ebcce9e9210c32a243e18974a01506e071aeecf8c3777da405e79","signature=PoisonIvy; file=Curriculum Vitae.vbs (tag=PoisonIvy)",
+"2021-09-24T14:05:47Z","Cybersixgill","APT1","Hash","7d8319a8387d285eed3c612fe52183e71027daa7","Confidence: 75","N/A"
+"2021-09-24T14:05:47Z","Cybersixgill","APT1","Hash","9281cfcd69f48726581446ade8585e01f52d6c929c4927b8aad544790024eb2f","Confidence: 75","N/A"
+"2021-09-24T14:05:47Z","Cybersixgill","APT1","Hash","5064dc5915a46bfa472b043be9d0f52f","Confidence: 75","N/A"
+"2021-09-24T14:03:56Z","Cybersixgill","APT1","Hash","a532e8cab3a68618d2d91f65e45c283a","Confidence: 75","N/A"
+"2021-09-24T14:03:56Z","Cybersixgill","APT1","Hash","583b10ab0ff4dae130fbc672d0b211e60879478e8dac43cfad09e825b5cc96b6","Confidence: 75","N/A"
+"2021-09-24T14:03:52Z","Cybersixgill","APT1","Hash","4baf724bb007c22cb7ab89e1454074c3","Confidence: 75","N/A"
+"2021-09-24T14:03:52Z","Cybersixgill","APT1","Hash","b2ba0997efbde82d9109aed7ab1d8905ae9c14bb37be1e07351d20ae91242356","Confidence: 75","N/A"
+"2021-09-24T14:02:12Z","Cybersixgill","APT1","Hash","e47e339aab48bb54ab370311aecc990d6558047eb015f73615aa0c6ae1a7bfdf","Confidence: 75","N/A"
+"2021-08-06 12:19:21","MalwareBazaar","APT1","SHA256","dce920f5db90efecc7fb7a6b6399c80fc83e3f1251f160cd1295b6a4b67125d4","signature=PlugX; file=dce920f5db90efecc7fb7a6b6399c80fc83e3f1251f160cd1295b6a4b67125d4.dll (tag=PlugX)",
+"2021-08-06 12:19:12","MalwareBazaar","APT1","SHA256","d1d3cf433e871d3aa6836ddb87578cbf494603f6f4a8918f36aea5816c6ce5e0","signature=PlugX; file=d1d3cf433e871d3aa6836ddb87578cbf494603f6f4a8918f36aea5816c6ce5e0.dll (tag=PlugX)",
+"2021-08-06 12:19:02","MalwareBazaar","APT1","SHA256","c09d86efdc1486de2dd00fdc8900ee9efc307017369b3900ce7b35e708dfcc50","signature=PlugX; file=c09d86efdc1486de2dd00fdc8900ee9efc307017369b3900ce7b35e708dfcc50.dll (tag=PlugX)",
+"2021-08-06 12:18:54","MalwareBazaar","APT1","SHA256","b82752e798eec15d7e5ff9bbef1e9eabb2ee862ea904b327f4322fa55a18cc3f","signature=PlugX; file=b82752e798eec15d7e5ff9bbef1e9eabb2ee862ea904b327f4322fa55a18cc3f.dll (tag=PlugX)",
+"2021-08-06 12:18:38","MalwareBazaar","APT1","SHA256","ac21a70e58a63e64246359af637b68b44e851f6d781e32dcb2ce06efc23d3ea8","signature=PlugX; file=ac21a70e58a63e64246359af637b68b44e851f6d781e32dcb2ce06efc23d3ea8.dll (tag=PlugX)",""
+"2021-08-06 12:18:30","MalwareBazaar","APT1","SHA256","98d17731ce6eba2772c94fbe5b740cbd83b5d5b0da6809c265ff3dc0da391163","signature=PlugX; file=98d17731ce6eba2772c94fbe5b740cbd83b5d5b0da6809c265ff3dc0da391163.dll (tag=PlugX)",
+"2021-08-06 12:18:21","MalwareBazaar","APT1","SHA256","24fc6e7c22402cb67de02d3cffb6f9659db3a7c25e74c87c90f87dfaa6d140e0","signature=PlugX; file=24fc6e7c22402cb67de02d3cffb6f9659db3a7c25e74c87c90f87dfaa6d140e0.dll (tag=PlugX)",""
+"2021-08-06 12:18:07","MalwareBazaar","APT1","SHA256","4c889f5fdffe7b6145b59232c1da5966bdeb57b6d21f38eebe12015903d456f6","signature=PlugX; file=4c889f5fdffe7b6145b59232c1da5966bdeb57b6d21f38eebe12015903d456f6.dll (tag=PlugX)",
+"2021-08-06 12:17:25","MalwareBazaar","APT1","SHA256","2f58a869711d2b28e6ecaac25cc2166daa46f7adfb719b7dd334e01c1474ca9b","signature=PlugX; file=2f58a869711d2b28e6ecaac25cc2166daa46f7adfb719b7dd334e01c1474ca9b.dll (tag=PlugX)",""
+"2021-08-02 09:32:36","MalwareBazaar","APT1","SHA256","b3c735d3e8c4fa91ca3e1067b19f54f00e94e79b211bec8dc4c044d93c119635","signature=; file=b3c735d3e8c4fa91ca3e1067b19f54f00e94e79b211bec8dc4c044d93c119635 (tag=PlugX)",""
+"2021-08-02 09:32:31","MalwareBazaar","APT1","SHA256","3d9d004e82553f0596764f858345dcc7d2baee875fd644fa573a37e0904bde88","signature=; file=3d9d004e82553f0596764f858345dcc7d2baee875fd644fa573a37e0904bde88 (tag=PlugX)",
+"2021-08-02 09:32:24","MalwareBazaar","APT1","SHA256","b5c0db62184325ffbe2b8ef7e6f13f5d5926deac331ef6d542c5fa50144e0280","signature=; file=b5c0db62184325ffbe2b8ef7e6f13f5d5926deac331ef6d542c5fa50144e0280 (tag=PlugX)",
+"2021-08-02 09:32:19","MalwareBazaar","APT1","SHA256","e2d21b5e34189fa1aca39a13a405c792b19b6edf020907fb9840af1aafbaa2f4","signature=; file=e2d21b5e34189fa1aca39a13a405c792b19b6edf020907fb9840af1aafbaa2f4 (tag=PlugX)",
+"2021-08-02 09:32:14","MalwareBazaar","APT1","SHA256","589e87d4ac0a2c350e98642ac53f4940fcfec38226c16509da21bb551a8f8a36","signature=; file=589e87d4ac0a2c350e98642ac53f4940fcfec38226c16509da21bb551a8f8a36 (tag=PlugX)",
+"2021-08-02 09:32:08","MalwareBazaar","APT1","SHA256","f224f513c1bad901bf05c719003b1e605543d2a32cfe5aa580f77a63ec882c4c","signature=; file=f224f513c1bad901bf05c719003b1e605543d2a32cfe5aa580f77a63ec882c4c (tag=PlugX)",
+"2021-08-02 09:31:35","MalwareBazaar","APT1","SHA256","1833943858e3d7fe1cec0459090f7f3b2bc2d80c774abc4b45b52529a3011e85","signature=; file=1833943858e3d7fe1cec0459090f7f3b2bc2d80c774abc4b45b52529a3011e85 (tag=PlugX)",
+"2021-08-02 09:31:30","MalwareBazaar","APT1","SHA256","3e8e8c2951edd51b3a97b3fc996060ba63ebdaaffa8adfbd374b3693c0e97aee","signature=; file=3e8e8c2951edd51b3a97b3fc996060ba63ebdaaffa8adfbd374b3693c0e97aee (tag=PlugX)",""
+"2021-08-02 09:31:24","MalwareBazaar","APT1","SHA256","3fbbf30015b64b50912c09c43052ac48b1983e869cebfb88dd1271fcb4e60d10","signature=; file=3fbbf30015b64b50912c09c43052ac48b1983e869cebfb88dd1271fcb4e60d10 (tag=PlugX)",""
+"2021-08-02 09:31:20","MalwareBazaar","APT1","SHA256","70457e0cc1b5be30a8774a2528724bc8041969b2c7dca22b64775a4fba3d5501","signature=; file=70457e0cc1b5be30a8774a2528724bc8041969b2c7dca22b64775a4fba3d5501 (tag=PlugX)",""
+"2021-08-02 09:31:14","MalwareBazaar","APT1","SHA256","af70349513573ef003ca13b88dd6858f843b29525b9e053c89f8508866a1acb0","signature=; file=af70349513573ef003ca13b88dd6858f843b29525b9e053c89f8508866a1acb0 (tag=PlugX)",""
+"2021-08-02 09:30:43","MalwareBazaar","APT1","SHA256","dc42d5d3c7c166a54dffec9e7c36b10a0735432948f7c333b306e27bfbef336c","signature=; file=dc42d5d3c7c166a54dffec9e7c36b10a0735432948f7c333b306e27bfbef336c (tag=PlugX)",
+"2021-08-02 09:30:38","MalwareBazaar","APT1","SHA256","e74182800eb247a9e0dfb7e6274dec2839571b650143bcd30423abe10f8daac4","signature=; file=e74182800eb247a9e0dfb7e6274dec2839571b650143bcd30423abe10f8daac4 (tag=PlugX)",""
+"2021-08-02 09:22:27","MalwareBazaar","APT1","SHA256","f949b78b040cbfc95aafb50ef30ac3e8c16771c6b926b6f8f1efe44a1f437d51","signature=; file=f949b78b040cbfc95aafb50ef30ac3e8c16771c6b926b6f8f1efe44a1f437d51 (tag=PlugX)",
+"2021-08-02 09:22:22","MalwareBazaar","APT1","SHA256","a9511cdaa96ed59de73a7a7c7dc375de204bee7a9511c5ee71bf013010324a91","signature=PlugX; file=a9511cdaa96ed59de73a7a7c7dc375de204bee7a9511c5ee71bf013010324a91 (tag=PlugX)",""
+"2021-08-02 09:22:17","MalwareBazaar","APT1","SHA256","769863ec7ba1e28a77c7cc0bda19bb79e6869cae63ecdfab97c669fc40348a0c","signature=Adware.Generic; file=769863ec7ba1e28a77c7cc0bda19bb79e6869cae63ecdfab97c669fc40348a0c (tag=PlugX)",""
+"2021-08-02 09:22:09","MalwareBazaar","APT1","SHA256","9699c3f5dd99345b04aaf5e7dc5002de7dbabf922e43125a10eb3f5fc574e51e","signature=PlugX; file=9699c3f5dd99345b04aaf5e7dc5002de7dbabf922e43125a10eb3f5fc574e51e (tag=PlugX)",
+"2021-08-02 09:22:02","MalwareBazaar","APT1","SHA256","792eba5ba91a52bfb3b369107f38fb9a7e7b7987cd870f465338eae59e81f3f6","signature=PlugX; file=792eba5ba91a52bfb3b369107f38fb9a7e7b7987cd870f465338eae59e81f3f6 (tag=PlugX)",""
+"2021-08-02 09:21:57","MalwareBazaar","APT1","SHA256","93d33626886e97abf4087f5445b2a02738ea21d8624b3f015625cd646e9d986e","signature=PlugX; file=93d33626886e97abf4087f5445b2a02738ea21d8624b3f015625cd646e9d986e (tag=PlugX)",""
+"2021-08-02 09:21:52","MalwareBazaar","APT1","SHA256","75ad7745e2b81cb5ffc6d1e267b6c06f56f260452edf09ef4d6fd3ecad584e66","signature=Plugx; file=75ad7745e2b81cb5ffc6d1e267b6c06f56f260452edf09ef4d6fd3ecad584e66 (tag=PlugX)",""
+"2021-08-02 09:21:13","MalwareBazaar","APT1","SHA256","033c3a372d4d780faa14648c7de93a87d4584afd547609795fb7e9ba370912eb","signature=Plugx; file=033c3a372d4d780faa14648c7de93a87d4584afd547609795fb7e9ba370912eb (tag=PlugX)",""
+"2021-08-02 09:21:08","MalwareBazaar","APT1","SHA256","5c60bee8f311b67d453d793c230399c05693eaab69a4b932bf271f2ac18a74cb","signature=PlugX; file=5c60bee8f311b67d453d793c230399c05693eaab69a4b932bf271f2ac18a74cb (tag=PlugX)",""
+"2021-08-02 09:21:03","MalwareBazaar","APT1","SHA256","3cdd33dea12f21a4f222eb060e1e8ca8a20d5f6ca0fd849715f125b973f3a257","signature=Plugx; file=3cdd33dea12f21a4f222eb060e1e8ca8a20d5f6ca0fd849715f125b973f3a257 (tag=PlugX)",
+"2021-08-02 09:20:34","MalwareBazaar","APT1","SHA256","3a53bd36b24bc40bdce289d26f1b6965c0a5e71f26b05d19c7aa73d9e3cfa6ff","signature=PlugX; file=3a53bd36b24bc40bdce289d26f1b6965c0a5e71f26b05d19c7aa73d9e3cfa6ff (tag=PlugX)",
+"2021-07-28 01:40:47","MalwareBazaar","APT1","SHA256","dca32086c8c860b7388cf74d588e7679c19f131025df0ee171d8956fc5f1fe2f","signature=PlugX; file=dca32086c8c860b7388cf74d588e7679c19f131025df0ee171d8956fc5f1fe2f.bin (tag=PlugX)",""
+"2021-07-28 01:40:27","MalwareBazaar","APT1","SHA256","993950ae54175b35b19e03843f9a637ac2964f26f4c4dad803a33804f0ce299a","signature=; file=993950ae54175b35b19e03843f9a637ac2964f26f4c4dad803a33804f0ce299a.bin (tag=PlugX)",""
+"2021-07-28 01:40:08","MalwareBazaar","APT1","SHA256","2d13cfe57a3b41e9d5a8f185de9436a197dbfb21545c9fda9fdc1ba9e58be4eb","signature=PlugX; file=2d13cfe57a3b41e9d5a8f185de9436a197dbfb21545c9fda9fdc1ba9e58be4eb.bin (tag=PlugX)",""
+"2021-07-28 01:39:47","MalwareBazaar","APT1","SHA256","2c0e85b5fa257cad0eccfe7ddd65f7d2294a56d01d080697e38eac6f1016abee","signature=PlugX; file=2c0e85b5fa257cad0eccfe7ddd65f7d2294a56d01d080697e38eac6f1016abee.bin (tag=PlugX)",
+"2021-07-27 22:11:18","MalwareBazaar","APT1","SHA256","a9cbce007a7467ba1394eed32b9c1774ad09a9a9fb74eb2ccc584749273fac01","signature=PlugX; file=a9cbce007a7467ba1394eed32b9c1774ad09a9a9fb74eb2ccc584749273fac01.bin (tag=PlugX)",
+"2021-07-27 22:10:56","MalwareBazaar","APT1","SHA256","690c488a9902978f2ef05aa23d21f4fa30a52dd9d11191f9b49667cd08618d87","signature=PlugX; file=690c488a9902978f2ef05aa23d21f4fa30a52dd9d11191f9b49667cd08618d87.bin (tag=PlugX)",
+"2021-07-27 22:10:35","MalwareBazaar","APT1","SHA256","125fdf108dc1ad6f572cbdde74b0c7fa938a9adce0cc80cb5ce00f1c030b0c93","signature=PlugX; file=125fdf108dc1ad6f572cbdde74b0c7fa938a9adce0cc80cb5ce00f1c030b0c93.bin (tag=PlugX)",
+"2021-07-27 22:10:04","MalwareBazaar","APT1","SHA256","80deed939a520696968335d1bb2a9fcce7053c0156f679ba261824d0a2d44967","signature=PlugX; file=80deed939a520696968335d1bb2a9fcce7053c0156f679ba261824d0a2d44967.bin (tag=PlugX)",""
+"2021-07-27 22:09:44","MalwareBazaar","APT1","SHA256","9fffb3894b008d5a54343ccf8395a47acfe953394fffe2c58550e444ff20ec47","signature=PlugX; file=9fffb3894b008d5a54343ccf8395a47acfe953394fffe2c58550e444ff20ec47.bin (tag=PlugX)",
+"2021-07-27 22:09:21","MalwareBazaar","APT1","SHA256","3c5e2a4afe58634f45c48f4e800dc56bae3907dde308ff97740e9cd5684d1c53","signature=; file=3c5e2a4afe58634f45c48f4e800dc56bae3907dde308ff97740e9cd5684d1c53.bin (tag=PlugX)",""
+"2021-07-16 00:56:22","MalwareBazaar","APT1","SHA256","95bcc8c3d9d23289b4ff284cb685b741fe92949be35c69c1faa3a3846f1ab947","signature=PlugX; file=95bcc8c3d9d23289b4ff284cb685b741fe92949be35c69c1faa3a3846f1ab947.bin (tag=PlugX)",
+"2021-07-02 06:02:00","MalwareBazaar","APT1","SHA256","561cb93118fef1966a3233ae7ffd31017823dd5aaad5dc1b2542e717055c197a","signature=Bandook; file=COTIZACION 21.exe (tag=PoisonIvy)",""
+"2021-05-28 16:38:19","MalwareBazaar","APT1","SHA256","4c10ff11b5b417e790f089459a97e34db217097ec677eeaea49e222127db80e5","signature=Plugx; file=plugx.dll (tag=PlugX)",""
+"2021-03-18 14:20:28","MalwareBazaar","APT1","SHA256","642c17be83f9e9f693990f43a65be25e99e69b245d38da627a3e19e0eb87d79d","signature=Plugx; file=642c17be83f9e9f693990f43a65be25e99e69b245d38da627a3e19e0eb87d79d (tag=PlugX)",
+"2021-02-28 07:03:18","MalwareBazaar","APT1","SHA256","99ec328bcbd54812cedd440448412187f1237e6b8f087e3a6dec0ec5421ed2b8","signature=Plugx; file=99ec328bcbd54812cedd440448412187f1237e6b8f087e3a6dec0ec5421ed2b8 (tag=PlugX)",""
+"2021-02-23 14:30:42","MalwareBazaar","APT1","SHA256","b8100c03b15d248c12fd11e9cc3d2a7f262d573bd963148f978a674d8a8860a0","signature=Plugx; file=b8100c03b15d248c12fd11e9cc3d2a7f262d573bd963148f978a674d8a8860a0 (tag=PlugX)",
+"2021-01-07T11:11:32Z","Cybersixgill","APT1","Hash","f2e22df5e284587dc36f8041129af391","Confidence: 75","N/A"
+"2021-01-07T11:11:32Z","Cybersixgill","APT1","Hash","6c9ec01e105f92727d6acee24a0db0f3ee54b02c","Confidence: 75","N/A"
+"2020-09-24T14:03:12Z","Cybersixgill","APT1","Hash","f985022d7705d1ec575a1eef4ee32506d8b82871","Confidence: 75","N/A"
+"2020-09-24T14:03:12Z","Cybersixgill","APT1","Hash","aef2ae9b36989bab8818696de5ccd5e7","Confidence: 75","N/A"
+"2020-09-24T14:02:57Z","Cybersixgill","APT1","Hash","90cd4f920d48c05fd3cad8275223f596c6388cbd","Confidence: 75","N/A"
+"2020-09-24T14:02:57Z","Cybersixgill","APT1","Hash","fe15fc6341baad2a111462854f96a2bc","Confidence: 75","N/A"
+"2020-08-27 12:44:00","MalwareBazaar","APT1","SHA256","f631e8f0c723cccbc5b26387f4100351de2e158b6770e962733734be6ca119d5","signature=; file=plugx_decrypted_dll.bin (tag=PlugX)",""
+"2020-08-25 16:57:57","MalwareBazaar","APT1","SHA256","725e252b9a759587bffe569832c002108b57127dbdc4ed7bddfec04c6a2e1d41","signature=Plugx; file=something.exe (tag=PlugX)",""
+"2020-07-16 14:12:55","MalwareBazaar","APT1","SHA256","bb14728459929940d4a7c6fd636177faacc0a23e4f75e526f12259e78a3853e7","signature=Plugx; file=bb14728459929940d4a7c6fd636177faacc0a23e4f75e526f12259e78a3853e7 (tag=PlugX)",""
+"2020-07-06 07:28:56","MalwareBazaar","APT1","SHA256","56bb897162613acf6f05f2f3d3882ecd04c9d48991932f80afd567f09b8adc23","signature=Plugx; file=56bb897162613acf6f05f2f3d3882ecd04c9d48991932f80afd567f09b8adc23 (tag=PlugX)",""
+"2020-07-06 07:27:39","MalwareBazaar","APT1","SHA256","cd7f042222be8b97780b7db2bc9355b7b806537fc276395729862911fbee336c","signature=Plugx; file=cd7f042222be8b97780b7db2bc9355b7b806537fc276395729862911fbee336c (tag=PlugX)",""
+"2020-07-06 07:27:35","MalwareBazaar","APT1","SHA256","c5187ef23966473b2c90bd1d4cac674cd2bd8cfa9ddd193286ec252f744184b6","signature=Plugx; file=c5187ef23966473b2c90bd1d4cac674cd2bd8cfa9ddd193286ec252f744184b6 (tag=PlugX)",""
+"2020-07-06 07:27:31","MalwareBazaar","APT1","SHA256","402911708c8cd474dd4525afcda2dd33e40b5b3095e0b9c11ddd4ffe5e8a4592","signature=Plugx; file=402911708c8cd474dd4525afcda2dd33e40b5b3095e0b9c11ddd4ffe5e8a4592 (tag=PlugX)",""
+"2020-07-06 07:27:26","MalwareBazaar","APT1","SHA256","08604724f21ca4cc9f5238985dda2355587f35662683a3d89ce24d72da659c7f","signature=Plugx; file=08604724f21ca4cc9f5238985dda2355587f35662683a3d89ce24d72da659c7f (tag=PlugX)",
+"2020-07-06 07:27:22","MalwareBazaar","APT1","SHA256","7075d08fe609350e2f76ca0e16e35a9621ecb3b75955f6f296026cd3eed49a80","signature=Plugx; file=7075d08fe609350e2f76ca0e16e35a9621ecb3b75955f6f296026cd3eed49a80 (tag=PlugX)",
+"2020-07-06 07:27:14","MalwareBazaar","APT1","SHA256","349ee8c72be3d0072d39f74418c1fca72caf2de4ba5275fe4651a5e11bc5ebda","signature=Plugx; file=349ee8c72be3d0072d39f74418c1fca72caf2de4ba5275fe4651a5e11bc5ebda (tag=PlugX)",
+"2020-07-06 07:27:10","MalwareBazaar","APT1","SHA256","336d9f380898ff8175474c85be717f8357cbeeee8230ccce3fc03a29ffc7c0d7","signature=Plugx; file=336d9f380898ff8175474c85be717f8357cbeeee8230ccce3fc03a29ffc7c0d7 (tag=PlugX)",
+"2020-07-06 07:27:06","MalwareBazaar","APT1","SHA256","72790d4b08032483c16c0ca2547e469a7513c55d1019d75809d839c64806209b","signature=Plugx; file=72790d4b08032483c16c0ca2547e469a7513c55d1019d75809d839c64806209b (tag=PlugX)",
+"2020-07-06 07:27:01","MalwareBazaar","APT1","SHA256","52a698ba7845e9b18d9af79e25176bdc265221bfb75254c7979e37a00655499a","signature=Plugx; file=52a698ba7845e9b18d9af79e25176bdc265221bfb75254c7979e37a00655499a (tag=PlugX)",""
+"2020-07-06 07:26:57","MalwareBazaar","APT1","SHA256","50d0ffe48ffe81deac8f9cb852a33083791ac4423bff52ad87386295038b6aac","signature=Plugx; file=50d0ffe48ffe81deac8f9cb852a33083791ac4423bff52ad87386295038b6aac (tag=PlugX)",""
+"2020-07-06 07:26:53","MalwareBazaar","APT1","SHA256","ff3abe52b034d3740721e9d9320516c5f1a3935ac93c2536bcf2d6262a5feeb1","signature=Plugx; file=ff3abe52b034d3740721e9d9320516c5f1a3935ac93c2536bcf2d6262a5feeb1 (tag=PlugX)",""
+"2020-07-06 07:26:49","MalwareBazaar","APT1","SHA256","2139b14687565fc2f5fcfebeb72b5730f9fb425682df290abdd5c57028eb63a4","signature=Plugx; file=2139b14687565fc2f5fcfebeb72b5730f9fb425682df290abdd5c57028eb63a4 (tag=PlugX)",""
+"2020-07-06 07:26:45","MalwareBazaar","APT1","SHA256","0733e2ddf5879a24b4582fe8ed28a290f14a09134deb030667f1e52149223da4","signature=Plugx; file=0733e2ddf5879a24b4582fe8ed28a290f14a09134deb030667f1e52149223da4 (tag=PlugX)",""
+"2020-07-06 07:26:41","MalwareBazaar","APT1","SHA256","3ad3c14bb6ff9c9ae95805203ec4077de8907d3344b4f365ffce305bc54b2b8a","signature=Plugx; file=3ad3c14bb6ff9c9ae95805203ec4077de8907d3344b4f365ffce305bc54b2b8a (tag=PlugX)",""
+"2020-07-06 07:26:37","MalwareBazaar","APT1","SHA256","c05ec85aa56501ba46ef1d35fb06455e1111e6fd0ce694569f6727c34472d12c","signature=Plugx; file=c05ec85aa56501ba46ef1d35fb06455e1111e6fd0ce694569f6727c34472d12c (tag=PlugX)",
+"2020-07-06 07:26:32","MalwareBazaar","APT1","SHA256","b0144b6b820bbd7e84f82b2cbc63dfe25b858dd39f70e52efca66f5d5104046e","signature=Plugx; file=b0144b6b820bbd7e84f82b2cbc63dfe25b858dd39f70e52efca66f5d5104046e (tag=PlugX)",
+"2020-07-06 07:26:28","MalwareBazaar","APT1","SHA256","02b45b1f533cdaee54699dd1d664536c3b00ed2114f9dfeb9cb46bb2252559a9","signature=Plugx; file=02b45b1f533cdaee54699dd1d664536c3b00ed2114f9dfeb9cb46bb2252559a9 (tag=PlugX)",
+"2020-07-06 07:26:24","MalwareBazaar","APT1","SHA256","602f4705a1c15f4fc13c1a0067f8c8a9f10d6a8433e2f48f16db07f69891dae2","signature=Plugx; file=602f4705a1c15f4fc13c1a0067f8c8a9f10d6a8433e2f48f16db07f69891dae2 (tag=PlugX)",""
+"2020-07-06 07:26:15","MalwareBazaar","APT1","SHA256","08e97fb67479665d1cfbd35c978e4ee6750bceaa3ba05e333cd9a8595c211c48","signature=Plugx; file=08e97fb67479665d1cfbd35c978e4ee6750bceaa3ba05e333cd9a8595c211c48 (tag=PlugX)",""
+"2020-07-06 07:26:11","MalwareBazaar","APT1","SHA256","7d28bf3cd874f1575b93ac6d044796ee505e3aa519f7b5ac54ddf33abb3e2e46","signature=Plugx; file=7d28bf3cd874f1575b93ac6d044796ee505e3aa519f7b5ac54ddf33abb3e2e46 (tag=PlugX)",
+"2020-07-06 07:26:03","MalwareBazaar","APT1","SHA256","98ec32fa3a5e069d226d27b9fedca3f07c4765f34abfb5d6aa1e021fc787c1b6","signature=Plugx; file=98ec32fa3a5e069d226d27b9fedca3f07c4765f34abfb5d6aa1e021fc787c1b6 (tag=PlugX)",
+"2020-07-06 07:25:58","MalwareBazaar","APT1","SHA256","6feeea94219e2b7ffd3837d784201bf28ffd7bc83706401bf656550485d899cc","signature=Plugx; file=6feeea94219e2b7ffd3837d784201bf28ffd7bc83706401bf656550485d899cc (tag=PlugX)",""
+"2020-07-06 07:25:55","MalwareBazaar","APT1","SHA256","657399edf8a3bf3de375003e5a7b86d54c5c9548a3cd0bbac9a7fe4cafb3fef0","signature=Plugx; file=657399edf8a3bf3de375003e5a7b86d54c5c9548a3cd0bbac9a7fe4cafb3fef0 (tag=PlugX)",""
+"2020-07-06 07:25:51","MalwareBazaar","APT1","SHA256","20f5859a18475f5aec138c2e3bc352c94bab1e94549b67b005a743eea496788a","signature=Plugx; file=20f5859a18475f5aec138c2e3bc352c94bab1e94549b67b005a743eea496788a (tag=PlugX)",
+"2020-07-06 07:25:47","MalwareBazaar","APT1","SHA256","6f2f01b462249dfd9d173458bf0c7654ee44ccb85d80b87b05527ff78aa453cf","signature=Plugx; file=6f2f01b462249dfd9d173458bf0c7654ee44ccb85d80b87b05527ff78aa453cf (tag=PlugX)",
+"2020-07-06 07:25:42","MalwareBazaar","APT1","SHA256","4a81f35236283058a294adae9049c7ca142a9c9eb1a00549bdfe129997ad8e84","signature=Plugx; file=4a81f35236283058a294adae9049c7ca142a9c9eb1a00549bdfe129997ad8e84 (tag=PlugX)",
+"2020-07-06 07:25:38","MalwareBazaar","APT1","SHA256","bbcb454c8b4f1c487ba9d697c0451647673c0bb1e9e7d9ea5ee3e2ca0b21bb82","signature=Plugx; file=bbcb454c8b4f1c487ba9d697c0451647673c0bb1e9e7d9ea5ee3e2ca0b21bb82 (tag=PlugX)",
+"2020-07-06 07:25:34","MalwareBazaar","APT1","SHA256","dfff15bafd692a0fdaba1112db5e45bf833beded493f1f97f4264b175ade1a1c","signature=Plugx; file=dfff15bafd692a0fdaba1112db5e45bf833beded493f1f97f4264b175ade1a1c (tag=PlugX)",
+"2020-07-06 07:25:30","MalwareBazaar","APT1","SHA256","3cab8487c2cb35607ebf331468c07410c2fa474612a6be7417d2daddf1882708","signature=Plugx; file=3cab8487c2cb35607ebf331468c07410c2fa474612a6be7417d2daddf1882708 (tag=PlugX)",
+"2020-07-06 07:25:26","MalwareBazaar","APT1","SHA256","0ee45459c976a43f730545cb7b91adc22c0b5b207ebc8aebb9343f5d996bfc7b","signature=Plugx; file=0ee45459c976a43f730545cb7b91adc22c0b5b207ebc8aebb9343f5d996bfc7b (tag=PlugX)",""
+"2020-07-06 07:25:21","MalwareBazaar","APT1","SHA256","fd03393ddb54e4d99be59d8347a7c4c29ffae1db23f7f5381126bcd1d8d3e431","signature=Plugx; file=fd03393ddb54e4d99be59d8347a7c4c29ffae1db23f7f5381126bcd1d8d3e431 (tag=PlugX)",""
+"2020-07-06 07:25:17","MalwareBazaar","APT1","SHA256","ec005eec53b601d9346e8384810a025ba9cf22fff90c1bff26176aee86a820e4","signature=Plugx; file=ec005eec53b601d9346e8384810a025ba9cf22fff90c1bff26176aee86a820e4 (tag=PlugX)",
+"2020-07-06 07:25:12","MalwareBazaar","APT1","SHA256","538ec2808067fdc60c89b2ed05d2925262ca75261966e5e7ef02ad4f11d6a1b4","signature=Plugx; file=538ec2808067fdc60c89b2ed05d2925262ca75261966e5e7ef02ad4f11d6a1b4 (tag=PlugX)",
+"2020-07-06 07:25:05","MalwareBazaar","APT1","SHA256","89463e2313ad294a2fe4fb8836cbe5a8d29a2c32cf8c48e01dba9928313c668d","signature=Plugx; file=89463e2313ad294a2fe4fb8836cbe5a8d29a2c32cf8c48e01dba9928313c668d (tag=PlugX)",
+"2020-07-06 07:25:01","MalwareBazaar","APT1","SHA256","ce7d28da17a4559d2e3e764b4ab9dff8f0562637de1e36b1b2e444ba1e51595e","signature=Plugx; file=ce7d28da17a4559d2e3e764b4ab9dff8f0562637de1e36b1b2e444ba1e51595e (tag=PlugX)",
+"2020-07-06 07:24:48","MalwareBazaar","APT1","SHA256","f4f99394661d4e35273ff120a2e287bb662f043fefb5050884f60dee5f0bcae2","signature=Plugx; file=f4f99394661d4e35273ff120a2e287bb662f043fefb5050884f60dee5f0bcae2 (tag=PlugX)",
+"2020-07-06 07:24:44","MalwareBazaar","APT1","SHA256","0137c08962c82b1f9c496e55e4d9f23700ce274d6cbf1d39b4095aaf128d9595","signature=Plugx; file=0137c08962c82b1f9c496e55e4d9f23700ce274d6cbf1d39b4095aaf128d9595 (tag=PlugX)",""
+"2020-06-29 07:50:09","MalwareBazaar","APT1","SHA256","07f17e0af622f2e4a65b43ab35c7fa02ae7eb90a55a7900cfa61a25e07cd2989","signature=Plugx; file=07f17e0af622f2e4a65b43ab35c7fa02ae7eb90a55a7900cfa61a25e07cd2989 (tag=PlugX)",
+"2020-06-29 07:50:05","MalwareBazaar","APT1","SHA256","b75728ac6c25b870cb1b64ac8064ef6228914d4459c83448567822501c268056","signature=Plugx; file=b75728ac6c25b870cb1b64ac8064ef6228914d4459c83448567822501c268056 (tag=PlugX)",
+"2020-06-29 07:49:57","MalwareBazaar","APT1","SHA256","d4ed1dce401129a6316d7c630e680110b07288adb6f5d0019c348bfa0e30aa28","signature=Plugx; file=d4ed1dce401129a6316d7c630e680110b07288adb6f5d0019c348bfa0e30aa28 (tag=PlugX)",""
+"2020-06-29 07:49:54","MalwareBazaar","APT1","SHA256","cf31d9a8ee94445fb7469dc991b165731b6dc24aa8282333172fb7bbca5848ee","signature=Plugx; file=cf31d9a8ee94445fb7469dc991b165731b6dc24aa8282333172fb7bbca5848ee (tag=PlugX)",
+"2020-06-29 07:49:44","MalwareBazaar","APT1","SHA256","b76f64a5bd6248132874f34cb140a6108242269ff3997f2c7e799e00c8a7b885","signature=Plugx; file=b76f64a5bd6248132874f34cb140a6108242269ff3997f2c7e799e00c8a7b885 (tag=PlugX)",
+"2020-06-29 07:49:40","MalwareBazaar","APT1","SHA256","56a1dba4bec3d26d1a490957028fef60e8a2de119c96d006e95c41d4f2747d93","signature=Plugx; file=56a1dba4bec3d26d1a490957028fef60e8a2de119c96d006e95c41d4f2747d93 (tag=PlugX)",
+"2020-06-29 07:49:37","MalwareBazaar","APT1","SHA256","47cff821e9ed2b8ea5aa90be4b8f633253fa79ec0a012841f209fd53b826248d","signature=Plugx; file=47cff821e9ed2b8ea5aa90be4b8f633253fa79ec0a012841f209fd53b826248d (tag=PlugX)",""
+"2020-06-29 07:49:29","MalwareBazaar","APT1","SHA256","2a0bfcd23428fed96a4899938db16494f82eaebe82158c2b6356ff39edf215a5","signature=Plugx; file=2a0bfcd23428fed96a4899938db16494f82eaebe82158c2b6356ff39edf215a5 (tag=PlugX)",
+"2020-06-29 07:49:25","MalwareBazaar","APT1","SHA256","a768cfe07ad7d7e89065708b9d827d77cf86c4ba607715bcd3b85aaaa8c9dbb0","signature=Plugx; file=a768cfe07ad7d7e89065708b9d827d77cf86c4ba607715bcd3b85aaaa8c9dbb0 (tag=PlugX)",
+"2020-06-29 07:49:22","MalwareBazaar","APT1","SHA256","a4ced79fd91e52c87bcf6e126918c2d02be3824f506a799af36ba28a5d018855","signature=Plugx; file=a4ced79fd91e52c87bcf6e126918c2d02be3824f506a799af36ba28a5d018855 (tag=PlugX)",""
+"2020-06-29 07:49:18","MalwareBazaar","APT1","SHA256","9ab96db5e5fbbc4c32869f98e667b8c52bce676a4b6c1ddb07f8f735911271ac","signature=Plugx; file=9ab96db5e5fbbc4c32869f98e667b8c52bce676a4b6c1ddb07f8f735911271ac (tag=PlugX)",""
+"2020-06-29 07:49:14","MalwareBazaar","APT1","SHA256","2b272783b62f6d3fc5838d7870161779efad88f1992b2c72c8172863ee6e5003","signature=Plugx; file=2b272783b62f6d3fc5838d7870161779efad88f1992b2c72c8172863ee6e5003 (tag=PlugX)",
+"2020-06-29 07:48:33","MalwareBazaar","APT1","SHA256","ada701bdad1ba2b5c03f1ffea05bd3ed8c7f7876f1c6f4371c1170a369d33b21","signature=Plugx; file=ada701bdad1ba2b5c03f1ffea05bd3ed8c7f7876f1c6f4371c1170a369d33b21 (tag=PlugX)",""
+"2020-06-29 07:48:29","MalwareBazaar","APT1","SHA256","3085f49368890da710a0daaa829f27ab202d6e2f28c147edc8b662f602e8559d","signature=Plugx; file=3085f49368890da710a0daaa829f27ab202d6e2f28c147edc8b662f602e8559d (tag=PlugX)",""
+"2020-06-29 07:48:25","MalwareBazaar","APT1","SHA256","04b8c8a7f3cabd896287e699d9c5a81fd5b88221abaad48a8dd622a5abcff35c","signature=Plugx; file=04b8c8a7f3cabd896287e699d9c5a81fd5b88221abaad48a8dd622a5abcff35c (tag=PlugX)",
+"2020-06-29 07:47:53","MalwareBazaar","APT1","SHA256","f7b2dcd4ebfe03d70c35c3328a43e4ce3e9e8af78e266d6218f2fcd0b5810fb6","signature=Plugx; file=f7b2dcd4ebfe03d70c35c3328a43e4ce3e9e8af78e266d6218f2fcd0b5810fb6 (tag=PlugX)",
+"2020-06-29 07:47:49","MalwareBazaar","APT1","SHA256","daf960be82f0bb375ce2a3f263ba0f45afe15e21d25c6c6bac03852b65a08eb5","signature=Plugx; file=daf960be82f0bb375ce2a3f263ba0f45afe15e21d25c6c6bac03852b65a08eb5 (tag=PlugX)",""
+"2020-06-29 07:47:45","MalwareBazaar","APT1","SHA256","719e08e55d028e8c7afa297d165865a5edcb41468de2ebf62c676bc2d920559e","signature=Plugx; file=719e08e55d028e8c7afa297d165865a5edcb41468de2ebf62c676bc2d920559e (tag=PlugX)",""
+"2020-06-29 07:47:41","MalwareBazaar","APT1","SHA256","ec94f6c1b37abdaaa1de4127d6719ed353dcc7d0218d9b840c794f3649bc3e82","signature=Plugx; file=ec94f6c1b37abdaaa1de4127d6719ed353dcc7d0218d9b840c794f3649bc3e82 (tag=PlugX)",
+"2020-06-29 07:47:34","MalwareBazaar","APT1","SHA256","d5102bc6aa18b89f4d180a79bb8d43e43b95cb6022a34155b6cf140b4c9d5310","signature=Plugx; file=d5102bc6aa18b89f4d180a79bb8d43e43b95cb6022a34155b6cf140b4c9d5310 (tag=PlugX)",
+"2020-06-20 13:41:57","MalwareBazaar","APT1","SHA256","b24be6e674a99aa4bf6852e5e0f4983c1d0668d3582d514acc7ca37fafc67cc1","signature=Plugx; file=pand.ex_ (tag=PlugX)",
+"2020-06-17 09:37:30","MalwareBazaar","APT1","SHA256","71ebcfb47fd820c81a3abf206d8b5c93d869a8edf7059dcc8307d4f08904e7ec","signature=Plugx; file=71ebcfb47fd820c81a3abf206d8b5c93d869a8edf7059dcc8307d4f08904e7ec (tag=PlugX)",
+"2020-06-17 09:37:26","MalwareBazaar","APT1","SHA256","69c9f72436adaae31f2d2f2d54151c461c7aeef8d8ad431b13b15810ac651d61","signature=Plugx; file=69c9f72436adaae31f2d2f2d54151c461c7aeef8d8ad431b13b15810ac651d61 (tag=PlugX)",
+"2020-06-17 09:37:21","MalwareBazaar","APT1","SHA256","6c63beb92a2d0acc64106fb8a6b8e3a42ea67d4badcb52946704005815d42450","signature=Plugx; file=6c63beb92a2d0acc64106fb8a6b8e3a42ea67d4badcb52946704005815d42450 (tag=PlugX)",
+"2020-06-17 09:37:17","MalwareBazaar","APT1","SHA256","620960e4fda2f27f6f1e822918f1ace6765da0f0103a96ea588bed4d14b80a2f","signature=Plugx; file=620960e4fda2f27f6f1e822918f1ace6765da0f0103a96ea588bed4d14b80a2f (tag=PlugX)",""
+"2020-06-17 09:36:52","MalwareBazaar","APT1","SHA256","3d9e01fa9c58c2eea39c8e2c0c9a70e2fb253a346ecc9763b1d2d1c8e35e607a","signature=Plugx; file=3d9e01fa9c58c2eea39c8e2c0c9a70e2fb253a346ecc9763b1d2d1c8e35e607a (tag=PlugX)",""
+"2020-06-17 09:36:44","MalwareBazaar","APT1","SHA256","ed39e3bc04e582b209268c88620fea1322840b6d8e9094a035f3c1431a74e683","signature=Plugx; file=ed39e3bc04e582b209268c88620fea1322840b6d8e9094a035f3c1431a74e683 (tag=PlugX)",
+"2020-06-17 09:36:41","MalwareBazaar","APT1","SHA256","e1f6c93202f6bae413fcb09c0e56f6f43fd015d70e3e7108eab4185b47d05966","signature=Plugx; file=e1f6c93202f6bae413fcb09c0e56f6f43fd015d70e3e7108eab4185b47d05966 (tag=PlugX)",
+"2020-06-17 09:36:37","MalwareBazaar","APT1","SHA256","e3bb6d1978bc41d114169e29b10e8560fe558d4171a3a52523efb588569434e5","signature=Plugx; file=e3bb6d1978bc41d114169e29b10e8560fe558d4171a3a52523efb588569434e5 (tag=PlugX)",""
+"2020-06-17 09:36:33","MalwareBazaar","APT1","SHA256","19c62b25649b88f934ccf618a8ce6a49eb5439ccf5559dbccbf494a793a7ba77","signature=Plugx; file=19c62b25649b88f934ccf618a8ce6a49eb5439ccf5559dbccbf494a793a7ba77 (tag=PlugX)",
+"2020-06-17 09:36:29","MalwareBazaar","APT1","SHA256","5614bd0a2e2c2ca4194e99e2f848535fa9a16157bd78cae268cf2b3eda6e54c2","signature=Plugx; file=5614bd0a2e2c2ca4194e99e2f848535fa9a16157bd78cae268cf2b3eda6e54c2 (tag=PlugX)",
+"2020-06-17 09:36:25","MalwareBazaar","APT1","SHA256","3f0261bc6dfdea2efd3ee8df662a1408629878a50d212bba105056b9cf865e76","signature=Plugx; file=3f0261bc6dfdea2efd3ee8df662a1408629878a50d212bba105056b9cf865e76 (tag=PlugX)",
+"2020-06-17 09:36:17","MalwareBazaar","APT1","SHA256","8e1f1e34c135c5238a28623d59bbb7324792013c603072087af75ac317c19c4b","signature=Plugx; file=8e1f1e34c135c5238a28623d59bbb7324792013c603072087af75ac317c19c4b (tag=PlugX)",""
+"2020-06-17 09:36:05","MalwareBazaar","APT1","SHA256","ee427fc47fdc63f331cbb372dc666309c8e23a50e6b3128f14b3c03a264e7c71","signature=Plugx; file=ee427fc47fdc63f331cbb372dc666309c8e23a50e6b3128f14b3c03a264e7c71 (tag=PlugX)",
+"2020-06-17 08:44:37","MalwareBazaar","APT1","SHA256","866b315fd2b567909328f3b63fa6c0dc25f09a00c450e9eac1b8861a7bac10c6","signature=Plugx; file=866b315fd2b567909328f3b63fa6c0dc25f09a00c450e9eac1b8861a7bac10c6 (tag=PlugX)",
+"2020-06-16 09:43:53","MalwareBazaar","APT1","SHA256","b687ae4b7ca8ff0763ef0dc95ff716e924d9585c9dbfde531bad44bd685ae070","signature=Plugx; file=b687ae4b7ca8ff0763ef0dc95ff716e924d9585c9dbfde531bad44bd685ae070 (tag=PlugX)",
+"2020-06-16 09:43:49","MalwareBazaar","APT1","SHA256","af3fc65791861af1dfeb759654edadfd7a4690d6c27987805933baf695226977","signature=Plugx; file=af3fc65791861af1dfeb759654edadfd7a4690d6c27987805933baf695226977 (tag=PlugX)",""
+"2020-06-16 09:43:45","MalwareBazaar","APT1","SHA256","8074d5eb27297c5e59d02d9b403adc78f6e7aaced7e0f8c82464121f43729434","signature=Plugx; file=8074d5eb27297c5e59d02d9b403adc78f6e7aaced7e0f8c82464121f43729434 (tag=PlugX)",""
+"2020-06-16 09:43:38","MalwareBazaar","APT1","SHA256","bb04f7fc66a92ee8b3ed599a2946a61080604545c2a025282440df92158c85cf","signature=Plugx; file=bb04f7fc66a92ee8b3ed599a2946a61080604545c2a025282440df92158c85cf (tag=PlugX)",
+"2020-06-16 09:43:33","MalwareBazaar","APT1","SHA256","ad7b5351f314597de8675eba458364ea11b7360a2ea8768d2e176fb305b014c8","signature=Plugx; file=ad7b5351f314597de8675eba458364ea11b7360a2ea8768d2e176fb305b014c8 (tag=PlugX)",""
+"2020-06-16 09:43:29","MalwareBazaar","APT1","SHA256","292757d5daba9ee1484f92b115f5850467cbdedc4e82a0e09ec27c66f7509015","signature=Plugx; file=292757d5daba9ee1484f92b115f5850467cbdedc4e82a0e09ec27c66f7509015 (tag=PlugX)",""
+"2020-06-16 09:43:14","MalwareBazaar","APT1","SHA256","7dfb3359762c5072ffffa422a20eb87bfffb8b5d77e404962e4315ed91824002","signature=Plugx; file=7dfb3359762c5072ffffa422a20eb87bfffb8b5d77e404962e4315ed91824002 (tag=PlugX)",
+"2020-06-16 09:43:10","MalwareBazaar","APT1","SHA256","6226e542b8659466c2f5d21d1cd79643659475a96113d6603a3004ad719e1282","signature=Plugx; file=6226e542b8659466c2f5d21d1cd79643659475a96113d6603a3004ad719e1282 (tag=PlugX)",
+"2020-06-16 09:42:51","MalwareBazaar","APT1","SHA256","a23f495cbf371b01c4d115a324d7345ae1a4ca6b8e81e31289a7faf368920c2a","signature=Plugx; file=a23f495cbf371b01c4d115a324d7345ae1a4ca6b8e81e31289a7faf368920c2a (tag=PlugX)",
+"2020-06-10 12:33:53","MalwareBazaar","APT1","SHA256","b8fc748d3298cebec0dde77e5c0d0d5c28dde0dc06a25c9c3a45ad5bb23b447f","signature=Plugx; file=b8fc748d3298cebec0dde77e5c0d0d5c28dde0dc06a25c9c3a45ad5bb23b447f (tag=PlugX)",
+"2020-06-10 12:33:49","MalwareBazaar","APT1","SHA256","105412f31ccad1e2a86ef295fad82ac9b0c9faa89adcf96b331282776f163bc9","signature=Plugx; file=105412f31ccad1e2a86ef295fad82ac9b0c9faa89adcf96b331282776f163bc9 (tag=PlugX)",""
+"2020-06-10 12:33:45","MalwareBazaar","APT1","SHA256","80f96f590e2d40969c10a1a6edfd4eb553b220ca733fbe0155a5834b463b8109","signature=Plugx; file=80f96f590e2d40969c10a1a6edfd4eb553b220ca733fbe0155a5834b463b8109 (tag=PlugX)",""
+"2020-06-10 12:33:42","MalwareBazaar","APT1","SHA256","5f3da84b2eda289678c6340714b0645b43663a53f813cdb3c7b3db9170cfe411","signature=Plugx; file=5f3da84b2eda289678c6340714b0645b43663a53f813cdb3c7b3db9170cfe411 (tag=PlugX)",
+"2020-06-10 12:33:37","MalwareBazaar","APT1","SHA256","31f1851d9415c64d5b723643db465a66f9f5082e93a7551bf88abe8d1880b41b","signature=Plugx; file=31f1851d9415c64d5b723643db465a66f9f5082e93a7551bf88abe8d1880b41b (tag=PlugX)",
+"2020-06-10 12:33:33","MalwareBazaar","APT1","SHA256","ee298ce4bf7da69a7719a9ed20badf3d302d82cb46eb9c9da0ebcb9a191eadeb","signature=Plugx; file=ee298ce4bf7da69a7719a9ed20badf3d302d82cb46eb9c9da0ebcb9a191eadeb (tag=PlugX)",
+"2020-06-10 12:33:19","MalwareBazaar","APT1","SHA256","acaca01c50593baec374ee41013a11a766a6c4ce4c24df05a5f0d9b6af2c4543","signature=Plugx; file=acaca01c50593baec374ee41013a11a766a6c4ce4c24df05a5f0d9b6af2c4543 (tag=PlugX)",
+"2020-06-10 12:33:12","MalwareBazaar","APT1","SHA256","32335d81b73a3a1147aa3db57a702b9dc5ccf9a424e1cb517fbc181e785d9d1a","signature=Plugx; file=32335d81b73a3a1147aa3db57a702b9dc5ccf9a424e1cb517fbc181e785d9d1a (tag=PlugX)",""
+"2020-06-10 12:33:08","MalwareBazaar","APT1","SHA256","236d739fe561a1051e28a4cf243e267ce6420012236bf7e68d2d02d61cee113b","signature=Plugx; file=236d739fe561a1051e28a4cf243e267ce6420012236bf7e68d2d02d61cee113b (tag=PlugX)",""
+"2020-06-10 12:33:04","MalwareBazaar","APT1","SHA256","64300422846596b6e64ac3dcdfb83bbe0a3822651209bcf70e4c18a8778815f5","signature=Plugx; file=64300422846596b6e64ac3dcdfb83bbe0a3822651209bcf70e4c18a8778815f5 (tag=PlugX)",""
+"2020-06-10 12:21:50","MalwareBazaar","APT1","SHA256","594c1060d4c1f0341a34d7475fb29bc9ec47260149c3ba340835da08ee56137f","signature=Plugx; file=594c1060d4c1f0341a34d7475fb29bc9ec47260149c3ba340835da08ee56137f (tag=PlugX)",
+"2020-06-10 12:21:33","MalwareBazaar","APT1","SHA256","1ac9128ce2bcd394e234b8ead94071d7eb0f8c194b517c37a6a657444c54d3a7","signature=Plugx; file=1ac9128ce2bcd394e234b8ead94071d7eb0f8c194b517c37a6a657444c54d3a7 (tag=PlugX)",
+"2020-06-10 12:20:26","MalwareBazaar","APT1","SHA256","accb618038ce227f56a56aa47d92e35a9e8346ab40dc1b8254751a5e127c247e","signature=Plugx; file=accb618038ce227f56a56aa47d92e35a9e8346ab40dc1b8254751a5e127c247e (tag=PlugX)",
+"2020-06-10 12:18:26","MalwareBazaar","APT1","SHA256","1a2d69aacba27fb207022bf3487e24683998679f06e7b02d588f12534c605673","signature=Plugx; file=1a2d69aacba27fb207022bf3487e24683998679f06e7b02d588f12534c605673 (tag=PlugX)",""
+"2020-06-10 12:18:18","MalwareBazaar","APT1","SHA256","110bcdf438c3d7b6cac2a9e1e74bd555a8c4fa8c5fd0b2dbdd531e1e6aa33e28","signature=Plugx; file=110bcdf438c3d7b6cac2a9e1e74bd555a8c4fa8c5fd0b2dbdd531e1e6aa33e28 (tag=PlugX)",
+"2020-06-10 12:17:22","MalwareBazaar","APT1","SHA256","05654e79d9be8a607af4170e526415c887f18dd4e5e87d029462caf4ee88c23b","signature=Plugx; file=05654e79d9be8a607af4170e526415c887f18dd4e5e87d029462caf4ee88c23b (tag=PlugX)",
+"2020-06-10 12:14:33","MalwareBazaar","APT1","SHA256","66a21f652dac624abaffc2c36ed72ade9ac8310cc19bad8757c806c7102b18d7","signature=Plugx; file=66a21f652dac624abaffc2c36ed72ade9ac8310cc19bad8757c806c7102b18d7 (tag=PlugX)",""
+"2020-06-10 12:12:50","MalwareBazaar","APT1","SHA256","a85911d2dcd67f1eb2be927d961a59aca0057bab99d8ec15c7d69f16b2e9e1de","signature=Plugx; file=a85911d2dcd67f1eb2be927d961a59aca0057bab99d8ec15c7d69f16b2e9e1de (tag=PlugX)",""
+"2020-06-10 11:48:58","MalwareBazaar","APT1","SHA256","dbc3de058d92fc710f4177bd097b8b3a75aeb6a68d2aaf407a7f6c756a187547","signature=Plugx; file=dbc3de058d92fc710f4177bd097b8b3a75aeb6a68d2aaf407a7f6c756a187547 (tag=PlugX)",""
+"2020-06-10 11:48:32","MalwareBazaar","APT1","SHA256","d8c4af8f448c762cdc23738c21f6dbba2eeb5cb00ac37ebaa5f63da31bfe11b1","signature=Plugx; file=d8c4af8f448c762cdc23738c21f6dbba2eeb5cb00ac37ebaa5f63da31bfe11b1 (tag=PlugX)",
+"2020-06-10 11:48:29","MalwareBazaar","APT1","SHA256","c9e60ac73b6a67f152250ea39ca8a0009e60c1df0a3628d1b3bca48f6a4e8c39","signature=Plugx; file=c9e60ac73b6a67f152250ea39ca8a0009e60c1df0a3628d1b3bca48f6a4e8c39 (tag=PlugX)",""
+"2020-06-10 11:47:53","MalwareBazaar","APT1","SHA256","1020204e6391e925a416d3887430d76f8902d7d4a2b8ee4fbc6c4c9c07d32c80","signature=Plugx; file=1020204e6391e925a416d3887430d76f8902d7d4a2b8ee4fbc6c4c9c07d32c80 (tag=PlugX)",
+"2020-06-10 11:47:40","MalwareBazaar","APT1","SHA256","86663ed3917884ee71bcce9048b9348e69f35fee5227ab017b20694e43f37435","signature=Plugx; file=86663ed3917884ee71bcce9048b9348e69f35fee5227ab017b20694e43f37435 (tag=PlugX)",""
+"2020-06-10 11:47:32","MalwareBazaar","APT1","SHA256","7261c70e331aba793a574864db3731d2e83e12e8ddc3cc106620657c3ffd2193","signature=Plugx; file=7261c70e331aba793a574864db3731d2e83e12e8ddc3cc106620657c3ffd2193 (tag=PlugX)",
+"2020-06-10 11:47:28","MalwareBazaar","APT1","SHA256","6960c6adc74c69319815437ca248e78a04431eeb1255c9ae8cc0b772c5379296","signature=Plugx; file=6960c6adc74c69319815437ca248e78a04431eeb1255c9ae8cc0b772c5379296 (tag=PlugX)",""
+"2020-06-10 11:47:07","MalwareBazaar","APT1","SHA256","679b95141c5334f3cc3390424a55b7bf548fa34633b89bb25fe1af5f5bb834e3","signature=Plugx; file=679b95141c5334f3cc3390424a55b7bf548fa34633b89bb25fe1af5f5bb834e3 (tag=PlugX)",""
+"2020-06-10 11:46:49","MalwareBazaar","APT1","SHA256","96b3ca70df22b6c5bb87f59cb2275b5c805c5c32e97e3d126a8f5c56188e2914","signature=Plugx; file=96b3ca70df22b6c5bb87f59cb2275b5c805c5c32e97e3d126a8f5c56188e2914 (tag=PlugX)",
+"2020-06-10 11:46:35","MalwareBazaar","APT1","SHA256","69d84afe7a471e3bb8675582170fbfa6b8fa3080f55a42304ca07aad2fa3de7d","signature=Plugx; file=69d84afe7a471e3bb8675582170fbfa6b8fa3080f55a42304ca07aad2fa3de7d (tag=PlugX)",""
+"2020-06-10 11:46:05","MalwareBazaar","APT1","SHA256","9c7250d95123471d7ae35ca9eb09b37a60e72962fc5685f68352256dd0f77915","signature=Plugx; file=9c7250d95123471d7ae35ca9eb09b37a60e72962fc5685f68352256dd0f77915 (tag=PlugX)",""
+"2020-06-10 11:46:01","MalwareBazaar","APT1","SHA256","9b1b7d2bf05c068b67bfa27a03504dc9e4945af0af05b4423b8d03976338f78c","signature=Plugx; file=9b1b7d2bf05c068b67bfa27a03504dc9e4945af0af05b4423b8d03976338f78c (tag=PlugX)",""
+"2020-06-10 11:43:34","MalwareBazaar","APT1","SHA256","6bb563a9f5db52dfe616c215f8503241cda7865967ed9d734ffba89b4fef0572","signature=Plugx; file=6bb563a9f5db52dfe616c215f8503241cda7865967ed9d734ffba89b4fef0572 (tag=PlugX)",""
+"2020-06-10 11:43:30","MalwareBazaar","APT1","SHA256","6a21b328e3a6941619db2d920cad678772867b6d56e22860d7f419ae308290fc","signature=Plugx; file=6a21b328e3a6941619db2d920cad678772867b6d56e22860d7f419ae308290fc (tag=PlugX)",""
+"2020-06-10 11:43:10","MalwareBazaar","APT1","SHA256","5a0a2a7b076fb372572a1cd73bdfb6d4b07555db888bb3a635488880192ff516","signature=Plugx; file=5a0a2a7b076fb372572a1cd73bdfb6d4b07555db888bb3a635488880192ff516 (tag=PlugX)",
+"2020-06-10 11:42:34","MalwareBazaar","APT1","SHA256","4d6b26f7e62fa03f3dcdf0fb543e782d83f4a400787694450a81e51126c59f5a","signature=Plugx; file=4d6b26f7e62fa03f3dcdf0fb543e782d83f4a400787694450a81e51126c59f5a (tag=PlugX)",""
+"2020-06-10 11:42:22","MalwareBazaar","APT1","SHA256","4a6fe450cf810c9746b75a9538c67fc26e06feca080f365926812a2be60d0ffb","signature=Plugx; file=4a6fe450cf810c9746b75a9538c67fc26e06feca080f365926812a2be60d0ffb (tag=PlugX)",""
+"2020-06-10 11:40:43","MalwareBazaar","APT1","SHA256","0f202c7495f96d70a51116eb01adbb2ff00db8a16ad5dfcd7d3bb344ff92d0b2","signature=Plugx; file=0f202c7495f96d70a51116eb01adbb2ff00db8a16ad5dfcd7d3bb344ff92d0b2 (tag=PlugX)",""
+"2020-06-10 11:35:33","MalwareBazaar","APT1","SHA256","d967a6bc6f86cd5a402eb423793e0ce18f8e9652d8bac4d80427bd53593285d1","signature=Plugx; file=d967a6bc6f86cd5a402eb423793e0ce18f8e9652d8bac4d80427bd53593285d1 (tag=PlugX)",""
+"2020-06-10 11:35:09","MalwareBazaar","APT1","SHA256","c5cbf77bdb8b2bf959e31340dc0b2214cb4fc6280a9e0295b21a362d9c6ca9a8","signature=Plugx; file=c5cbf77bdb8b2bf959e31340dc0b2214cb4fc6280a9e0295b21a362d9c6ca9a8 (tag=PlugX)",
+"2020-06-10 10:05:39","MalwareBazaar","APT1","SHA256","9dc898aaff0c41278c6f1680d6b090dc15952d6d5d5aa2ff8f5fdcae28823f58","signature=Plugx; file=9dc898aaff0c41278c6f1680d6b090dc15952d6d5d5aa2ff8f5fdcae28823f58 (tag=PlugX)",
+"2020-06-10 10:05:30","MalwareBazaar","APT1","SHA256","5905379833965eba96297c517c8e8045c1182a9b08041dcbc4ac536e7da88fdc","signature=Plugx; file=5905379833965eba96297c517c8e8045c1182a9b08041dcbc4ac536e7da88fdc (tag=PlugX)",""
+"2020-06-10 10:05:25","MalwareBazaar","APT1","SHA256","2887940559ca105063543f699f2fbb24a4052b861c4c569e4948090f31137639","signature=Plugx; file=2887940559ca105063543f699f2fbb24a4052b861c4c569e4948090f31137639 (tag=PlugX)",
+"2020-06-10 10:05:21","MalwareBazaar","APT1","SHA256","618610565d0c5d505f9b051dcf2c72b973d60000a5982cb9b3ae87f65a4dd916","signature=Plugx; file=618610565d0c5d505f9b051dcf2c72b973d60000a5982cb9b3ae87f65a4dd916 (tag=PlugX)",""
+"2020-06-10 10:05:09","MalwareBazaar","APT1","SHA256","201435145ac2b240494cdc22e9aa50c564b82e1d5967f5d4997b03f7549aa5ff","signature=Plugx; file=201435145ac2b240494cdc22e9aa50c564b82e1d5967f5d4997b03f7549aa5ff (tag=PlugX)",
+"2020-06-10 10:05:05","MalwareBazaar","APT1","SHA256","77615922b5354013555ad188394f3727354cdc358998b4293a6bef83dafa9551","signature=Plugx; file=77615922b5354013555ad188394f3727354cdc358998b4293a6bef83dafa9551 (tag=PlugX)",
+"2020-06-10 10:04:57","MalwareBazaar","APT1","SHA256","67513443c98e1bd109807d1ee8708cbc0c8ace0f85c447848e073f679118b760","signature=Plugx; file=67513443c98e1bd109807d1ee8708cbc0c8ace0f85c447848e073f679118b760 (tag=PlugX)",""
+"2020-06-10 10:04:52","MalwareBazaar","APT1","SHA256","7362590eec1693d6ead5f274aa546f276bcc6939962f195eb997fcd57f02be02","signature=Plugx; file=7362590eec1693d6ead5f274aa546f276bcc6939962f195eb997fcd57f02be02 (tag=PlugX)",
+"2020-06-10 10:04:48","MalwareBazaar","APT1","SHA256","4955722d1de68e7fdf2a8e1a8412bb8f439d1110caee98b20a74b733343f0826","signature=Plugx; file=4955722d1de68e7fdf2a8e1a8412bb8f439d1110caee98b20a74b733343f0826 (tag=PlugX)",
+"2020-06-10 10:04:44","MalwareBazaar","APT1","SHA256","4277800cb7a5807b50fdf7822927fa6588aab0498b75140214071e81b6df3767","signature=Plugx; file=4277800cb7a5807b50fdf7822927fa6588aab0498b75140214071e81b6df3767 (tag=PlugX)",""
+"2020-06-10 10:04:40","MalwareBazaar","APT1","SHA256","4214863e0bd7e23a25cbb279becab13f775b4d9c287b4a763a6e2d1a550d6e30","signature=Plugx; file=4214863e0bd7e23a25cbb279becab13f775b4d9c287b4a763a6e2d1a550d6e30 (tag=PlugX)",""
+"2020-06-10 10:04:36","MalwareBazaar","APT1","SHA256","3127830e83bb4dcc9a1820567201248012fd38b7abc364137009244daf9d4aec","signature=Plugx; file=3127830e83bb4dcc9a1820567201248012fd38b7abc364137009244daf9d4aec (tag=PlugX)",""
+"2020-06-10 10:04:32","MalwareBazaar","APT1","SHA256","751513a3a11ba014598df6f302e2ccaaea8461531bae2d1e3121c31bf3402a8e","signature=Plugx; file=751513a3a11ba014598df6f302e2ccaaea8461531bae2d1e3121c31bf3402a8e (tag=PlugX)",""
+"2020-06-10 10:04:28","MalwareBazaar","APT1","SHA256","394123a1ee6b78180fef424552503467654c2b4bbbca9b0c5a997139c6e1c45f","signature=Plugx; file=394123a1ee6b78180fef424552503467654c2b4bbbca9b0c5a997139c6e1c45f (tag=PlugX)",
+"2020-06-10 10:04:24","MalwareBazaar","APT1","SHA256","0297921a4ce264375779490796eb811240a06dea5e98f0157469422963e7e614","signature=Plugx; file=0297921a4ce264375779490796eb811240a06dea5e98f0157469422963e7e614 (tag=PlugX)",""
+"2020-06-10 10:04:16","MalwareBazaar","APT1","SHA256","71170de424cd648853da823739ecf727da46bd82e106c89873163faf23fef1eb","signature=Plugx; file=71170de424cd648853da823739ecf727da46bd82e106c89873163faf23fef1eb (tag=PlugX)",
+"2020-06-10 10:04:11","MalwareBazaar","APT1","SHA256","69686f08e832b3861e723938876f69362763ca1194b339d0905d1cc8529c8d05","signature=Plugx; file=69686f08e832b3861e723938876f69362763ca1194b339d0905d1cc8529c8d05 (tag=PlugX)",""
+"2020-06-10 10:04:06","MalwareBazaar","APT1","SHA256","66159a8663cf9422ceab0ae032a5e3856e0d51af62d87f80dd5e8b8287bc9685","signature=Plugx; file=66159a8663cf9422ceab0ae032a5e3856e0d51af62d87f80dd5e8b8287bc9685 (tag=PlugX)",""
+"2020-06-10 10:03:57","MalwareBazaar","APT1","SHA256","26708ad7e8f9bcbbd00c2d75212654831bd4968f4d3b24b38233ebafdd9d6283","signature=Plugx; file=26708ad7e8f9bcbbd00c2d75212654831bd4968f4d3b24b38233ebafdd9d6283 (tag=PlugX)",""
+"2020-06-10 10:03:49","MalwareBazaar","APT1","SHA256","07934f04d9bfafaa9d4623b208bfe77a9a3aecba50f2c1d6ac868a20771190ea","signature=Plugx; file=07934f04d9bfafaa9d4623b208bfe77a9a3aecba50f2c1d6ac868a20771190ea (tag=PlugX)",""
+"2020-06-10 10:03:45","MalwareBazaar","APT1","SHA256","7428e38cbeeabc2727ff9ab0f5de52019fa0f03d981ccf60c7b6881fd108b5f7","signature=Plugx; file=7428e38cbeeabc2727ff9ab0f5de52019fa0f03d981ccf60c7b6881fd108b5f7 (tag=PlugX)",""
+"2020-06-10 10:03:41","MalwareBazaar","APT1","SHA256","6460e0d242bf0c7bdbafcc9269d182266b3e223a5a738e5961613a6e645438cd","signature=Plugx; file=6460e0d242bf0c7bdbafcc9269d182266b3e223a5a738e5961613a6e645438cd (tag=PlugX)",
+"2020-06-10 10:03:36","MalwareBazaar","APT1","SHA256","5859d6ba78da813e835683cefe43529053407e00de9a43d0dad35bce26e65b9f","signature=Plugx; file=5859d6ba78da813e835683cefe43529053407e00de9a43d0dad35bce26e65b9f (tag=PlugX)",""
+"2020-06-10 10:03:32","MalwareBazaar","APT1","SHA256","2511b43f1dd722b05bb525a7dd4b0397c8c05645b5ee8b1a737b6c7792ec4ea8","signature=Plugx; file=2511b43f1dd722b05bb525a7dd4b0397c8c05645b5ee8b1a737b6c7792ec4ea8 (tag=PlugX)",""
+"2020-06-10 10:03:28","MalwareBazaar","APT1","SHA256","02386ccca99a16a537ab255c90598c97e2ef9e97a0973ada9fcae3ec8f71e008","signature=Plugx; file=02386ccca99a16a537ab255c90598c97e2ef9e97a0973ada9fcae3ec8f71e008 (tag=PlugX)",""
+"2020-06-10 10:03:23","MalwareBazaar","APT1","SHA256","2364a9f303f7441c7ae73d53f6d3e06c3f371169d802580677e36153982f09db","signature=Plugx; file=2364a9f303f7441c7ae73d53f6d3e06c3f371169d802580677e36153982f09db (tag=PlugX)",
+"2020-06-10 10:03:19","MalwareBazaar","APT1","SHA256","1769d0064403fe5bd4a2b5007d97b52a53e646880ea757a8682bd6987072a728","signature=Plugx; file=1769d0064403fe5bd4a2b5007d97b52a53e646880ea757a8682bd6987072a728 (tag=PlugX)",""
+"2020-06-10 10:03:13","MalwareBazaar","APT1","SHA256","0954ed7cfa55c9896ef61f2784b3af27d1b17e8d13bec9c59b804fca209c3917","signature=Plugx; file=0954ed7cfa55c9896ef61f2784b3af27d1b17e8d13bec9c59b804fca209c3917 (tag=PlugX)",""
+"2020-06-10 10:03:08","MalwareBazaar","APT1","SHA256","719c5775ef47d8f3aef11beafe1c8bf2172192d092c07f13f5558193bfa17081","signature=Plugx; file=719c5775ef47d8f3aef11beafe1c8bf2172192d092c07f13f5558193bfa17081 (tag=PlugX)",""
+"2020-06-10 10:03:03","MalwareBazaar","APT1","SHA256","699cd0b592cf9da550b28c805a38a759ef605cf16c77a0714dfbe5f66576482e","signature=Plugx; file=699cd0b592cf9da550b28c805a38a759ef605cf16c77a0714dfbe5f66576482e (tag=PlugX)",""
+"2020-06-10 10:02:58","MalwareBazaar","APT1","SHA256","621c7d0f7b5f8b5688c0e9a61eca12cccca0839c406c6d1599dbbfcd7957e97e","signature=Plugx; file=621c7d0f7b5f8b5688c0e9a61eca12cccca0839c406c6d1599dbbfcd7957e97e (tag=PlugX)",
+"2020-06-10 10:02:49","MalwareBazaar","APT1","SHA256","597f344edc6a34d986065739d0815ada96f4d29c4d48c439fff7d672b034f131","signature=Plugx; file=597f344edc6a34d986065739d0815ada96f4d29c4d48c439fff7d672b034f131 (tag=PlugX)",
+"2020-06-10 10:02:45","MalwareBazaar","APT1","SHA256","594c388f1e552af20b2a447cf17c08dba98eae9ddd330d3aa6c9a58390ce7277","signature=Plugx; file=594c388f1e552af20b2a447cf17c08dba98eae9ddd330d3aa6c9a58390ce7277 (tag=PlugX)",""
+"2020-06-10 10:02:41","MalwareBazaar","APT1","SHA256","514c3b61fdfbc786dfc08459717e5443b687a31820b4ee9eecc46a0806d0e112","signature=Plugx; file=514c3b61fdfbc786dfc08459717e5443b687a31820b4ee9eecc46a0806d0e112 (tag=PlugX)",""
+"2020-06-10 10:02:36","MalwareBazaar","APT1","SHA256","487c60558a39a6ac22d91cef6c64e97350277f968f7e123a01522c01e434f562","signature=Plugx; file=487c60558a39a6ac22d91cef6c64e97350277f968f7e123a01522c01e434f562 (tag=PlugX)",
+"2020-06-10 10:02:28","MalwareBazaar","APT1","SHA256","462acf8ef3e72046376b8dd5ee18526d68e2112c7781548ebccaeeb92c439c3d","signature=Plugx; file=462acf8ef3e72046376b8dd5ee18526d68e2112c7781548ebccaeeb92c439c3d (tag=PlugX)",
+"2020-06-10 10:02:23","MalwareBazaar","APT1","SHA256","447d83393a1b45768fa14c68eccc5a375fcc998b772022251893793b7834a1fc","signature=Plugx; file=447d83393a1b45768fa14c68eccc5a375fcc998b772022251893793b7834a1fc (tag=PlugX)",""
+"2020-06-10 10:02:09","MalwareBazaar","APT1","SHA256","420bfbdc7282f1090aa845543bcb6f17aef618da2a097c3220e55734b6b5b00b","signature=Plugx; file=420bfbdc7282f1090aa845543bcb6f17aef618da2a097c3220e55734b6b5b00b (tag=PlugX)",""
+"2020-06-10 10:02:04","MalwareBazaar","APT1","SHA256","387daeb957cbe25c62e1363fdcac0a8f2592991cd44302fcfcf40208b1a12c8f","signature=Plugx; file=387daeb957cbe25c62e1363fdcac0a8f2592991cd44302fcfcf40208b1a12c8f (tag=PlugX)",""
+"2020-06-10 10:02:00","MalwareBazaar","APT1","SHA256","368b6095fd8ce0faf391d7ae1871a4df4234e1748b2f7d1e3380e5a48dc74453","signature=Plugx; file=368b6095fd8ce0faf391d7ae1871a4df4234e1748b2f7d1e3380e5a48dc74453 (tag=PlugX)",""
+"2020-06-10 10:01:52","MalwareBazaar","APT1","SHA256","329c511171eeb0cbd9f6fc60e5c55b079298df7609d21d6982dc97e16d45dca7","signature=Plugx; file=329c511171eeb0cbd9f6fc60e5c55b079298df7609d21d6982dc97e16d45dca7 (tag=PlugX)",
+"2020-06-10 10:01:35","MalwareBazaar","APT1","SHA256","241d0a291780137fb9df09e84ccdbd5a1c1aff4a8bdcfc6a3a35556674553859","signature=Plugx; file=241d0a291780137fb9df09e84ccdbd5a1c1aff4a8bdcfc6a3a35556674553859 (tag=PlugX)",
+"2020-06-10 10:01:30","MalwareBazaar","APT1","SHA256","196ba5817f44873c28f68d6faa0d4adfdd5ef1af80be37642eb9cc1cbf22eea7","signature=Plugx; file=196ba5817f44873c28f68d6faa0d4adfdd5ef1af80be37642eb9cc1cbf22eea7 (tag=PlugX)",""
+"2020-06-10 10:01:22","MalwareBazaar","APT1","SHA256","111e86a977324d4e3953df62d1aeaddeb3664cb491d1d28d00d9563af4091d66","signature=Plugx; file=111e86a977324d4e3953df62d1aeaddeb3664cb491d1d28d00d9563af4091d66 (tag=PlugX)",
+"2020-06-10 10:01:18","MalwareBazaar","APT1","SHA256","104e96e2f9e4d4b721256a20a8539c634dd37bf3f169517bb64daf9ec0a3c3c0","signature=Plugx; file=104e96e2f9e4d4b721256a20a8539c634dd37bf3f169517bb64daf9ec0a3c3c0 (tag=PlugX)",""
+"2020-06-10 10:01:05","MalwareBazaar","APT1","SHA256","73f304d6dee411606f86741e1b892c6f9c1e4033e3a1650ad60140ddd081e3e4","signature=Plugx; file=73f304d6dee411606f86741e1b892c6f9c1e4033e3a1650ad60140ddd081e3e4 (tag=PlugX)",""
+"2020-06-10 10:01:01","MalwareBazaar","APT1","SHA256","72fdb75fe448ec6f593243a836164433c273fac6d20e0ec5302f69366b233735","signature=Plugx; file=72fdb75fe448ec6f593243a836164433c273fac6d20e0ec5302f69366b233735 (tag=PlugX)",""
+"2020-06-10 10:00:57","MalwareBazaar","APT1","SHA256","69e9cb01b46ca30ee27055b553890c2b40b4ce90a26b9ccc500d1f2a8d59447d","signature=Plugx; file=69e9cb01b46ca30ee27055b553890c2b40b4ce90a26b9ccc500d1f2a8d59447d (tag=PlugX)",
+"2020-06-10 10:00:47","MalwareBazaar","APT1","SHA256","63ba8a0db6bea71ce9b037059ec39abc36c7dffa9447512a382777859110bc1f","signature=Plugx; file=63ba8a0db6bea71ce9b037059ec39abc36c7dffa9447512a382777859110bc1f (tag=PlugX)",""
+"2020-06-10 10:00:34","MalwareBazaar","APT1","SHA256","39a1b0d05ccf146a0006c55dcf268ffc0506e69a7278f4630fb1e048facefe2d","signature=Plugx; file=39a1b0d05ccf146a0006c55dcf268ffc0506e69a7278f4630fb1e048facefe2d (tag=PlugX)",""
+"2020-06-10 10:00:30","MalwareBazaar","APT1","SHA256","36c4cd8079f0c74deb843287430e98cdf99e2c6ad47d8dcbedc1d28856bdeacd","signature=Plugx; file=36c4cd8079f0c74deb843287430e98cdf99e2c6ad47d8dcbedc1d28856bdeacd (tag=PlugX)",""
+"2020-06-10 10:00:26","MalwareBazaar","APT1","SHA256","32f175e2e9777f29dd5e19651ee4be9ac0675128e22b796fb6c17457a44238bb","signature=Plugx; file=32f175e2e9777f29dd5e19651ee4be9ac0675128e22b796fb6c17457a44238bb (tag=PlugX)",
+"2020-06-10 10:00:17","MalwareBazaar","APT1","SHA256","31c8909296f60c72317b20969321eabf4acf344aa6e9306cd206e91f2d1a8641","signature=Plugx; file=31c8909296f60c72317b20969321eabf4acf344aa6e9306cd206e91f2d1a8641 (tag=PlugX)",
+"2020-06-10 10:00:13","MalwareBazaar","APT1","SHA256","31b55130621a78475460394982b1ad4504524a6b32d3eb51ac517f6a36243373","signature=Plugx; file=31b55130621a78475460394982b1ad4504524a6b32d3eb51ac517f6a36243373 (tag=PlugX)",""
+"2020-06-10 10:00:09","MalwareBazaar","APT1","SHA256","30ce82266d37c3255874031623e19f6e3f9ce76c1f15daaa3dcda09d06ed0289","signature=Plugx; file=30ce82266d37c3255874031623e19f6e3f9ce76c1f15daaa3dcda09d06ed0289 (tag=PlugX)",
+"2020-06-10 10:00:01","MalwareBazaar","APT1","SHA256","27cbb1881e598c8993b8507a5ad683e94dd40f493956ab47afa5dd77604f27f5","signature=Plugx; file=27cbb1881e598c8993b8507a5ad683e94dd40f493956ab47afa5dd77604f27f5 (tag=PlugX)",
+"2020-06-10 09:59:54","MalwareBazaar","APT1","SHA256","24f73cae295527735f02aa09862d5fecca90a6333d774f871a01f51cc509c32b","signature=Plugx; file=24f73cae295527735f02aa09862d5fecca90a6333d774f871a01f51cc509c32b (tag=PlugX)",
+"2020-06-10 09:59:49","MalwareBazaar","APT1","SHA256","23bbfa8cf8dc99c7d776011c16e8e8214e312cea4649196ae1d2e8684a3862b7","signature=Plugx; file=23bbfa8cf8dc99c7d776011c16e8e8214e312cea4649196ae1d2e8684a3862b7 (tag=PlugX)",""
+"2020-06-10 09:59:32","MalwareBazaar","APT1","SHA256","12b10f8cade87f07bef9031dfbf2e6dd1e926d757fdb50cc3036bdab4e5737ab","signature=Plugx; file=12b10f8cade87f07bef9031dfbf2e6dd1e926d757fdb50cc3036bdab4e5737ab (tag=PlugX)",""
+"2020-06-10 09:59:27","MalwareBazaar","APT1","SHA256","10fad831ae80bf33bb0670c03d9d9b35144d831ca0eca23bd031350b7100b2b7","signature=Plugx; file=10fad831ae80bf33bb0670c03d9d9b35144d831ca0eca23bd031350b7100b2b7 (tag=PlugX)",""
+"2020-06-10 09:59:23","MalwareBazaar","APT1","SHA256","09e42bf56300c16c1eb172e6d357f401af1ec2ca18b94ecaa8068f2d5cdad6cd","signature=Plugx; file=09e42bf56300c16c1eb172e6d357f401af1ec2ca18b94ecaa8068f2d5cdad6cd (tag=PlugX)",""
+"2020-06-10 09:59:18","MalwareBazaar","APT1","SHA256","09b83bc91ce35ae5467f065f6c278f5ccd4958ea4dee930240cf9491fde79696","signature=Plugx; file=09b83bc91ce35ae5467f065f6c278f5ccd4958ea4dee930240cf9491fde79696 (tag=PlugX)",
+"2020-06-10 09:59:14","MalwareBazaar","APT1","SHA256","7f3907de1799f491cf11b50cc155741623ab1c796c1128288a710d05f6d54e43","signature=Plugx; file=7f3907de1799f491cf11b50cc155741623ab1c796c1128288a710d05f6d54e43 (tag=PlugX)",
+"2020-06-10 09:59:09","MalwareBazaar","APT1","SHA256","6fd88a9e2043277c594370ea25e8bc500257fec6d54bb53ea69c6cf8720742fd","signature=Plugx; file=6fd88a9e2043277c594370ea25e8bc500257fec6d54bb53ea69c6cf8720742fd (tag=PlugX)",
+"2020-06-10 09:59:05","MalwareBazaar","APT1","SHA256","6f20be5c9663578ccced298ad3f626ba7854905004f231e3139fc167e015677d","signature=Plugx; file=6f20be5c9663578ccced298ad3f626ba7854905004f231e3139fc167e015677d (tag=PlugX)",
+"2020-06-10 09:59:00","MalwareBazaar","APT1","SHA256","6d34329f1c6f8d68a13ac063f8537c1f81fb12796edaf4378997218d7d7c12fe","signature=Plugx; file=6d34329f1c6f8d68a13ac063f8537c1f81fb12796edaf4378997218d7d7c12fe (tag=PlugX)",""
+"2020-06-10 09:58:51","MalwareBazaar","APT1","SHA256","6d09d70564ba2709e7838f4eaced4bca9c13a79d23bf12174c65149743c15090","signature=Plugx; file=6d09d70564ba2709e7838f4eaced4bca9c13a79d23bf12174c65149743c15090 (tag=PlugX)",
+"2020-06-10 09:58:46","MalwareBazaar","APT1","SHA256","6c3e63939b25c166a879e4a420b75c10eac3f672eb73b415926eda3e815df2c4","signature=Plugx; file=6c3e63939b25c166a879e4a420b75c10eac3f672eb73b415926eda3e815df2c4 (tag=PlugX)",""
+"2020-06-10 09:58:42","MalwareBazaar","APT1","SHA256","6ace2537e84cbb65c0572202eb7776194c7807214da1ee2e1e81d2f03cfdc2f3","signature=Plugx; file=6ace2537e84cbb65c0572202eb7776194c7807214da1ee2e1e81d2f03cfdc2f3 (tag=PlugX)",
+"2020-06-10 09:58:38","MalwareBazaar","APT1","SHA256","5e478c9b4c76d59e7891b34b7bea93c312d08ced42fe841747c81146e15742f4","signature=Plugx; file=5e478c9b4c76d59e7891b34b7bea93c312d08ced42fe841747c81146e15742f4 (tag=PlugX)",
+"2020-06-10 09:58:33","MalwareBazaar","APT1","SHA256","5e91dde0207f479823d16187b3e211377d356155df63c092df431e1e72fa210a","signature=Plugx; file=5e91dde0207f479823d16187b3e211377d356155df63c092df431e1e72fa210a (tag=PlugX)",""
+"2020-06-10 09:58:20","MalwareBazaar","APT1","SHA256","4e8666aa3ac1b26a829bc18118713a37dbc9a47d1efa491d4a7800134607aee9","signature=Plugx; file=4e8666aa3ac1b26a829bc18118713a37dbc9a47d1efa491d4a7800134607aee9 (tag=PlugX)",""
+"2020-06-10 09:58:15","MalwareBazaar","APT1","SHA256","4e823b18c3ad3d266b5fd114bf8fa9300adcd20b03c936046fa859737e54fa8c","signature=Plugx; file=4e823b18c3ad3d266b5fd114bf8fa9300adcd20b03c936046fa859737e54fa8c (tag=PlugX)",
+"2020-06-10 09:58:10","MalwareBazaar","APT1","SHA256","4e2b11611bcb9e4fe04519ee879da0ee721c6a3ec0cfa65e2a1758d69bdd2557","signature=Plugx; file=4e2b11611bcb9e4fe04519ee879da0ee721c6a3ec0cfa65e2a1758d69bdd2557 (tag=PlugX)",
+"2020-06-10 09:58:06","MalwareBazaar","APT1","SHA256","4c10f6de8ff6f81de156ccc636143f25d9cbb9a3e2c105f83e6f5a281b8cf887","signature=Plugx; file=4c10f6de8ff6f81de156ccc636143f25d9cbb9a3e2c105f83e6f5a281b8cf887 (tag=PlugX)",
+"2020-06-10 09:58:02","MalwareBazaar","APT1","SHA256","4be3b2e8c96fee21db5b263e67cbe3ca2526422dbd78305630f6e28a832787d8","signature=Plugx; file=4be3b2e8c96fee21db5b263e67cbe3ca2526422dbd78305630f6e28a832787d8 (tag=PlugX)",""
+"2020-06-10 09:57:38","MalwareBazaar","APT1","SHA256","04ae93051aadcda1d209d852bbe734b0b667c847ce1fed75ca374584f88d3b71","signature=Plugx; file=04ae93051aadcda1d209d852bbe734b0b667c847ce1fed75ca374584f88d3b71 (tag=PlugX)",""
+"2020-06-10 09:57:34","MalwareBazaar","APT1","SHA256","3f5d1d167fa4883fffe10e7ca87bb9f5b6ea8d0c181274ca041b3daf72a11787","signature=Plugx; file=3f5d1d167fa4883fffe10e7ca87bb9f5b6ea8d0c181274ca041b3daf72a11787 (tag=PlugX)",""
+"2020-06-10 09:57:26","MalwareBazaar","APT1","SHA256","3e924d614545fd4817f77ee07981def7b63a4993efa805050ced5b48be585a59","signature=Plugx; file=3e924d614545fd4817f77ee07981def7b63a4993efa805050ced5b48be585a59 (tag=PlugX)",
+"2020-06-10 09:57:22","MalwareBazaar","APT1","SHA256","3e89e18e72a377461472ac74f75215022d37391fd6f629277353cc0dc736d272","signature=Plugx; file=3e89e18e72a377461472ac74f75215022d37391fd6f629277353cc0dc736d272 (tag=PlugX)",
+"2020-06-10 09:57:14","MalwareBazaar","APT1","SHA256","3d1c4bee07dad19384d68bf12702fd81b4c530af2d074a2c440d575e1c309272","signature=Plugx; file=3d1c4bee07dad19384d68bf12702fd81b4c530af2d074a2c440d575e1c309272 (tag=PlugX)",
+"2020-06-10 09:57:09","MalwareBazaar","APT1","SHA256","2fe283b6803f013fb6c66186a160583992223bf69b10efd6fcea16883c46e8b9","signature=Plugx; file=2fe283b6803f013fb6c66186a160583992223bf69b10efd6fcea16883c46e8b9 (tag=PlugX)",""
+"2020-06-10 09:57:05","MalwareBazaar","APT1","SHA256","2f02da12617dcec306d568859a2c8ad55784d45f794b9b5c1073945906990286","signature=Plugx; file=2f02da12617dcec306d568859a2c8ad55784d45f794b9b5c1073945906990286 (tag=PlugX)",
+"2020-06-10 09:57:01","MalwareBazaar","APT1","SHA256","2da31a31c84705464eabb00514e66ba3d776259e31efd2da69c4cdc2d2330ff3","signature=Plugx; file=2da31a31c84705464eabb00514e66ba3d776259e31efd2da69c4cdc2d2330ff3 (tag=PlugX)",""
+"2020-06-10 09:56:57","MalwareBazaar","APT1","SHA256","2d724ed6f7c75915562f782cd03cc51033845d31d12d5d26419c093d12b5df32","signature=Plugx; file=2d724ed6f7c75915562f782cd03cc51033845d31d12d5d26419c093d12b5df32 (tag=PlugX)",""
+"2020-06-10 09:56:40","MalwareBazaar","APT1","SHA256","2a32461fbc01cd92b31681074f6fafa586245622657edd047ba756f536877676","signature=Plugx; file=2a32461fbc01cd92b31681074f6fafa586245622657edd047ba756f536877676 (tag=PlugX)",""
+"2020-06-10 09:56:37","MalwareBazaar","APT1","SHA256","02ba0dd755aa98ab35ab5807a3b66f42ff7ad21e9d1fb50eb36107ef3b603ada","signature=Plugx; file=02ba0dd755aa98ab35ab5807a3b66f42ff7ad21e9d1fb50eb36107ef3b603ada (tag=PlugX)",""
+"2020-06-10 09:56:33","MalwareBazaar","APT1","SHA256","1fe2100a333ac951c7008679fa64982e038b7f76d9a46219576b92165d89d71b","signature=Plugx; file=1fe2100a333ac951c7008679fa64982e038b7f76d9a46219576b92165d89d71b (tag=PlugX)",""
+"2020-06-10 09:56:25","MalwareBazaar","APT1","SHA256","1d1367c6ff2cb2fb23d0ebfaa4aa7ff6cf372752b8a37da565ff4b1f6a9e1c08","signature=Plugx; file=1d1367c6ff2cb2fb23d0ebfaa4aa7ff6cf372752b8a37da565ff4b1f6a9e1c08 (tag=PlugX)",
+"2020-06-10 09:56:21","MalwareBazaar","APT1","SHA256","1c14b4c26764084b9f6a20c8ad283096c228517e5ccb595ac7391e7d13991ca8","signature=Plugx; file=1c14b4c26764084b9f6a20c8ad283096c228517e5ccb595ac7391e7d13991ca8 (tag=PlugX)",""
+"2020-06-10 09:56:09","MalwareBazaar","APT1","SHA256","1a908a99a31996ad9ed1714286b4c6f7e63ae98af636f869232187a372421bf5","signature=Plugx; file=1a908a99a31996ad9ed1714286b4c6f7e63ae98af636f869232187a372421bf5 (tag=PlugX)",""
+"2020-06-10 09:56:06","MalwareBazaar","APT1","SHA256","0f474d685a171255794f202e04d42983b925f8e5c4bd1ec5894a942050b9ebf0","signature=Plugx; file=0f474d685a171255794f202e04d42983b925f8e5c4bd1ec5894a942050b9ebf0 (tag=PlugX)",""
+"2020-06-10 09:56:02","MalwareBazaar","APT1","SHA256","0f2a4d3c07d95fcbecc111fa3b88b66572aa3581ffb35e53269d5e38c279e6e2","signature=Plugx; file=0f2a4d3c07d95fcbecc111fa3b88b66572aa3581ffb35e53269d5e38c279e6e2 (tag=PlugX)",""
+"2020-06-10 09:55:58","MalwareBazaar","APT1","SHA256","0e6ed1d026b27c902ab5de23a2cdf609131a3f57c2253f9035d523fe72885f73","signature=Plugx; file=0e6ed1d026b27c902ab5de23a2cdf609131a3f57c2253f9035d523fe72885f73 (tag=PlugX)",
+"2020-06-10 09:55:53","MalwareBazaar","APT1","SHA256","0d552cb35cff7a606dda3a0f8dfbad90f308c1e968e00065fc2ae71942da3da0","signature=Plugx; file=0d552cb35cff7a606dda3a0f8dfbad90f308c1e968e00065fc2ae71942da3da0 (tag=PlugX)",
+"2020-06-10 09:55:49","MalwareBazaar","APT1","SHA256","0d6d9fb3ea0cb7e9e4bc2dce102c186fc34bdc8c6f267163ea69e894539610a9","signature=Plugx; file=0d6d9fb3ea0cb7e9e4bc2dce102c186fc34bdc8c6f267163ea69e894539610a9 (tag=PlugX)",
+"2020-06-10 09:55:45","MalwareBazaar","APT1","SHA256","0bc29e6dedc7f227b30c5e5e70227b636fc225ce2eeba33f71dff7b94d22243c","signature=Plugx; file=0bc29e6dedc7f227b30c5e5e70227b636fc225ce2eeba33f71dff7b94d22243c (tag=PlugX)",""
+"2020-06-10 09:55:41","MalwareBazaar","APT1","SHA256","0a251abf96953152f3c31a782bf8e3e10b4d7bc905bad4538c51b01b0ffbf9f4","signature=Plugx; file=0a251abf96953152f3c31a782bf8e3e10b4d7bc905bad4538c51b01b0ffbf9f4 (tag=PlugX)",
+"2020-06-10 09:55:21","MalwareBazaar","APT1","SHA256","be3c9de05321cbf03966614e0b0aeb46423722b9ae30d5eb766a2786d18f5b59","signature=Plugx; file=be3c9de05321cbf03966614e0b0aeb46423722b9ae30d5eb766a2786d18f5b59 (tag=PlugX)",
+"2020-06-10 09:55:17","MalwareBazaar","APT1","SHA256","380e5f32bf892175e4990445595deca8e2bc62a41e20d848914554380c5922d1","signature=Plugx; file=380e5f32bf892175e4990445595deca8e2bc62a41e20d848914554380c5922d1 (tag=PlugX)",
+"2020-06-10 09:55:12","MalwareBazaar","APT1","SHA256","478d5ccdb10c5bea12315b04cb298dcc82a216ad40fd960dc9b0ba784ee9353f","signature=Plugx; file=478d5ccdb10c5bea12315b04cb298dcc82a216ad40fd960dc9b0ba784ee9353f (tag=PlugX)",
+"2020-06-10 09:55:09","MalwareBazaar","APT1","SHA256","0d55fc79b3f38313e82d5d8971a5c51d503713789e917dfe3200a31e0aec505f","signature=Plugx; file=0d55fc79b3f38313e82d5d8971a5c51d503713789e917dfe3200a31e0aec505f (tag=PlugX)",""
+"2020-06-10 09:55:05","MalwareBazaar","APT1","SHA256","c38b67d6f248091dc65e49361528777650c7585d2e3167e8703857608686de5a","signature=Plugx; file=c38b67d6f248091dc65e49361528777650c7585d2e3167e8703857608686de5a (tag=PlugX)",
+"2020-06-10 09:55:01","MalwareBazaar","APT1","SHA256","edd44f01d968d02b85cc83bfef0021b73c9d7a5619d01f6de02ba8045bb9f8f3","signature=Plugx; file=edd44f01d968d02b85cc83bfef0021b73c9d7a5619d01f6de02ba8045bb9f8f3 (tag=PlugX)",
+"2020-06-10 09:54:53","MalwareBazaar","APT1","SHA256","209b2deb147d221c4ce7e5f5379dacea323543148cfb094807fd50d5ef22ab3d","signature=Plugx; file=209b2deb147d221c4ce7e5f5379dacea323543148cfb094807fd50d5ef22ab3d (tag=PlugX)",
+"2020-06-10 09:54:49","MalwareBazaar","APT1","SHA256","24e39548b951b45b9ece0ad00f37e5b802043defd265d50f7986a273ab565549","signature=Plugx; file=24e39548b951b45b9ece0ad00f37e5b802043defd265d50f7986a273ab565549 (tag=PlugX)",
+"2020-06-10 09:54:41","MalwareBazaar","APT1","SHA256","e6e714a0599ec6d3e394ae299fa96020c370b6b0d319fe10cd6318de4064dcaf","signature=Plugx; file=e6e714a0599ec6d3e394ae299fa96020c370b6b0d319fe10cd6318de4064dcaf (tag=PlugX)",
+"2020-06-10 09:54:35","MalwareBazaar","APT1","SHA256","5417c6cf1e19921f84efc6fd11fa49f94a3ffc97ab933d43994f5476f534e80c","signature=Plugx; file=5417c6cf1e19921f84efc6fd11fa49f94a3ffc97ab933d43994f5476f534e80c (tag=PlugX)",""
+"2020-06-10 09:54:21","MalwareBazaar","APT1","SHA256","db9ab490c67e40cf6e52274aae87706849ef6f91b240c659d5b7d3c72c25203a","signature=Plugx; file=db9ab490c67e40cf6e52274aae87706849ef6f91b240c659d5b7d3c72c25203a (tag=PlugX)",
+"2020-06-10 09:53:49","MalwareBazaar","APT1","SHA256","2467ea24d0e0f5b6dbc8259a2de2755045426e69ca43a60bbd0b65f6cd284b42","signature=Plugx; file=2467ea24d0e0f5b6dbc8259a2de2755045426e69ca43a60bbd0b65f6cd284b42 (tag=PlugX)",""
+"2020-06-10 09:53:37","MalwareBazaar","APT1","SHA256","9476ae8fd328b3d3a2fc90869f85b306c63dc7c4a43d83307182ff2cbbb116ff","signature=Plugx; file=9476ae8fd328b3d3a2fc90869f85b306c63dc7c4a43d83307182ff2cbbb116ff (tag=PlugX)",""
+"2020-06-10 09:53:32","MalwareBazaar","APT1","SHA256","f150c169b0b7266cfdec367800de474eb59b9a2f8bc62b5455b72af7ec48d866","signature=Plugx; file=f150c169b0b7266cfdec367800de474eb59b9a2f8bc62b5455b72af7ec48d866 (tag=PlugX)",
+"2020-06-10 09:53:28","MalwareBazaar","APT1","SHA256","d3d33445af12337b6df923d21b2859a51ee7dd1dc7fa8e484c6e8a8e6592a71d","signature=Plugx; file=d3d33445af12337b6df923d21b2859a51ee7dd1dc7fa8e484c6e8a8e6592a71d (tag=PlugX)",
+"2020-06-10 09:52:54","MalwareBazaar","APT1","SHA256","c615cddb07366427779da7f5ed2cbbc25276c78bd55beef9633fc4319fe20341","signature=Plugx; file=c615cddb07366427779da7f5ed2cbbc25276c78bd55beef9633fc4319fe20341 (tag=PlugX)",
+"2020-06-10 09:52:50","MalwareBazaar","APT1","SHA256","2062fd79e2840be25c66720acadd37e44fe7e6830d46c683d4977eda87dff8e1","signature=Plugx; file=2062fd79e2840be25c66720acadd37e44fe7e6830d46c683d4977eda87dff8e1 (tag=PlugX)",
+"2020-06-10 09:52:24","MalwareBazaar","APT1","SHA256","c0d215f71838d6dd2c8008f31f19bac833a5d372c94bed5469c8e6d79c2a222e","signature=Plugx; file=c0d215f71838d6dd2c8008f31f19bac833a5d372c94bed5469c8e6d79c2a222e (tag=PlugX)",
+"2020-06-10 09:51:52","MalwareBazaar","APT1","SHA256","7385db1b816e2fa092fd57de96ee8155c5f37c8dd30be7b148817bc4fdd53b52","signature=Plugx; file=7385db1b816e2fa092fd57de96ee8155c5f37c8dd30be7b148817bc4fdd53b52 (tag=PlugX)",""
+"2020-01-10T08:44:58Z","Cybersixgill","APT1","Hash","c6a5377cbc07eece33790cfc70572e12c7a48ad8296be25c0cc805a1f384dbad","Confidence: 60","N/A"
+"2019-09-24T14:07:43Z","Cybersixgill","APT1","Hash","fc888374384a2582d15f006dc7952f8bca312783","Confidence: 60","N/A"
+"2019-09-24T14:07:43Z","Cybersixgill","APT1","Hash","d2992b353090963bdc7065fb00e6e6f3e552d3d17aa6d089ed9871fc271ef7cc","Confidence: 60","N/A"
+"2019-09-24T14:07:43Z","Cybersixgill","APT1","Hash","d475ed019e8ec258d650f8a0be362545","Confidence: 60","N/A"
+"2019-09-24T14:05:04Z","Cybersixgill","APT1","Hash","e7bc1cd67b6d40cb5231bf1f5217475e84c52c5e684b3b9ce6378eebd9b2b1e0","Confidence: 71","N/A"
+"2019-09-24T14:05:04Z","Cybersixgill","APT1","Hash","27f54e0271e4f58b7d3c8ddc5c6d617f","Confidence: 71","N/A"
+"2019-09-24T14:05:04Z","Cybersixgill","APT1","Hash","200ba1b0208a1fd4215b334fdea6e661105523c9","Confidence: 71","N/A"
+"2015-09-24T14:06:14Z","Cybersixgill","APT1","Hash","0bdc10960757f6abfaf123c7d7b9d443","Confidence: 75","N/A"
+"2015-09-24T14:06:14Z","Cybersixgill","APT1","Hash","cf5089752ba51ae827971272a5b761a4ab0acd84","Confidence: 75","N/A"
+"2015-09-24T14:06:14Z","Cybersixgill","APT1","Hash","a03a6ed90b89945a992a8c69f716ec3c743fa1d958426f4c50378cca5bef0a01","Confidence: 75","N/A"
+"2015-09-24T14:05:44Z","Cybersixgill","APT1","Hash","a6521883d210e7a7b8c4705088f91379","Confidence: 64","N/A"
+"2015-09-24T14:05:44Z","Cybersixgill","APT1","Hash","810dc462c7fa45b5d5a42bedd2139f4d1e57d97a125233189ba6b694732070df","Confidence: 64","N/A"
+"2015-09-24T14:05:44Z","Cybersixgill","APT1","Hash","297c6957149645857ea57f4bdae1011acaebc456","Confidence: 64","N/A"

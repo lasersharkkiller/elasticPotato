@@ -1,0 +1,345 @@
+[
+    {
+        "Item_Name":  "WannaCry_Ransomware_Gen",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-06-28"
+    },
+    {
+        "Item_Name":  "INDICATOR_SUSPICIOUS_EXE_PE_ResourceTuner",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-22"
+    },
+    {
+        "Item_Name":  "FormhookB",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-11"
+    },
+    {
+        "Item_Name":  "Microsoft_Excel_Hidden_Macrosheet",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-22"
+    },
+    {
+        "Item_Name":  "INDICATOR_KB_CERT_0c48732873ac8ccebaf8f0e1e8329cec",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-29"
+    },
+    {
+        "Item_Name":  "INDICATOR_EXE_Packed_Themida",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-06-28"
+    },
+    {
+        "Item_Name":  "Windows_Generic_Threat_efdb9e81",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-12"
+    },
+    {
+        "Item_Name":  "PUA_Crypto_Mining_CommandLine_Indicators_Oct21",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-22"
+    },
+    {
+        "Item_Name":  "HermeticWiper",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-29"
+    },
+    {
+        "Item_Name":  "UPX",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-12"
+    },
+    {
+        "Item_Name":  "SUSP_Imphash_Mar23_3",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-12"
+    },
+    {
+        "Item_Name":  "SUSP_Imphash_Mar23_2",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-07-06"
+    },
+    {
+        "Item_Name":  "MacOS_Cryptominer_Generic_333129b7",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2026-01-22"
+    },
+    {
+        "Item_Name":  "NSIS",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2026-01-22"
+    },
+    {
+        "Item_Name":  "win_unidentified_098_auto",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-22"
+    },
+    {
+        "Item_Name":  "Windows_Wiper_HermeticWiper_7206a969",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-29"
+    },
+    {
+        "Item_Name":  "MAL_XMR_Miner_May19_1",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-22"
+    },
+    {
+        "Item_Name":  "PyInstaller",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-12"
+    },
+    {
+        "Item_Name":  "Windows_Trojan_Generic_40899c85",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-12"
+    },
+    {
+        "Item_Name":  "miner_lin_xmrig_strings",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-12-10"
+    },
+    {
+        "Item_Name":  "win_hermeticwiper_auto",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-09-29"
+    },
+    {
+        "Item_Name":  "Win32_Ransomware_WannaCry",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-29"
+    },
+    {
+        "Item_Name":  "INDICATOR_SUSPICIOUS_EXE_WMI_EnumerateVideoDevice",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-06-27"
+    },
+    {
+        "Item_Name":  "Windows_API_Function",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  9,
+        "Last_Seen":  "2025-11-23"
+    },
+    {
+        "Item_Name":  "WannaCry_Ransomware",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  5,
+        "Last_Seen":  "2026-01-29"
+    },
+    {
+        "Item_Name":  "MAL_Win_Amadey_Jun25",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-06-08"
+    },
+    {
+        "Item_Name":  "SUSP_SFX_cmd",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  4,
+        "Last_Seen":  "2025-01-22"
+    },
+    {
+        "Item_Name":  "XMRIG_Monero_Miner",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2026-01-22"
+    },
+    {
+        "Item_Name":  "SUSP_RAR_NTFS_ADS",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  26,
+        "Last_Seen":  "2026-02-02"
+    },
+    {
+        "Item_Name":  "Office_Document_with_VBA_Project",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-17"
+    },
+    {
+        "Item_Name":  "APT_UA_Hermetic_Wiper_Feb22_1",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-09-29"
+    },
+    {
+        "Item_Name":  "Linux_Backdoor_ChaosRAT",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  4,
+        "Last_Seen":  "2025-06-16"
+    },
+    {
+        "Item_Name":  "Windows_Trojan_RedLineStealer_6dfafd7b",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-12"
+    },
+    {
+        "Item_Name":  "CoinMiner_Strings",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-22"
+    },
+    {
+        "Item_Name":  "wiper_hermeticwiper_variants",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-29"
+    },
+    {
+        "Item_Name":  "INDICATOR_RTF_EXPLOIT_CVE_2017_11882_4",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-06-28"
+    },
+    {
+        "Item_Name":  "Amadey",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-06-08"
+    },
+    {
+        "Item_Name":  "infostealer_win_redline_strings",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-12"
+    },
+    {
+        "Item_Name":  "MacOS_Cryptominer_Xmrig_241780a1",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-12-10"
+    },
+    {
+        "Item_Name":  "Base64_Encoded_URL",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-11-23"
+    },
+    {
+        "Item_Name":  "Win32_Trojan_HermeticWiper",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-09-29"
+    },
+    {
+        "Item_Name":  "Windows_RemoteAdmin_UltraVNC_965f054a",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-22"
+    },
+    {
+        "Item_Name":  "MALWARE_Win_CelestyBinderLoader",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-06-28"
+    },
+    {
+        "Item_Name":  "cert_blocklist_0c48732873ac8ccebaf8f0e1e8329cec",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-29"
+    },
+    {
+        "Item_Name":  "sandboxdetect_misc",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-06-14"
+    },
+    {
+        "Item_Name":  "Multi_Cryptominer_Xmrig_f9516741",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-12-10"
+    },
+    {
+        "Item_Name":  "Linux_Cryptominer_Xmrig_af809eea",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-22"
+    },
+    {
+        "Item_Name":  "Linux_Trojan_Pornoasset_927f314f",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2026-01-22"
+    },
+    {
+        "Item_Name":  "MALWARE_Win_MetaStealer",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-12"
+    }
+]

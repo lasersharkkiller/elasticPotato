@@ -1,0 +1,387 @@
+[
+    {
+        "Item_Name":  "T1129: The process attempted to dynamically load a malicious function",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1518.001: May try to detect the virtual machine to hinder analysis (VM artifact strings found in memory)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1036: Creates files inside the user directory",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1027.002: .NET source code contains potential unpacker",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1105: (Process #8) los.exe downloads file via http from http://geoplugin.net/json.gp.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1045: (Process #9) los.exe resolves 58 API functions by name.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1105: Downloads files from webservers via HTTP",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1065: (Process #8) los.exe tries to connect to TCP port 2397 at 193.42.32.86.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1027.002: Binary may include packed or crypted data",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1112: (Process #8) los.exe adds \"9458216\" to Windows startup via registry.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1095: Performs DNS lookups",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1027.002: PE file has an executable .text section which is very likely to contain packed code (zlib compression ratio \u003c 0.3)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1119: (Process #8) los.exe logs keys, captures keyboard and potentially exfiltrates data.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1055: May try to detect the Windows Explorer process (often used for injection)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1562.001: Creates guard pages, often used to prevent reverse engineering and debugging",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1560: Public key (encryption) found",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1620: load .NET assembly",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1071: Performs DNS lookups",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1055: Injects a PE file into a foreign processes",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1018: Reads the hosts file",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1064: Executes visual basic scripts",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1497: Contains long sleeps (\u003e= 3 min)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1056: (Process #8) los.exe logs keys, captures keyboard and potentially exfiltrates data.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1089: The process has tried to suspend a sandbox-related thread (possible sandbox evasion attempt)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1571: Detected TCP or UDP traffic on non-standard ports",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1071: Downloads files from webservers via HTTP",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1071: (Process #8) los.exe downloads file via http from http://geoplugin.net/json.gp.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1064: Found WSH timer for Javascript or VBS script (likely evasive script)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1057: The process has tried to detect the debugger probing the use of page guards.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1056: The process behaves as a keylogger (keyboard capturing detected)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1129: The process tried to load dynamically one or more functions.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1179: (Process #8) los.exe installs system wide \"WH_KEYBOARD_LL\" hook(s) to monitor keystrokes.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1082: Queries the volume information (name, serial number etc) of a device",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1115: (Process #8) los.exe reads data from clipboard.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1071: Detected one or more anomalous HTTP requests",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1056: Sample has functionality to log and monitor keystrokes, analyze it with the keystroke simulation cookbook",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1547.001: Creates an autostart registry key",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1140: Detected an attempt to pull out some data from the binary image",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1179: The process behaves as a keylogger (keyboard capturing detected)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1057: Queries a list of all running processes",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1060: (Process #8) los.exe adds \"9458216\" to Windows startup via registry.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1057: The process attempted to detect a running debugger using common APIs",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1057: May try to detect the Windows Explorer process (often used for injection)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1038: (Process #7) los.exe loads dropped DLL gdipfontcachev1.dat.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1082: Reads software policies",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1564.003: Detected the creation of a hidden window (common execution hiding technique)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1027: Binary may include packed or crypted data",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1056: Installs a global keyboard hook",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1497: May sleep (evasive loops) to hinder dynamic analysis",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1143: (Process #7) los.exe starts (process #9) los.exe with a hidden window.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1082: Queries the cryptographic machine GUID",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1095: Downloads files from webservers via HTTP",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1083: Reads ini files",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1497: Contains medium sleeps (\u003e= 30s)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "T1071: Detected HTTP requests to some non white-listed domains",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    }
+]

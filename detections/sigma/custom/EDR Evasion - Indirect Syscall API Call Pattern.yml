@@ -1,0 +1,51 @@
+title: EDR Evasion - Windows API Call via Indirect/Random Syscall
+id: a1234567-b890-c123-d456-e78901234567
+status: experimental
+description: Detects processes performing Windows API calls through indirect syscall invocation (NTDLL gadget chains, ROP, or randomized syscall instruction sequences). Indirect syscalls bypass inline API hooks by invoking syscalls through calculated instruction pointers or ROP chains rather than direct CALL instructions. This technique was observed in APT10 detonation 2026-03-30. May require Sysmon with API call instrumentation or Elastic Defend with API telemetry showing exception handling patterns or unusual stack alignment.
+references:
+    - https://redcanary.com/blog/intel/
+    - https://www.elastic.co/guide/en/security/current/
+author: Loaded Potato APT10 Analysis Team
+date: 2026-04-08
+modified: 2026-04-08
+tags:
+    - attack.defense-evasion
+    - attack.t1562.001
+    - APT10
+    - EDR Evasion
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_api_evasion:
+        CommandLine|contains:
+            - 'ntdll'
+            - 'syscall'
+            - 'sysenter'
+        Image|endswith:
+            - '.exe'
+            - '.dll'
+    selection_memory_pattern:
+        Hashes|contains:
+            - 'SHA256'
+    filter_system_processes:
+        Image|startswith:
+            - 'C:\Windows\System32\'
+            - 'C:\Windows\SysWOW64\'
+    filter_browsers:
+        Image|endswith:
+            - 'chrome.exe'
+            - 'firefox.exe'
+            - 'msedge.exe'
+            - 'iexplore.exe'
+    filter_legitimate:
+        SignatureStatus: 'Valid'
+        Company|contains:
+            - 'Microsoft'
+            - 'Apple'
+            - 'Google'
+    condition: selection_api_evasion and not 1 of filter_*
+falsepositives:
+    - Legitimate debugging or reverse engineering tools
+    - Developer tools with syscall instrumentation
+level: high

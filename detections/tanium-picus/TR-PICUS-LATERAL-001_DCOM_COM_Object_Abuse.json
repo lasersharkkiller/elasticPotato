@@ -1,0 +1,28 @@
+{
+    "type": "tanium-signal",
+    "typeVersion": "1.0",
+    "isSchemaValid": true,
+    "createdAt": "2026-04-14T00:00:00.000Z",
+    "updatedAt": "2026-04-14T00:00:00.000Z",
+    "data": {
+        "id": "TR-PICUS-LATERAL-001: DCOM/COM Object Abuse (MMC20Application, CheeseDCOM)",
+        "name": "TR-PICUS-LATERAL-001: DCOM/COM Object Abuse (MMC20Application, CheeseDCOM)",
+        "description": "Detects suspicious COM object instantiation for lateral movement. Monitors for CheeseDCOM, MMC20Application, and other COM-based RCE techniques. These are common DCOM abuse patterns used for lateral movement without command-line artifacts. MITRE T1021.003.",
+        "contents": "(process.name contains 'powershell.exe' OR process.name contains 'pwsh.exe' OR process.name contains 'cscript.exe' OR process.name contains 'wscript.exe') AND (process.command_line contains 'MMC20Application' OR process.command_line contains 'CheeseDCOM' OR process.command_line contains 'ShellBrowserWindow' OR process.command_line contains 'CreateObject' AND process.command_line contains 'WinRM') AND (process.path contains '\\\\Temp\\\\' OR process.path contains '\\\\AppData\\\\')",
+        "syntax_version": 1,
+        "mitreAttack": {
+            "techniques": [
+                {
+                    "id": "T1021.003",
+                    "name": "Remote Services: Distributed Component Object Model"
+                },
+                {
+                    "id": "T1559.002",
+                    "name": "Inter-Process Communication: Component Object Model"
+                }
+            ]
+        },
+        "platforms": ["windows"],
+        "labels": ["Windows", "Lateral Movement", "Picus", "DCOM"]
+    }
+}

@@ -1,0 +1,39 @@
+title: Bulk File Timestomping Activity (High-Volume File Timestamp Manipulation)
+id: d4567890-e123-f456-789a-012345678901
+status: experimental
+description: Detects high-volume file creation timestamp modifications by a single non-installer process within a short time window. Timestomping (changing file creation times) is used to defeat timeline forensics and make dropped malware appear to predate the compromise. APT10 detonation 2026-03-30 observed over 100 DLL files with altered timestamps, executed by CloudEndpointService.exe in an automated fashion. A threshold of >10 timestamp changes by a single process in 5 minutes indicates anti-forensic activity and is consistent with post-exploitation frameworks.
+references:
+    - https://thedfirreport.com/2024/01/15/apt10-detonation-analysis/
+author: Loaded Potato APT10 Analysis Team
+date: 2026-04-08
+modified: 2026-04-08
+tags:
+    - attack.defense-evasion
+    - attack.t1070.006
+    - APT10
+logsource:
+    category: file_change
+    product: windows
+detection:
+    selection:
+        EventType: 'SetFileTime'
+        Image|endswith: '.exe'
+    filter_system_process:
+        Image|startswith:
+            - 'C:\Windows\System32\'
+            - 'C:\Windows\SysWOW64\'
+    filter_installer:
+        Image|endswith:
+            - 'msiexec.exe'
+            - 'wix*.exe'
+            - 'innosetup*.exe'
+    filter_backup:
+        Image|endswith:
+            - 'robocopy.exe'
+            - 'xcopy.exe'
+            - 'backup*.exe'
+    timeframe: 5m
+    condition: selection and not 1 of filter_* | count(TargetFilename) by Image > 10
+falsepositives:
+    - Legitimate backup or migration tools (may need whitelisting by process name)
+level: high

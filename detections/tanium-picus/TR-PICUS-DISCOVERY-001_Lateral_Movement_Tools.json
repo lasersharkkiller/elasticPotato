@@ -1,0 +1,28 @@
+{
+    "type": "tanium-signal",
+    "typeVersion": "1.0",
+    "isSchemaValid": true,
+    "createdAt": "2026-04-14T00:00:00.000Z",
+    "updatedAt": "2026-04-14T00:00:00.000Z",
+    "data": {
+        "id": "TR-PICUS-DISCOVERY-001: Lateral Movement and Port Forwarding Tools (Htran, Plink, etc.)",
+        "name": "TR-PICUS-DISCOVERY-001: Lateral Movement and Port Forwarding Tools (Htran, Plink, etc.)",
+        "description": "Detects execution of lateral movement and port forwarding utilities including Htran, Plink, SigFlip, and similar tools. These tools are rarely used legitimately but are common in red team and APT playbooks. Monitors for process execution and unusual network patterns. MITRE T1570.",
+        "contents": "(process.name contains 'htran' OR process.name contains 'plink' OR process.name contains 'sigflip' OR process.name contains 'portproxy') OR (process.command_line contains 'httptunnel' OR process.command_line contains '-N -D' OR process.command_line contains 'CONNECT')",
+        "syntax_version": 1,
+        "mitreAttack": {
+            "techniques": [
+                {
+                    "id": "T1570",
+                    "name": "Lateral Tool Transfer"
+                },
+                {
+                    "id": "T1090.001",
+                    "name": "Proxy: Proxy"
+                }
+            ]
+        },
+        "platforms": ["windows"],
+        "labels": ["Windows", "Lateral Movement", "Picus", "Discovery"]
+    }
+}

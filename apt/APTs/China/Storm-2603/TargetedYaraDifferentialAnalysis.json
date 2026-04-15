@@ -1,0 +1,58 @@
+[
+    {
+        "Item_Name":  "HKTL_NET_GUID_IIS_backdoor",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "HKTL_NET_GUID_Internal_Monologue",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "SharpHostInfo",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-26"
+    },
+    {
+        "Item_Name":  "IIS_Backdoor",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "Windows_API_Function",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  9,
+        "Last_Seen":  "2025-12-17"
+    },
+    {
+        "Item_Name":  "Adobe_XMP_Identifier",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  9,
+        "Last_Seen":  "2025-12-17"
+    },
+    {
+        "Item_Name":  "StormDNS",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  9,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "WEBSHELL_ASPX_Sharepoint_Drop_CVE_2025_53770_Jul25",
+        "Type":  "Yara Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-14"
+    }
+]

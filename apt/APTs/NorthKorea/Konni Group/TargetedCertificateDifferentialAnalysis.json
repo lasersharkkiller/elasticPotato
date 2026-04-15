@@ -1,0 +1,107 @@
+[
+    {
+        "Item_Name":  "MobaXterm (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-08-25"
+    },
+    {
+        "Item_Name":  "DATASOLUTION Inc; Sectigo Public Code Signing CA R36; Sectigo Public Code Signing Root R46; Sectigo (AAA) (Verified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-10"
+    },
+    {
+        "Item_Name":  "binhex plugin for Notepad++ (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-29"
+    },
+    {
+        "Item_Name":  "SoftLabsX (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-12-02"
+    },
+    {
+        "Item_Name":  "mimikatz (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-09"
+    },
+    {
+        "Item_Name":  "Mail   PassView (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-12-21"
+    },
+    {
+        "Item_Name":  "Incredibuild Software ltd.; Microsoft ID Verified CS AOC CA 02; Microsoft ID Verified Code Signing PCA 2021; Microsoft Identity Verification Root Certificate Authority 2020 (Verified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-11-06"
+    },
+    {
+        "Item_Name":  "Open Source Developer, Benjamin Delpy; Certum Code Signing CA SHA2; Certum Trusted Network CA (Verified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-12-03"
+    },
+    {
+        "Item_Name":  "EGIS Co., Ltd.; thawte SHA256 Code Signing CA; thawte (Verified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-08-01"
+    },
+    {
+        "Item_Name":  "BizboxAMessenger (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-11-24"
+    },
+    {
+        "Item_Name":  "Jernej Simoncic; GlobalSign ObjectSign CA; GlobalSign Primary Object Publishing CA; GlobalSign Root CA - R1 (Verified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-29"
+    },
+    {
+        "Item_Name":  "CSV_Cleaner (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-12-28"
+    },
+    {
+        "Item_Name":  "Fasoo (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-11-24"
+    },
+    {
+        "Item_Name":  "Microsoft® Windows® Operating System (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2026-01-29"
+    },
+    {
+        "Item_Name":  "Microsoft® CoReXT (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-11"
+    }
+]

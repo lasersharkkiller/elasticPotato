@@ -1,0 +1,37 @@
+[
+    {
+        "Item_Name":  "SharpRDP (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-03-20"
+    },
+    {
+        "Item_Name":  "lets-latest (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-18"
+    },
+    {
+        "Item_Name":  "DingTalk Technology Co.,Ltd.; DigiCert Trusted G4 Code Signing RSA4096 SHA384 2021 CA1; DigiCert Trusted Root G4; DigiCert (Verified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-01"
+    },
+    {
+        "Item_Name":  "Unsigned (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-23"
+    },
+    {
+        "Item_Name":  "Apache HTTP Server (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-24"
+    }
+]

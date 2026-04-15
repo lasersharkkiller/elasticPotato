@@ -1,0 +1,44 @@
+[
+    {
+        "Item_Name":  "Microsoft® Windows® Operating System (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-08-28"
+    },
+    {
+        "Item_Name":  "Restorer Ultimate (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-05-03"
+    },
+    {
+        "Item_Name":  "RedM (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-05-03"
+    },
+    {
+        "Item_Name":  "Open Source Developer, Benjamin Delpy; Certum Code Signing 2021 CA; Certum Trusted Network CA 2; Certum Trusted Network CA (Verified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2026-01-13"
+    },
+    {
+        "Item_Name":  "CmRccService (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "Internet Explorer (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  41,
+        "Last_Seen":  "2025-05-05"
+    }
+]

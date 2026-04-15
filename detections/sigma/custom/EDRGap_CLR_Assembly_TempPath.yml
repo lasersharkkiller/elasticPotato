@@ -1,0 +1,47 @@
+title: CLR Runtime or Managed Assembly Loaded from Temp Path (UH_CLR)
+id: c2d3e4f5-a6b7-8901-cdef-222333444555
+status: experimental
+description: |
+    Detects CLR runtime DLLs (mscoree.dll, clrjit.dll, clr.dll) loaded from
+    user-writable temp or appdata directories by any process.
+
+    This is the observable artefact of execute-assembly staging where a payload
+    assembly is written to a temp path before CLRCreateInstance loads it.
+    Extends the LOLBin-specific CLR rule to cover any process acting as an
+    unintended CLR host with a suspicious assembly staging path.
+
+    EDR gap context (api_call_matrix.ps1):
+      CLRCreateInstance / CorBindToRuntimeEx: 6 of 7 EDRs behavioral-only
+      (CS=B, S1=B, CB=B, EL=B, XDR=B, TM=B). Sysmon image_load is the
+      primary compensating control.
+references:
+    - https://attack.mitre.org/techniques/T1055/
+    - https://github.com/Flangvik/SharpPick
+author: Loaded Potato / lasersharkkiller
+date: 2026-04-07
+tags:
+    - attack.defense_evasion
+    - attack.t1055
+    - attack.execution
+    - attack.t1106
+logsource:
+    category: image_load
+    product: windows
+detection:
+    selection_clr:
+        ImageLoaded|endswith:
+            - '\mscoree.dll'
+            - '\clrjit.dll'
+            - '\clr.dll'
+            - '\mscorwks.dll'
+    selection_temp_path:
+        ImageLoaded|startswith:
+            - 'C:\Users\'
+            - 'C:\Windows\Temp\'
+            - 'C:\Temp\'
+            - 'C:\ProgramData\'
+    condition: selection_clr and selection_temp_path
+falsepositives:
+    - .NET installers that stage assemblies to temp during setup
+    - Some legitimate .NET applications that unpack to AppData — verify publisher and path
+level: high

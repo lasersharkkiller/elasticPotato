@@ -1,0 +1,39 @@
+title: COM Object InprocServer32 Hijacking via Registry (Picus Sim 2026-04-12)
+id: d4e5f6a7-2018-4bbb-c018-picus20260412
+status: experimental
+description: >
+    Detects COM object hijacking by creating or modifying InprocServer32 registry
+    keys under HKCU\SOFTWARE\Classes\CLSID to point to attacker-controlled DLLs.
+    When a COM object is instantiated, the hijacked DLL is loaded instead of the
+    legitimate one. Observed in Picus simulation 2026-04-12 hijacking CLSID
+    {01575CFE-9A55-4003-A5E1-F38D1EBDCBE1} to load FileSyncShell64.dll from a
+    staging path with ThreadingModel=Apartment.
+    T1546.015 - Event Triggered Execution: Component Object Model Hijacking.
+references:
+    - https://attack.mitre.org/techniques/T1546/015/
+author: Loaded Potato - Picus Simulation 2026-04-12
+date: 2026-04-13
+tags:
+    - attack.persistence
+    - attack.t1546.015
+    - picus.simulation.2026-04-12
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_com_hijack:
+        Image|endswith: '\reg.exe'
+        CommandLine|contains|all:
+            - 'CLSID'
+            - 'InprocServer32'
+    filter_staging_dll:
+        CommandLine|contains:
+            - '\Temp\'
+            - '\AppData\'
+            - '\Public\'
+            - '\ProgramData\'
+            - '\Downloads\'
+    condition: selection_com_hijack and filter_staging_dll
+falsepositives:
+    - Legitimate COM component registration by installers (should not reference staging paths)
+level: high

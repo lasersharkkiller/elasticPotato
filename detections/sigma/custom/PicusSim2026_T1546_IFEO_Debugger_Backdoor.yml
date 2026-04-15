@@ -1,0 +1,39 @@
+title: IFEO Debugger Registry Backdoor - Accessibility Tool Hijack (Picus Sim 2026-04-12)
+id: d4e5f6a7-2002-4bbb-c002-picus20260412
+status: experimental
+description: >
+    Detects setting the Debugger value under Image File Execution Options for
+    accessibility binaries (sethc.exe, utilman.exe, osk.exe, narrator.exe,
+    magnify.exe) to cmd.exe or powershell.exe. This classic persistence technique
+    allows pre-authentication code execution at the Windows lock screen. Observed
+    in Picus simulation 2026-04-12 with sethc.exe Debugger set to cmd.exe.
+    T1546.012 - Event Triggered Execution: Image File Execution Options Injection.
+references:
+    - https://attack.mitre.org/techniques/T1546/012/
+author: Loaded Potato - Picus Simulation 2026-04-12
+date: 2026-04-13
+tags:
+    - attack.persistence
+    - attack.privilege-escalation
+    - attack.t1546.012
+    - picus.simulation.2026-04-12
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    selection_ifeo:
+        TargetObject|contains: 'SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\'
+        TargetObject|endswith: '\Debugger'
+    filter_target_binaries:
+        TargetObject|contains:
+            - '\sethc.exe'
+            - '\utilman.exe'
+            - '\osk.exe'
+            - '\narrator.exe'
+            - '\magnify.exe'
+            - '\DisplaySwitch.exe'
+            - '\AtBroker.exe'
+    condition: selection_ifeo and filter_target_binaries
+falsepositives:
+    - Legitimate debugger attachment by developers (should not target accessibility tools)
+level: critical

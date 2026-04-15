@@ -1,0 +1,28 @@
+{
+    "type": "tanium-signal",
+    "typeVersion": "1.0",
+    "isSchemaValid": true,
+    "createdAt": "2026-04-14T00:00:00.000Z",
+    "updatedAt": "2026-04-14T00:00:00.000Z",
+    "data": {
+        "id": "TR-PICUS-EXEC-001: WMI Remote Code Execution via Invoke-WmiMethod",
+        "name": "TR-PICUS-EXEC-001: WMI Remote Code Execution via Invoke-WmiMethod",
+        "description": "Detects PowerShell execution of Invoke-WmiMethod cmdlet, which can be used for remote code execution and lateral movement. Attackers use this to execute arbitrary commands on local or remote systems via WMI classes. MITRE T1047.",
+        "contents": "(process.name contains 'powershell.exe' OR process.name contains 'pwsh.exe') AND (process.command_line contains 'Invoke-WmiMethod' OR process.command_line contains 'wmiexec' OR process.command_line contains 'wmi' AND process.command_line contains 'Process.Create') AND process.modules contains 'wmiprvse.dll'",
+        "syntax_version": 1,
+        "mitreAttack": {
+            "techniques": [
+                {
+                    "id": "T1047",
+                    "name": "Windows Management Instrumentation"
+                },
+                {
+                    "id": "T1059.001",
+                    "name": "Command and Scripting Interpreter: PowerShell"
+                }
+            ]
+        },
+        "platforms": ["windows"],
+        "labels": ["Windows", "Execution", "Picus", "Lateral Movement"]
+    }
+}

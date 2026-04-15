@@ -1,0 +1,42 @@
+title: Process Doppelganging via NTFS Transaction APIs (Picus Red Report 2026 - T1055.013)
+id: a1b2c3d4-1001-4aaa-b001-000000000001
+status: experimental
+description: >
+    Detects indicators of Process Doppelganging, a fileless injection technique
+    that abuses NTFS Transactional (TxF) operations to replace a legitimate
+    process image with malicious code without writing to disk. Observed in APT37
+    (Rust-based backdoor via NtCreateTransaction/NtRollbackTransaction) and
+    GhostPulse loader deploying Rhadamanthys, SectopRAT, Vidar. IDAT Loader used
+    this to deploy LummaC2 into explorer.exe. Ranked #1 technique (T1055) in
+    Picus Red Report 2026 with 30% prevalence across 326K+ malware samples.
+references:
+    - https://www.picussecurity.com/red-report-2026
+    - https://attack.mitre.org/techniques/T1055/013/
+author: Loaded Potato - Picus Red Report 2026 Analysis
+date: 2026-04-09
+tags:
+    - attack.defense-evasion
+    - attack.privilege-escalation
+    - attack.t1055.013
+    - picus.redreport.2026
+    - APT37
+    - GhostPulse
+    - LummaC2
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_suspended:
+        CommandLine|contains:
+            - 'CREATE_SUSPENDED'
+    selection_api_calls:
+        CallTrace|contains:
+            - 'ntdll.dll!NtCreateTransaction'
+            - 'ntdll.dll!NtRollbackTransaction'
+            - 'ntdll.dll!NtCreateSection'
+            - 'ntdll.dll!NtCreateProcessEx'
+    condition: selection_suspended or selection_api_calls
+falsepositives:
+    - Legitimate NTFS transactional operations (very rare in practice)
+    - Software using TxF for atomic file operations
+level: high

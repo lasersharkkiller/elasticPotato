@@ -1,0 +1,28 @@
+{
+    "type": "tanium-signal",
+    "typeVersion": "1.0",
+    "isSchemaValid": true,
+    "createdAt": "2026-04-14T00:00:00.000Z",
+    "updatedAt": "2026-04-14T00:00:00.000Z",
+    "data": {
+        "id": "TR-PICUS-PAYLOAD-001: Malware Marker Mutex Creation (BlackByte, Emotet, etc.)",
+        "name": "TR-PICUS-PAYLOAD-001: Malware Marker Mutex Creation (BlackByte, Emotet, etc.)",
+        "description": "Detects creation of well-known malware mutex patterns used as execution markers. Monitors for GUIDs and named mutexes associated with BlackByte ransomware, Emotet, and other malware families. Processes creating these mutexes from temp/user-writable paths are highly suspicious. MITRE T1112.",
+        "contents": "process.mutexes contains '{1f07524d-fb13-4d5e-8e5c-c3373860df25}' OR process.mutexes contains '{CB191C19-1D2D-45FC-9092-6DB462EFEAC6}' OR process.mutexes contains 'bc2dc004028c4f0303f5e49984983352' OR process.mutexes contains 'YeucqCcpgapiZISEdRSNiL' OR process.mutexes contains 'Emotet' OR process.mutexes contains 'Global\\\\{' AND (process.path contains '\\\\Temp\\\\' OR process.path contains '\\\\AppData\\\\' OR process.path contains '\\\\Downloads\\\\' OR process.path contains '\\\\ProgramData\\\\')",
+        "syntax_version": 1,
+        "mitreAttack": {
+            "techniques": [
+                {
+                    "id": "T1112",
+                    "name": "Modify System Configuration"
+                },
+                {
+                    "id": "T1036.004",
+                    "name": "Masquerading: Match Legitimate Process Name"
+                }
+            ]
+        },
+        "platforms": ["windows"],
+        "labels": ["Windows", "Defense Evasion", "Picus", "Malware"]
+    }
+}

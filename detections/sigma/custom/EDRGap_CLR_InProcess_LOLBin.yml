@@ -1,0 +1,54 @@
+title: CLR In-Process Hosting by LOLBin (Execute-Assembly / SharpPick)
+id: d1e2f3a4-b5c6-7890-def0-aabbccddeeff
+status: experimental
+description: |
+    Detects the CLR runtime DLLs (mscoree.dll, clrjit.dll) being loaded into
+    a LOLBin process. This is the observable artefact of in-process .NET hosting
+    techniques used by execute-assembly (Cobalt Strike), SharpPick (FIN7/APT41),
+    and similar post-exploitation loaders that run .NET assemblies inside a native
+    host without spawning a new process.
+
+    EDR gap context (api_call_matrix.ps1):
+      CLRCreateInstance / CorBindToRuntimeEx: 6 of 7 EDRs have BEHAVIORAL coverage
+      only (no direct API hook). Sysmon image_load provides the compensating control.
+
+    Rarity: mscoree.dll and clrjit.dll should never be loaded by rundll32, mshta,
+    wscript, cscript, or regsvr32 during normal operations.
+references:
+    - https://www.ired.team/offensive-security/code-injection-process-injection/injecting-and-executing-.net-code
+    - https://github.com/Flangvik/SharpPick
+    - https://www.cobaltstrike.com/blog/cobalt-strike-3-11-the-snake-that-eats-its-tail/
+author: Loaded Potato / lasersharkkiller
+date: 2026-04-06
+tags:
+    - attack.defense_evasion
+    - attack.t1055
+    - attack.execution
+    - attack.t1106
+logsource:
+    category: image_load
+    product: windows
+detection:
+    selection_clr_dlls:
+        ImageLoaded|endswith:
+            - '\mscoree.dll'
+            - '\clrjit.dll'
+            - '\mscorwks.dll'
+            - '\clr.dll'
+    selection_lolbin_host:
+        Image|endswith:
+            - '\rundll32.exe'
+            - '\regsvr32.exe'
+            - '\mshta.exe'
+            - '\wscript.exe'
+            - '\cscript.exe'
+            - '\msiexec.exe'
+            - '\svchost.exe'
+            - '\explorer.exe'
+            - '\notepad.exe'
+            - '\calc.exe'
+    condition: selection_clr_dlls and selection_lolbin_host
+falsepositives:
+    - Unlikely — these processes have no legitimate reason to host the CLR runtime
+    - Custom LOB applications that embed a LOLBin wrapper (rare; investigate)
+level: high

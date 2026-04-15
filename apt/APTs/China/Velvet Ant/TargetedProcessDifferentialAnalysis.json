@@ -1,0 +1,359 @@
+[
+    {
+        "Item_Name":  "C:\\Windows\\System32\\msiexec.exe C:\\Windows\\system32\\msiexec.exe /V",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "C:\\Users\\Elijah\\AppData\\Local\\Temp\\AcroRd32.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "\"C:\\Program Files (x86)\\Adobe\\Acrobat Reader DC\\Reader\\AcroCEF\\RdrCEF.exe\" --backgroundcolor=16514043",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "C:\\ProgramData\\AcroRd32DQe\\AcroRd32.exe 595",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "AcroRd32.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\SysWOW64\\rundll32.exe rundll32.exe \"C:\\Users\\user\\Desktop\\readme.dll\",NimMain",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\SysWOW64\\rundll32.exe rundll32.exe C:\\Users\\user\\Desktop\\readme.dll,NimMain",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "C:\\ProgramData\\back\\acrotrays.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p -s StorSvc",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\system32\\lsass.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\system32\\DllHost.exe /Processid:{AB8902B4-09CA-4BB6-B78D-A8F59079A8D5}",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "(2596 - y5rynqlg2t.exe) c:\\users\\xxx\\appdata\\local\\temp\\6a7267dc0e5889df7f4b88b8323fb628\\y5rynqlg2t.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\SysWOW64\\rundll32.exe rundll32.exe  \"C:\\Users\\user\\Desktop\\readme.dll\",#1",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "\"C:\\Users\\Public\\cnmpaui.exe\" ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "\"C:\\Users\\\u003cUSER\u003e\\AppData\\Local\\Temp\\040cbfc95aafb50ef30a.exe\"",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "\"C:\\Program Files\\Adobe\\Acrobat DC\\Acrobat\\Acrobat.exe\" \"C:\\Users\\user\\Desktop\\No.4638.pdf\"",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "C:\\ProgramData\\AcroRd32DQe\\AcroRd32.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "C:\\Users\\user\\AppData\\Local\\ndaEGaj\\LDeviceDetectionHelper.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\System32\\svchost.exe -k LocalService -p -s LicenseManager",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "\"C:\\Windows\\system32\\mshta.exe\" \"C:\\Users\\\u003cUSER\u003e\\Desktop\\No.4638.hta\"",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "C:\\Users\\Mason\\AppData\\Local\\Temp\\0020745194.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\System32\\conhost.exe C:\\Windows\\system32\\conhost.exe 0xffffffff -ForceV1",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "\"C:\\Users\\\u003cUSER\u003e\\AppData\\Local\\Temp\\AcroRd32.exe\"",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "\"C:\\Users\\user\\VirtualFile\\LDeviceDetectionHelper.exe\" 481 58",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "\"C:\\Windows\\System32\\msiexec.exe\" /i \"C:\\Users\\user\\Desktop\\2ad3f.msi\" ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "${SamplePath}\\AcroRd32.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\SysWOW64\\mshta.exe mshta.exe \"C:\\Users\\user\\Desktop\\No.4638.hta\"",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\SysWOW64\\rundll32.exe rundll32.exe \"C:\\Users\\user\\Desktop\\readme.dll\",HidD_GetHidGuid",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\system32\\OpenWith.exe -Embedding",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "C:\\Users\\Elijah\\AppData\\Local\\Temp\\f949b78b040cbfc95aafb50ef30ac31efe44a1f437d51.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "C:\\Users\\Mason\\AppData\\Local\\Temp\\WBWqz0Ya4pLJqWatiqQCO.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\System32\\wuapihost.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\system32\\svchost.exe -k LocalService -s W32Time",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "\"C:\\Users\\Public\\cnmpaui.exe\"",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "\"C:\\Windows\\System32\\rundll32.exe\" \"C:\\Users\\\u003cUSER\u003e\\Desktop\\library.dll\",#1",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\Explorer.EXE",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\SysWOW64\\rundll32.exe rundll32.exe C:\\Users\\user\\Desktop\\readme.dll,HidD_GetHidGuid",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\System32\\loaddll32.exe loaddll32.exe \"C:\\Users\\user\\Desktop\\readme.dll\"",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "\"C:\\Program Files (x86)\\Adobe\\Acrobat Reader DC\\Reader\\AcroRd32.exe\" \"C:\\Users\\user\\AppData\\Local\\Temp\\ADSOM-Plus - Meeting Programme.pdf\"",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "%SAMPLEPATH%\\f949b78b040cbfc95aafb50ef30ac3e8c16771c6b926b6f8f1efe44a1f437d51.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "${SamplePath}\\f949b78b040cbfc95aafb50ef30ac3e8c16771c6b926b6f8f1efe44a1f437d51.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\system32\\svchost.exe -k UnistackSvcGroup",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "\"C:\\Windows\\system32\\msiexec.exe\" /I \"C:\\Users\\\u003cUSER\u003e\\Desktop\\2ad3f.msi\" /qb ACCEPTEULA=1 LicenseAccepted=1",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "acrotrays.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\System32\\svchost.exe -k NetworkService -p",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "C:\\ProgramData\\back\\acrotrays.exe -d AAA",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "C:\\Users\\Mason\\AppData\\Local\\Temp\\AcroRd32.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "C:\\Users\\user\\VirtualFile\\LDeviceDetectionHelper.exe 330 80",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\SysWOW64\\cmd.exe cmd.exe /C rundll32.exe \"C:\\Users\\user\\Desktop\\readme.dll\",#1",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\system32\\svchost.exe -k DcomLaunch -p",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\system32\\services.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-09-04"
+    }
+]

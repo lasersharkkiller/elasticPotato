@@ -1,0 +1,28 @@
+{
+    "type": "tanium-signal",
+    "typeVersion": "1.0",
+    "isSchemaValid": true,
+    "createdAt": "2026-04-14T00:00:00.000Z",
+    "updatedAt": "2026-04-14T00:00:00.000Z",
+    "data": {
+        "id": "TR-PICUS-DEFENSE-001: Print Spooler Privilege Escalation (PrintNightMare, CVE-2021-1675)",
+        "name": "TR-PICUS-DEFENSE-001: Print Spooler Privilege Escalation (PrintNightMare, CVE-2021-1675)",
+        "description": "Detects exploitation of Print Spooler service for privilege escalation. Monitors for spoolsv.exe loading unsigned DLLs, spawning child processes, or modification patterns consistent with PrintNightMare/CVE-2021-1675 exploitation. Critical privilege escalation vector. MITRE T1548.004.",
+        "contents": "(process.name contains 'spoolsv.exe' OR process.parent.name contains 'spoolsv.exe') AND (process.apiCalls contains 'AddPrinterDriver' OR process.apiCalls contains 'GetPrinterDriver' OR process.command_line contains 'rundll32' OR process.modules contains 'localspl.dll' AND process.isSigned = false)",
+        "syntax_version": 1,
+        "mitreAttack": {
+            "techniques": [
+                {
+                    "id": "T1548.004",
+                    "name": "Abuse Elevation Control Mechanism: Elevated Execution with Prompt"
+                },
+                {
+                    "id": "T1547.012",
+                    "name": "Boot or Logon Autostart Execution: Print Processors"
+                }
+            ]
+        },
+        "platforms": ["windows"],
+        "labels": ["Windows", "Privilege Escalation", "Picus", "CVE-2021-1675"]
+    }
+}

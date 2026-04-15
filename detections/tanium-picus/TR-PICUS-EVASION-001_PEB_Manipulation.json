@@ -1,0 +1,28 @@
+{
+    "type": "tanium-signal",
+    "typeVersion": "1.0",
+    "isSchemaValid": true,
+    "createdAt": "2026-04-14T00:00:00.000Z",
+    "updatedAt": "2026-04-14T00:00:00.000Z",
+    "data": {
+        "id": "TR-PICUS-EVASION-001: Process Environment Block (PEB) Manipulation / Process Masquerading",
+        "name": "TR-PICUS-EVASION-001: Process Environment Block (PEB) Manipulation / Process Masquerading",
+        "description": "Detects suspicious processes loading ntdll.dll and making calls to NtQueryInformationProcess with ProcessBasicInformation class to read/modify the PEB. This technique allows attackers to hide true process identity. Monitors for process masquerading attempts. MITRE T1036.004, T1070.",
+        "contents": "process.modules contains 'ntdll.dll' AND (process.apiCalls contains 'NtQueryInformationProcess' OR process.apiCalls contains 'NtSetInformationProcess') AND (process.path contains '\\\\Temp\\\\' OR process.path contains '\\\\AppData\\\\' OR process.path contains '\\\\Downloads\\\\' OR process.path contains '\\\\ProgramData\\\\')",
+        "syntax_version": 1,
+        "mitreAttack": {
+            "techniques": [
+                {
+                    "id": "T1036.004",
+                    "name": "Masquerading: Match Legitimate Process Name"
+                },
+                {
+                    "id": "T1070",
+                    "name": "Indicator Removal: On Host"
+                }
+            ]
+        },
+        "platforms": ["windows"],
+        "labels": ["Windows", "Defense Evasion", "Picus", "Masquerading"]
+    }
+}

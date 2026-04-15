@@ -1,0 +1,184 @@
+[
+    {
+        "Item_Name":  "CloudSync Client (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-08-24"
+    },
+    {
+        "Item_Name":  "DocuView PDF Viewer (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-08-21"
+    },
+    {
+        "Item_Name":  "???????????; DigiCert Trusted G4 Code Signing RSA4096 SHA384 2021 CA1; DigiCert Trusted Root G4; DigiCert (Verified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-16"
+    },
+    {
+        "Item_Name":  "VLTK2.NET (Verified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-08-28"
+    },
+    {
+        "Item_Name":  "Visual Studio (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  4,
+        "Last_Seen":  "2025-08-02"
+    },
+    {
+        "Item_Name":  "Node.js (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-07-01"
+    },
+    {
+        "Item_Name":  "Unity Player (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-02"
+    },
+    {
+        "Item_Name":  "TODO: \u003cProduct name\u003e (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-03-03"
+    },
+    {
+        "Item_Name":  "QSAC (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-07-02"
+    },
+    {
+        "Item_Name":  "OpenJS Foundation; DigiCert Trusted G4 Code Signing RSA4096 SHA384 2021 CA1; DigiCert Trusted Root G4; DigiCert (Verified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-07-06"
+    },
+    {
+        "Item_Name":  "CodeZap (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-08-09"
+    },
+    {
+        "Item_Name":  "Unsigned (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  41,
+        "Last_Seen":  "2025-08-25"
+    },
+    {
+        "Item_Name":  "syncui (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-31"
+    },
+    {
+        "Item_Name":  "ShenZhen Thunder Networking Technologies Ltd.; Symantec Class 3 Extended Validation Code Signing CA - G2; VeriSign (Verified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-04-04"
+    },
+    {
+        "Item_Name":  "Source 2 Engine (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-08-27"
+    },
+    {
+        "Item_Name":  "Microsoft® Windows® Operating System (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "m6M (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2022-08-31"
+    },
+    {
+        "Item_Name":  "EchoWave (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-08-27"
+    },
+    {
+        "Item_Name":  "Java Platform SE 8 U20 (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-08-22"
+    },
+    {
+        "Item_Name":  "Lumen Engine (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-08-26"
+    },
+    {
+        "Item_Name":  "Logitech; VeriSign Class 3 Code Signing 2010 CA; VeriSign (Verified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2024-12-05"
+    },
+    {
+        "Item_Name":  "Defold Engine (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-08-21"
+    },
+    {
+        "Item_Name":  "AeroView (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-08-25"
+    },
+    {
+        "Item_Name":  "Pyroscope Agent (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-01-03"
+    },
+    {
+        "Item_Name":  "RenderCore (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-08-25"
+    },
+    {
+        "Item_Name":  "Beijing Kingsoft Security software Co.,Ltd; DigiCert SHA2 Assured ID Code Signing CA; DigiCert (Verified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-06-05"
+    }
+]

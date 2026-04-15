@@ -1,0 +1,36 @@
+title: Alternate Data Stream Payload Execution (Picus Sim 2026-04-12)
+id: d4e5f6a7-2011-4bbb-c011-picus20260412
+status: experimental
+description: >
+    Detects execution of payloads hidden in NTFS Alternate Data Streams (ADS).
+    Attackers use 'type payload > file:stream' to hide executables in ADS, then
+    execute them directly. Observed in Picus simulation 2026-04-12 where a payload
+    was written to ServiceADS:cachetask and then executed as a service, spawning
+    notepad.exe as an injection target.
+    T1564.004 - Hide Artifacts: NTFS File Attributes.
+references:
+    - https://attack.mitre.org/techniques/T1564/004/
+author: Loaded Potato - Picus Simulation 2026-04-12
+date: 2026-04-13
+tags:
+    - attack.defense-evasion
+    - attack.t1564.004
+    - picus.simulation.2026-04-12
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_ads_exec:
+        Image|contains: ':'
+        Image|re: '.*:[^\\]+'
+    selection_ads_create:
+        CommandLine|contains|all:
+            - 'type'
+            - '>'
+            - ':'
+    filter_drive_letters:
+        Image|re: '^[A-Za-z]:\\\\'
+    condition: (selection_ads_exec and not filter_drive_letters) or selection_ads_create
+falsepositives:
+    - Very rare legitimate use of ADS execution
+level: high
