@@ -10,3 +10,9 @@ HardenedGPO_Output/
 reports/
 *.log
 *.tmp
+
+# Heavy VT enrichment caches — keep local only, never commit
+output-baseline/VirusTotal-main/
+output-baseline/VirusTotal-behaviors/
+output-baseline/Cert_Analysis_Results/
+output-baseline/IntezerStrings/
