@@ -1,0 +1,695 @@
+[
+    {
+        "Item_Name":  "T1082: Queries the volume information (name, serial number etc) of a device",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  9,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1083: check if file exists",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-09-26"
+    },
+    {
+        "Item_Name":  "T1082: Queries disk information (often used to detect virtual machines)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "T1543.003: Creates or modifies windows services",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1027.002: The binary contains an unknown PE section name indicative of packing",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-23"
+    },
+    {
+        "Item_Name":  "T1057: enumerate processes",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1071: Adversaries may communicate using application layer protocols to avoid detection/network filtering by blending in with existing traffic.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  15,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1027: create new key via CryptAcquireContext",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1560: Public key (encryption) found",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1057: The process has tried to detect the debugger probing the use of page guards.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-26"
+    },
+    {
+        "Item_Name":  "T1129: The process tried to load dynamically one or more functions.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-09-26"
+    },
+    {
+        "Item_Name":  "T1055: Maps a DLL or memory area into another process",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "T1082: An adversary may attempt to get detailed information about the operating system and hardware, including version, patches, hotfixes, service packs, and architecture.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1105: Downloads files from webservers via HTTP",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "T1003: Accessed credential storage registry keys",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1562.001: Modifies security policies related information",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1071: The PE file contains a suspicious PDB path",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "T1057: Queries a list of all running processes",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1614: get geographical location",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1071: Anomalous binary characteristics",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-09-23"
+    },
+    {
+        "Item_Name":  "T1218.011: Runs a DLL by calling functions",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "T1036: Creates files inside the system directory",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "T1129: The process attempted to dynamically load a malicious function",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-26"
+    },
+    {
+        "Item_Name":  "T1055: Spawns processes",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1562.001: Creates guard pages, often used to prevent reverse engineering and debugging",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1083: Enumerates the file system",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "T1083: Reads ini files",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "T1071: Performs DNS lookups",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  9,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1082: get disk information",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1497: May sleep (evasive loops) to hinder dynamic analysis",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  12,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1129: parse PE header",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  9,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1027: The binary contains an unknown PE section name indicative of packing",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-23"
+    },
+    {
+        "Item_Name":  "T1036: Creates files inside the user directory",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  9,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1518: enumerate processes",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1087: get session user name",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1112: delete registry value",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1082: Reads software policies",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  15,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1082: Checks available memory",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1057: Enumerates running processes",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1132: Performs DNS queries with encoded ASCII data (may be used to data exfiltration)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "T1027: reference Base64 string",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1071: Downloads files from webservers via HTTP",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "T1059: Apparent Internal Usage of CMD.EXE",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "T1106: Adversaries may interact with the native OS application programming interface (API) to execute behaviors.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1055: Adversaries may inject code into processes in order to evade process-based defenses as well as possibly elevate privileges.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1082: Collects information to fingerprint the system",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1070.006: Adversaries may modify file time attributes to hide new or changes to existing files.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-26"
+    },
+    {
+        "Item_Name":  "T1070: Adversaries may delete or modify artifacts generated within systems to remove evidence of their presence or hinder defenses.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-26"
+    },
+    {
+        "Item_Name":  "T1095: Adversaries may use a non-application layer protocol for communication between host and C2 server or among infected hosts within a network.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "T1082: Checks the free space of harddrives",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1091: Checks for available system drives (often done to infect USB drives)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1574.002: Tries to load missing DLLs",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  9,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1012: query or enumerate registry value",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1497.001: reference anti-VM strings targeting VMWare",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-09-26"
+    },
+    {
+        "Item_Name":  "T1140: decode data using Base64 in .NET",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "T1082: get hostname",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  9,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1497.001: reference anti-VM strings targeting Xen",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-09-26"
+    },
+    {
+        "Item_Name":  "T1071: Attempts to connect to a dead IP:Port",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1033: get session user name",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1057: The process attempted to detect a running debugger using common APIs",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-26"
+    },
+    {
+        "Item_Name":  "T1048: Performs DNS queries with encoded ASCII data (may be used to data exfiltration)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "T1083: get common file path",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1070.004: Deletes files inside the Windows folder",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "T1497.001: reference anti-VM strings targeting VirtualBox",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-09-26"
+    },
+    {
+        "Item_Name":  "T1129: link function at runtime on Windows",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1497: Contains medium sleeps (\u003e= 30s)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1497: Contains long sleeps (\u003e= 3 min)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1045: Manalize Local SandBox Packer Harvesting",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-26"
+    },
+    {
+        "Item_Name":  "T1033: get session integrity level",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1016: get local IPv4 addresses",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1048: Adversaries may steal data by exfiltrating it over a different protocol than that of the existing command and control channel.",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "T1083: get file size",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1071: Yara detections observed in process dumps, payloads or dropped files",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1071: Reads data out of its own binary image",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1120: Checks for available system drives (often done to infect USB drives)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1016: get socket information",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1012: query or enumerate registry key",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1518.001: May try to detect the virtual machine to hinder analysis (VM artifact strings found in memory)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  9,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1070.006: Binary contains a suspicious time stamp",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-26"
+    },
+    {
+        "Item_Name":  "T1497: Queries disk information (often used to detect virtual machines)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "T1027: encode data using Base64",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1071: Uses HTTPS",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "T1027: encode data using XOR",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  9,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1012: Collects information to fingerprint the system",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1057: Expresses interest in specific running processes",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1082: query environment variable",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1497.001: reference anti-VM strings targeting Parallels",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-09-26"
+    },
+    {
+        "Item_Name":  "T1016: get socket status",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1059: Sample may offer command line options, please run it with the command line option cookbook (it\u0027s possible that the command line switches require additional characters like)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1095: Downloads files from webservers via HTTP",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "T1063: It Tries to detect injection methods",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "T1120: Sample is looking for USB drives. Launch the sample with the USB Fake Disk cookbook",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1543.003: Modifies existing windows services",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1095: Performs DNS lookups",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  9,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1518.001: Queries disk information (often used to detect virtual machines)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "T1573: Uses HTTPS",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-14"
+    },
+    {
+        "Item_Name":  "T1497: Allocates memory with a write watch (potentially for evading sandboxes)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-09"
+    },
+    {
+        "Item_Name":  "T1083: enumerate files on Windows",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-28"
+    },
+    {
+        "Item_Name":  "T1059: Sample might require command line arguments, analyze it with the command line cookbook",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-10-28"
+    }
+]

@@ -1,0 +1,2375 @@
+[
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_FIX_CHUNKED_PROXY_SCRIPT_DOWNLOAD_KB843289",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_ALLOW_REVERSE_SOLIDUS_IN_USERINFO_KB932562",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\AllFilesystemObjects\\DocObject",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\LanguagePack\\DataStore_V1.0\\DataFilePath",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows Script Host\\Settings\\UseWINSAFER",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\CLSID\\{208D2C60-3AEA-1069-A2D7-08002B30309D}\\ShellFolder",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\WOW6432Node\\CLSID\\{DFFACDC5-679F-4156-8947-C5C76BC0B67F}\\Instance",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\policy.4.0.System.Security__b03f5f7f11d50a3a",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\NonEnum",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\LogFailures",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_URI_DISABLECACHE",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKU\\S-1-5-21-575823232-3065301323-1442773979-1000\\Software\\Rmc-XBQXEL\\\\exepath = 0F 97 FA 4F B9 DD 6A E0 5B C6 01 60 30 79 42 72 E1 BB E5 2A EB 49 2A 7D BB 45 B1 62 FB F1 10 C4 6A DB D7 B2 79 4D B9 30 17 18 7E FC 8D F9 24 99 74 AB B0 9C 8A DE 95 C8 6E 13 DE 08 AF 5D C7 A2 54 95 C7 45 8E 49 AC 0C 85 23 5B E4 8C 31 AA 29",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\Folder\\DocObject",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.vbs\\OpenWithProgids",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Rmc-XBQXEL\\hlight",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\policy.4.0.System.Runtime.Remoting__b77a5c561934e089",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_DIGEST_NO_EXTRAS_IN_URI",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\SOFTWARE\\Microsoft\\Fusion\\NoClientChecks",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\Safer\\CodeIdentifiers\\262144\\UrlZones",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\StrongName",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\Safer\\CodeIdentifiers\\262144\\Hashes",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Installer\\Managed\\S-1-5-21-4270068108-2931534202-3907561125-1001\\Installer\\Assemblies\\Global",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ZoneMap\\Domains\\",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\Safer\\CodeIdentifiers\\131072\\Paths",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\FileInUseMillisecondsBetweenRetries",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\.NETFramework\\DbgManagedDebugger",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKCU\\Software\\Microsoft\\Installer\\Assemblies\\Global",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\policy.4.0.System.Data__b77a5c561934e089",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\Local Settings\\Software\\Microsoft",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\Safer\\CodeIdentifiers\\65536\\Hashes",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\v4.0_policy.4.0.System.Runtime.Remoting__b77a5c561934e089",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\Installer\\Assemblies\\Global",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\WOW6432Node\\CLSID\\{FAE3D380-FEA4-4623-8C75-C6B61110B681}\\Instance\\Disabled",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\Folder\\DocObject",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_IGNORE_MAPPINGS_FOR_CREDPOLICY",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Fusion",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\WOW6432Node\\CLSID\\{208D2C60-3AEA-1069-A2D7-08002B30309D}\\ShellFolder",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Rmc-XBQXEL\\licence",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_COMPAT_USE_CONNECTION_BASED_NEGOTIATE_AUTH_KB2151543",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\.NETFramework\\AppContext",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\trn = \"C:\\Users\\user\\AppData\\Roaming\\los.exe\"",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\VBSFile\\ShellEx\\IconHandler",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ZoneMap\\ProtocolDefaults\\",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Internet Settings",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\.NETFramework\\OnlyUseLatestCLR",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\ForceLog",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\AppID\\WScript.exe",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows Script Host\\Settings\\Timeout",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Installer\\Assemblies\\C:|Users|user|Desktop|executable.exe",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\.NETFramework\\FeatureSIMD",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\LegacyPolicyTimeStamp",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\LanguagePack\\DataStore_V1.0\\Disable",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BYPASS_CACHE_FOR_CREDPOLICY_KB936611",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\SOFTWARE\\Classes\\Installer\\Assemblies\\Global",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\5.0\\Cache",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\v4.0_policy.4.0.System.Data__b77a5c561934e089",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\v4.0_policy.4.0.System.Numerics__b77a5c561934e089",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\VBSFile\\BrowseInPlace",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\Safer\\CodeIdentifiers\\4096\\Paths",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\LanguagePack\\SurrogateFallback\\Microsoft Sans Serif",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKCU\\Software\\Microsoft\\Installer\\Assemblies\\C:|Users|azure|Downloads|file.exe",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\AllFilesystemObjects\\ShellEx\\IconHandler",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\Explorer",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\SessionInfo\\1\\Desktop\\NameSpace\\DelegateFolders",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\SessionInfo\\1",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\Folder\\ShellEx\\IconHandler",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\.NETFramework",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\UseLegacyIdentityFormat",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_LOCALMACHINE_LOCKDOWN",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Lockdown_Zones\\3",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Installer\\Assemblies\\C:|Users|user|AppData|Roaming|los.exe",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Lockdown_Zones\\0",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\.NETFramework\\CLRLoadLogDir",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Classes\\Local Settings",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\CacheLocation",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_SKIP_POST_RETRY_ON_INTERNETWRITEFILE_KB895954",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\FontLink\\SystemLink",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_ENABLE_TOKEN_BINDING",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\MuiCache\\C:\\Windows\\System32\\WScript.exe.ApplicationCompany = Microsoft Corporation",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.vbs",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\WOW6432Node\\CLSID\\{26EE0668-A00A-44D7-9371-BEB064C98683}\\ShellFolder",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\Safer\\CodeIdentifiers\\0\\Hashes",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\v4.0_policy.4.0.System.Xml.Linq__b77a5c561934e089",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\AllowedEnumeration",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Desktop\\NameSpace",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKU\\%SID%\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\trn = \"%USERPROFILE%\\AppData\\Roaming\\los.exe\"",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\Directory\\ShellEx\\IconHandler",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\policy.4.0.System.Windows.Forms__b77a5c561934e089",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\v4.0_policy.4.0.System.Deployment__b03f5f7f11d50a3a",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\1",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\Local Settings\\Software\\Microsoft\\Ole",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Download",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\SOFTWARE\\Microsoft\\.NETFramework\\Policy\\APTCA",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\0",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\policy.4.0.System.Numerics__b77a5c561934e089",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\RETRY_HEADERONLYPOST_ONCONNECTIONRESET",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\WOW6432Node\\CLSID\\{DFFACDC5-679F-4156-8947-C5C76BC0B67F}\\Instance\\InitPropertyBag",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\Safer\\CodeIdentifiers\\4096\\UrlZones",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\Latest",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\LanguagePack\\DataStore_V1.0",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\.NETFramework\\UseLegacyV2RuntimeActivationPolicyDefaultValue",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\trn",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\Safer\\CodeIdentifiers\\131072\\Hashes",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Rmc-XBQXEL\\exepath = 0F 97 FA 4F B9 DD 6A E0 5B C6 01 60 30 79 42 72 E1 BB D5 2A CF 49 09 7D 82 45 93 62 CC F1 10 C4 6A D",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\v4.0_policy.4.0.System.Security__b03f5f7f11d50a3a",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\.NETFramework\\AltJit",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\policy.4.0.System.Drawing__b03f5f7f11d50a3a",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_DISABLE_UNICODE_HANDLE_CLOSING_CALLBACK",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\AppID\\los.exe",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\DevOverrideEnable",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\1",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\WinTrust\\Trust Providers\\Software Publishing",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\.vbs",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\trn",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_SCH_SEND_AUX_RECORD_KB_2618444",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows Script Host\\Settings\\TrustPolicy",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\policy.4.0.System.Xml__b77a5c561934e089",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows Script Host\\Settings\\IgnoreUserSettings",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BUFFERBREAKING_818408",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\NULL",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\.NETFramework\\NGen\\Policy\\v4.0\\OptimizeUsedBinaries",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ZoneMap\\Domains\\",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\Local Settings\\Software\\Microsoft\\Ole\\FeatureDevelopmentProperties",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\Directory",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\CLSID\\{871C5380-42A0-1069-A2EA-08002B30309D}\\ShellFolder",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\Folder\\BrowseInPlace",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\SystemCertificates\\TrustedPublisher\\Safer",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows Script Host\\Settings\\LogSecuritySuccesses",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\v4.0_policy.10.0.Microsoft.VisualBasic__b03f5f7f11d50a3a",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\v4.0_policy.4.0.System.Core__b77a5c561934e089",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Lockdown_Zones\\2",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\CLSID\\{645FF040-5081-101B-9F08-00AA002F954E}\\ShellFolder",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\EnableLog",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Internet Explorer\\Main\\FeatureControl",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\4",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\AllFilesystemObjects\\ShellEx\\IconHandler",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_PRESERVE_SPACES_IN_FILENAMES_KB952730",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_INCLUDE_PORT_IN_SPN_KB908209",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\Safer\\CodeIdentifiers\\0\\UrlZones",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\5.0\\Cache\\History",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\SOFTWARE\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full\\Release",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\DelegateFolders",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\v4.0_policy.4.0.System.Xml__b77a5c561934e089",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\.NETFramework\\InstallRoot",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows Script Host\\Settings\\LogSecuritySuccesses",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\MuiCache\\LangID = 09 04 ",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\.NETFramework\\DbgJITDebugLaunchSetting",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\.NETFramework\\Policy\\v4.0",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\SystemFileAssociations\\.vbs",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\Installer\\Assemblies\\C:|Users|user|Desktop|executable.exe",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_HTTP_USERNAME_PASSWORD_DISABLE",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\CLSID\\{20D04FE0-3AEA-1069-A2D8-08002B30309D}\\ShellFolder",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\.NETFramework\\DbgJITDebugLaunchSetting",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\LanguagePack\\SurrogateFallback",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\Safer\\CodeIdentifiers\\131072\\UrlZones",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Rmc-XBQXEL\\",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\Safer\\CodeIdentifiers\\65536\\UrlZones",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\Folder",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\ProductName",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\Directory\\Clsid",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows Script Host\\Settings\\Timeout",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_ALWAYS_USE_DNS_FOR_SPN_KB3022771",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\SOFTWARE\\Microsoft\\.NETFramework\\AppContext",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ZoneMap",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Lockdown_Zones\\",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\.NETFramework\\v4.0.30319\\SKUs",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Desktop\\NameSpace\\NULL",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\EUDC\\1252",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\AllFilesystemObjects\\Clsid",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\CLSID\\{26EE0668-A00A-44D7-9371-BEB064C98683}\\ShellFolder",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_ZONES_CHECK_ZONEMAP_POLICY_KB941001",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows Script Host\\Settings\\Enabled",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\3",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Time Zones\\W. Europe Standard Time\\TZI",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\.NETFramework",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\v4.0_policy.4.0.System__b77a5c561934e089",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\WOW6432Node\\Interface\\{00000134-0000-0000-C000-000000000046}",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\v4.0_policy.4.0.System.Windows.Forms.DataVisualization__31bf3856ad364e35",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Lockdown_Zones\\",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\Folder\\BrowseInPlace",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Time Zones\\W. Europe Standard Time\\MUI_Dlt",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\v4.0_policy.4.0.System.Data.SqlXml__b77a5c561934e089",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\Safer\\CodeIdentifiers\\0\\Paths",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Lockdown_Zones\\4",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Internet Explorer",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\5.0\\Cache\\Content",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\AllFilesystemObjects",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKCU\\Software\\Microsoft\\.NETFramework\\Policy\\Standards",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows Script Host\\Settings",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\SOFTWARE\\Classes\\Installer\\Assemblies\\C:|Users|azure|Downloads|file.exe",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\policy.4.0.Accessibility__b03f5f7f11d50a3a",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows Script Host\\Settings",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Internet Explorer\\Main",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Lockdown_Zones\\1",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\policy.4.0.System.Configuration__b03f5f7f11d50a3a",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\v4.0_policy.4.0.Accessibility__b03f5f7f11d50a3a",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\WOW6432Node\\CLSID\\{031E4825-7B94-4DC3-B131-E946B44C8DD5}\\ShellFolder",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKU\\S-1-5-21-575823232-3065301323-1442773979-1000\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\\\trn = \"%APPDATA%\\los.exe\"",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\AppID\\executable.exe",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Rmc-XBQXEL\\name",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows Script Host\\Settings\\DisplayLogo",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Rmc-XBQXEL\\override",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\SessionInfo\\1\\Desktop\\NameSpace",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows Script Host\\Settings\\TrustPolicy",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\LoggingLevel",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\AllFilesystemObjects\\DocObject",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows Script Host\\Settings\\UseWINSAFER",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\Installer\\Assemblies\\C:|Users|user|AppData|Roaming|los.exe",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CLASSES_ROOT\\.vbs",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Lockdown_Zones\\3",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Lockdown_Zones\\1",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\MuiCache\\C:\\Windows\\System32\\WScript.exe.FriendlyAppName = Microsoft . Windows Based Script Host",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\v4.0_policy.4.0.System.Windows.Forms__b77a5c561934e089",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\Directory\\DocObject",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\ZoneMap\\Ranges\\",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CLASSES_ROOT\\VBSFile\\ScriptEngine",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Run\\trn = \"%USERPROFILE%\\AppData\\Roaming\\los.exe\"",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\.NETFramework\\DbgManagedDebugger",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\index9",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows Script Host\\Settings\\Enabled",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_EXCLUDE_INVALID_CLIENT_CERT_KB929477",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\VBSFile\\Clsid",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\.NETFramework",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\WOW6432Node\\CLSID\\{20D04FE0-3AEA-1069-A2D8-08002B30309D}\\ShellFolder",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\policy.10.0.Microsoft.VisualBasic__b03f5f7f11d50a3a",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\CLSID\\{031E4825-7B94-4DC3-B131-E946B44C8DD5}\\ShellFolder",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\v4.0_policy.4.0.System.Runtime.Serialization.Formatters.Soap__b03f5f7f11d50a3a",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_USE_CNAME_FOR_SPN_KB911149",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\VBSFile",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\3",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\WOW6432Node\\CLSID\\{871C5380-42A0-1069-A2EA-08002B30309D}\\ShellFolder",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\5.0\\Cache\\Cookies",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\Directory\\BrowseInPlace",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Internet Explorer\\Security",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\VBSFile\\DocObject",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Security",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\ProfileList\\S-1-5-21-4270068108-2931534202-3907561125-1001",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_DISALLOW_NULL_IN_RESPONSE_HEADERS",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Time Zones\\W. Europe Standard Time",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\policy.4.0.System.Core__b77a5c561934e089",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\SOFTWARE\\Microsoft\\.NETFramework\\Policy\\Servicing",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\Safer\\CodeIdentifiers\\262144\\Paths",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\AllFilesystemObjects\\Clsid",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Time Zones\\W. Europe Standard Time\\MUI_Std",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_RETURN_FAILED_CONNECT_CONTENT_KB942615",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Rmc-XBQXEL\\licence = D75EA3DE2AD117E4485816EF2A4A46F1",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\0",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\Drive\\shellex\\FolderExtensions",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\.vbs\\OpenWithProgids",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\.NETFramework\\v4.0.30319\\SKUs\\default",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_USE_IETLDLIST_FOR_DOMAIN_DETERMINATION",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Time Zones\\W. Europe Standard Time\\Dynamic DST",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\v4.0_policy.4.0.System.Drawing__b03f5f7f11d50a3a",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\2",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Rmc-XBQXEL",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Time Zones\\W. Europe Standard Time\\MUI_Display",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_PERMIT_CACHE_FOR_AUTHENTICATED_FTP_KB910274",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ZoneMap\\",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\file.exe",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\CLSID\\{59031A47-3F72-44A7-89C5-5595FE6B30EE}\\ShellFolder",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\WOW6432Node\\CLSID\\{2B46E70F-CDA7-473E-89F6-DC9630A2390B}\\Instance",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\policy.4.0.System__b77a5c561934e089",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\Local Settings",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\.NETFramework\\NGen\\Policy\\v4.0",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\AllFilesystemObjects\\BrowseInPlace",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\AllFilesystemObjects\\BrowseInPlace",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows Script\\Settings",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\SessionInfo\\1\\KnownFolders",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\.NETFramework\\Policy\\Standards\\v4.0.30319",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\4",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\DisableMSIPeek",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\WOW6432Node\\CLSID\\{645FF040-5081-101B-9F08-00AA002F954E}\\ShellFolder",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ZoneMap\\",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\v4.0_policy.4.0.System.Management__b03f5f7f11d50a3a",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\LogResourceBinds",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_IGNORE_POLICIES_ZONEMAP_IF_ESC_ENABLED_KB918915",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\DownloadCacheQuotaInKB",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\policy.4.0.System.Windows.Forms.DataVisualization__31bf3856ad364e35",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Lockdown_Zones\\2",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\FileInUseRetryAttempts",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\Drive\\shellex\\FolderExtensions\\{fbeb8a05-beee-4442-804e-409d6c4515e9}",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\policy.4.0.System.Management__b03f5f7f11d50a3a",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKU\\S-1-5-21-575823232-3065301323-1442773979-1000\\Software\\Rmc-XBQXEL\\\\licence = D75EA3DE2AD117E4485816EF2A4A46F1",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Desktop\\NameSpace\\DelegateFolders",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\SOFTWARE\\Microsoft\\Fusion",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\policy.4.0.System.Xml.Linq__b77a5c561934e089",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Lockdown_Zones\\0",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\Folder\\Clsid",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows Script Host\\Settings\\DisplayLogo",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\WOW6432Node\\Interface\\{00000134-0000-0000-C000-000000000046}\\ProxyStubClsid32",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_MIME_HANDLING",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\policy.4.0.System.Data.SqlXml__b77a5c561934e089",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\AppID\\los.exe",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\5.0\\Cache\\Extensible Cache",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_DISABLE_NOTIFY_UNVERIFIED_SPN_KB2385266",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Run\\\\trn = \"%APPDATA%\\los.exe\"",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\WOW6432Node\\CLSID\\{FAE3D380-FEA4-4623-8C75-C6B61110B681}\\Instance",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_USE_UTF8_FOR_BASIC_AUTH_KB967545",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\2",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Lockdown_Zones\\4",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\v4.0_policy.4.0.System.Configuration__b03f5f7f11d50a3a",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\VBSFile\\CurVer",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\VBSFile\\ScriptEngine",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Rmc-XBQXEL\\exepath",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Installer\\Managed\\S-1-5-21-4270068108-2931534202-3907561125-1001\\Installer\\Assemblies\\C:|Users|azure|Downloads|file.exe",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\policy.4.0.System.Runtime.Serialization.Formatters.Soap__b03f5f7f11d50a3a",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\.NETFramework\\Policy",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\Fusion\\PublisherPolicy\\Default\\policy.4.0.System.Deployment__b03f5f7f11d50a3a",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\Safer\\CodeIdentifiers\\4096\\Hashes",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\Folder\\Clsid",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKLM\\Software\\Microsoft\\.NETFramework\\DisableConfigCache",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\Folder\\ShellEx\\IconHandler",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Installer\\Assemblies\\Global",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Policies\\Microsoft\\Windows\\Safer\\CodeIdentifiers\\65536\\Paths",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER_Classes\\WOW6432Node\\CLSID\\{59031A47-3F72-44A7-89C5-5595FE6B30EE}\\ShellFolder",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Run\\trn = \"C:\\Users\\user\\AppData\\Roaming\\los.exe\"",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-04-04"
+    }
+]

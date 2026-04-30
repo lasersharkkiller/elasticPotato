@@ -1,0 +1,890 @@
+﻿"Date","Source","Actor","IOCType","IOCValue","Context","Link"
+"2026-03-27 00:02:37 UTC","ThreatFox","Lazarus","IP","152.44.47.231:8080","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-03-26 20:02:17 UTC","ThreatFox","Lazarus","IP","36.138.203.171:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-03-23 05:23:30","MalwareBazaar","Lazarus","SHA256","ce7d25b4f5fdee33a3b1f72c92abb2c907a2dc8347442fb8c7940e9616a17dc8","signature=MimiKatz; file=ce7d25b4f5fdee33.exe (tag=Mimikatz)",
+"2026-03-22 20:01:34 UTC","ThreatFox","Lazarus","IP","85.9.203.21:8080","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2026-03-17 00:01:43 UTC","ThreatFox","Lazarus","IP","68.183.34.203:8080","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-03-12 16:01:45 UTC","ThreatFox","Lazarus","Domain","www.erp.asyx.co.tz","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-03-12 16:01:44 UTC","ThreatFox","Lazarus","IP","83.136.254.131:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-03-11 04:01:40 UTC","ThreatFox","Lazarus","IP","51.255.77.201:8888","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-03-07 12:01:41 UTC","ThreatFox","Lazarus","IP","1.164.253.81:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-03-03 20:03:11 UTC","ThreatFox","Lazarus","IP","46.38.156.59:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-03-01 17:31:32","MalwareBazaar","Lazarus","SHA256","075eff4f83b0a2267697d6d12db4cf4fa2c232b8f3938516ac4771fe95b9e630","signature=MimiKatz; file=GoodMeV3.4.exe (tag=Mimikatz)",""
+"2026-02-26 00:02:03 UTC","ThreatFox","Lazarus","IP","148.113.54.163:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-02-26 00:02:01 UTC","ThreatFox","Lazarus","IP","198.98.53.100:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-02-24 16:02:32 UTC","ThreatFox","Lazarus","IP","51.75.62.52:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2026-02-22 18:13:10","MalwareBazaar","Lazarus","SHA256","ebd21ac4ac71e466c1441dd998895dc5f9567d3ca999a30762f6028dfc59b4d5","signature=MimiKatz; file=DavRelayUp.exe (tag=Mimikatz)",""
+"2026-02-19 12:02:06 UTC","ThreatFox","Lazarus","IP","94.237.58.158:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2026-02-17 08:02:02 UTC","ThreatFox","Lazarus","IP","23.236.64.238:8080","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-02-16 12:01:59 UTC","ThreatFox","Lazarus","IP","94.237.101.201:8080","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-02-16 10:13:58","MalwareBazaar","Lazarus","SHA256","b139fc6e21629d57cd4515a625b4bf07a539f5af0f61dd66bb8af36c55e15aad","signature=MimiKatz; file=b139fc6e21629d57cd4515a625b4bf07a539f5af0f61dd66bb8af36c55e15aad (tag=Mimikatz)",""
+"2026-02-14 16:01:51 UTC","ThreatFox","Lazarus","IP","105.68.228.221:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-02-12 16:01:46 UTC","ThreatFox","Lazarus","IP","159.65.202.204:8888","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-02-12 08:01:37 UTC","ThreatFox","Lazarus","IP","94.237.63.254:8082","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-02-12 08:01:37 UTC","ThreatFox","Lazarus","IP","45.8.47.24:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-02-11 12:01:36 UTC","ThreatFox","Lazarus","IP","45.8.47.24:8080","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-02-09 20:01:33 UTC","ThreatFox","Lazarus","IP","148.113.54.36:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-02-09 16:01:43 UTC","ThreatFox","Lazarus","ip:port","38.180.106.24:8080","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2026-02-07 00:01:36 UTC","ThreatFox","Lazarus","IP","94.237.96.207:8080","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-02-05 20:01:20 UTC","ThreatFox","Lazarus","ip:port","81.90.31.29:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2026-02-03 00:02:37 UTC","ThreatFox","Lazarus","IP","148.113.55.238:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-02-02T08:27:01Z","Cybersixgill","Lazarus","Hash","d7a950fefd60dbaa01df2d85fefb3862","Confidence: 60","N/A"
+"2026-01-31","VirusTotal (Fallback)","Lazarus","SHA256","dbe12e628af55cc12c9eb375898dacb68ff191b669472b35ebc0097ec334d93e","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/dbe12e628af55cc12c9eb375898dacb68ff191b669472b35ebc0097ec334d93e"
+"2026-01-31","VirusTotal (Fallback)","Lazarus","SHA256","231779b4e19f22ce4ba651031e0bca16a68282922d64942abd2a58e763aad2f9","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/231779b4e19f22ce4ba651031e0bca16a68282922d64942abd2a58e763aad2f9"
+"2026-01-31","VirusTotal (Fallback)","Lazarus","SHA256","7fbcb4129ffc047e6b65d910a496240f93312407e0f09a12374d1ac10e717749","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/7fbcb4129ffc047e6b65d910a496240f93312407e0f09a12374d1ac10e717749"
+"2026-01-31","VirusTotal (Fallback)","Lazarus","SHA256","ff3b94770e994e8d98e7accdc9681eb8342fae22aaf2cc2bf9e25fe3fd8024b0","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/ff3b94770e994e8d98e7accdc9681eb8342fae22aaf2cc2bf9e25fe3fd8024b0"
+"2026-01-31","VirusTotal (Fallback)","Lazarus","SHA256","f1d4c6acd5e85032a5c591688ef6afb57ec0ab6d92e17b30ced71f3dbfb9bdc5","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/f1d4c6acd5e85032a5c591688ef6afb57ec0ab6d92e17b30ced71f3dbfb9bdc5"
+"2026-01-31","VirusTotal (Fallback)","Lazarus","SHA256","0ae1a2e07cd4e53c4b7cb2581f22c69abbc3c5a9aaaee337e30ddbedfa5cca9d","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/0ae1a2e07cd4e53c4b7cb2581f22c69abbc3c5a9aaaee337e30ddbedfa5cca9d"
+"2026-01-31","VirusTotal (Fallback)","Lazarus","SHA256","9aa4ff2c19c58304224f4372d30611ad4b53d689ee04645961fa1f5044f1261c","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/9aa4ff2c19c58304224f4372d30611ad4b53d689ee04645961fa1f5044f1261c"
+"2026-01-31","VirusTotal (Fallback)","Lazarus","SHA256","37ef5eff6e7e5ecc3aaa9ce6d8b28fd02098145c04c35f09752fc8511499bddf","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/37ef5eff6e7e5ecc3aaa9ce6d8b28fd02098145c04c35f09752fc8511499bddf"
+"2026-01-31","VirusTotal (Fallback)","Lazarus","SHA256","0f6e652039dd23e9392bfb360bb90fdf7b650cf800b38a7733eeab97379a2bb9","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/0f6e652039dd23e9392bfb360bb90fdf7b650cf800b38a7733eeab97379a2bb9"
+"2026-01-31","VirusTotal (Fallback)","Lazarus","SHA256","b7e117b1b228ff88676073022a0ed66129209005d5ce0ce87f46fddd74105229","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/b7e117b1b228ff88676073022a0ed66129209005d5ce0ce87f46fddd74105229"
+"2026-01-31","VirusTotal (Fallback)","Lazarus","SHA256","2ff43464ff930a424d730923cc3b76608e1bd4ea145265302cf95696ec3bcaf3","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/2ff43464ff930a424d730923cc3b76608e1bd4ea145265302cf95696ec3bcaf3"
+"2026-01-31","VirusTotal (Fallback)","Lazarus","SHA256","95892df5a42713c84a1f56133da65f9629fe0eef5d9643a5b3a9634b76a47ff2","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/95892df5a42713c84a1f56133da65f9629fe0eef5d9643a5b3a9634b76a47ff2"
+"2026-01-30T22:27:13Z","Cybersixgill","Lazarus","Hash","f34d5f2d4577ed6d9ceec516c1f5a744","Confidence: 90","N/A"
+"2026-01-30T16:49:20Z","Cybersixgill","Lazarus","Hash","53adf8827a83d37784c046c24c7bb383","Confidence: 60","N/A"
+"2026-01-30T16:44:47Z","Cybersixgill","Lazarus","Hash","b9103d9d134e0c59cafbe4ae0a8299a8","Confidence: 60","N/A"
+"2026-01-30T16:29:27Z","Cybersixgill","Lazarus","Hash","aa96c24e08438db8e05eececf119a02e","Confidence: 75","N/A"
+"2026-01-30 08:05:52 UTC","ThreatFox","Lazarus","IP","117.72.8.5:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2026-01-30","VirusTotal (Fallback)","Lazarus","SHA256","492f1fd34fc8cb64bdd6da53d2e1acc47ba87998edbc490e7017038d414e3642","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/492f1fd34fc8cb64bdd6da53d2e1acc47ba87998edbc490e7017038d414e3642"
+"2026-01-30","VirusTotal (Fallback)","Lazarus","SHA256","364002f67513f5682a29bed32fda8b557b4ae8a295df60299e7a3091e5e3f1c3","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/364002f67513f5682a29bed32fda8b557b4ae8a295df60299e7a3091e5e3f1c3"
+"2026-01-30","VirusTotal (Fallback)","Lazarus","SHA256","f229531d403bf34302a3e0dd0f6a49f4239cbf0b34a8d39adbe94b565ffe01d0","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/f229531d403bf34302a3e0dd0f6a49f4239cbf0b34a8d39adbe94b565ffe01d0"
+"2026-01-29T15:18:42Z","Cybersixgill","Lazarus","Hash","523613a7b9dfa398cbd5ebd2dd0f4f38","Confidence: 90","N/A"
+"2026-01-29T15:18:42Z","Cybersixgill","Lazarus","Hash","3e59379f585ebf0becb6b4e06d0fbbf806de28a4bb256e837b4555f1b4245571","Confidence: 80","N/A"
+"2026-01-29T15:18:42Z","Cybersixgill","Lazarus","Hash","3e92f697d642d68bb766cc93e3130b36b2da2bab","Confidence: 80","N/A"
+"2026-01-29T12:28:52Z","Cybersixgill","Lazarus","Hash","7fe80cee04003fed91c02e3a372f4b01","Confidence: 90","N/A"
+"2026-01-29T12:28:52Z","Cybersixgill","Lazarus","Hash","d2a77c31c3e169bec655068e96cf4e7fc52e77b8","Confidence: 75","N/A"
+"2026-01-29T12:28:52Z","Cybersixgill","Lazarus","Hash","9876f8650d75938f8a2e4fb4df4321cc819d0f58","Confidence: 75","N/A"
+"2026-01-29T12:28:52Z","Cybersixgill","Lazarus","Hash","ae9f4e39c576555faadee136c6c3b2d358ad90b9","Confidence: 90","N/A"
+"2026-01-29T12:28:52Z","Cybersixgill","Lazarus","Hash","9ba02f8a985ec1a99ab7b78fa678f26c0273d91ae7cbe45b814e6775ec477598","Confidence: 90","N/A"
+"2026-01-29T12:28:52Z","Cybersixgill","Lazarus","Hash","4fe3c853ab237005f7d62324535dd641e1e095d1615a416a9b39e042f136cf6b","Confidence: 90","N/A"
+"2026-01-29T12:28:52Z","Cybersixgill","Lazarus","Hash","9578c2be6437dcc8517e78a5de1fa975","Confidence: 75","N/A"
+"2026-01-29T12:28:52Z","Cybersixgill","Lazarus","Hash","426bc6bb3704441e5804d75ad020706f06b3db5d","Confidence: 75","N/A"
+"2026-01-29T12:28:52Z","Cybersixgill","Lazarus","Hash","653dbc2416d439eca6e4a41c7d9b7e11aa1664b6","Confidence: 75","N/A"
+"2026-01-29T12:28:52Z","Cybersixgill","Lazarus","Hash","7fe373376e0357624a1d21cd803ce62aa86738b6","Confidence: 90","N/A"
+"2026-01-29T12:28:52Z","Cybersixgill","Lazarus","Hash","73edc54abb3d6b8df6bd1e4a77c373314cbe99a660c8c6eea770673063f55503","Confidence: 75","N/A"
+"2026-01-29T12:28:52Z","Cybersixgill","Lazarus","Hash","453d8bd3e2069bc50703eb4c5d278aad02304d4dc5d804ad2ec00b2343feb7a4","Confidence: 75","N/A"
+"2026-01-29T12:28:52Z","Cybersixgill","Lazarus","Hash","139b25e1ae32a8768238935a8c878bfbe2f89ef4","Confidence: 90","N/A"
+"2026-01-29T12:28:52Z","Cybersixgill","Lazarus","Hash","23e27e5482e3f55bf828dab885569033","Confidence: 90","N/A"
+"2026-01-29T12:28:52Z","Cybersixgill","Lazarus","Hash","53d9af8829a9c7f6f177178885901c01","Confidence: 75","N/A"
+"2026-01-29T12:28:52Z","Cybersixgill","Lazarus","Hash","0f394734c65d44915060b36a0b1a972d","Confidence: 75","N/A"
+"2026-01-29T12:28:52Z","Cybersixgill","Lazarus","Hash","a6a3aec659ab1a285fba3e93f4453160","Confidence: 75","N/A"
+"2026-01-29T12:28:52Z","Cybersixgill","Lazarus","Hash","58f2972c6a8fc743543f7b8c4df085c5cf2c6e674e5601e85eec60cd269cfb3c","Confidence: 75","N/A"
+"2026-01-29T12:28:52Z","Cybersixgill","Lazarus","Hash","05feed9762bc46b47a7dc5c469add9f163c16df4ddaafe81983a628da5714461","Confidence: 90","N/A"
+"2026-01-29T12:28:52Z","Cybersixgill","Lazarus","Hash","2a900fbfdd65dafe6fadc4d5706e151c8b72230a","Confidence: 75","N/A"
+"2026-01-29T12:28:52Z","Cybersixgill","Lazarus","Hash","5eac943e23429a77d9766078e760fc0b","Confidence: 75","N/A"
+"2026-01-29T08:19:40Z","Cybersixgill","Lazarus","Hash","3f33734b2d34cce83936ce99c3494cd845f1d2c02d7f6da31d42dfc1ca15a171","Confidence: 75","N/A"
+"2026-01-29T08:19:40Z","Cybersixgill","Lazarus","Hash","e325988f68d327743926ea317abb9882f347fa73","Confidence: 75","N/A"
+"2026-01-29T08:19:40Z","Cybersixgill","Lazarus","Hash","17194003fa70ce477326ce2f6deeb270","Confidence: 75","N/A"
+"2026-01-29 08:05:42 UTC","ThreatFox","Lazarus","IP","83.136.249.143:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2026-01-29 00:05:49 UTC","ThreatFox","Lazarus","IP","83.136.251.141:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2026-01-29","VirusTotal (Fallback)","Lazarus","SHA256","44325d633c7bf0f3b9e3c8f82dc9cc482b06b4d83c94a0e6f09a9622877ad46d","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/44325d633c7bf0f3b9e3c8f82dc9cc482b06b4d83c94a0e6f09a9622877ad46d"
+"2026-01-29","VirusTotal (Fallback)","Lazarus","SHA256","f52dd4c722cb0114aa5b68396c58690528f03c617f42e88e58a6a3095beed638","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/f52dd4c722cb0114aa5b68396c58690528f03c617f42e88e58a6a3095beed638"
+"2026-01-29","VirusTotal (Fallback)","Lazarus","SHA256","e4bb98fa8e06b147ae8bafc1eb17308b6448c29c453544b697929970366c8b9a","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/e4bb98fa8e06b147ae8bafc1eb17308b6448c29c453544b697929970366c8b9a"
+"2026-01-29","VirusTotal (Fallback)","Lazarus","SHA256","59477042c343d0658d9442239a1606448828b48480764f1bea7c56a5bbfce3e8","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/59477042c343d0658d9442239a1606448828b48480764f1bea7c56a5bbfce3e8"
+"2026-01-29","VirusTotal (Fallback)","Lazarus","SHA256","3aab7b574295c01086dc9101945df7bce7a947a26fbd327ae03b3485b31e29b9","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/3aab7b574295c01086dc9101945df7bce7a947a26fbd327ae03b3485b31e29b9"
+"2026-01-28T10:37:20Z","Cybersixgill","Lazarus","Hash","6ce54331e126fd18c94e854a5e7fe3650a125cc83604f1a27a28f383e5193c07","Confidence: 75","N/A"
+"2026-01-28T04:51:17Z","Cybersixgill","Lazarus","Hash","3cb8faccd5de434d415ab75c17e8fd86","Confidence: 60","N/A"
+"2026-01-28T04:49:25Z","Cybersixgill","Lazarus","Hash","9fb559a691078558e77d6848202f6541","Confidence: 60","N/A"
+"2026-01-28","VirusTotal (Fallback)","Lazarus","SHA256","660b3ca8f71c21015dc9e3bf58dd174fc4440d8b9ab7499b9892ba42f9376065","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/660b3ca8f71c21015dc9e3bf58dd174fc4440d8b9ab7499b9892ba42f9376065"
+"2026-01-28","VirusTotal (Fallback)","Lazarus","SHA256","c4a17e8df5ddc93b04a3250fc1b693ae03d052ceec86dac569bbbc88e967a9cd","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/c4a17e8df5ddc93b04a3250fc1b693ae03d052ceec86dac569bbbc88e967a9cd"
+"2026-01-28","VirusTotal (Fallback)","Lazarus","SHA256","fcb6c974e553fd35a76caf1e00cd15e05fabed2df57a0582749da415cc54ec29","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/fcb6c974e553fd35a76caf1e00cd15e05fabed2df57a0582749da415cc54ec29"
+"2026-01-28","VirusTotal (Fallback)","Lazarus","SHA256","a43e2ae3bb1e2ed66b87d522dcc392db2722b1516e06c11b026681269c533da1","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/a43e2ae3bb1e2ed66b87d522dcc392db2722b1516e06c11b026681269c533da1"
+"2026-01-28","VirusTotal (Fallback)","Lazarus","SHA256","c275493de737e63fe5668f83b92f2b0c6e2b0ecf39f5c78dab9e035f12f7414e","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/c275493de737e63fe5668f83b92f2b0c6e2b0ecf39f5c78dab9e035f12f7414e"
+"2026-01-27 16:05:39 UTC","ThreatFox","Lazarus","IP","192.227.179.39:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2026-01-27","VirusTotal (Fallback)","Lazarus","SHA256","752a429008fd3b5a384f709ae8c03f0b4dd119b9b99276351ca4ad1e671ee9d3","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/752a429008fd3b5a384f709ae8c03f0b4dd119b9b99276351ca4ad1e671ee9d3"
+"2026-01-27","VirusTotal (Fallback)","Lazarus","SHA256","83289ab393f747183abb2a82483c1b1885496ed8167172279c7ea57596f574a4","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/83289ab393f747183abb2a82483c1b1885496ed8167172279c7ea57596f574a4"
+"2026-01-27","VirusTotal (Fallback)","Lazarus","SHA256","77eba3fc2a197f864b790244864b54c20e3383fbb7471ee997d11f085adf7dd5","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/77eba3fc2a197f864b790244864b54c20e3383fbb7471ee997d11f085adf7dd5"
+"2026-01-27","VirusTotal (Fallback)","Lazarus","SHA256","831ec348e3b1d142f966bb817594a95c2df4673f951f694b1065c2d504efad01","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/831ec348e3b1d142f966bb817594a95c2df4673f951f694b1065c2d504efad01"
+"2026-01-26T16:11:28Z","Cybersixgill","Lazarus","Hash","cbd4a215d72976a2eee14675ba60ac77","Confidence: 70","N/A"
+"2026-01-26T16:11:28Z","Cybersixgill","Lazarus","Hash","5e5bba521f0034d342cc26db8bcfece57dbd4616","Confidence: 70","N/A"
+"2026-01-26T16:11:28Z","Cybersixgill","Lazarus","Hash","d16d5eccd565bbc632409786cccdbd48","Confidence: 75","N/A"
+"2026-01-26T16:11:28Z","Cybersixgill","Lazarus","Hash","c39ecc7d9f1e225a37304345731fffe72cdb95b21aeb06aa6022f6d338777012","Confidence: 70","N/A"
+"2026-01-26T16:11:28Z","Cybersixgill","Lazarus","Hash","ac16b1baede349e4824335e0993533bf5fc116b3","Confidence: 70","N/A"
+"2026-01-26T16:11:28Z","Cybersixgill","Lazarus","Hash","cc9cf047aec871cefb1c7d4b8d5d3432","Confidence: 70","N/A"
+"2026-01-26T16:11:28Z","Cybersixgill","Lazarus","Hash","503b3ece42f540409bcb2f0abc7584e557a0d120b7ba9854b4548496b2546d34","Confidence: 70","N/A"
+"2026-01-26T16:11:28Z","Cybersixgill","Lazarus","Hash","0cb73d70fd4132a4ff5493daa84aae839f6329d5","Confidence: 70","N/A"
+"2026-01-26T16:11:28Z","Cybersixgill","Lazarus","Hash","65e44c9d6cebcac6e1b1bc6f16e7dcb1","Confidence: 70","N/A"
+"2026-01-26T16:11:28Z","Cybersixgill","Lazarus","Hash","083d4a4ef6267c9a0ab57f1e5a2ed45ff67a0b4db83bbd43563458a223781120","Confidence: 70","N/A"
+"2026-01-26T16:11:28Z","Cybersixgill","Lazarus","Hash","fa014db2936da21af5943cc8f3656adb9800173ad86af196f71c6052295fff97","Confidence: 75","N/A"
+"2026-01-26T16:11:28Z","Cybersixgill","Lazarus","Hash","b12eeb595feec2cfbf9a60e1cc21a14ce8873539","Confidence: 75","N/A"
+"2026-01-26T10:47:56Z","Cybersixgill","Lazarus","Hash","df4a5b9469c456f6c3dd06492a2e14772965497c4d3cfe0148d28c0b8a3c17ec","Confidence: 84","N/A"
+"2026-01-26T06:51:23Z","Cybersixgill","Lazarus","Hash","25d76ee5fb5b890f2cc022d94a42fe19","Confidence: 60","N/A"
+"2026-01-26T06:50:55Z","Cybersixgill","Lazarus","Hash","20f0110ed5e4e0d5384a496e4880139b","Confidence: 60","N/A"
+"2026-01-26T06:49:22Z","Cybersixgill","Lazarus","Hash","f4fe1cb77e758e1ba56b8a8ec20417c5","Confidence: 60","N/A"
+"2026-01-26T03:45:27Z","Cybersixgill","Lazarus","Hash","52a12bae34de2f36194143cff7ed8eec90a0d7c92b55e4a5fbc6af73a33284d8","Confidence: 60","N/A"
+"2026-01-26 00:05:43 UTC","ThreatFox","Lazarus","IP","212.11.64.250:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-01-26","VirusTotal (Fallback)","Lazarus","SHA256","7c661f9adf27bf9cb613d4af77f78d54bf7322e99559b5e43ec2c40a8bebe195","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/7c661f9adf27bf9cb613d4af77f78d54bf7322e99559b5e43ec2c40a8bebe195"
+"2026-01-26","VirusTotal (Fallback)","Lazarus","SHA256","fcd3b30d7fc885f673e3d7ebd45796671a455c699e99d1b587ed145444244adb","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/fcd3b30d7fc885f673e3d7ebd45796671a455c699e99d1b587ed145444244adb"
+"2026-01-25 08:57:38","MalwareBazaar","Lazarus","SHA256","c2ea5bd256621c9f0ad164139ecda59dbaaebdd4d14d6f200eeac0506c6900e8","signature=MimiKatz; file=leidian-2.3.0.msi (tag=Mimikatz)",""
+"2026-01-25 00:05:35 UTC","ThreatFox","Lazarus","ip:port","85.9.205.29:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2026-01-25","VirusTotal (Fallback)","Lazarus","SHA256","ba94cf3e0bb5b8dbe7e268065baac5c5973f418c0e015b496e79b2deb356db3f","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/ba94cf3e0bb5b8dbe7e268065baac5c5973f418c0e015b496e79b2deb356db3f"
+"2026-01-24T21:48:45Z","Cybersixgill","Lazarus","Hash","c613e69c3b191bb02c7a191741a1d024","Confidence: 62","N/A"
+"2026-01-24","VirusTotal (Fallback)","Lazarus","SHA256","2ac2e6feb15f18c32e2b8eb48349d5d8d149ecfe8c6e325d66ef7e1bd937c953","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/2ac2e6feb15f18c32e2b8eb48349d5d8d149ecfe8c6e325d66ef7e1bd937c953"
+"2026-01-24","VirusTotal (Fallback)","Lazarus","SHA256","e3b5f39853112e5dac10d4e21dda48245c12468bd0f3baab38b5dd8afee9c177","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/e3b5f39853112e5dac10d4e21dda48245c12468bd0f3baab38b5dd8afee9c177"
+"2026-01-23T22:53:17Z","Cybersixgill","Lazarus","Hash","4cd9d0e58b11f7b18735918db6c00a7f14d8bae6","Confidence: 60","N/A"
+"2026-01-23T22:52:06Z","Cybersixgill","Lazarus","Hash","5d6dc44b9d431a415d60296bf58eb1834573a571","Confidence: 87","N/A"
+"2026-01-23T22:51:44Z","Cybersixgill","Lazarus","Hash","7b18f308f929505df5822410018add5e47a4c66a","Confidence: 60","N/A"
+"2026-01-23T22:51:05Z","Cybersixgill","Lazarus","Hash","83901a4e4e40c3af3f30402860193f6f34e20440","Confidence: 60","N/A"
+"2026-01-23T22:49:13Z","Cybersixgill","Lazarus","Hash","9f1cb6dad0f3052c7d5d3472fa245ce2d2f1aa07","Confidence: 77","N/A"
+"2026-01-23 04:17:28","MalwareBazaar","Lazarus","SHA256","320a2103e7dba828db31a8ec2f42ae301ecf1a666e42ac1dfeb7c3ae81e3d6eb","signature=MimiKatz; file=win32-telegram.msi (tag=Mimikatz)",""
+"2026-01-23 00:05:14 UTC","ThreatFox","Lazarus","IP","103.213.244.104:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2026-01-23 00:05:13 UTC","ThreatFox","Lazarus","IP","103.213.244.106:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-01-23","VirusTotal (Fallback)","Lazarus","SHA256","e1b21133d94234d11f9841bdb98765e8a31863e94b01be2d2c69a2bca48c1e4b","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/e1b21133d94234d11f9841bdb98765e8a31863e94b01be2d2c69a2bca48c1e4b"
+"2026-01-22T19:31:59Z","Cybersixgill","Lazarus","Hash","2915b3f8b703eb744fc54c81f4a9c67f","Confidence: 90","N/A"
+"2026-01-22T19:31:59Z","Cybersixgill","Lazarus","Hash","9f1f11a708d393e0a4109ae189bc64f1f3e312653dcf317a2bd406f18ffcc507","Confidence: 90","N/A"
+"2026-01-22T05:55:41Z","Cybersixgill","Lazarus","Hash","e889544aff85ffaf8b0d0da705105dee7c97fe26","Confidence: 80","N/A"
+"2026-01-22T05:55:41Z","Cybersixgill","Lazarus","Hash","24d004a104d4d54034dbcffc2a4b19a11f39008a575aa614ea04703480b1022c","Confidence: 90","N/A"
+"2026-01-22T05:55:41Z","Cybersixgill","Lazarus","Hash","db349b97c37d22f5ea1d1841e3c89eb4","Confidence: 90","N/A"
+"2026-01-22","VirusTotal (Fallback)","Lazarus","SHA256","8c3c229cb05baee70b1157070c7036fa41d4641315b7a891ce5e6de8b5144cab","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/8c3c229cb05baee70b1157070c7036fa41d4641315b7a891ce5e6de8b5144cab"
+"2026-01-22","VirusTotal (Fallback)","Lazarus","SHA256","10d9f3faddcb60d97d298cce2bca8f8a37e3e54a0cb837b46bf1d5298c9fc134","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/10d9f3faddcb60d97d298cce2bca8f8a37e3e54a0cb837b46bf1d5298c9fc134"
+"2026-01-22","VirusTotal (Fallback)","Lazarus","SHA256","f18f9beab450e87ede1546af13cccb30f626c2a359083ed3b04a97cf0579aeea","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/f18f9beab450e87ede1546af13cccb30f626c2a359083ed3b04a97cf0579aeea"
+"2026-01-22","VirusTotal (Fallback)","Lazarus","SHA256","8c9df47a2a68e33c49554ffbb0df0b18b1f57e1d49a5b9bd93d4388f11ac9757","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/8c9df47a2a68e33c49554ffbb0df0b18b1f57e1d49a5b9bd93d4388f11ac9757"
+"2026-01-21T13:50:39Z","Cybersixgill","Lazarus","Hash","5c3eb80066420002bc3dcc7ca4ab6efad7ed4ae5","Confidence: 60","N/A"
+"2026-01-21","VirusTotal (Fallback)","Lazarus","SHA256","7c647bc8eafb6cd51f1ad88ce1d23f3c945aba550348838a1027426247ca19fa","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/7c647bc8eafb6cd51f1ad88ce1d23f3c945aba550348838a1027426247ca19fa"
+"2026-01-21","VirusTotal (Fallback)","Lazarus","SHA256","8928bd585785ecfceedfa918e077b2c732b5a084a0bfd5a80bebe204fb097215","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/8928bd585785ecfceedfa918e077b2c732b5a084a0bfd5a80bebe204fb097215"
+"2026-01-21","VirusTotal (Fallback)","Lazarus","SHA256","5bfd00caa31377d8e543147aff077a716b23ab8377ea9ccaec1313e0ee3c5d72","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/5bfd00caa31377d8e543147aff077a716b23ab8377ea9ccaec1313e0ee3c5d72"
+"2026-01-20 04:04:51 UTC","ThreatFox","Lazarus","IP","95.111.212.209:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2026-01-20","VirusTotal (Fallback)","Lazarus","SHA256","52cddca0afa26d2855d01ace9c8aebe3066f4165d8d93c0e192082720a0ee3ae","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/52cddca0afa26d2855d01ace9c8aebe3066f4165d8d93c0e192082720a0ee3ae"
+"2026-01-18T02:49:28Z","Cybersixgill","Lazarus","Hash","ea13848d33c2c7f4f4baa39348aeb1dbfad3df31","Confidence: 60","N/A"
+"2026-01-18 16:04:41 UTC","ThreatFox","Lazarus","IP","86.54.42.229:5000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-01-18","VirusTotal (Fallback)","Lazarus","SHA256","d3c8e9af79c8d83bb5d55959a729a7bf7d365cfedc53f9888bd6ecedfd3f75c0","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/d3c8e9af79c8d83bb5d55959a729a7bf7d365cfedc53f9888bd6ecedfd3f75c0"
+"2026-01-18","VirusTotal (Fallback)","Lazarus","SHA256","70aa3756e5687925b4159129d5818aeba1f87602526e1f6fc2cba60c0a9e261b","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/70aa3756e5687925b4159129d5818aeba1f87602526e1f6fc2cba60c0a9e261b"
+"2026-01-17T03:45:57Z","Cybersixgill","Lazarus","Hash","cd3989830da99a69380901769fd78902efb3cd8ba5c9390e94bd4333b7fad186","Confidence: 60","N/A"
+"2026-01-17","VirusTotal (Fallback)","Lazarus","SHA256","c3f7b905398c509a23bed2142c67b023cd49f97c5e32bae86b8d5e50d819f178","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/c3f7b905398c509a23bed2142c67b023cd49f97c5e32bae86b8d5e50d819f178"
+"2026-01-16 12:05:14 UTC","ThreatFox","Lazarus","IP","103.79.79.66:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-01-15T19:39:05Z","Cybersixgill","Lazarus","Hash","e10361a11f8a7f232ac3cb2125c1875a0a69a3e4","Confidence: 81","N/A"
+"2026-01-15 12:04:30 UTC","ThreatFox","Lazarus","IP","209.38.21.227:443","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-01-14 12:04:25 UTC","ThreatFox","Lazarus","IP","106.75.141.126:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-01-14","VirusTotal (Fallback)","Lazarus","SHA256","0ad7c45b438c8b2a2d0db0e773b702cc618c9166191de498d88b8f014e4b39ce","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/0ad7c45b438c8b2a2d0db0e773b702cc618c9166191de498d88b8f014e4b39ce"
+"2026-01-13T14:04:49Z","Cybersixgill","Lazarus","Hash","d0c1662ce239e4d288048c0e3324ec52962f6ddda77da0cb7af9c1d9c2f1e2eb","Confidence: 90","N/A"
+"2026-01-13T14:04:49Z","Cybersixgill","Lazarus","Hash","3477a173e2c1005a81d042802ab0f22cc12a4d55","Confidence: 90","N/A"
+"2026-01-13T14:04:49Z","Cybersixgill","Lazarus","Hash","6a58b52b184715583cda792b56a0a1ed","Confidence: 90","N/A"
+"2026-01-13","VirusTotal (Fallback)","Lazarus","SHA256","2194aea0f76d1a02b5bdb0dd717050e3d68da7f89e50c2f281328e3b193909fa","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/2194aea0f76d1a02b5bdb0dd717050e3d68da7f89e50c2f281328e3b193909fa"
+"2026-01-13","VirusTotal (Fallback)","Lazarus","SHA256","23599d36559c77e2b34764483171221f220f896a939c48dd7f5e757ce94b2bbe","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/23599d36559c77e2b34764483171221f220f896a939c48dd7f5e757ce94b2bbe"
+"2026-01-12T18:47:45Z","Cybersixgill","Lazarus","Hash","54e6ea47eb04634d3e87fd7787e2136ccfbcc80ade34f246a12cf93bab527f6b","Confidence: 80","N/A"
+"2026-01-12T04:49:11Z","Cybersixgill","Lazarus","Hash","851bd390bf559e702b8323062dbeb251d9f2f6f7","Confidence: 61","N/A"
+"2026-01-11T14:46:24Z","Cybersixgill","Lazarus","Hash","e511ac62fc9365ff8b1d87274d1d8a2aa5fd1db56da0fd78ed6ab43aa24371f4","Confidence: 60","N/A"
+"2026-01-11T02:45:04Z","Cybersixgill","Lazarus","Hash","5a34cb996293fde2cb7a4ac89587393a","Confidence: 60","N/A"
+"2026-01-11","VirusTotal (Fallback)","Lazarus","SHA256","943dda0875163c7212335ffe997a207f718c632d6ec92c6089ddad30ef9f007c","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/943dda0875163c7212335ffe997a207f718c632d6ec92c6089ddad30ef9f007c"
+"2026-01-11","VirusTotal (Fallback)","Lazarus","SHA256","b365cc847e4ac95398d4a3ca00de2bdfe1b94c23d6340c4f1404f3b8a0d4525c","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/b365cc847e4ac95398d4a3ca00de2bdfe1b94c23d6340c4f1404f3b8a0d4525c"
+"2026-01-11","VirusTotal (Fallback)","Lazarus","SHA256","86ca84b3ba0e76d259fd2e472c8cc4740e70bacf0b870326eba6b232d0e1c7ef","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/86ca84b3ba0e76d259fd2e472c8cc4740e70bacf0b870326eba6b232d0e1c7ef"
+"2026-01-10","VirusTotal (Fallback)","Lazarus","SHA256","e7f33731d1ce1449020342f94b702f145419e1643411c6bc12bc0c9e23085b8c","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/e7f33731d1ce1449020342f94b702f145419e1643411c6bc12bc0c9e23085b8c"
+"2026-01-10","VirusTotal (Fallback)","Lazarus","SHA256","0c3d47941c103fc3f3dfd9068fd0f4a4f91bcc1ce2f8531ea3a6161a2089dcb9","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/0c3d47941c103fc3f3dfd9068fd0f4a4f91bcc1ce2f8531ea3a6161a2089dcb9"
+"2026-01-10","VirusTotal (Fallback)","Lazarus","SHA256","2170e6ae2eb1b9d90c80f6ab5482a4112d6ec366f8f79aa716b6b5330ff8f22b","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/2170e6ae2eb1b9d90c80f6ab5482a4112d6ec366f8f79aa716b6b5330ff8f22b"
+"2026-01-09T06:48:32Z","Cybersixgill","Lazarus","Hash","61c0810a23580cf492a6ba4f7654566108331e7a4134c968c2d6a05261b2d8a1","Confidence: 90","N/A"
+"2026-01-09T06:48:32Z","Cybersixgill","Lazarus","Hash","e3b6ea8c46fa831cec6f235a5cf48b38a4ae8d69","Confidence: 90","N/A"
+"2026-01-09T06:48:32Z","Cybersixgill","Lazarus","Hash","29efd64dd3c7fe1e2b022b7ad73a1ba5","Confidence: 90","N/A"
+"2026-01-09","VirusTotal (Fallback)","Lazarus","SHA256","d4d1a6a19a8fe6e871731e8b7c8c485ca03f36e825da0b2c2b28195466a90a82","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/d4d1a6a19a8fe6e871731e8b7c8c485ca03f36e825da0b2c2b28195466a90a82"
+"2026-01-08 03:52:00","MalwareBazaar","Lazarus","SHA256","27147eb56a4cda7125349c3e2973185ed389b28548a8dc5dde404bb84adebd68","signature=MimiKatz; file=file (tag=Mimikatz)",
+"2026-01-08 00:04:10 UTC","ThreatFox","Lazarus","IP","20.62.41.29:8081","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2026-01-08","VirusTotal (Fallback)","Lazarus","SHA256","b229e49b7f71416be022e9b910c5e5025f8b865d7907441248b0d2addc371362","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/b229e49b7f71416be022e9b910c5e5025f8b865d7907441248b0d2addc371362"
+"2026-01-08","VirusTotal (Fallback)","Lazarus","SHA256","6e2956b0f87c5f81f776a53e285dce4c87ad7550a534c39a5ae4f21b17d8fa37","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/6e2956b0f87c5f81f776a53e285dce4c87ad7550a534c39a5ae4f21b17d8fa37"
+"2026-01-07 20:03:45 UTC","ThreatFox","Lazarus","ip:port","45.80.230.239:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2026-01-07 11:29:34","MalwareBazaar","Lazarus","SHA256","bb01dfaf8008f7c19084256b329d63e9e09a593feb93fd068c818e985b357c65","signature=MimiKatz; file=file (tag=Mimikatz)",
+"2026-01-07 00:03:53 UTC","ThreatFox","Lazarus","ip:port","137.220.227.82:8080","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2026-01-07","VirusTotal (Fallback)","Lazarus","SHA256","af2128fe3045fd6427034cfff72ce34b047213d97b6bdd0d954ec0e38c6e9cd3","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/af2128fe3045fd6427034cfff72ce34b047213d97b6bdd0d954ec0e38c6e9cd3"
+"2026-01-07","VirusTotal (Fallback)","Lazarus","SHA256","d00d1a7d266d859d838cb85e07e5a098c5bafe411a190cc7bdb3360693d7629b","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/d00d1a7d266d859d838cb85e07e5a098c5bafe411a190cc7bdb3360693d7629b"
+"2026-01-07","VirusTotal (Fallback)","Lazarus","SHA256","7249e5148ffe935b27589d5b749630ccb3f5ddf1dad77099bc79e24f31a45398","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/7249e5148ffe935b27589d5b749630ccb3f5ddf1dad77099bc79e24f31a45398"
+"2026-01-06 20:04:13 UTC","ThreatFox","Lazarus","IP","217.154.114.85:443","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2026-01-06","VirusTotal (Fallback)","Lazarus","SHA256","9931e0fbc768f1411e4a91edfa187ab0cd5a2d6ebe026a12d783afa4edc4a7c5","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/9931e0fbc768f1411e4a91edfa187ab0cd5a2d6ebe026a12d783afa4edc4a7c5"
+"2026-01-06","VirusTotal (Fallback)","Lazarus","SHA256","6d074a3e21a661d79dd5bbdf2e417b2457a8a7e68fa637af39313a0b4d68989a","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/6d074a3e21a661d79dd5bbdf2e417b2457a8a7e68fa637af39313a0b4d68989a"
+"2026-01-05 11:29:45","MalwareBazaar","Lazarus","SHA256","6505d5f4aba8aebf0c442a5648aab5087bcc8a406bb4a764d416ab63378b2cc5","signature=MimiKatz; file=india_winrsTCP_grbl.exe (tag=Mimikatz)",""
+"2026-01-05 11:27:34","MalwareBazaar","Lazarus","SHA256","505d1cd0b9caf7efa10ed2076c0042ae04645aa1299baacc5033a7daef0220b8","signature=MimiKatz; file=mimikatz-multistage.exe (tag=Mimikatz)",""
+"2026-01-05 11:27:21","MalwareBazaar","Lazarus","SHA256","05fb76a09b71268dc5873c9f7160207e7c512d0f1dee822604c778838bf6c559","signature=MimiKatz; file=india_winrsTCP_grbl.exe (tag=Mimikatz)",
+"2026-01-05","VirusTotal (Fallback)","Lazarus","SHA256","1f06cf4b72d2c6c93e08bb41f77c93a01310451b4057effd4cfbada8484218a2","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/1f06cf4b72d2c6c93e08bb41f77c93a01310451b4057effd4cfbada8484218a2"
+"2026-01-04 04:03:44 UTC","ThreatFox","Lazarus","IP","94.237.122.202:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2026-01-03T12:49:35Z","Cybersixgill","Lazarus","Hash","499a803de14905f2ff7bca56d81cc983e16a8d9cea93ec4b84a06a366e7cb939","Confidence: 60","N/A"
+"2026-01-03T04:45:45Z","Cybersixgill","Lazarus","Hash","4d5a90000300000004000000ffff0000b8000000","Confidence: 70","N/A"
+"2026-01-03 12:04:13 UTC","ThreatFox","Lazarus","ip:port","85.9.215.136:9999","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2026-01-03 08:03:06 UTC","ThreatFox","Lazarus","IP","94.237.53.196:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-01-03","VirusTotal (Fallback)","Lazarus","SHA256","f7f17c0df7f14496fef151db531ebe92be798eae8878282b09f66fab27cc358a","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/f7f17c0df7f14496fef151db531ebe92be798eae8878282b09f66fab27cc358a"
+"2026-01-02 20:04:11 UTC","ThreatFox","Lazarus","IP","104.154.121.65:8080","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-01-02 08:03:33 UTC","ThreatFox","Lazarus","ip:port","172.203.163.51:443","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2026-01-02","VirusTotal (Fallback)","Lazarus","SHA256","d901be5f3b50979d951ac37d87d5b8679a666d0d9afc9bfc8ba43cc60da5d577","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/d901be5f3b50979d951ac37d87d5b8679a666d0d9afc9bfc8ba43cc60da5d577"
+"2026-01-01T16:05:33Z","Cybersixgill","Lazarus","Hash","8b98ab71cc71c8768de27af80a3e0d1bc6c8d809","Confidence: 80","N/A"
+"2026-01-01T16:05:33Z","Cybersixgill","Lazarus","Hash","78e701f42b76ccde3f2678e548886860","Confidence: 80","N/A"
+"2026-01-01T16:05:33Z","Cybersixgill","Lazarus","Hash","46faab8ab153fae6e80e7cca38eab363075bb524edd79e42269217a083628f09","Confidence: 90","N/A"
+"2026-01-01T04:32:51Z","Cybersixgill","Lazarus","Hash","287d612e29b71c90aa54947313810a25","Confidence: 80","N/A"
+"2026-01-01T04:32:51Z","Cybersixgill","Lazarus","Hash","8f35a9e70dbec8f1904991773f394cd4f9a07f5e","Confidence: 80","N/A"
+"2026-01-01 16:03:27 UTC","ThreatFox","Lazarus","IP","103.251.164.214:8080","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2026-01-01","VirusTotal (Fallback)","Lazarus","SHA256","e4a6a88f520031c8a2c84fe069e2622dfeb21bb8b72113ce7eef5b5803c048d3","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/e4a6a88f520031c8a2c84fe069e2622dfeb21bb8b72113ce7eef5b5803c048d3"
+"2026-01-01","VirusTotal (Fallback)","Lazarus","SHA256","dd5c5e07e9a8bc51c5354b512aa79a7f12a8c90b075e3cf87efd3ae5b8b44f86","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/dd5c5e07e9a8bc51c5354b512aa79a7f12a8c90b075e3cf87efd3ae5b8b44f86"
+"2026-01-01","VirusTotal (Fallback)","Lazarus","SHA256","63934d13752b2bddcae5013ab50638306f7a270da63a27bfd420a97c3e5336a8","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/63934d13752b2bddcae5013ab50638306f7a270da63a27bfd420a97c3e5336a8"
+"2026-01-01","VirusTotal (Fallback)","Lazarus","SHA256","6573971a16303991b07ffa258dc80b62e1348acfb57a2bf91c5edc61aa498ef4","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/6573971a16303991b07ffa258dc80b62e1348acfb57a2bf91c5edc61aa498ef4"
+"2025-12-31","VirusTotal (Fallback)","Lazarus","SHA256","462e244ca3819a0641f1575709204885cc3d6b4d6e66cd2465315508bf4c9a77","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/462e244ca3819a0641f1575709204885cc3d6b4d6e66cd2465315508bf4c9a77"
+"2025-12-31","VirusTotal (Fallback)","Lazarus","SHA256","9c123f09a5cbb68d9058512b147a0a33c314e90399532659c39e8a1bca15bcf4","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/9c123f09a5cbb68d9058512b147a0a33c314e90399532659c39e8a1bca15bcf4"
+"2025-12-30 20:03:52 UTC","ThreatFox","Lazarus","domain","clisi.digifors.de","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-12-30","VirusTotal (Fallback)","Lazarus","SHA256","d152580bbecf4babb05701f213afd323a507b3d28d462ab4c1c9962eab58a9e0","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/d152580bbecf4babb05701f213afd323a507b3d28d462ab4c1c9962eab58a9e0"
+"2025-12-30","VirusTotal (Fallback)","Lazarus","SHA256","84a4510bd13315ab67340b521f300508d0a8989b75470ee414f1232b44babed6","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/84a4510bd13315ab67340b521f300508d0a8989b75470ee414f1232b44babed6"
+"2025-12-30","VirusTotal (Fallback)","Lazarus","SHA256","937bb71de1d0033afaed30e7243a9d7e11977913fd966d271234a3e6085727aa","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/937bb71de1d0033afaed30e7243a9d7e11977913fd966d271234a3e6085727aa"
+"2025-12-30","VirusTotal (Fallback)","Lazarus","SHA256","a7a01518d2f8f6eebf5431ce96262c028788d2f4fce5a05d5bfec65ce715ff50","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/a7a01518d2f8f6eebf5431ce96262c028788d2f4fce5a05d5bfec65ce715ff50"
+"2025-12-29 00:03:48 UTC","ThreatFox","Lazarus","IP","154.193.216.54:8080","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-12-28 08:03:36 UTC","ThreatFox","Lazarus","IP","103.142.147.68:8001","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-12-28","VirusTotal (Fallback)","Lazarus","SHA256","a1816bdda1c4395fcc25280a72a42431e3015c48a328c74635bf73c7c1dbbecb","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/a1816bdda1c4395fcc25280a72a42431e3015c48a328c74635bf73c7c1dbbecb"
+"2025-12-28","VirusTotal (Fallback)","Lazarus","SHA256","5fd0ed40885bbc8d091973571d74195ab8adee716942ea51cea4322807aaeb09","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/5fd0ed40885bbc8d091973571d74195ab8adee716942ea51cea4322807aaeb09"
+"2025-12-28","VirusTotal (Fallback)","Lazarus","SHA256","61072d4c3a12a15d1a22c3aae1af5bbf2853deb604d5b9768d91d933b8f27755","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/61072d4c3a12a15d1a22c3aae1af5bbf2853deb604d5b9768d91d933b8f27755"
+"2025-12-27T20:11:57Z","Cybersixgill","Lazarus","Hash","9375cff0413111d3b88a00104b2a6676","Confidence: 90","N/A"
+"2025-12-27T12:50:38Z","Cybersixgill","Lazarus","Hash","6f20ba58551e13cfd87ec059327effd0","Confidence: 60","N/A"
+"2025-12-27","VirusTotal (Fallback)","Lazarus","SHA256","fb90c46c09517ec8ff887d94f3a95f1e8135b43927d9a5d864e3560a81b5d44e","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/fb90c46c09517ec8ff887d94f3a95f1e8135b43927d9a5d864e3560a81b5d44e"
+"2025-12-25T20:47:04Z","Cybersixgill","Lazarus","Hash","59854984853104df5c353e2f681a15fc7924742f9a2e468c29af248dce45ce03","Confidence: 60","N/A"
+"2025-12-24 04:03:14 UTC","ThreatFox","Lazarus","IP","35.222.31.3:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2025-12-24","VirusTotal (Fallback)","Lazarus","SHA256","4a26ac44ddcc3d8cca52937b50fb0c04206ae164b4dcf872b9cddf11f19ede56","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/4a26ac44ddcc3d8cca52937b50fb0c04206ae164b4dcf872b9cddf11f19ede56"
+"2025-12-23 08:03:11 UTC","ThreatFox","Lazarus","IP","34.60.209.80:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-12-23 04:03:10 UTC","ThreatFox","Lazarus","IP","34.27.242.178:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2025-12-23","VirusTotal (Fallback)","Lazarus","SHA256","767edde5a9c9ebad70dc213e3a1cc41798d3e6ff053324ffc2a272a0846e4d45","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/767edde5a9c9ebad70dc213e3a1cc41798d3e6ff053324ffc2a272a0846e4d45"
+"2025-12-23","VirusTotal (Fallback)","Lazarus","SHA256","93a206dc07d8abfd414437d3c544b5afc5f3bd011a4988dd0a09698d14f0fd41","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/93a206dc07d8abfd414437d3c544b5afc5f3bd011a4988dd0a09698d14f0fd41"
+"2025-12-22","VirusTotal (Fallback)","Lazarus","SHA256","b939a9a02647a3517c6eb90f13b617428eb65324a219fff5164c70ae9d15b586","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/b939a9a02647a3517c6eb90f13b617428eb65324a219fff5164c70ae9d15b586"
+"2025-12-22","VirusTotal (Fallback)","Lazarus","SHA256","573e20e635dc4c95c6e7b98e3748363b7ff62e7d59e75b2393562b1b9a57b2e7","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/573e20e635dc4c95c6e7b98e3748363b7ff62e7d59e75b2393562b1b9a57b2e7"
+"2025-12-21T22:49:14Z","Cybersixgill","Lazarus","Hash","255a65d30841ab4082bd9d0eea79d49c5ee88f56136157d8d6156aef11c12309","Confidence: 80","N/A"
+"2025-12-21T14:45:17Z","Cybersixgill","Lazarus","Hash","0ceb38f7c3d464a8268f67559755b216","Confidence: 75","N/A"
+"2025-12-21T13:45:41Z","Cybersixgill","Lazarus","Hash","793e43699602c78105abd265fbbb00a4cfe03755","Confidence: 75","N/A"
+"2025-12-21 00:03:10 UTC","ThreatFox","Lazarus","IP","85.9.202.108:443","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2025-12-21","VirusTotal (Fallback)","Lazarus","SHA256","c416ad661b085c6d19e7f2f2a778bf97b85dce164cff53e5b64ab0c578d47f14","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/c416ad661b085c6d19e7f2f2a778bf97b85dce164cff53e5b64ab0c578d47f14"
+"2025-12-21","VirusTotal (Fallback)","Lazarus","SHA256","32719e8a2a94b605a3f9dd643294c42e86c80b7adec06d2b687e8e50c53265fa","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/32719e8a2a94b605a3f9dd643294c42e86c80b7adec06d2b687e8e50c53265fa"
+"2025-12-20T09:45:18Z","Cybersixgill","Lazarus","Hash","bc7bd27e94e24a301edb3d3e7fad982225ac59430fc476bda4e1459faa1c1647","Confidence: 75","N/A"
+"2025-12-20","VirusTotal (Fallback)","Lazarus","SHA256","f140af17eaccde435281467546a18a2d70ce80cf2b56ac0d170a42aa1441b40c","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/f140af17eaccde435281467546a18a2d70ce80cf2b56ac0d170a42aa1441b40c"
+"2025-12-19T17:45:12Z","Cybersixgill","Lazarus","Hash","4bb79dcea0a901f7d9eac5aa05728ae92acb42e0cb22e5dd14134f4421a3d8df","Confidence: 60","N/A"
+"2025-12-19","VirusTotal (Fallback)","Lazarus","SHA256","9ae35d4fe3c7943d86ec07199450d31ab63080a6ae3dd8c3d5b91657a479cf73","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/9ae35d4fe3c7943d86ec07199450d31ab63080a6ae3dd8c3d5b91657a479cf73"
+"2025-12-19","VirusTotal (Fallback)","Lazarus","SHA256","1344e5bbe5b590f270dd3723c8b5e12c3098b23a5e41e4f22bac17124229e9d2","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/1344e5bbe5b590f270dd3723c8b5e12c3098b23a5e41e4f22bac17124229e9d2"
+"2025-12-19","VirusTotal (Fallback)","Lazarus","SHA256","a68c9d04b3999c057349e0543aeffff0f77636b333b17e7329a964ec2a8b9a1f","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/a68c9d04b3999c057349e0543aeffff0f77636b333b17e7329a964ec2a8b9a1f"
+"2025-12-18T18:48:03Z","Cybersixgill","Lazarus","Hash","0f3c4ff28f354aede202d54e9d1c5529a3bf87d8","Confidence: 61","N/A"
+"2025-12-18T18:28:29Z","Cybersixgill","Lazarus","Hash","cf60fa60d2f461dddfdfcebf16368e6b539cd9ba","Confidence: 70","N/A"
+"2025-12-18T18:28:29Z","Cybersixgill","Lazarus","Hash","d5dcd28612f4d6ffca0cfeaefd606bcf","Confidence: 70","N/A"
+"2025-12-18T08:46:08Z","Cybersixgill","Lazarus","Hash","dda458ec2304b3cf757b7bfe3f2717938244ed0d77e68c4de672d112f6c5fc45","Confidence: 90","N/A"
+"2025-12-18 00:03:59 UTC","ThreatFox","Lazarus","ip:port","3.10.182.215:8888","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-12-18","VirusTotal (Fallback)","Lazarus","SHA256","85a17dc2238afdf44b589525a482cc9de7eb2db9215bb297d8943a7ce7fb60df","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/85a17dc2238afdf44b589525a482cc9de7eb2db9215bb297d8943a7ce7fb60df"
+"2025-12-17 08:02:40 UTC","ThreatFox","Lazarus","IP","213.163.206.255:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-12-16 20:01:49 UTC","ThreatFox","Lazarus","IP","13.127.36.113:443","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2025-12-16 12:03:06 UTC","ThreatFox","Lazarus","ip:port","94.237.120.246:9999","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-12-16","VirusTotal (Fallback)","Lazarus","SHA256","b5555478faae55c37204bae85eb2cf00fb83d8367484f813b6a54dd855e1d011","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/b5555478faae55c37204bae85eb2cf00fb83d8367484f813b6a54dd855e1d011"
+"2025-12-16","VirusTotal (Fallback)","Lazarus","SHA256","6bce7573bf0212fc3154460a366ae5f5d9734a0a534eaa9821821e36ecd061c0","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/6bce7573bf0212fc3154460a366ae5f5d9734a0a534eaa9821821e36ecd061c0"
+"2025-12-16","VirusTotal (Fallback)","Lazarus","SHA256","210f02a8375d0d0a6d41cce706913f9409e4c7b129d5171a5831f22de611e9c1","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/210f02a8375d0d0a6d41cce706913f9409e4c7b129d5171a5831f22de611e9c1"
+"2025-12-15T09:47:16Z","Cybersixgill","Lazarus","Hash","bfb878293839f27c16bdd27ab6ddab62","Confidence: 60","N/A"
+"2025-12-15","VirusTotal (Fallback)","Lazarus","SHA256","e878a50f016d066e5c7f34f87c4419c3379e89be0d842798dc3be3d880ec652a","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/e878a50f016d066e5c7f34f87c4419c3379e89be0d842798dc3be3d880ec652a"
+"2025-12-14T15:48:18Z","Cybersixgill","Lazarus","Hash","1a0563f7fb85a678771450b131ed66fd","Confidence: 60","N/A"
+"2025-12-14","VirusTotal (Fallback)","Lazarus","SHA256","6f5c3fad6ba7b4a06e4a25852f45d412ef60ac7c2f7b10ab0e4bd52454d334c7","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/6f5c3fad6ba7b4a06e4a25852f45d412ef60ac7c2f7b10ab0e4bd52454d334c7"
+"2025-12-14","VirusTotal (Fallback)","Lazarus","SHA256","c7bf40004bda5d5f844ec01a3130b5de31eead2d7fce0e292835b2057d3961eb","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/c7bf40004bda5d5f844ec01a3130b5de31eead2d7fce0e292835b2057d3961eb"
+"2025-12-14","VirusTotal (Fallback)","Lazarus","SHA256","9adedf5a6d061fa742186235293c1ec5ce3baf18be9bee03e1255549befe6db1","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/9adedf5a6d061fa742186235293c1ec5ce3baf18be9bee03e1255549befe6db1"
+"2025-12-13 00:04:34 UTC","ThreatFox","Lazarus","IP","3.226.247.149:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2025-12-13","VirusTotal (Fallback)","Lazarus","SHA256","5ef167c5564496a1d9f34e4b0d649d33a252d2d7d7829c2846ee0815195fe79a","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/5ef167c5564496a1d9f34e4b0d649d33a252d2d7d7829c2846ee0815195fe79a"
+"2025-12-12 20:03:26 UTC","ThreatFox","Lazarus","IP","89.58.41.159:443","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2025-12-12 20:03:25 UTC","ThreatFox","Lazarus","IP","89.58.41.159:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2025-12-12","VirusTotal (Fallback)","Lazarus","SHA256","70c6a475ca656fe8d3b766e8f350e97e347a43d74b69d38dedb8713ed5b512a6","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/70c6a475ca656fe8d3b766e8f350e97e347a43d74b69d38dedb8713ed5b512a6"
+"2025-12-12","VirusTotal (Fallback)","Lazarus","SHA256","d2afc17777836d322bfc5ae18dda4eca07c53a0bc56e77c1ec5f4f74bf056575","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/d2afc17777836d322bfc5ae18dda4eca07c53a0bc56e77c1ec5f4f74bf056575"
+"2025-12-11","VirusTotal (Fallback)","Lazarus","SHA256","613f942a25ab1068e5fb033809d5d2092588896fded9f8591cffd98f0fafc43b","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/613f942a25ab1068e5fb033809d5d2092588896fded9f8591cffd98f0fafc43b"
+"2025-12-10 08:03:57 UTC","ThreatFox","Lazarus","ip:port","209.94.63.55:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-12-10","VirusTotal (Fallback)","Lazarus","SHA256","2e3752614858420894d4c9e8779e1b60af5b37617667b7475ebb3b43a3e4a800","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/2e3752614858420894d4c9e8779e1b60af5b37617667b7475ebb3b43a3e4a800"
+"2025-12-10","VirusTotal (Fallback)","Lazarus","SHA256","681a444cd188fc9adf30f16b264c16cb53aadcff775006714e44eb1c9ebb2531","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/681a444cd188fc9adf30f16b264c16cb53aadcff775006714e44eb1c9ebb2531"
+"2025-12-10","VirusTotal (Fallback)","Lazarus","SHA256","fbe7e6b81e4447b2a96952bf55f621075d19c939d55ee1debf7e52cb8fec2fd9","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/fbe7e6b81e4447b2a96952bf55f621075d19c939d55ee1debf7e52cb8fec2fd9"
+"2025-12-10","VirusTotal (Fallback)","Lazarus","SHA256","e38ba199d78c9d410a43fd842b9ed0c6e9f1ad66d913feb0f528337cafd90719","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/e38ba199d78c9d410a43fd842b9ed0c6e9f1ad66d913feb0f528337cafd90719"
+"2025-12-09T03:46:07Z","Cybersixgill","Lazarus","Hash","c6f0f63fb1c2c16041c0452b3326f47a","Confidence: 82","N/A"
+"2025-12-09T00:48:51Z","Cybersixgill","Lazarus","Hash","6ecc905bccbe976cf70cc2b69c42d4601212dbd3","Confidence: 70","N/A"
+"2025-12-09","VirusTotal (Fallback)","Lazarus","SHA256","2de03e506a767a1c794a22637ce4f0747fde465abcb5c481a6b52705892e16a6","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/2de03e506a767a1c794a22637ce4f0747fde465abcb5c481a6b52705892e16a6"
+"2025-12-08T03:46:58Z","Cybersixgill","Lazarus","Hash","b381395ef25dcbff1f0f2a63c18ac8ce","Confidence: 84","N/A"
+"2025-12-08T03:46:11Z","Cybersixgill","Lazarus","Hash","3549cf75ca80a61b0b13eb57a34bc4d3","Confidence: 82","N/A"
+"2025-12-08","VirusTotal (Fallback)","Lazarus","SHA256","1e1f044b0a70d1811213d47121e521611e3197c4f1ca476989760063ad44e3f0","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/1e1f044b0a70d1811213d47121e521611e3197c4f1ca476989760063ad44e3f0"
+"2025-12-08","VirusTotal (Fallback)","Lazarus","SHA256","e483a7de9efdffd9c5885189ec1b45b6c7460a8b08fb306be63b74df1d7ee36d","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/e483a7de9efdffd9c5885189ec1b45b6c7460a8b08fb306be63b74df1d7ee36d"
+"2025-12-07","VirusTotal (Fallback)","Lazarus","SHA256","ac41d827a33b4fc3da8530518a453901bfe8dbb8f80be8a592d2482fb2fe5585","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/ac41d827a33b4fc3da8530518a453901bfe8dbb8f80be8a592d2482fb2fe5585"
+"2025-12-07","VirusTotal (Fallback)","Lazarus","SHA256","705221a3a863035cb968e8d6ce89b8b57ddc6d13cb3f7e3255e3728c955f707c","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/705221a3a863035cb968e8d6ce89b8b57ddc6d13cb3f7e3255e3728c955f707c"
+"2025-12-07","VirusTotal (Fallback)","Lazarus","SHA256","cc8611ea2d171ddc562b23ce263b18c62abede07fdc92adf161331e8e10b890e","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/cc8611ea2d171ddc562b23ce263b18c62abede07fdc92adf161331e8e10b890e"
+"2025-12-06T04:46:17Z","Cybersixgill","Lazarus","Hash","9262a37df166ac1d5f582aac79f54ccb47623bfd9ba001228d284ae13a08f52f","Confidence: 60","N/A"
+"2025-12-06T04:46:04Z","Cybersixgill","Lazarus","Hash","0608101047106453101617106423101013101012101083109710108585106969","Confidence: 60","N/A"
+"2025-12-06T00:47:07Z","Cybersixgill","Lazarus","Hash","ed15c8344b45daed1e0578f8bc1a32411812c61f4cb45d89b107287de0e09ffc","Confidence: 60","N/A"
+"2025-12-06T00:46:52Z","Cybersixgill","Lazarus","Hash","6969697820511281801712341067111416133321394945138510872296106446","Confidence: 60","N/A"
+"2025-12-06 16:03:58 UTC","ThreatFox","Lazarus","IP","109.230.231.37:9999","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2025-12-06 04:02:40 UTC","ThreatFox","Lazarus","IP","194.113.74.91:443","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-12-06","VirusTotal (Fallback)","Lazarus","SHA256","24b72fbe3e947132d19ceb485f122f14f06375ad8a0d7faa6b2e7ed96efda6b7","Text Match: Lazarus Group","https://www.virustotal.com/gui/file/24b72fbe3e947132d19ceb485f122f14f06375ad8a0d7faa6b2e7ed96efda6b7"
+"2025-12-05T22:44:50Z","Cybersixgill","Lazarus","Hash","91a4e6f6d51daee773a8f00279792578","Confidence: 60","N/A"
+"2025-12-05T22:44:34Z","Cybersixgill","Lazarus","Hash","4103a09887b82ffd56a93bb431805224","Confidence: 60","N/A"
+"2025-12-05T13:46:24Z","Cybersixgill","Lazarus","Hash","76632910cf67697bf5d7285fae38bfcf438ec082","Confidence: 60","N/A"
+"2025-12-04 20:03:33 UTC","ThreatFox","Lazarus","IP","94.237.121.155:8080","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2025-12-02 16:04:24 UTC","ThreatFox","Lazarus","IP","158.247.242.116:8888","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-12-02 08:02:34 UTC","ThreatFox","Lazarus","IP","103.109.22.6:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2025-12-02 07:27:12","MalwareBazaar","Lazarus","SHA256","4a7f71479e004b53c391b7899d720c9a8c6c18a9c0bfbcb40f521ad2a6345c3f","signature=MimiKatz; file=mimikatz_4.exe (tag=Mimikatz)",
+"2025-12-02 00:02:08 UTC","ThreatFox","Lazarus","IP","109.230.231.29:8888","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-12-01T11:43:54Z","Cybersixgill","Lazarus","Hash","f0d507de92851a8c0404ac78c383c5cd","Confidence: 70","N/A"
+"2025-12-01T11:43:54Z","Cybersixgill","Lazarus","Hash","bfffa7117fd9b1622c66d949bac3f1d7","Confidence: 70","N/A"
+"2025-12-01T11:43:54Z","Cybersixgill","Lazarus","Hash","1ea267a2e6284f17dd548c6f2285e19f7edb15d6e737a55391140ce5cb95225e","Confidence: 70","N/A"
+"2025-12-01T11:43:54Z","Cybersixgill","Lazarus","Hash","eb1b46c4b900e4c83066760a737986cd","Confidence: 70","N/A"
+"2025-12-01T11:43:54Z","Cybersixgill","Lazarus","Hash","78fa03c89ea12ff93fa499c38673039cc2d55d40","Confidence: 70","N/A"
+"2025-12-01T11:43:54Z","Cybersixgill","Lazarus","Hash","29206a9a3abb8962593312edc6fb5aaa76a86fae8f24c1e1718707001b8df3dd","Confidence: 70","N/A"
+"2025-12-01T11:43:54Z","Cybersixgill","Lazarus","Hash","48eb5b52227b6fb5be70cb34009c8da68356b62f3e707db56af957338ba82720","Confidence: 70","N/A"
+"2025-12-01T11:43:54Z","Cybersixgill","Lazarus","Hash","402b7b8f8dcfd321b1d12fc85a1ee5137a5569b2","Confidence: 70","N/A"
+"2025-12-01T11:43:54Z","Cybersixgill","Lazarus","Hash","610332203d29ab218359e291401bf091bb1db1a6d7ed98ab9a7a9942384b8e27","Confidence: 70","N/A"
+"2025-12-01T11:43:54Z","Cybersixgill","Lazarus","Hash","90444980a36e79c043e6f037841822a9ef89af9d","Confidence: 70","N/A"
+"2025-12-01T11:43:54Z","Cybersixgill","Lazarus","Hash","4bf13db65943e708690d6256d7ddd421cc1cc72b","Confidence: 70","N/A"
+"2025-12-01T11:43:54Z","Cybersixgill","Lazarus","Hash","f62b66f451f2daa8410ad62d453fa0a2","Confidence: 70","N/A"
+"2025-11-30T22:47:40Z","Cybersixgill","Lazarus","Hash","9b6b722ba4a691a2fe21747cd5b8a2d18811a173413d4934949047e04e40b30a","Confidence: 60","N/A"
+"2025-11-30 20:03:40 UTC","ThreatFox","Lazarus","ip:port","31.40.197.226:443","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-11-29T10:47:47Z","Cybersixgill","Lazarus","Hash","8886e0697b0a93c521f99099ef643450","Confidence: 61","N/A"
+"2025-11-29T07:48:29Z","Cybersixgill","Lazarus","Hash","6e8b062cc955f755a30e31dc7748ac62e71cdaf4","Confidence: 60","N/A"
+"2025-11-28 04:02:18 UTC","ThreatFox","Lazarus","IP","85.9.194.180:8080","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2025-11-27 20:01:59 UTC","ThreatFox","Lazarus","IP","86.125.227.77:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2025-11-27 20:01:58 UTC","ThreatFox","Lazarus","IP","23.227.202.163:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2025-11-27 16:02:16 UTC","ThreatFox","Lazarus","IP","94.237.59.231:9999","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2025-11-25T19:29:53Z","Cybersixgill","Lazarus","Hash","f339e7da7d05f6057fdfcdd3742bfcf365fee2a9","Confidence: 80","N/A"
+"2025-11-25T08:25:58Z","Cybersixgill","Lazarus","Hash","9d1ecbbe8637fed0d89fca1af35ea821277ad2e8","Confidence: 90","N/A"
+"2025-11-25T08:25:58Z","Cybersixgill","Lazarus","Hash","2c0cfe2f4f1e7539b4700e1205411ec084cbc574f9e4710ecd4733fbf0f8a7dc","Confidence: 75","N/A"
+"2025-11-25T08:25:58Z","Cybersixgill","Lazarus","Hash","07df8d223f8a370cd703d177d7e93a36","Confidence: 75","N/A"
+"2025-11-25 20:47:12","MalwareBazaar","Lazarus","SHA256","ac1163a88a11f2a6bbbdb71d60c918711d7ddfd6dee87b1ea0324f893e2f1995","signature=MimiKatz; file=mimikatz.exe (tag=Mimikatz)",
+"2025-11-24 08:02:26 UTC","ThreatFox","Lazarus","IP","83.147.241.206:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-11-23 16:01:16 UTC","ThreatFox","Lazarus","ip:port","154.12.34.189:443","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-11-22T01:51:21Z","Cybersixgill","Lazarus","Hash","e4211d6d009757c078a9fac7ff4f03d4","Confidence: 60","N/A"
+"2025-11-21T23:10:14Z","Cybersixgill","Lazarus","Hash","df2f4d8311840488facab07a3ce54cfb86a84041","Confidence: 80","N/A"
+"2025-11-21T23:10:14Z","Cybersixgill","Lazarus","Hash","b2882b6b2c24936cba0b30dc442de8564e58f31a063e6338f238e8c018ece4f042fa0ea6a73b507c2e81b9b64bd24b72","Confidence: 80","N/A"
+"2025-11-21T23:10:14Z","Cybersixgill","Lazarus","Hash","ec5d14ca011ba8c12f4d51b0d463cf51051feaf1655c7f709dce3ffa625dfcf6","Confidence: 80","N/A"
+"2025-11-21T23:10:14Z","Cybersixgill","Lazarus","Hash","bfc91f029550ae117028621869d5c1da","Confidence: 80","N/A"
+"2025-11-21 16:04:19 UTC","ThreatFox","Lazarus","IP","185.196.9.213:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-11-21 00:04:13 UTC","ThreatFox","Lazarus","IP","95.111.217.209:443","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-11-20T17:45:39Z","Cybersixgill","Lazarus","Hash","5262e1ee394f329cd1f87ea31ba4a396c4a76edc3a87612a179f81f21606abc8","Confidence: 60","N/A"
+"2025-11-19 00:03:04 UTC","ThreatFox","Lazarus","IP","85.9.200.153:443","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-11-17T15:45:12Z","Cybersixgill","Lazarus","Hash","02b0aaf971cf58cf354887f30b339b0f5a8002849b535fab8a474491d9667692","Confidence: 60","N/A"
+"2025-11-16T01:44:42Z","Cybersixgill","Lazarus","Hash","3c96c993500690d1a77873cd62bc639b3a10653f","Confidence: 60","N/A"
+"2025-11-15T03:46:04Z","Cybersixgill","Lazarus","Hash","04547ab017b84bc1934b39513fd8bad2","Confidence: 62","N/A"
+"2025-11-15T03:46:04Z","Cybersixgill","Lazarus","Hash","efc13fcf25e6800bca2d19926cb95602b4a60990","Confidence: 62","N/A"
+"2025-11-15T03:46:04Z","Cybersixgill","Lazarus","Hash","cfef3afccf056917d4798aa605698d7bfdd34418d5baebcb7a1a43274aec4ef2","Confidence: 62","N/A"
+"2025-11-15T03:45:59Z","Cybersixgill","Lazarus","Hash","9c815150ea821166faecf80757d8826a","Confidence: 60","N/A"
+"2025-11-15T03:45:44Z","Cybersixgill","Lazarus","Hash","33490b1d5377580b19f7f9b5849d7991","Confidence: 60","N/A"
+"2025-11-15T03:45:27Z","Cybersixgill","Lazarus","Hash","a42ce45d065807468704b02e869ee71b058c2cffa02e4955863b3a7cdd602ea7","Confidence: 60","N/A"
+"2025-11-15T03:45:27Z","Cybersixgill","Lazarus","Hash","2638281ba875fce2fb2f595a7e8cf1fa","Confidence: 60","N/A"
+"2025-11-15T03:45:27Z","Cybersixgill","Lazarus","Hash","53853c9c63293469a9cbb809d5c4a089d8e4b2f6","Confidence: 60","N/A"
+"2025-11-15T03:45:03Z","Cybersixgill","Lazarus","Hash","9b02ebd3a43b62d825e1ac605b621dc8","Confidence: 60","N/A"
+"2025-11-15 00:04:48 UTC","ThreatFox","Lazarus","IP","5.22.214.179:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-11-14 12:02:51 UTC","ThreatFox","Lazarus","Domain","www.smssending.ns1.name","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2025-11-12T21:45:50Z","Cybersixgill","Lazarus","Hash","5719a2025cb616e4f45001feddf123e9fad3e139","Confidence: 82","N/A"
+"2025-11-12T21:45:36Z","Cybersixgill","Lazarus","Hash","4cff81cf7e1484f5654275ecdd1c00b0ecde7fd0","Confidence: 82","N/A"
+"2025-11-12T06:46:22Z","Cybersixgill","Lazarus","Hash","1bcf1ae39b898aaa8b6b0207d7e307b234614ff6","Confidence: 90","N/A"
+"2025-11-11T20:45:43Z","Cybersixgill","Lazarus","Hash","46f98636cd226170d0d0e551e19d087f649e1148abc2dea55e5171004d450ab2","Confidence: 60","N/A"
+"2025-11-10 04:02:09 UTC","ThreatFox","Lazarus","IP","43.160.200.180:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-11-09 16:02:36 UTC","ThreatFox","Lazarus","IP","103.49.92.42:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-11-07 08:02:28 UTC","ThreatFox","Lazarus","IP","95.111.216.21:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-11-05T12:44:49Z","Cybersixgill","Lazarus","Hash","90b149c69b149c4b99c04d1dc9b940b9","Confidence: 90","N/A"
+"2025-11-01T17:45:44Z","Cybersixgill","Lazarus","Hash","9a06044008b1b2bc95664fead761d56c051b5d96","Confidence: 75","N/A"
+"2025-11-01T17:45:44Z","Cybersixgill","Lazarus","Hash","368769df7d319371073f33c29ad0097fbe48e805630cf961b6f00ab2ccddbb4c","Confidence: 75","N/A"
+"2025-11-01T17:45:44Z","Cybersixgill","Lazarus","Hash","17ed62943568cb3ba5b858c26081a100","Confidence: 75","N/A"
+"2025-11-01T03:45:12Z","Cybersixgill","Lazarus","Hash","41b85fe30ab72844033130e3732369f274a47935da7adb0b141b1502188a39de","Confidence: 60","N/A"
+"2025-11-01T03:45:12Z","Cybersixgill","Lazarus","Hash","17f1080ba64740c0b218e76b0bddb1e2","Confidence: 60","N/A"
+"2025-11-01 00:01:52 UTC","ThreatFox","Lazarus","IP","83.136.250.244:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2025-10-30 08:01:57 UTC","ThreatFox","Lazarus","IP","64.226.121.55:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2025-10-30 04:01:50 UTC","ThreatFox","Lazarus","IP","85.9.215.122:1234","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-10-29T03:46:27Z","Cybersixgill","Lazarus","Hash","299b22f03a0affcb1ed74889c0c7e436","Confidence: 62","N/A"
+"2025-10-29T03:46:27Z","Cybersixgill","Lazarus","Hash","0519aa54940d4c3e57cf8ea9d9e330a9b8ffbac2","Confidence: 62","N/A"
+"2025-10-29T03:46:27Z","Cybersixgill","Lazarus","Hash","a92c547352a9c23acea1de16c82c8b3b0bf91a18b4df4c1c44fc097fef62d6c9","Confidence: 62","N/A"
+"2025-10-29T03:46:06Z","Cybersixgill","Lazarus","Hash","96a4f36218b85ace9008b77cf6a3e5053fd435a4","Confidence: 60","N/A"
+"2025-10-29T03:46:06Z","Cybersixgill","Lazarus","Hash","9d3108ff2c392bbdc20de6c820ab6d804a414267e75bd6c048bc3ea5efacde7b","Confidence: 60","N/A"
+"2025-10-29T03:46:06Z","Cybersixgill","Lazarus","Hash","082823d138f9da9b085be91161c3cd04","Confidence: 60","N/A"
+"2025-10-29 04:01:40 UTC","ThreatFox","Lazarus","IP","112.124.24.132:9000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-10-28T09:47:07Z","Cybersixgill","Lazarus","Hash","1653d75d579872fadec1f22cf7fee3c0","Confidence: 60","N/A"
+"2025-10-28T09:46:38Z","Cybersixgill","Lazarus","Hash","73d26eb56e5a3426884733c104c3f625","Confidence: 70","N/A"
+"2025-10-27T10:45:12Z","Cybersixgill","Lazarus","Hash","aefc12b500b58fbc09ebbf34fe64b34cb32a27513478f4769447280ad23af4d2","Confidence: 60","N/A"
+"2025-10-27T10:44:58Z","Cybersixgill","Lazarus","Hash","473726dd9bc034564c4c7b951df12d102ff24f7b17b8356f55d36ed6d908882d","Confidence: 60","N/A"
+"2025-10-26 16:55:52 UTC","ThreatFox","Lazarus","URL","https://120.25.163.165:8080/mimikatz_trunk/Win32/mimikatz.exe","threat=payload_delivery; malware=win.mimikatz (tag=Mimikatz)",
+"2025-10-24 00:04:15 UTC","ThreatFox","Lazarus","IP","197.60.201.21:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-10-23 20:03:24 UTC","ThreatFox","Lazarus","ip:port","195.230.23.72:8085","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-10-21 20:03:24 UTC","ThreatFox","Lazarus","IP","45.201.0.201:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-10-21 08:05:03 UTC","ThreatFox","Lazarus","IP","123.57.105.98:443","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2025-10-20 16:05:00 UTC","ThreatFox","Lazarus","IP","20.6.73.83:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2025-10-20 16:04:59 UTC","ThreatFox","Lazarus","IP","123.57.105.98:8888","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-10-20 08:02:57 UTC","ThreatFox","Lazarus","IP","20.54.84.180:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-10-20 00:03:55 UTC","ThreatFox","Lazarus","IP","114.67.65.99:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2025-10-19T14:49:07Z","Cybersixgill","Lazarus","Hash","77a1efb6136f52dd2372987b13bf486aa75baeacb93bad009aa3e284c57b8694","Confidence: 60","N/A"
+"2025-10-16 08:02:33 UTC","ThreatFox","Lazarus","IP","20.224.119.86:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-10-16 04:03:03 UTC","ThreatFox","Lazarus","IP","138.68.170.98:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-10-15 12:02:29 UTC","ThreatFox","Lazarus","IP","103.142.147.69:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-10-14 12:07:36","MalwareBazaar","Lazarus","SHA256","b912b99f6974de43ef3af7e7dbfbbe8e42d25cd537940789f3febd971c0cb6bc","signature=Mimikatz; file=pentest.ps1 (tag=Mimikatz)",
+"2025-10-14 00:04:14 UTC","ThreatFox","Lazarus","IP","137.184.3.126:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2025-10-13 20:02:26 UTC","ThreatFox","Lazarus","IP","20.250.235.176:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2025-10-13 16:03:23 UTC","ThreatFox","Lazarus","IP","85.9.211.83:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",
+"2025-10-13 00:02:15 UTC","ThreatFox","Lazarus","IP","138.199.222.101:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-10-12 04:03:13 UTC","ThreatFox","Lazarus","IP","83.136.254.197:8888","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-10-09T05:58:27Z","Cybersixgill","Lazarus","Hash","8a66f03dfda7204ae0f9d1b392a5576c","Confidence: 84","N/A"
+"2025-10-09T05:47:34Z","Cybersixgill","Lazarus","Hash","835875b1c5c23a4caca7ff3a93269046","Confidence: 83","N/A"
+"2025-10-09 20:02:07 UTC","ThreatFox","Lazarus","ip:port","136.114.143.240:80","threat=botnet_cc; malware=win.mimikatz (tag=MimiKatz)",""
+"2025-10-09 16:02:05 UTC","ThreatFox","Lazarus","ip:port","89.197.167.116:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-10-08 20:02:42 UTC","ThreatFox","Lazarus","ip:port","94.237.90.131:8080","threat=botnet_cc; malware=win.mimikatz (tag=MimiKatz)",""
+"2025-10-08 20:02:42 UTC","ThreatFox","Lazarus","IP","94.237.55.123:8080","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-10-08 12:02:32 UTC","ThreatFox","Lazarus","IP","118.168.104.191:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-10-07 16:02:32 UTC","ThreatFox","Lazarus","IP","81.10.33.47:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-10-06 16:01:48 UTC","ThreatFox","Lazarus","IP","82.66.75.169:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-10-06 10:20:23","MalwareBazaar","Lazarus","SHA256","20c99f99eb100eda6fa5422ff946b3ebccd8d897283eba9b5ab355b98029ac8e","signature=Mimikatz; file=mimilove.exe (tag=Mimikatz)",""
+"2025-10-06 10:20:20","MalwareBazaar","Lazarus","SHA256","50fefd857653c1a19cad5060d2cbc6a738563ce9a2ad9761d198e06a8fc99ccd","signature=MimiKatz; file=mimikatz.exe (tag=Mimikatz)",""
+"2025-10-05 20:01:39 UTC","ThreatFox","Lazarus","IP","85.9.196.246:8080","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-10-02 12:01:25 UTC","ThreatFox","Lazarus","IP","117.72.45.68:8080","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-10-01 22:33:10","MalwareBazaar","Lazarus","SHA256","a610ef0e37af408aa49c7296d238796c57ac45aa8b0809ce72bc4d75b23fdf4f","signature=AsyncRAT; file=vbs.vbs (tag=Mimikatz)",""
+"2025-10-01 08:02:05 UTC","ThreatFox","Lazarus","ip:port","213.163.205.24:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-09-30 16:02:22 UTC","ThreatFox","Lazarus","ip:port","213.171.3.117:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-09-29T13:52:36Z","Cybersixgill","Lazarus","Hash","bb5ee93927c8c5c8b65ffd0a0cee454a5adadc0b8d30d6e9aa64d59c344aedc8","Confidence: 85","N/A"
+"2025-09-29T05:05:35Z","Cybersixgill","Lazarus","Hash","5a8c6af722dcfdeb19e57c6b466127efb6ee209f","Confidence: 71","N/A"
+"2025-09-29 00:01:40 UTC","ThreatFox","Lazarus","IP","60.205.113.167:40010","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-09-28T11:35:19Z","Cybersixgill","Lazarus","Hash","c3a91c22b63f6fe709e7c29cafb29a2ee83e6ade","Confidence: 75","N/A"
+"2025-09-28 20:01:38 UTC","ThreatFox","Lazarus","IP","193.112.251.31:8888","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-09-27 16:02:33 UTC","ThreatFox","Lazarus","ip:port","83.136.255.114:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-09-24T16:10:35Z","Cybersixgill","Lazarus","Hash","5a3b40753ea12f2f43fb95a6b95a064d","Confidence: 74","N/A"
+"2025-09-24T06:05:38Z","Cybersixgill","Lazarus","Hash","eccc52a7b614e073807127bf47eadffca801b80da126932a8f03d9b42252e225","Confidence: 71","N/A"
+"2025-09-24T05:58:43Z","Cybersixgill","Lazarus","Hash","8e50c47db80d3f51e36dc0f48f200d924a0b728de4b99fa320d78c42f722ba01","Confidence: 75","N/A"
+"2025-09-24T05:56:54Z","Cybersixgill","Lazarus","Hash","1471693be91e53c2640fe7baeecbc624530b088444222d93f2815dfce1865d5b","Confidence: 60","N/A"
+"2025-09-23T05:38:33Z","Cybersixgill","Lazarus","Hash","30d9ffd4b92a4ed67569a78ceb25bb6f66346d1c0a7d6d6305e235cbdfe61ebe","Confidence: 90","N/A"
+"2025-09-23 20:01:55 UTC","ThreatFox","Lazarus","ip:port","209.94.59.67:8080","threat=botnet_cc; malware=win.mimikatz (tag=MimiKatz)",""
+"2025-09-23 20:01:55 UTC","ThreatFox","Lazarus","ip:port","94.237.90.166:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-09-22T12:10:45Z","Cybersixgill","Lazarus","Hash","019cd56ba687d39d12d4b13991c9a42ea6ba03da","Confidence: 60","N/A"
+"2025-09-22 20:01:39 UTC","ThreatFox","Lazarus","ip:port","3.21.248.212:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-09-22 09:44:57","MalwareBazaar","Lazarus","SHA256","301b905eb98d8d6bb559c04bbda26628a942b2c4107c07a02e8f753bdcfe347c","signature=Mimikatz; file=6F35.tmp (tag=Mimikatz)",
+"2025-09-21 20:02:32 UTC","ThreatFox","Lazarus","ip:port","113.45.225.29:5003","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-09-20 12:01:19 UTC","ThreatFox","Lazarus","ip:port","85.9.195.22:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-09-20 04:01:21 UTC","ThreatFox","Lazarus","ip:port","34.55.207.148:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-09-18 20:03:29 UTC","ThreatFox","Lazarus","ip:port","94.237.74.157:8000","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-09-18 20:03:29 UTC","ThreatFox","Lazarus","ip:port","156.238.242.123:1001","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-09-15T17:40:26Z","Cybersixgill","Lazarus","Hash","4432bbd1a390874f3f0a503d45cc48d346abc3a8c0213c289f4b615bf0ee84f3","Confidence: 70","N/A"
+"2025-09-15T17:27:15Z","Cybersixgill","Lazarus","Hash","9d708a2a4c52c4410febf2a238c5d21e45bede9049a2b2972b6e5abc41d411dd","Confidence: 60","N/A"
+"2025-09-15T10:48:01Z","Cybersixgill","Lazarus","Hash","7eec7d07587112777016e5742c0d002d7e64a3e1fe7bde82fed8f65e3663456a","Confidence: 60","N/A"
+"2025-09-15T04:29:18Z","Cybersixgill","Lazarus","Hash","e7ca76a3c9ee0564471671d500e3f0f3","Confidence: 60","N/A"
+"2025-09-15T04:26:53Z","Cybersixgill","Lazarus","Hash","68e03ed57ec741a4afbbcd11fab1bdbe","Confidence: 60","N/A"
+"2025-09-15T04:26:05Z","Cybersixgill","Lazarus","Hash","555e83ce7f5d280d7454af334571fb25","Confidence: 60","N/A"
+"2025-09-14T17:47:33Z","Cybersixgill","Lazarus","Hash","abcf23f7fc6d7192a243a1cf49cf413c","Confidence: 82","N/A"
+"2025-09-13T23:23:45Z","Cybersixgill","Lazarus","Hash","7897418f0fae737a3ebe4f7954118d71c6c8b426","Confidence: 70","N/A"
+"2025-09-13T23:23:45Z","Cybersixgill","Lazarus","Hash","eb701def7d0809e8da765a752ab42be5","Confidence: 70","N/A"
+"2025-09-13T23:23:45Z","Cybersixgill","Lazarus","Hash","2a61679eeedabf7d0d0ac14e5447486575622d6b7cfa56f136c1576ff96da21f","Confidence: 70","N/A"
+"2025-09-13 20:02:54 UTC","ThreatFox","Lazarus","ip:port","202.61.137.217:8000","threat=botnet_cc; malware=win.mimikatz (tag=MimiKatz)",""
+"2025-09-13 12:02:47 UTC","ThreatFox","Lazarus","ip:port","8.137.19.109:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-09-11T18:34:59Z","Cybersixgill","Lazarus","Hash","c67b03c0a91eaefffd2f2c79b5c26a2648b8d3c19a22cadf35453455ff08ead0","Confidence: 90","N/A"
+"2025-09-11T18:34:59Z","Cybersixgill","Lazarus","Hash","8c69830a50fb85d8a794fa46643493b2","Confidence: 90","N/A"
+"2025-09-10T16:13:17Z","Cybersixgill","Lazarus","Hash","24d5dd3006c63d0f46fb33cbc1f576325d4e7e03e3201ff4a3c1ffa604f1b74a","Confidence: 90","N/A"
+"2025-09-10T16:13:17Z","Cybersixgill","Lazarus","Hash","d7ba13662fbfb254acaad7ae10ad51e0bd631933","Confidence: 90","N/A"
+"2025-09-10T16:13:17Z","Cybersixgill","Lazarus","Hash","19dbffec4e359a198daf4ffca1ab9165","Confidence: 90","N/A"
+"2025-09-10T01:37:54Z","Cybersixgill","Lazarus","Hash","e19ce3bd1cbd980082d3c55a4ac1eb3af4d9e7adf108afb1861372f9c7fe0b76","Confidence: 81","N/A"
+"2025-09-09T02:55:45Z","Cybersixgill","Lazarus","Hash","4f4f8cf0f9b47d0ad95d159201fe7e72fbc8448d","Confidence: 90","N/A"
+"2025-09-08T09:28:18Z","Cybersixgill","Lazarus","Hash","6ab18c3b81a5d30c5a190a4504cae807d73b1a4d02d56ffddf641abbb62b7210","Confidence: 60","N/A"
+"2025-09-08T05:34:07Z","Cybersixgill","Lazarus","Hash","139fed8f0216132450e66bda0fbbdc2a5bd333af","Confidence: 60","N/A"
+"2025-09-08T00:53:07Z","Cybersixgill","Lazarus","Hash","554ff4c199562515d758c9abff5c2943","Confidence: 60","N/A"
+"2025-09-08T00:10:41Z","Cybersixgill","Lazarus","Hash","05fe405753166f125559e7c9ac558654f107c7e9","Confidence: 60","N/A"
+"2025-09-08 08:02:19 UTC","ThreatFox","Lazarus","ip:port","76.137.211.221:80","threat=botnet_cc; malware=win.mimikatz (tag=Mimikatz)",""
+"2025-09-07T23:57:47Z","Cybersixgill","Lazarus","Hash","c53efa8085835ba129c1909beaff8a67b45f50837707f22dfff0f24d8cd26710","Confidence: 60","N/A"
+"2025-09-07T12:20:39Z","Cybersixgill","Lazarus","Hash","b4c9b903dfd18bd67a3824b0109f955b","Confidence: 78","N/A"
+"2025-09-07T12:15:59Z","Cybersixgill","Lazarus","Hash","d9ce494a22390a7dd4ad8a86ad50ec03","Confidence: 75","N/A"
+"2025-09-07 20:02:40 UTC","ThreatFox","Lazarus","ip:port","94.237.93.73:8080","threat=botnet_cc; malware=win.mimikatz (tag=MimiKatz)",""
+"2025-09-06T10:13:22Z","Cybersixgill","Lazarus","Hash","f9b75c780c3dc90eee2a7905cc34a8cdefd92c67","Confidence: 64","N/A"
+"2025-09-06T05:10:05Z","Cybersixgill","Lazarus","Hash","7f85522cb5f554c82df4a37937f2362c3e28af554ab8bfda7436ac968b1b806b","Confidence: 60","N/A"
+"2025-09-05T09:02:40Z","Cybersixgill","Lazarus","Hash","6f2f61783a4a59449db4ba37211fa331","Confidence: 75","N/A"
+"2025-09-05 16:02:03 UTC","ThreatFox","Lazarus","ip:port","104.41.58.66:443","threat=botnet_cc; malware=win.mimikatz (tag=MimiKatz)",""
+"2025-09-05 16:02:02 UTC","ThreatFox","Lazarus","domain","login.mfacheck.com","threat=botnet_cc; malware=win.mimikatz (tag=MimiKatz)",""
+"2025-09-04T23:30:39Z","Cybersixgill","Lazarus","Hash","ee9dda6bbbb1138263873dbef36a4d42","Confidence: 90","N/A"
+"2025-09-04T18:30:39Z","Cybersixgill","Lazarus","Hash","e6d06bb9afaeb8aa80e62e76a26c7cffd14497f6","Confidence: 80","N/A"
+"2025-09-04T04:30:01Z","Cybersixgill","Lazarus","Hash","216a83e54cac48a75b7e071d0262d98739c840fd8cd6d0b48a9c166b69acd57d","Confidence: 90","N/A"
+"2025-09-04 00:01:57 UTC","ThreatFox","Lazarus","ip:port","84.67.203.135:80","threat=botnet_cc; malware=win.mimikatz (tag=MimiKatz)",""
+"2025-09-03T17:45:27Z","Cybersixgill","Lazarus","Hash","f7aaad1821314cdb0987754a74cb6bb31b3b982e","Confidence: 81","N/A"
+"2025-09-03T17:45:27Z","Cybersixgill","Lazarus","Hash","d28f74a6b2dd6301f2d30f46600f6bd6","Confidence: 81","N/A"
+"2025-09-03 20:01:59 UTC","ThreatFox","Lazarus","ip:port","209.151.154.140:8000","threat=botnet_cc; malware=win.mimikatz (tag=MimiKatz)",""
+"2025-09-03 08:01:56 UTC","ThreatFox","Lazarus","ip:port","213.163.205.170:8080","threat=botnet_cc; malware=win.mimikatz (tag=MimiKatz)",""
+"2025-08-31 20:01:35 UTC","ThreatFox","Lazarus","ip:port","83.27.208.141:80","threat=botnet_cc; malware=win.mimikatz (tag=MimiKatz)",""
+"2025-08-30 05:24:58","MalwareBazaar","Lazarus","SHA256","ce529398029f34cfd44feda0992d4dcdffdf531efc025a8c5347c5a9364c4e31","signature=Mimikatz; file=ps1.ps1 (tag=Mimikatz)",""
+"2025-08-29 08:01:32 UTC","ThreatFox","Lazarus","ip:port","207.182.129.130:443","threat=botnet_cc; malware=win.mimikatz (tag=MimiKatz)",""
+"2025-08-28T03:49:33Z","Cybersixgill","Lazarus","Hash","0000007e69ce5aed0e23ca1c5f85ac2bda42f71f84841aea9db049633b7a1677","Confidence: 60","N/A"
+"2025-08-28 20:01:48 UTC","ThreatFox","Lazarus","ip:port","85.9.205.220:8443","threat=botnet_cc; malware=win.mimikatz (tag=MimiKatz)",""
+"2025-08-27T20:53:23Z","Cybersixgill","Lazarus","Hash","8524fbc0d73e711e69d60c64f1f1b7bef35c986705880643dd4d5e17779e586d","Confidence: 78","N/A"
+"2025-08-27T05:33:18Z","Cybersixgill","Lazarus","Hash","7bf2b57f2a205768755c07f238fb32cc","Confidence: 90","N/A"
+"2025-08-27T05:33:18Z","Cybersixgill","Lazarus","Hash","b9c5d4339809e0ad9a00d4d3dd26fdf44a32819a54abf846bb9b560d81391c25","Confidence: 90","N/A"
+"2025-08-27T05:33:18Z","Cybersixgill","Lazarus","Hash","45356a9dd616ed7161a3b9192e2f318d0ab5ad10","Confidence: 83","N/A"
+"2025-08-27 00:01:59 UTC","ThreatFox","Lazarus","ip:port","85.9.201.71:8080","threat=botnet_cc; malware=win.mimikatz (tag=MimiKatz)",""
+"2025-08-26 08:01:47","MalwareBazaar","Lazarus","SHA256","09859ad6375f684bbfa364788c13fd3625511249bdc7ab292ad6533315a78f8b","signature=Mimikatz; file=Invoke-Mimikatz.ps1 (tag=Mimikatz)",""
+"2025-08-26 08:01:46 UTC","ThreatFox","Lazarus","ip:port","209.50.62.175:8000","threat=botnet_cc; malware=win.mimikatz (tag=MimiKatz)",""
+"2025-08-26 04:01:40 UTC","ThreatFox","Lazarus","ip:port","167.71.187.140:8000","threat=botnet_cc; malware=win.mimikatz (tag=MimiKatz)",""
+"2025-08-25 16:01:42 UTC","ThreatFox","Lazarus","ip:port","212.80.213.212:80","threat=botnet_cc; malware=win.mimikatz (tag=MimiKatz)",""
+"2025-08-25 09:51:13","MalwareBazaar","Lazarus","SHA256","0462d93a6e7627198db1f39287fbe9300098c08249cee2f874c8d3aa69afc1c1","signature=MimiKatz; file=mimi.exe (tag=Mimikatz)",
+"2025-08-25 08:22:36","MalwareBazaar","Lazarus","SHA256","85adb0e74a11baddd665a94fd98ba6ce489dafcbcbaac3c94ea4990839f26533","signature=MimiKatz; file=Application6.exe (tag=Mimikatz)",
+"2025-08-24 00:01:34 UTC","ThreatFox","Lazarus","ip:port","34.239.150.135:443","threat=botnet_cc; malware=win.mimikatz (tag=MimiKatz)",""
+"2025-08-23T16:34:34Z","Cybersixgill","Lazarus","Hash","4aadb3f9f09b7c4a530823a0c781e696c6194e58fd8603df402387823e701f30","Confidence: 79","N/A"
+"2025-08-21T05:08:56Z","Cybersixgill","Lazarus","Hash","fa7fbca583b22d92ae6d832d90ee637cc6ac840203cd059c6582298beb955aee","Confidence: 90","N/A"
+"2025-08-20T20:46:37Z","Cybersixgill","Lazarus","Hash","e79a8bbb084127e943ec7500bae096e7","Confidence: 60","N/A"
+"2025-08-18T23:19:44Z","Cybersixgill","Lazarus","Hash","000001e0650c8c94a9896862b1a02909936b9a8c0b9c0a8ac668fc622d3db177","Confidence: 60","N/A"
+"2025-08-18T21:36:47Z","Cybersixgill","Lazarus","Hash","222d020bd33c90170a8296adc1b7036a","Confidence: 70","N/A"
+"2025-08-18T21:36:47Z","Cybersixgill","Lazarus","Hash","612e6f443d927330b9b8ac13cc4a2a6b959cee48","Confidence: 70","N/A"
+"2025-08-16T19:23:36Z","Cybersixgill","Lazarus","Hash","a4f8ba563c8478a674fc8dff0a8d179adfb39f7dca143e73d139c814664fc419","Confidence: 72","N/A"
+"2025-08-15T09:41:52Z","Cybersixgill","Lazarus","Hash","0405c4803729688332eef63c9a6cb669b4a9bc80a3a879cc7c88015c6ed569f9","Confidence: 60","N/A"
+"2025-08-11T20:57:47Z","Cybersixgill","Lazarus","Hash","56e15ef3b5e5f169fc063f8d3e88288e","Confidence: 60","N/A"
+"2025-08-07T00:49:59Z","Cybersixgill","Lazarus","Hash","2bf93d6d9c2f2a8e945e6f78e16a66485c2f66469269a934f0d28657ea933805","Confidence: 69","N/A"
+"2025-08-06 06:22:01","MalwareBazaar","Lazarus","SHA256","84e68f7ad4f2b88c7a6af7680dbd8d7d0e7136009336f3c0c7948c8012ce7eff","signature=MimiKatz; file=fbX0s.exe (tag=Mimikatz)",
+"2025-08-01T12:50:30Z","Cybersixgill","Lazarus","Hash","5df3c3e1f423f1cce5bf75f067d1d05c","Confidence: 70","N/A"
+"2025-07-31 13:02:54","MalwareBazaar","Lazarus","SHA256","eafe4393aad23fe96e32409a4bb1ef6890c9f65fdbbe90ec583da340213739df","signature=Mimikatz; file=1.dll (tag=Mimikatz)",
+"2025-07-29T10:33:59Z","Cybersixgill","Lazarus","Hash","57065f94a7f8002b79162befadbc3d4332309f071852c0a3ad31ed349c5ba4dd","Confidence: 60","N/A"
+"2025-07-25T04:42:56Z","Cybersixgill","Lazarus","Hash","a43489159a520f0d93d032ccaf37e7fe20a8b419","Confidence: 60","N/A"
+"2025-07-24T18:54:44Z","Cybersixgill","Lazarus","Hash","36541fad68e79cdedb965b1afcdc45385646611aa72903ddbe9d4d064d7bffb9","Confidence: 90","N/A"
+"2025-07-24T18:54:44Z","Cybersixgill","Lazarus","Hash","0fcd0296caead9343fcdad3584f64a18","Confidence: 90","N/A"
+"2025-07-24T18:54:44Z","Cybersixgill","Lazarus","Hash","22932aac0e65e2013428d5cae7cd76fb4682b012","Confidence: 90","N/A"
+"2025-07-24 20:21:09","MalwareBazaar","Lazarus","SHA256","15384b13d8fc20c75e3c12e9721668e8752a5c7d4a3a666602ce92e59ba7036d","signature=Mimikatz; file=Spoofer.rar (tag=Mimikatz)",
+"2025-07-22T18:29:29Z","Cybersixgill","Lazarus","Hash","8015185285c4c84c0ce31f78c1634fbd","Confidence: 60","N/A"
+"2025-07-22T18:29:29Z","Cybersixgill","Lazarus","Hash","68610498b9fdc1260c4fc991d5d8e00a57421c05f03477eea56952870410230a","Confidence: 60","N/A"
+"2025-07-18T09:54:21Z","Cybersixgill","Lazarus","Hash","f3abb0cc802f3d7b95fc8762b94bdcb13bf39634c40c357301c4aa1d67a256fb","Confidence: 60","N/A"
+"2025-07-17T23:48:31Z","Cybersixgill","Lazarus","Hash","14f9c4ad952bff03b2eb8fa9fb3aae76","Confidence: 62","N/A"
+"2025-07-17T13:10:35Z","Cybersixgill","Lazarus","Hash","618e76655257667c698b8a6f40821107184339e315d27ec2af64294a842416b5","Confidence: 86","N/A"
+"2025-07-17T13:10:18Z","Cybersixgill","Lazarus","Hash","6717aca6f982cc02145ab75885702f5b55e91f1968bc0a5aa78909faf3489f1f","Confidence: 80","N/A"
+"2025-07-17T08:50:07Z","Cybersixgill","Lazarus","Hash","33338f9323f7250f8014b7bbc80005e7fbad1a8c8061104efa4568398ac16939","Confidence: 84","N/A"
+"2025-07-17T08:49:47Z","Cybersixgill","Lazarus","Hash","7c54bb55a5769e93b078ae5dc0ce1647796e70518e782599ba12e4edcbf85d0f","Confidence: 82","N/A"
+"2025-07-14T20:42:50Z","Cybersixgill","Lazarus","Hash","de7237a20a6499a197fba63cd0e02a36541db51c","Confidence: 70","N/A"
+"2025-07-14T20:02:11Z","Cybersixgill","Lazarus","Hash","3ce9d145f7e596bfdadd1d809cb78347","Confidence: 70","N/A"
+"2025-07-13T02:34:02Z","Cybersixgill","Lazarus","Hash","88d14cc6638af8a0836f6d868dfab60df92907a2d7becaefbbd7e007acb75610","Confidence: 60","N/A"
+"2025-07-09T08:22:28Z","Cybersixgill","Lazarus","Hash","78a7a05316929dddcba6788429eeec08b5428590b89b8d272bd79471f0b6a4d8","Confidence: 70","N/A"
+"2025-07-08T12:29:46Z","Cybersixgill","Lazarus","Hash","47d30d43824630631061b43c3ab313c6","Confidence: 80","N/A"
+"2025-07-07 10:38:20","MalwareBazaar","Lazarus","SHA256","d47a984c7a6b3057487ce50a71b2b59de315892ebd1d990a46722ae8d821268b","signature=MimiKatz; file=d47a984c7a6b3057487ce50a71b2b59de315892ebd1d990a46722ae8d821268b (tag=Mimikatz)",
+"2025-07-06T06:06:05Z","Cybersixgill","Lazarus","Hash","3b98b60a717316cf319ef4df906b4a69","Confidence: 74","N/A"
+"2025-07-06 23:34:11","MalwareBazaar","Lazarus","SHA256","57f0888ec2f3eb3643c91761e5ca62fd9cad22ea3f029826c935e07ff3aa8344","signature=MimiKatz; file=AnyDesk_pl_Setuop.msi (tag=Mimikatz)",
+"2025-07-04T09:48:23Z","Cybersixgill","Lazarus","Hash","9f849bcd788adceb32f4c1a5aa892749bd1e244a3787bfbfbd30d3b6f5d8e9db","Confidence: 60","N/A"
+"2025-06-28T00:52:49Z","Cybersixgill","Lazarus","Hash","e1b9ae804c7fb1d27f39db18dc0647bb04e75e9d","Confidence: 75","N/A"
+"2025-06-27T21:40:34Z","Cybersixgill","Lazarus","Hash","28a2c9bd18a11de089ef85a160da29e4","Confidence: 60","N/A"
+"2025-06-26T18:02:44Z","Cybersixgill","Lazarus","Hash","f3a939131ffaf473f8b1ffa0cd11d8cbce46f50dcc7e9fd2ff8404201ab5bc8e","Confidence: 82","N/A"
+"2025-06-20T07:07:05Z","Cybersixgill","Lazarus","Hash","3592b52e7f5264904cfd06ae567fd04f","Confidence: 90","N/A"
+"2025-06-19T20:25:07Z","Cybersixgill","Lazarus","Hash","15dc6a28b875b4706bcc0db4a026aeb0","Confidence: 90","N/A"
+"2025-06-19T07:36:20Z","Cybersixgill","Lazarus","Hash","0f1bad70c7bd1e0a69562853ec529355462fcd0423263a3d39d6d0d70b780443","Confidence: 70","N/A"
+"2025-06-19T07:36:20Z","Cybersixgill","Lazarus","Hash","46295cac801e5d4857d09837238a6394","Confidence: 70","N/A"
+"2025-06-19T07:36:20Z","Cybersixgill","Lazarus","Hash","44e0fa1b517dbf802b18faf0785eeea6ac51594b","Confidence: 70","N/A"
+"2025-06-14T02:36:26Z","Cybersixgill","Lazarus","Hash","0c680a3afe826c9297f478e4e01c117ae7500b4140d3c06c9bc2e11ad25aa367","Confidence: 60","N/A"
+"2025-06-13T22:07:26Z","Cybersixgill","Lazarus","Hash","000002f7c809714f3dd89443c0b12d7f397c7dfe6108a448571e378b84c9f229","Confidence: 70","N/A"
+"2025-06-13T10:58:10Z","Cybersixgill","Lazarus","Hash","59a6d632b8a9f5dba26f2a689c3865e195351df7c3c08aa1669fe0df9f9eb883","Confidence: 60","N/A"
+"2025-06-12T23:02:39Z","Cybersixgill","Lazarus","Hash","1d8e5fd3c1fd384c0a7507e7283c7fe8f65015e521b84569132a7eabedc9d41d","Confidence: 60","N/A"
+"2025-06-12T03:10:25Z","Cybersixgill","Lazarus","Hash","9e62d2313a300e0a20c6423079d5a736766d514c40cd71d5c92ec88c33698786","Confidence: 71","N/A"
+"2025-06-10T11:06:07Z","Cybersixgill","Lazarus","Hash","12011c44955fd6631113f68a99447515","Confidence: 90","N/A"
+"2025-06-10T11:06:07Z","Cybersixgill","Lazarus","Hash","c92c158d7c37fea795114fa6491fe5f145ad2f8c08776b18ae79db811e8e36a3","Confidence: 90","N/A"
+"2025-06-09 17:38:09","MalwareBazaar","Lazarus","SHA256","c7d5cce1723f381f9c9975d3abc6c684afd399c7271d01ad281b2641c430ec3b","signature=MimiKatz; file=mimilib.dll (tag=Mimikatz)",
+"2025-06-09 17:38:02","MalwareBazaar","Lazarus","SHA256","f048b360433bef2170008965dd69d5fbd41f3c9b831903e313172f35cf9a7039","signature=MimiKatz; file=mimikatz.exe (tag=Mimikatz)",""
+"2025-06-08T18:07:13Z","Cybersixgill","Lazarus","Hash","0eeb1c0133eb4d571178b2d9d14ce3e9","Confidence: 90","N/A"
+"2025-06-05 10:33:45","MalwareBazaar","Lazarus","SHA256","2090bdae4d49cc0a20526b8d57c5928500eadab334764b89810e0b08f907308a","signature=Mimikatz; file=SecuriteInfo.com.Win32.MalwareX-gen.5666.25816 (tag=Mimikatz)",""
+"2025-06-02T06:00:08Z","Cybersixgill","Lazarus","Hash","6cac0be2120be7b3592fe4e1f7c86f4abc7b168d058e07dc8975bf1eafd7cb25","Confidence: 90","N/A"
+"2025-06-01 18:30:41","MalwareBazaar","Lazarus","SHA256","4ac7751af246df33e8d417b1eb4c499da9dc667b49188aa5b7716f6f95ff867d","signature=Mimikatz; file=mimilove.exe (tag=Mimikatz)",
+"2025-05-22 15:29:39","MalwareBazaar","Lazarus","SHA256","2883d9534021c076a27319496686408feda6fdc96e671767a856d3b1192c6d0b","signature=Mimikatz; file=Lethal Menu_.zip (tag=Mimikatz)",""
+"2025-05-21T21:27:44Z","Cybersixgill","Lazarus","Hash","62cd53518699928e8e33e6739b35e8c7aebbfd448d87113593ec2b9cd7cfdf8a","Confidence: 60","N/A"
+"2025-05-20T07:57:02Z","Cybersixgill","Lazarus","Hash","3e89ff837147c16b4e41c30d6c796374e0b8e62c","Confidence: 62","N/A"
+"2025-05-19T04:03:50Z","Cybersixgill","Lazarus","Hash","879fa942f9f097b74fd6f7dabcf1745a","Confidence: 60","N/A"
+"2025-05-14T22:11:09Z","Cybersixgill","Lazarus","Hash","fac1ec40eea5a4fc05f17e019328e287","Confidence: 60","N/A"
+"2025-05-11 16:00:10","MalwareBazaar","Lazarus","SHA256","3d117287a7806fb79ba57cac664d4e2d04056ad6ed47ced6dfd38f3bd29c2770","signature=Mimikatz; file=buabroestonoesmimi.ps1 (tag=Mimikatz)",""
+"2025-05-06T23:23:34Z","Cybersixgill","Lazarus","Hash","0256149201612989ce77d01688389d6a727872e69c826850011448119cf7cef3","Confidence: 83","N/A"
+"2025-05-06T03:13:13Z","Cybersixgill","Lazarus","Hash","9f3a663da20d47d8daf521ad68c3f4bb3c1db894cb0ea789aebd1775d305baff","Confidence: 82","N/A"
+"2025-05-02T14:48:23Z","Cybersixgill","Lazarus","Hash","5ce3cdfb61f3097e5974f5a07cf0bd2186585776","Confidence: 90","N/A"
+"2025-05-02T14:47:49Z","Cybersixgill","Lazarus","Hash","8edb488b5f280490102241b56f1a8a71ebeef8e3","Confidence: 90","N/A"
+"2025-05-02T14:47:35Z","Cybersixgill","Lazarus","Hash","9f7b4004018229fad8489b17f60aadb3281d6177","Confidence: 90","N/A"
+"2025-05-02T14:47:22Z","Cybersixgill","Lazarus","Hash","fac3fb1c20f2a56887bdba892e470700c76c81ba","Confidence: 90","N/A"
+"2025-05-02T14:47:08Z","Cybersixgill","Lazarus","Hash","e50ad1a7a30a385a9d0a2c0a483d85d906ef4a9c","Confidence: 90","N/A"
+"2025-05-02T14:46:35Z","Cybersixgill","Lazarus","Hash","2a2839f69ec1ba74853b11f8a8505f7086f1c07a","Confidence: 90","N/A"
+"2025-05-02T14:46:20Z","Cybersixgill","Lazarus","Hash","dc72d464289102caaf47ec318b6110ed6af7e5e4","Confidence: 90","N/A"
+"2025-05-02T14:46:06Z","Cybersixgill","Lazarus","Hash","aa374fa424cc31d2e5ec8ece2ba745c28cb4e1e8","Confidence: 90","N/A"
+"2025-05-01 08:22:41","MalwareBazaar","Lazarus","SHA256","821efc0823b05001cb682190a5966005b15e16e09ad9bf3546437146c87e454b","signature=Mimikatz; file=821efc0823b05001cb682190a5966005b15e16e09ad9bf3546437146c87e454b (tag=Mimikatz)",
+"2025-05-01 08:22:18","MalwareBazaar","Lazarus","SHA256","e3bd2252bd0656210a36b185313d66acfaac03f6b4de68c66448efa9112898a7","signature=Mimikatz; file=e3bd2252bd0656210a36b185313d66acfaac03f6b4de68c66448efa9112898a7 (tag=Mimikatz)",""
+"2025-04-30T08:53:55Z","Cybersixgill","Lazarus","Hash","335182cac7851f803916c3c7b171d1f9627f5546528fb3c7c4e0ab0f8b9fcd53","Confidence: 60","N/A"
+"2025-04-29T21:41:32Z","Cybersixgill","Lazarus","Hash","c2f0c188d6c493d7827bf83fb89c704815796445a0178bb2ae79658d96703a3c","Confidence: 60","N/A"
+"2025-04-29T21:41:19Z","Cybersixgill","Lazarus","Hash","a29831e4a3fac395e2aa86df5a0906ed2beebda018745be869477d636148f7af","Confidence: 60","N/A"
+"2025-04-27T06:27:28Z","Cybersixgill","Lazarus","Hash","ea9432fabdf4b33cbc76d9437200e028f1c47c93","Confidence: 70","N/A"
+"2025-04-26T18:31:46Z","Cybersixgill","Lazarus","Hash","addac15718ed2c05671d6fc2d094107600dc0cf00bbb114d67691b25e4a0adf3","Confidence: 60","N/A"
+"2025-04-26T18:25:54Z","Cybersixgill","Lazarus","Hash","d86762ff6b476a37191b87a99d66bf2d52f6863985bca5d6f7b7033186881ca9","Confidence: 60","N/A"
+"2025-04-26T18:23:04Z","Cybersixgill","Lazarus","Hash","9078960b6d115490942d315cd3953e9148d06dbd7a859f0b142cbe70982b5c46","Confidence: 60","N/A"
+"2025-04-26T18:20:52Z","Cybersixgill","Lazarus","Hash","c879853005211a7abba5571fe10e4ce4408c469fac0e9fa6c7098e4a65dc6643","Confidence: 60","N/A"
+"2025-04-26T18:07:19Z","Cybersixgill","Lazarus","Hash","44ec31b712c5804f88362c2eac72a0ecdc27a57fa4a1d3bec1ec595ece9172a6","Confidence: 60","N/A"
+"2025-04-26T16:19:22Z","Cybersixgill","Lazarus","Hash","6a104f07ab6c5711b6bc8bf6ff956ab8cd597a388002a966e980c5ec9678b5b0","Confidence: 80","N/A"
+"2025-04-26T08:50:39Z","Cybersixgill","Lazarus","Hash","11488a6e3c0206e8137b864230ad7d8cd4536bb2835042feb53750712bb247b3","Confidence: 75","N/A"
+"2025-04-26T08:50:39Z","Cybersixgill","Lazarus","Hash","1177fecd07e3ad608c745c81225e4544","Confidence: 75","N/A"
+"2025-04-26T08:50:39Z","Cybersixgill","Lazarus","Hash","0583f839fde92f90df4835e32a4cd7f9a1930667","Confidence: 75","N/A"
+"2025-04-25 14:07:07","MalwareBazaar","Lazarus","SHA256","0bec4813ac09bb0de24725afcd62b44e0075031730186747f743329f64a2280a","signature=MimiKatz; file=1745590025ce4ba5d544e566a4a83b5edd7e42e6783c2b03187f834913cdd185b3d453fb10726.dat-decoded (tag=Mimikatz)",
+"2025-04-23T20:28:41Z","Cybersixgill","Lazarus","Hash","7cf89bffa569776958917e06b8de4eac25b684ea1dd4d2780cf34df367496845","Confidence: 60","N/A"
+"2025-04-23 03:02:52","MalwareBazaar","Lazarus","SHA256","d719cb6f0288867122e8780c2e326952b1858036f7a036821d77e2e7443fe2fb","signature=MimiKatz; file=mimikatz.exe (tag=Mimikatz)",""
+"2025-04-22T20:06:19Z","Cybersixgill","Lazarus","Hash","f024ff4176f0036f97ebc95decfd1d5e","Confidence: 90","N/A"
+"2025-04-20 16:25:36","MalwareBazaar","Lazarus","SHA256","f20e0114c8038b9d66bd45049c9396254586f307390479746a6c67f5e1abce2d","signature=Mimikatz; file=SecuriteInfo.com.PUA.Tool.Mimikatz.1199.7902.18126 (tag=Mimikatz)",
+"2025-04-20 02:41:01","MalwareBazaar","Lazarus","SHA256","76a236349c0820e4dfba81e3382e50833ee238452c0c271d6a0cf83b4fcca235","signature=MimiKatz; file=三天100万美元精聊开单记录.exe (tag=Mimikatz)",""
+"2025-04-11 15:04:11","MalwareBazaar","Lazarus","SHA256","4fdb4c07ff2ef4f768629bb9df11221a44273a677138f526fbbe3dab3f08ebba","signature=Gh0stRAT; file=[System Process]18.exe (tag=Mimikatz)",""
+"2025-04-03 06:53:21","MalwareBazaar","Lazarus","SHA256","2aa18ec976554039b0d9c52a2ae5d9b549979cf1cb93304b4c6202c898dae325","signature=Mimikatz; file=networks.ps1 (tag=Mimikatz)",""
+"2025-03-30 20:29:21","MalwareBazaar","Lazarus","SHA256","0745cddead847fe36b474b51eeabd4b6260f7d884706721bbdbf0e594c04c265","signature=MimiKatz; file=关于员工薪资调整通知.scr (tag=Mimikatz)",
+"2025-03-26 11:45:03","MalwareBazaar","Lazarus","SHA256","07be88662b0f53d3b8dbab2d74d6009a4f4e9a4788f937d188d304a2465e24d2","signature=Mimikatz; file=iUk6lJH4ZhuyX8huyY2.exe (tag=Mimikatz)",
+"2025-03-07 17:38:36","MalwareBazaar","Lazarus","SHA256","0076f6ea4346af5ae43db08205664092029e06bb353e3406ee649e98723182eb","signature=Gh0stRAT; file=[System Process]12.exe (tag=Mimikatz)",""
+"2025-03-07 17:38:10","MalwareBazaar","Lazarus","SHA256","4f5c281124d2e9ce43ebf84c3dbf19da88617e5cf58077db3ac3a042dc3c60df","signature=Gh0stRAT; file=Gogesuchourua-ang.msi (tag=Mimikatz)",
+"2025-02-22 08:40:26","MalwareBazaar","Lazarus","SHA256","5975948b57707a6f3da15eecf5c53642caaea7ef315273ddf4a71c2530c5c3e4","signature=MimiKatz; file=SecuriteInfo.com.Generic.Malware.SPfPk2g.E5437220.11595.22451 (tag=Mimikatz)",""
+"2025-02-18 23:42:23","MalwareBazaar","Lazarus","SHA256","66d82a3bccedaa9b460c09359777464b491d136308538f8820aa8a6dfaa9aa45","signature=MimiKatz; file=SecuriteInfo.com.Win32.MalwareX-gen.10102.25028 (tag=Mimikatz)",""
+"2025-02-17 08:48:09","MalwareBazaar","Lazarus","SHA256","180b1b6201b8d2ce9b80df056d1c5aee71f95687f0cdbba5d357dca4e16ca7a9","signature=MimiKatz; file=61c0810a23580cf492a6ba4f7654566108331e7a4134c968c2d6a05261b2d8a1.zip (tag=Mimikatz)",
+"2025-02-17 06:55:45","MalwareBazaar","Lazarus","SHA256","a39d04119147f3cfd6afe16e5d5cda2c205030114095921ad6a77a47cd230afa","signature=MimiKatz; file=ÇåÍËÍÅ¶ÓÊý¾ÝÊ¹ÓÃÃûµ¥-VIP.exe (tag=Mimikatz)",
+"2025-02-17 06:50:03","MalwareBazaar","Lazarus","SHA256","b9d338ff7f7d63d28c765007e9e150b3c30a9acac1e16bfd0317d375b4fc6166","signature=MimiKatz; file=118.exe (tag=Mimikatz)",
+"2025-02-10 15:40:05","MalwareBazaar","Lazarus","SHA256","efab2072095d507acf7eebe1d8e2641d741e62688edd926cf1a52c8899bb5b66","signature=Mimikatz; file=mimilib.exe (tag=Mimikatz)",""
+"2025-02-03 11:30:44","MalwareBazaar","Lazarus","SHA256","d4f421c985f1786f603bd1eaf4232d5a0d56b5ee8a7f02e0da978b478f060af2","signature=Mimikatz; file=mediadrm.dll (tag=Mimikatz)",""
+"2025-01-23 06:14:54","MalwareBazaar","Lazarus","SHA256","d645185fa8fbe338f26ad26972aec46c24e826556e229c059b6adb2669200fe8","signature=MimiKatz; file=d645185fa8fbe338f26ad26972aec46c24e826556e229c059b6adb2669200fe8.exe (tag=Mimikatz)",
+"2024-12-27 09:55:24","MalwareBazaar","Lazarus","SHA256","d93ea0680d85088ea784e5eb3ab1d0bbb220e7500d8b4e3cc760a00ed7040a47","signature=Adware.DigitalPulse; file=grand-theft-auto-5-theme-1-installer_qb8W-j1.exe (tag=Mimikatz)",
+"2024-12-27 09:44:47","MalwareBazaar","Lazarus","SHA256","c86bb061a4184d1616df53585c3fe510a361b8674aa183c2a44ba7e36f4ce3b1","signature=Mimikatz; file=invokelz.ps1 (tag=Mimikatz)",
+"2024-12-27 09:44:45","MalwareBazaar","Lazarus","SHA256","254975001386f64189338630dda9c97f8c0e1ac74f948143173f13d038cc451f","signature=Mimikatz; file=invokepe.ps1 (tag=Mimikatz)",""
+"2024-12-27 09:44:43","MalwareBazaar","Lazarus","SHA256","6908a100842afdb296c05e0453770b61e1c8b418fed6476961bbcb38f99cc312","signature=Mimikatz; file=invokemimi.ps1 (tag=Mimikatz)",
+"2024-12-10 20:25:46","MalwareBazaar","Lazarus","SHA256","cb1553a3c88817e4cc774a5a93f9158f6785bd3815447d04b6c3f4c2c4b21ed7","signature=Mimikatz; file=file (tag=Mimikatz)",""
+"2024-12-05 16:11:53","MalwareBazaar","Lazarus","SHA256","a07a6ba5eda111901571883b464d8dfe852aec006bf639b1f25b7a51611a4ce9","signature=Mimikatz; file=Invoke-Mimikatz2.ps1 (tag=Mimikatz)",""
+"2024-12-05 16:11:46","MalwareBazaar","Lazarus","SHA256","5ba2868aef5853272278d11190a47d245424978dc035bcffc7860fa839e2b019","signature=Mimikatz; file=Invoke-Mimikatz.ps1 (tag=Mimikatz)",""
+"2024-11-18 16:20:11","MalwareBazaar","Lazarus","SHA256","1f2338d7b628374139d373af383a1bdec1a16b43ced015849c6be4e4d90cc2c3","signature=MimiKatz; file=mimikatz_trunk.7z (tag=Mimikatz)",""
+"2024-11-18 13:05:20","MalwareBazaar","Lazarus","SHA256","794ec24e28f6351c9ad2c04101d774e9763f4f444cfb7c15da782922c6f07e69","signature=MimiKatz; file=794ec24e28f6351c9ad2c04101d774e9763f4f444cfb7c15da782922c6f07e69 (tag=Mimikatz)",
+"2024-11-18 13:04:55","MalwareBazaar","Lazarus","SHA256","94beb32181e321ef10e85ee652f1ef1e602c252d6c7d4593c556a6bfcec1d4f0","signature=MimiKatz; file=94beb32181e321ef10e85ee652f1ef1e602c252d6c7d4593c556a6bfcec1d4f0 (tag=Mimikatz)",""
+"2024-11-18 13:04:11","MalwareBazaar","Lazarus","SHA256","f036b3031238597750e077c2d03b2bc41d089f9db461244059db8485fac28e63","signature=MimiKatz; file=f036b3031238597750e077c2d03b2bc41d089f9db461244059db8485fac28e63 (tag=Mimikatz)",""
+"2024-11-18 13:04:00","MalwareBazaar","Lazarus","SHA256","613a829a972efe001e9f1a4e067b560db96acd44161d91d6daf5d6489f686938","signature=MimiKatz; file=613a829a972efe001e9f1a4e067b560db96acd44161d91d6daf5d6489f686938 (tag=Mimikatz)",
+"2024-11-18 13:03:45","MalwareBazaar","Lazarus","SHA256","cebf76deabb47efe7ad3769c0586815d1d45e2ef9718057de77abb46b554f6f4","signature=MimiKatz; file=cebf76deabb47efe7ad3769c0586815d1d45e2ef9718057de77abb46b554f6f4 (tag=Mimikatz)",
+"2024-11-18 13:03:08","MalwareBazaar","Lazarus","SHA256","57eff460128e65204d46aa5a0012f8ba4758fa76a74d9dabe5d4b4b0bd1b11cc","signature=MimiKatz; file=57eff460128e65204d46aa5a0012f8ba4758fa76a74d9dabe5d4b4b0bd1b11cc (tag=Mimikatz)",""
+"2024-11-18 13:02:58","MalwareBazaar","Lazarus","SHA256","48956128660f7a745aa918eac38e5baacdae1bc0809503f2a2c3f2b79507e3ff","signature=MimiKatz; file=48956128660f7a745aa918eac38e5baacdae1bc0809503f2a2c3f2b79507e3ff (tag=Mimikatz)",""
+"2024-11-18 13:02:39","MalwareBazaar","Lazarus","SHA256","d8162221ce6d607b5fe77565f53c5310bfaff050b0c26abe2ca9b9ebdb9ad51f","signature=MimiKatz; file=d8162221ce6d607b5fe77565f53c5310bfaff050b0c26abe2ca9b9ebdb9ad51f (tag=Mimikatz)",""
+"2024-11-09 11:40:18","MalwareBazaar","Lazarus","SHA256","56dd157bbfede1d15cb1169613abc944c2364a138e27a4a118c78847ebc9bd72","signature=Mimikatz; file=c5d9033a0433e8d19e9f8c1970dc6d5d.dll (tag=Mimikatz)",
+"2024-10-18 17:04:40","MalwareBazaar","Lazarus","SHA256","92b5c30d0dc79082e817d0ff06a985ead86dfcdff5d067922a027083eb7aba1e","signature=Mimikatz; file=ab386df4cc481edfb162c6bee296d486 (tag=Mimikatz)",
+"2024-10-15 09:25:01","MalwareBazaar","Lazarus","SHA256","17f3d323bb4a5556a9f07be49e3bbec6c3b97d655ff52a50261f054d7c4f558b","signature=Mimikatz; file=17f3d323bb4a5556a9f07be49e3bbec6c3b97d655ff52a50261f054d7c4f558b (tag=Mimikatz)",""
+"2024-09-28 15:50:54","MalwareBazaar","Lazarus","SHA256","f7e673fcb14041da458750f4958ba3f3e8667c871fddd661cf44b58dc4dd6176","signature=Mimikatz; file=SecuriteInfo.com.Win64.Donut-A.638.5273 (tag=Mimikatz)",
+"2024-09-06 08:17:47","MalwareBazaar","Lazarus","SHA256","f45ee58da74b210038b528fe2fbd9fc1593b26acb1fb94a5b8ef21d77485d011","signature=MimiKatz; file=WindowsProgram.exe (tag=Mimikatz)",""
+"2024-08-10 07:57:51","MalwareBazaar","Lazarus","SHA256","e20d3b2c03c01b84fe313d18de51b04fe1d51108c52923d0db4e7454c520d3ad","signature=Mimikatz; file=9a456b4a5048179e010add9c53c93834.exe (tag=Mimikatz)",
+"2024-08-08 10:19:48","MalwareBazaar","Lazarus","SHA256","7847b9a12505379a454cb4c1fdd6513cbf351782697fef94beb5f32b1ddf401c","signature=MimiKatz; file=exe (tag=Mimikatz)",
+"2024-08-08 10:14:17","MalwareBazaar","Lazarus","SHA256","e0fa6d69b26f18cfdef3bd930d067eca476b3d2cb78d14bec88f05ae87d25b1e","signature=MimiKatz; file=e0fa6d69b26f18cfdef3bd930d067eca476b3d2cb78d14bec88f05ae87d25b1e (tag=Mimikatz)",""
+"2024-08-04 18:17:20","MalwareBazaar","Lazarus","SHA256","ef50f2acca59baa3c2565a2241fd895d535b10586beb65bd72f9e0bea6462649","signature=MimiKatz; file=SecuriteInfo.com.FileRepMalware.7244.25447 (tag=Mimikatz)",""
+"2024-08-03 16:27:32","MalwareBazaar","Lazarus","SHA256","8cb1ac82f4ec631b5d1121a01dd15c2815c46b989db83c156172338e9968fd37","signature=Mimikatz; file=SecuriteInfo.com.Win32.CVE-2021-1675-G.10773.21169 (tag=Mimikatz)",
+"2024-08-02 12:23:30","MalwareBazaar","Lazarus","SHA256","6dcb8ef81ffb990d544d6ecd9b6339ed96f0697359cc25c866ae0e5d9dafa639","signature=MimiKatz; file=SecuriteInfo.com.BackDoor.Farfli.131.19672.2376 (tag=Mimikatz)",
+"2024-07-31 13:59:52","MalwareBazaar","Lazarus","SHA256","6d74ed0eda4cf7f7edb2f8982cc706e84a402008fc74f442d898da7d6be05143","signature=MimiKatz; file=6d74ed0eda4cf7f7edb2f8982cc706e84a402008fc74f442d898da7d6be05143 (tag=Mimikatz)",""
+"2024-07-10 12:26:57","MalwareBazaar","Lazarus","SHA256","3e55b8f83888876023896576cc5849a86a0e5d9828df89e93de2d6e7e0e037e9","signature=MimiKatz; file=gg.dll (tag=Mimikatz)",
+"2024-07-10 12:26:54","MalwareBazaar","Lazarus","SHA256","1ea8a5f2df236371911746419fdeff66a2c0a05775f6903edc601bef18fe653a","signature=Mimikatz; file=get.exe (tag=Mimikatz)",
+"2024-07-07 07:04:28","MalwareBazaar","Lazarus","SHA256","42b237cb3f9b1182a2ddd9a967543e17c5b89b706b8318414217d59b62e123ee","signature=Mimikatz; file=goPhzZ.exe (tag=Mimikatz)",
+"2024-06-28 07:41:47","MalwareBazaar","Lazarus","SHA256","3ac75c33e947a904f798ee3dbaec39a3a092bdc5a8c29d7ac0ce77951541f9b0","signature=Mimikatz; file=4561eb95d72284693c4640f299f9a649 (tag=Mimikatz)",""
+"2024-06-27 18:36:51","MalwareBazaar","Lazarus","SHA256","8e0c84a80f1cd11e57242efa730c4e163beabb4b096b66ab4081ec2c700a0421","signature=MimiKatz; file=ConsoleApplication1.exe (tag=Mimikatz)",
+"2024-06-27 18:36:40","MalwareBazaar","Lazarus","SHA256","1554c8f5c4c5824e39f3c14ad97288178fec5f1a8ae707a151daa382d7ef97d2","signature=Mimikatz; file=nvsmartmax.dll (tag=Mimikatz)",
+"2024-06-12 19:27:50","MalwareBazaar","Lazarus","SHA256","b294f94c469f43a78a324b5cfecbde0afb3aa0256bbde06ca2718b8c038a9324","signature=MimiKatz; file=mz64.exe (tag=Mimikatz)",
+"2024-06-12 18:17:38","MalwareBazaar","Lazarus","SHA256","1bae55baa2dfe26ecc9b148bc2c9820ce05e0fbbfe907a3a116aa08546fabe6d","signature=MimiKatz; file=mimikatz_trunk.zip (tag=Mimikatz)",
+"2024-06-12 16:43:03","MalwareBazaar","Lazarus","SHA256","cd03561d6e2b4a75d5113465d7c9748aa754e04dfad77e29a2cabc9cb8a58cf7","signature=Gh0stRAT; file=表格目录名单782.exe (tag=Mimikatz)",""
+"2024-06-12 11:14:36","MalwareBazaar","Lazarus","SHA256","605fabdc49f1c50f48d967bcbffd7553a1afe58af4607aee5300fdec83ccdcb7","signature=Gh0stRAT; file=目录表格名单112.exe (tag=Mimikatz)",
+"2024-06-12 11:14:17","MalwareBazaar","Lazarus","SHA256","240c056fa0a024742d65a67a8f494658837dded48bf892f6209750b1265bdf7c","signature=Gh0stRAT; file=表格目录名单178.exe (tag=Mimikatz)",
+"2024-06-12 11:12:50","MalwareBazaar","Lazarus","SHA256","768fe2181e2f8595d84ccd19ea882ebb6632482ee4ad4954637289a278d27a85","signature=Gh0stRAT; file=Safe表格ejw665.exe (tag=Mimikatz)",
+"2024-06-11 17:38:06","MalwareBazaar","Lazarus","SHA256","417c70e912ee8b64ae8ace9044c5ce86f5679b38dc87cb6934c7fdb11d4b0632","signature=Mimikatz; file=6mm.exe (tag=Mimikatz)",""
+"2024-06-11 17:37:41","MalwareBazaar","Lazarus","SHA256","05b5a1a5354201eb02051a8555a63d82e98766798f5739111c454103ca2599bb","signature=Mimikatz; file=3mm.exe (tag=Mimikatz)",""
+"2024-05-15 22:20:02","MalwareBazaar","Lazarus","SHA256","fe5871acc108081a6aff5b03ebe4d5850c48ea90bcc3d07941e1d4250ff64c23","signature=Mimikatz; file=SecuriteInfo.com.Win64.DropperX-gen.13271.8391 (tag=Mimikatz)",
+"2024-05-08 09:29:23","MalwareBazaar","Lazarus","SHA256","ba5c6e5d1030b2a5f8fa634f006e46001bbe1d39b9393fb9f3ece011bc9d1dac","signature=Mimikatz; file=SecuriteInfo.com.Win64.HacktoolX-gen.14613.29072 (tag=Mimikatz)",""
+"2024-05-06 08:09:42","MalwareBazaar","Lazarus","SHA256","48e8579ed3e10940f1ba02ee612966853a2ad6ca5f79dea32ef7394e7f167aae","signature=MimiKatz; file=d3466d3503d830cccdc003917572b7fc (tag=Mimikatz)",
+"2024-05-06 08:09:32","MalwareBazaar","Lazarus","SHA256","fb0c3dffd084de7a41d886677edce3681e0a3b40c4afc22f71d4be4cb2e3489e","signature=MimiKatz; file=87363b124aa12e26c2de50d58aa680ba (tag=Mimikatz)",
+"2024-04-24 10:28:25","MalwareBazaar","Lazarus","SHA256","5058d869c59bfb3480d1dc6f8f51d191adb890039c89ff9fd668fe7b481099b8","signature=MimiKatz; file=SecuriteInfo.com.Win32.RATX-gen.24533.28061 (tag=Mimikatz)",
+"2024-04-04 05:26:53","MalwareBazaar","Lazarus","SHA256","d7109b19140f4db4ea6d7267e81bb7a0fac266175bb69fb12b9395f2027504b5","signature=MimiKatz; file=SecuriteInfo.com.BackDoor.Farfli.131.5928.31924 (tag=Mimikatz)",""
+"2024-03-05 02:36:41","MalwareBazaar","Lazarus","SHA256","c0f6d418b98e7b303ab224c5ac1b59487908ac15125c9e90eccaed2763100739","signature=Mimikatz; file=SecuriteInfo.com.Win64.TrojanX-gen.9105.21545 (tag=Mimikatz)",""
+"2024-01-20 00:55:43","MalwareBazaar","Lazarus","SHA256","610e09a5f3b05b568143305bc5061ed316b346fd406539215c03acc8457521b0","signature=Mimikatz; file=SecuriteInfo.com.Variant.Application.HackTool.267.31577.17251 (tag=Mimikatz)",
+"2024-01-14 10:25:38","MalwareBazaar","Lazarus","SHA256","e35b74f66177f5fb5e493c4b8b3bf8a52b155043b8b02ca789fd69f4e2392408","signature=Mimikatz; file=SecuriteInfo.com.PUA.Tool.Mimikatz.1166.16677.24008 (tag=Mimikatz)",""
+"2024-01-14 07:26:05","MalwareBazaar","Lazarus","SHA256","d4693b75e51768f37d6890687c3dfac1f8053316fa53956416b0874098384b90","signature=Mimikatz; file=SecuriteInfo.com.PUA.Tool.Mimikatz.1166.25475.23108 (tag=Mimikatz)",""
+"2024-01-14 04:17:26","MalwareBazaar","Lazarus","SHA256","2652317ee101416aa1444d343992d632e0c6da5367daca441e50fd9c09d78fa4","signature=Mimikatz; file=SecuriteInfo.com.PUA.Tool.Mimikatz.336.260.15419 (tag=Mimikatz)",
+"2024-01-13 03:19:27","MalwareBazaar","Lazarus","SHA256","4585b220fd13925aff301e9ac234ea6edbd25848d437d2a107bc0173e6f9a0b9","signature=MimiKatz; file=mimikatz.exe (tag=Mimikatz)",""
+"2024-01-13 03:14:14","MalwareBazaar","Lazarus","SHA256","87a4adcc8c5c10bdf57e4b5ec13b2d2567437034e908982ed276aa4a62a01eb0","signature=Mimikatz; file=mimikatz-vmp.exe (tag=Mimikatz)",""
+"2024-01-13 03:12:11","MalwareBazaar","Lazarus","SHA256","881767ed394cb6a24d629f105c8bd9451143a8e5147e14dfb621d270dbbee431","signature=Mimikatz; file=Invoke-Mimidogz.ps1 (tag=Mimikatz)",""
+"2024-01-13 03:10:11","MalwareBazaar","Lazarus","SHA256","59d685f1d64f166b94d788b72d4f101dbb41f8f14cbedebcd5a896f849cdc953","signature=Mimikatz; file=1.ps1 (tag=Mimikatz)",
+"2024-01-13 01:16:23","MalwareBazaar","Lazarus","SHA256","c03efa6ab0422798b5bf1be4dd4d56c813e060a110bdbdbbdd1820cd8c673232","signature=Mimikatz; file=shell.dll (tag=Mimikatz)",""
+"2024-01-11 08:56:23","MalwareBazaar","Lazarus","SHA256","b86925369c2833010ca7b6d0f0b6711ab2c9ab6b54ab9742e56865e6217acf37","signature=MimiKatz; file=2f1d3f866fde60fc8337a92dce82e15b (tag=Mimikatz)",""
+"2023-11-09 12:06:47","MalwareBazaar","Lazarus","SHA256","ef23f59e2d240e13e9e8d711a13b75e8941cbe412b88220e962ab313716af96d","signature=Mimikatz; file=ef23f59e2d240e13e9e8d711a13b75e8941cbe412b88220e962ab313716af96d (tag=Mimikatz)",""
+"2023-10-26 21:44:46","MalwareBazaar","Lazarus","SHA256","21234262eb8be8c3022ce6f0a0dc09de2a3fbaa0c741f84c4e6308ab3de040dc","signature=Mimikatz; file=apt29.ps1 (tag=Mimikatz)",""
+"2023-10-13 22:25:13","MalwareBazaar","Lazarus","SHA256","df6b13fb04f267fa4424841526daea37c9bf804b996bcae9ccc4f3b007174802","signature=MimiKatz; file=arsenal-kit20230919.tgz (tag=Mimikatz)",""
+"2023-08-11 09:48:30","MalwareBazaar","Lazarus","SHA256","77bac9c2a0b042b29d7b7e8553d09d0dcc3fd0977ff2a10402a6d799303a5138","signature=ManusCrypt; file=820e6cabe7ab6288d67fbb6c424c701c443cbd9161b0c47c9cfdbaf6fc3cd91d_unpacked (tag=Manuscrypt)",
+"2023-08-09 15:37:58","MalwareBazaar","Lazarus","SHA256","637a6e90c7e5ed50c6c460b7a03dcc63698de2f2a62cc468f6ca1394c084c1aa","signature=Mimikatz; file=Invoke-MimiDinos.ps1 (tag=Mimikatz)",""
+"2023-07-05 11:47:16","MalwareBazaar","Lazarus","SHA256","7accd179e8a6b2fc907e7e8d087c52a7f48084852724b03d25bebcada1acbca5","signature=MimiKatz; file=mimikatz_trunk.zip (tag=Mimikatz)",""
+"2023-07-05 11:46:45","MalwareBazaar","Lazarus","SHA256","d55c12594e0814ae3e2730ccd38bc61f3e2ce948911be016f6119cfab8397c30","signature=MimiKatz; file=x64.exe (tag=Mimikatz)",
+"2023-07-05 11:46:27","MalwareBazaar","Lazarus","SHA256","1c08b44445c3b3298b4b3db102e3d5a7b90ed44025d97c037078af7f59684688","signature=MimiKatz; file=x32.exe (tag=Mimikatz)",""
+"2023-06-09 06:50:04","MalwareBazaar","Lazarus","SHA256","92ad1b7965d65bfef751cf6e4e8ad4837699165626e25131409d4134f031a497","signature=Mimikatz; file=01730499.exe (tag=Mimikatz)",""
+"2023-05-25 11:23:36","MalwareBazaar","Lazarus","SHA256","7d7ca44d27aed4a2dc5ddb60f45e5ab8f2e00d5b57afb7c34c4e14abb78718d4","signature=MimiKatz; file=7d7ca44d27aed4a2dc5ddb60f45e5ab8f2e00d5b57afb7c34c4e14abb78718d4 (tag=Mimikatz)",
+"2023-05-14 18:40:25","MalwareBazaar","Lazarus","SHA256","da22c3632239f33fc51ca0b7617c606d60f3b1dd3a225b01febed0602553fe15","signature=MimiKatz; file=MicrosoftEDGE.exe (tag=Mimikatz)",
+"2023-03-23 15:37:23","MalwareBazaar","Lazarus","SHA256","59a07e2c448afe8d96a5f79968d7ede52d409d9d36d7a77eaa190c5c70cf3f32","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2023-03-22 19:05:08","MalwareBazaar","Lazarus","SHA256","bbd550a356ad847fbec4080976e7f7d72b3d431d923df772b65880b7a5cc7254","signature=ManusCrypt; file=50793b3b016fe3d7042a286e70c8c2db.exe (tag=Manuscrypt)",""
+"2023-03-21 00:18:13","MalwareBazaar","Lazarus","SHA256","a759dfe145751752776c392ad2f5dffd1fa7f4e77e3f5daeeb2258baa2271262","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-03-17 09:15:20","MalwareBazaar","Lazarus","SHA256","d3e1e0659ff9d7843f91e722d6e94cff0cbf891ab115b7dc23bde7c52a9ead09","signature=ManusCrypt; file=9b8786c9e74cfd314d7fe9fab571d451 (tag=Manuscrypt)",""
+"2023-03-16 17:03:37","MalwareBazaar","Lazarus","SHA256","6aea187ca91ea68222b4e650e2b4baa46ba11252f74763a2d2edec2924a98f10","signature=ManusCrypt; file=0b39012e51e6d52ddc49dd9676ba9920 (tag=Manuscrypt)",""
+"2023-03-14 04:37:03","MalwareBazaar","Lazarus","SHA256","66c50293737f9b121c162073ef894bff11906e8fad9b3c4d0f77f0e49f586d7e","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-03-10 12:21:30","MalwareBazaar","Lazarus","SHA256","7db1175e55e2bc864c8e8f0915b5f4167cb0a49a87a751b3fa429be6dc4a8896","signature=ManusCrypt; file=04639854539053e9c2a0eea9e38b5b6c.exe (tag=Manuscrypt)",""
+"2023-03-09 04:29:16","MalwareBazaar","Lazarus","SHA256","1d636ae88bab15613db7d92a33c0bd9d107270d68991faa01c6de1fa06364d92","signature=ManusCrypt; file=ae6df34a140bf74860ca3165d50d8705 (tag=Manuscrypt)",""
+"2023-03-09 04:20:54","MalwareBazaar","Lazarus","SHA256","32e60467041b40146d87fc1c8c734f60f7e3763820e0c2a852a801c8afd1c7ab","signature=ManusCrypt; file=bf48a5cd9169a5826521a8a33b21adee (tag=Manuscrypt)",""
+"2023-03-09 02:52:23","MalwareBazaar","Lazarus","SHA256","eaf978fd469c4acc54a1b4cdaa4298c04b385b0cce10215f96a737b26a27fd30","signature=ManusCrypt; file=24527c1cb60027d91ddc051990ba55ca (tag=Manuscrypt)",
+"2023-03-09 02:12:12","MalwareBazaar","Lazarus","SHA256","c33ecac87bf07fc75b6768b76622daac389e05ef718c457e0393238d646bb130","signature=ManusCrypt; file=b5e1e946ebad560b876703e9675ca326 (tag=Manuscrypt)",""
+"2023-03-09 01:58:08","MalwareBazaar","Lazarus","SHA256","ad716b9b395d65dca7a31117215c2adedf392162eab7beee500f8061db4785c0","signature=ManusCrypt; file=6bbbf2b1e89ed9d3b1bba44fc9acec53 (tag=Manuscrypt)",""
+"2023-03-09 01:29:51","MalwareBazaar","Lazarus","SHA256","1868f0807fb9ad9be1629bc214b755ede9937036622ef31ae877617aba840080","signature=ManusCrypt; file=a1c5f268d670ba3a4440647bdeaa3e20 (tag=Manuscrypt)",""
+"2023-03-08 20:42:03","MalwareBazaar","Lazarus","SHA256","4eeeb2fb37c066baa19b53a02d93d82c40fbedbda7610720b8733c6c1aab555b","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-03-08 12:35:15","MalwareBazaar","Lazarus","SHA256","c14dfbc33876ec82c3705cc8cedad7dda10646b4fd9d12c468d786187422bee7","signature=ManusCrypt; file=3b32570cfc08329e3bf2624f727ead3f (tag=Manuscrypt)",
+"2023-03-08 12:35:04","MalwareBazaar","Lazarus","SHA256","343b71456cdcc0f09baf79a2b0f5befe7043f329899f205699ac3ca2424c8282","signature=ManusCrypt; file=92569f0bc4733fd80a974d67ddb9435e (tag=Manuscrypt)",""
+"2023-03-07 14:10:22","MalwareBazaar","Lazarus","SHA256","d75bdc11107b27e7602f31a93896dbc589dbd313cbb5e76a00d695208218e92a","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2023-03-06 14:57:11","MalwareBazaar","Lazarus","SHA256","5d0a0c2194f2761cadcc2944ba1397950f120c1e691a8eacd185eba576a36f0d","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-03-06 12:36:45","MalwareBazaar","Lazarus","SHA256","54151922b3a7a1f16e1b10356da10b8293b6ca897fed9d48ffeb3d2eae2685cd","signature=ManusCrypt; file=e7f609df5c0fcdc581a69ed69aa3c4a1.exe (tag=Manuscrypt)",""
+"2023-03-06 11:36:00","MalwareBazaar","Lazarus","SHA256","b261a7995c16bc433bd714b2830e519c40c3b8bd60ad6a6239ce27e672dc6650","signature=ManusCrypt; file=d5e7b6fe3bb68f1da7ec111231292f02.exe (tag=Manuscrypt)",""
+"2023-03-01 17:43:43","MalwareBazaar","Lazarus","SHA256","6dbddba630ea7382f81f01ede022be530fae7f1ba7a369c7808fd67a2457523c","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2023-02-24 12:06:41","MalwareBazaar","Lazarus","SHA256","ea40d05c81d27ac61843cabdbaf45a81347ae058d1229300313a17b6143f35e3","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-02-23 13:40:16","MalwareBazaar","Lazarus","SHA256","0a5d832f3594465625f855e63075362cf73ef323fc32964e73327aa6a1030584","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-02-22 17:52:37","MalwareBazaar","Lazarus","SHA256","4ca6df75008045a45e441869a4389b4ef620df9f89cd5f05fd329d0f9987c822","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2023-02-22 16:34:19","MalwareBazaar","Lazarus","SHA256","b9a81253d85a5da410ec8cf345c2444ec09739e5c9842e4031195209bacbf8ab","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-02-22 10:59:54","MalwareBazaar","Lazarus","SHA256","5b0708551a5c3cf9932c8aea5e890e3f2abe7b7b5911cefebc6155d20692e365","signature=ManusCrypt; file=dc719929115e50ed4383bcc7f7182be3.exe (tag=Manuscrypt)",
+"2023-02-22 10:59:51","MalwareBazaar","Lazarus","SHA256","9a8d4f6c8f24d96d32ef8974ba8c96cc02d4fca7d46c3d1edf7e70d6027805f5","signature=ManusCrypt; file=8c4b7faad766aea25bebe85e8f15f705.exe (tag=Manuscrypt)",""
+"2023-02-22 10:59:34","MalwareBazaar","Lazarus","SHA256","9d6f720f4d9bd455371b863ce479c490ebb437ff53c1635fe7befd5eff30af10","signature=ManusCrypt; file=a3b3e417dc721aaa4fdcaa8f65eef81a.exe (tag=Manuscrypt)",
+"2023-02-18 16:05:56","MalwareBazaar","Lazarus","SHA256","248cc9a72ef0f0740bd05bf10b56345530e820a2179ccf295722cd85667ee8c1","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2023-02-17 13:33:07","MalwareBazaar","Lazarus","SHA256","2aa80995de6dce2c7590be4937c9e53b8f56a515f6699c3818c19000cd0a6bb0","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2023-02-17 07:31:43","MalwareBazaar","Lazarus","SHA256","867a7eaf299f034c5acc0ba7bd662d7336a3c443a51de629eb07392a0173f5b1","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-02-17 04:02:38","MalwareBazaar","Lazarus","SHA256","0f8957164a9652a11ebdc564de062475ab11f8b4ff0cf7394a317f8460ca059f","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2023-02-17 00:32:47","MalwareBazaar","Lazarus","SHA256","1600297e9fc5e9d1fd05e5cfb3d2650ad4d5d2a0767803076355bddc6dae8f57","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2023-02-16 22:32:29","MalwareBazaar","Lazarus","SHA256","0763a57785eb147b7b22f433f07ea905f27ac6d44bf0f041f235199065da1d48","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-02-16 21:00:55","MalwareBazaar","Lazarus","SHA256","9b3bf352cba2cd6fd814ff336a0bb2d2192d07b4404f22d99192ec17012ebae4","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-02-16 08:32:18","MalwareBazaar","Lazarus","SHA256","807badc86df04d85f8c977ac586daab5101072d145d2e654f4f80c1d1b04f214","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2023-02-16 00:30:56","MalwareBazaar","Lazarus","SHA256","4b8e47b3073b1193b5cd0bc2c12016754683a09213d1299415ec40088b4a9290","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2023-02-15 17:32:24","MalwareBazaar","Lazarus","SHA256","ccf4b97d104da5adad77300a8af26faf23868c86b0c273d644112b3d62a51ddc","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-02-14 21:01:25","MalwareBazaar","Lazarus","SHA256","721c6344039504a039421662f0c681147aa140f3ee5598ce17491ec60cd21dab","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-02-14 13:28:03","MalwareBazaar","Lazarus","SHA256","2658e2d285ffb7dbc4d084728bcb65a537fefe900eeb07a10b42f3c61291ce2c","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-02-13 21:31:40","MalwareBazaar","Lazarus","SHA256","b70c3586d51a5d1b230051cc0a004ea1340f837066ecc6bc13bc88c11c88add0","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-02-13 13:34:35","MalwareBazaar","Lazarus","SHA256","77a7949f1c2511971c674037e762400557453371346fc8ea1cc04e0d8a67e968","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2023-02-13 13:02:31","MalwareBazaar","Lazarus","SHA256","e7bded553dd053da75e9c1247a24b16344028de8c8100324b8f6852daf5078c4","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-02-13 05:00:33","MalwareBazaar","Lazarus","SHA256","b266486b81e48f59ef21b02c6151f26fe2aa77d0e1cce73718342a4e0e703cc7","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2023-02-12 14:13:16","MalwareBazaar","Lazarus","SHA256","99c1e9b26ff369764907dd0576d3ac4d9aa4db2f8a85fea23a6dd22ff6df1922","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-02-12 07:00:39","MalwareBazaar","Lazarus","SHA256","e6a503c99e5afadde39a9927346470a6476458682ed8f536c95d79feb3896f90","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-02-12 04:02:36","MalwareBazaar","Lazarus","SHA256","ea00e7aba317832fe7ee630e343d633389da5e1c1b08b4c1e41e77d2c80e242a","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-02-11 09:01:04","MalwareBazaar","Lazarus","SHA256","0452d0d3b5f5899e4f16810c4cfd5ecdd572222640f7383f7a1c32cdcdc5abf7","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-02-11 02:27:58","MalwareBazaar","Lazarus","SHA256","a16e2ada8d8b81b0204ed70a8a32ce2c602f145b3af841d7e6c8b6ecc908126e","signature=ManusCrypt; file=llpb1133.exe (tag=Manuscrypt)",
+"2023-02-09 17:52:00","MalwareBazaar","Lazarus","SHA256","dad93b24ac5ba5c9e9dec5a81ef747ddeeb2164b5359d27d5755b2ee6ef9c5e9","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2023-02-09 10:44:35","MalwareBazaar","Lazarus","SHA256","7ca44b0fffbf47b3d0ab869ca137832224aa3d6d98c29e86587f2defe98585ae","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2023-02-08 18:34:15","MalwareBazaar","Lazarus","SHA256","cb354c4e272de841e4a2cc6d96c88c291a720487637eff8075f6725896137ded","signature=ManusCrypt; file=b328abe938ae81e9382bd6858a6ee77f.exe (tag=Manuscrypt)",""
+"2023-02-03 04:56:30","MalwareBazaar","Lazarus","SHA256","3385554f10c31dea3869818e5f99b80d89459886237c92b48996dc6ccab636c1","signature=ManusCrypt; file=a854af7b7731cc670a3300abdf4c1d7c (tag=Manuscrypt)",""
+"2023-02-01 02:31:24","MalwareBazaar","Lazarus","SHA256","b7383e2dfc343f2384e76f06770082add0209b189314287dc4aa8eb966be6a59","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2023-02-01 01:04:53","MalwareBazaar","Lazarus","SHA256","d051841ec301d24688063983ca3c6a9f6b784f74e2c823eb5d0b84961bf6e1ae","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2023-01-31 13:11:40","MalwareBazaar","Lazarus","SHA256","4bff4b7f8db1497c00f3a666cfcbec6b1bad407a1d5f7ad6909e115c3f98ba55","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-01-30 17:50:42","MalwareBazaar","Lazarus","SHA256","e3821fb308eecf48c36679380663aa25afc7dd368f37de6304da43a599aed828","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-01-30 10:07:51","MalwareBazaar","Lazarus","SHA256","778e211b5939adccf0fa0d63bed5ee5eebe0da5c454196218dc86920ebb1bef6","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-01-28 18:56:22","MalwareBazaar","Lazarus","SHA256","f24a4c53dae682ff8bd08b226f9f4b685840153c27b6ef5813290d38434949ff","signature=ManusCrypt; file=43e377046398e6a7b6c26bf829b996ee (tag=Manuscrypt)",""
+"2023-01-26 17:03:44","MalwareBazaar","Lazarus","SHA256","4640e5b9817fd35d92b0d0687003576c75fd4e0df34bcfa0008c6ca3450a8f6d","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2023-01-24 06:27:56","MalwareBazaar","Lazarus","SHA256","9026ede50a6aeb6fcf0280345a104c6a712b2bac5322a5cd44d6028cb7b444a6","signature=ManusCrypt; file=6b8976a7665e344c2e1b14f63d821acf (tag=Manuscrypt)",""
+"2023-01-23 03:57:52","MalwareBazaar","Lazarus","SHA256","fee142712ee9fba0c3cc57b4e314480bf976e4b1707bbeb202a58ca2b98f39bd","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2023-01-17 16:04:30","MalwareBazaar","Lazarus","SHA256","74756be9404169cd665f15adf7742430476c21385a9841f3469414ba7bd98b80","signature=ManusCrypt; file=af45516986ea8e89151f1f7a2a65b263 (tag=Manuscrypt)",""
+"2023-01-17 15:18:32","MalwareBazaar","Lazarus","SHA256","ee98f7f20da57050ef47be4200dbd3c507fcb516223877803ba7a75a652301ed","signature=ManusCrypt; file=b40d68dd8bc069c7c9bdcf30fd6c4e6d (tag=Manuscrypt)",""
+"2023-01-17 14:37:55","MalwareBazaar","Lazarus","SHA256","8fb3d9096ee919b35acdaf9c4992a6966df8a1170408bb86c36ac9fdc8cbe82d","signature=ManusCrypt; file=6e327d6febfbb7425cb05e21074c6207 (tag=Manuscrypt)",
+"2023-01-17 12:13:48","MalwareBazaar","Lazarus","SHA256","a77627fe62f20152ce1dd265350fbfd6aecff46996456bdfcb06250e70e9f1fe","signature=ManusCrypt; file=da1f8caee934e3ff263b8c9d32fee889 (tag=Manuscrypt)",
+"2023-01-17 10:30:50","MalwareBazaar","Lazarus","SHA256","a824d6e52c4d191b9a83f6ee0a4beecfd72cc463099b6c31b2d4cc8260ff4544","signature=ManusCrypt; file=946947bcd3e9e172a967d29a683ec87b (tag=Manuscrypt)",""
+"2023-01-17 04:57:36","MalwareBazaar","Lazarus","SHA256","95ed776964b8c2b5948654a488a5af2603068c6d412a1d20310e872f76812d8f","signature=ManusCrypt; file=3bae12021a73bd6ba98506e6449db513 (tag=Manuscrypt)",""
+"2023-01-16 23:06:24","MalwareBazaar","Lazarus","SHA256","9a3a87d0f2eeeca3e36bbaef7833c44f20e6162075c7cea9a89bce15d3d2269d","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2023-01-10 09:33:43","MalwareBazaar","Lazarus","SHA256","01138f2318e59e1fe59f1eb7de3859af815ebf9a59aae1084c1a97a99319ee35","signature=PseudoManuscrypt; file=file (tag=Manuscrypt)",
+"2023-01-10 09:22:24","MalwareBazaar","Lazarus","SHA256","99bebc78a2a17913bd666188af9c5f8ccbe59b85c78f3b17275f89bf3d583947","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2023-01-09 17:35:55","MalwareBazaar","Lazarus","SHA256","8c92311bd809f9a8089376caedb75001a6cea3a9461bd2b31f0e69f7e0cde052","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-01-08 15:14:50","MalwareBazaar","Lazarus","SHA256","f5302b9e1f7a2c2c69ce10c5975d4ceee06a7cec5a9b834fd63dece231838fe7","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-01-06 09:59:23","MalwareBazaar","Lazarus","SHA256","fd6cbe99be50a03ab25307c78393470002cd904d4b08b875e0611a31c779da3f","signature=ManusCrypt; file=fb82166c5ddb6ad29315404e1fab46fe.exe (tag=Manuscrypt)",""
+"2023-01-05 19:38:45","MalwareBazaar","Lazarus","SHA256","5ea61a39ffd3f7b295a5dbb84f1d7dff63bf7b72e0c072ea15f0ac0e434012f4","signature=Mimikatz; file=mimikatz64.exe (tag=Mimikatz)",
+"2023-01-04 02:11:58","MalwareBazaar","Lazarus","SHA256","0c0bdbcea941b4cef850609416ec4f3d3ead6f08f687d96b76dcd5e809bb22b9","signature=ManusCrypt; file=a2480afb729334b3901031d9e17ab2f7 (tag=Manuscrypt)",""
+"2023-01-04 01:58:15","MalwareBazaar","Lazarus","SHA256","d06bf8cf6f3e3c5869453c9e444d66390f2c2ddec8d8ebe6cec0207a368d31f3","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-01-04 01:56:43","MalwareBazaar","Lazarus","SHA256","c82ab145610c19c3f5a1462196b41347c9786f5e600bdaa477bb98814461d279","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2023-01-01 14:47:18","MalwareBazaar","Lazarus","SHA256","c07e74c3367d7fada8618f94d8c73122f161ffe79eb4534bde78f57998b54813","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2022-12-29 21:51:20","MalwareBazaar","Lazarus","SHA256","23a243a1ce474c4da90b1003ffcbaf9a3ff25e0787844bfe74c21671fdd8b269","signature=MimiKatz; file=mimikatz.exe (tag=Mimikatz)",""
+"2022-12-29 20:25:40","MalwareBazaar","Lazarus","SHA256","781f273dcf2fc98a60b600dc16b52f41a25e5d701212c1822ada88a8ce15e9db","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2022-12-28 14:45:53","MalwareBazaar","Lazarus","SHA256","b1458ecf3bf93d4d324114717eefd709eb7bc8f2eca5d7d285baa24bedcdd8fe","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2022-12-28 06:38:46","MalwareBazaar","Lazarus","SHA256","4aba54c660a656f5bb5b75ea11029217bdf96c931c21d1143042ac3278ac6e43","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2022-12-28 01:03:49","MalwareBazaar","Lazarus","SHA256","65a0ff579725febf7e9c0888d4c5e928ab007b61e337df14d02b0f7f359c8c57","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2022-12-26 16:37:13","MalwareBazaar","Lazarus","SHA256","1f55d0bc63fc3d31e288fe9006470d82a61222a35daca6a0a8acf801e8608a48","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2022-12-24 19:39:49","MalwareBazaar","Lazarus","SHA256","67c31c5794f8158756745a674e28f5412c81f3109d1af2cbcc2ad91f649ed954","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2022-12-23 23:18:03","MalwareBazaar","Lazarus","SHA256","729e9a95a05c2237186bb57b2148159d85713d4636172b034fcab877afdd0b15","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2022-12-23 14:45:59","MalwareBazaar","Lazarus","SHA256","fb38d631b422b9a0d8df8b59e307fb2463a6882e1241f51848fa96bb4b732978","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2022-12-22 22:11:02","MalwareBazaar","Lazarus","SHA256","3aa290b067cbd23d42481b61c74ae57834293f9da2e8461e3df6e0629aecb597","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2022-12-22 22:10:55","MalwareBazaar","Lazarus","SHA256","f93757c8388203b902e6c3faf08d4a323094c23e82f2d2de134cfef1e1faf003","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2022-12-21 06:17:40","MalwareBazaar","Lazarus","SHA256","aa03d4ff799f30857eaf1231d83957bffa98779d2556bf6aedeb540febd02cbb","signature=ManusCrypt; file=09a7132abc47c8485e40d12dc6db84b3 (tag=Manuscrypt)",""
+"2022-12-21 04:13:08","MalwareBazaar","Lazarus","SHA256","2ef4baecb516236a241bb85b0b513c30a28c55baf0b7df865bba4e3d1be3038d","signature=ManusCrypt; file=ebf60b1f746406783c418b986f26f4c4 (tag=Manuscrypt)",
+"2022-12-21 02:33:56","MalwareBazaar","Lazarus","SHA256","d297a7c0ccd9241c61cbe1fe044fdc2a8c1ba7935ecd32676af719698bb4e895","signature=ManusCrypt; file=0208a721296b1041ec4f87ddc748fcae (tag=Manuscrypt)",
+"2022-12-21 01:12:31","MalwareBazaar","Lazarus","SHA256","967a5d5af83c811715ffb8dfa461a558ce8efa78d4758851155b33acbac2cd1a","signature=ManusCrypt; file=f1e37e279f12381c53b6fa148c20bbd5 (tag=Manuscrypt)",""
+"2022-12-21 01:11:30","MalwareBazaar","Lazarus","SHA256","13b97b388624af071d4a68e760f4f1b828c80e627ffdc39d06aacea317e49ade","signature=ManusCrypt; file=7c151e9e14789c5fdb870541edd8a4e0 (tag=Manuscrypt)",""
+"2022-12-20 06:36:41","MalwareBazaar","Lazarus","SHA256","491340696a96a227a4799a9a2467bba4ee512695c96c1b6b4e0451c6d08e5642","signature=ManusCrypt; file=ce063a5d881d7de5f62cd3c41574ccf9 (tag=Manuscrypt)",""
+"2022-12-20 06:36:33","MalwareBazaar","Lazarus","SHA256","e5621a071c8fb55b94310ddb8048f0a4ee0a65df5c0a60ec8e098e0b8ca5fe91","signature=ManusCrypt; file=e16e7b3cb08d69374ad433cda8ce0dd9 (tag=Manuscrypt)",""
+"2022-12-20 05:48:22","MalwareBazaar","Lazarus","SHA256","46cfd217076479473601453a31064e690df15f3f061c3d6a261cf30df5ac3a9d","signature=ManusCrypt; file=35679942b311d6c40ee9d2466eec43de (tag=Manuscrypt)",""
+"2022-12-10 21:56:53","MalwareBazaar","Lazarus","SHA256","1c66b1e77e068db17f024a3f88d456026c33fe2dd0b1e0e5ff9eed4af6f09065","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2022-11-28 09:35:51","MalwareBazaar","Lazarus","SHA256","088debdcef9c0e6c522799fcfcc387bcb4794b377a9346fa0b9dac02f898d5f5","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2022-11-24 02:27:41","MalwareBazaar","Lazarus","SHA256","a1fc61c2d03a03b18d4d7a5c4c2dbbe79730c9aafd36759e0195bb8aeb04328e","signature=MimiKatz; file=gjjk.exe (tag=Mimikatz)",""
+"2022-11-21 05:17:03","MalwareBazaar","Lazarus","SHA256","8a5c3fed2a80b624ec4a9cc806e3641689c04f22cd9f6377c2f58db82a340d2e","signature=ManusCrypt; file=b6343bfa83c0add640bf7e46bac06f88 (tag=Manuscrypt)",
+"2022-11-20 02:10:17","MalwareBazaar","Lazarus","SHA256","24ccf74ae72a0f1abe07fe0ab56a89f28d71c40e9aec5024770dbce5bb90647d","signature=ManusCrypt; file=4f38dc32c566e0692930dfa0ada3cf3d (tag=Manuscrypt)",
+"2022-11-20 02:09:53","MalwareBazaar","Lazarus","SHA256","b21ea4bad719e7c8a2ae8ea76493c5f4090f8fa6e951de190134fd678e83ed7d","signature=ManusCrypt; file=4d244d8991ba82c79a8dc21633fd5612 (tag=Manuscrypt)",
+"2022-11-20 02:09:39","MalwareBazaar","Lazarus","SHA256","ff005cbaa768b6d7140848fc0d8d895165d736e3d34f6aecb1150f9cfbecf64e","signature=ManusCrypt; file=dd2c2eb5942e86abf5cc95121e1ff143 (tag=Manuscrypt)",
+"2022-11-19 18:41:10","MalwareBazaar","Lazarus","SHA256","72d85576eff8d186fb130c36e684fba044fe07cdef80f007a071b88d563be330","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2022-11-19 18:23:18","MalwareBazaar","Lazarus","SHA256","f597c0353ca05ad13b935ea1da505341678d1981a97808e0fbcefe3a64e7c265","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2022-11-19 04:08:21","MalwareBazaar","Lazarus","SHA256","fe9b3724e40d790ced11be6c728318e2094cd8f083f9307279c91168ab85e638","signature=ManusCrypt; file=acac788b9068d48ab298079ec65a6e67 (tag=Manuscrypt)",
+"2022-11-19 03:47:08","MalwareBazaar","Lazarus","SHA256","3bc1016d3cc2c0a15557aa9ab7e8c1001312561349a677d0872e9b72db95f1cc","signature=ManusCrypt; file=a8668f502a915245b0a52989247cd148 (tag=Manuscrypt)",""
+"2022-11-17 15:19:20","MalwareBazaar","Lazarus","SHA256","a157ed25c1b80bbb44f5ad59d8eb1342c2ca81270fc1f3ae8f3ebf4032819352","signature=ManusCrypt; file=60072709a04d1241a519234e4a943f8c (tag=Manuscrypt)",
+"2022-11-17 15:19:15","MalwareBazaar","Lazarus","SHA256","5ad85e0ca6a4d5384059a05aed295abf7e27499bd5cb60b94ae73b885b0b9dfc","signature=ManusCrypt; file=182e6d311729716ae1f8f084b5f8598b (tag=Manuscrypt)",
+"2022-11-17 15:19:00","MalwareBazaar","Lazarus","SHA256","d696161aa8e00f05543190278f4cb76867dbb619219ccd78153a863227b5da41","signature=ManusCrypt; file=c76c0a2c3fb0ea2968e8fb34467463d9 (tag=Manuscrypt)",
+"2022-11-17 15:04:44","MalwareBazaar","Lazarus","SHA256","7157c19376fe21e77622d0d53b0c6aae720a02fab458db18ac83bde136cede16","signature=ManusCrypt; file=927c59e2e01a2ad43607097b03870e99 (tag=Manuscrypt)",
+"2022-11-17 15:04:33","MalwareBazaar","Lazarus","SHA256","1353cc6a409dbc1ede12344c5e6a91af81520682e5d1eefa5f0b9d1b4145b2f4","signature=ManusCrypt; file=af14274fece6086029442475d6dece4f (tag=Manuscrypt)",
+"2022-11-17 15:04:15","MalwareBazaar","Lazarus","SHA256","cb4ab17937b1bac693e70b9ae09666bed0510559b3f3d34c929f404368a4c2af","signature=ManusCrypt; file=7022fd35061c82befdbaba459a23d069 (tag=Manuscrypt)",""
+"2022-11-17 00:51:15","MalwareBazaar","Lazarus","SHA256","9ca648fad08d86feab816bb3116a5f0439c372d65b9382778c72d704ad50abd2","signature=ManusCrypt; file=0e6c9519ccf7632b6550b022d0072018 (tag=Manuscrypt)",
+"2022-11-17 00:37:51","MalwareBazaar","Lazarus","SHA256","5c9a81384d49768cd3d01f0786a2c957a8b63da55668fe0270eaef8b3eb2299a","signature=ManusCrypt; file=d479cececc8f5d9184733a94dfa25649 (tag=Manuscrypt)",
+"2022-11-16 16:01:00","MalwareBazaar","Lazarus","SHA256","1ae013d4e99c5bc1b818e14963f275caada1f71fa0186834dc7680124aea8b8d","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2022-11-16 08:51:28","MalwareBazaar","Lazarus","SHA256","f1ba72662b9d0e9412818b6ecafccb936adf8bcf4150dfc8b2dabb9e7020961e","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2022-11-15 16:03:26","MalwareBazaar","Lazarus","SHA256","e3a1001bfe5f5d08e9ca9b2bad47090707a272a533cda0299f6ecb514a46036d","signature=ManusCrypt; file=a519c8442164a8b1311fd1190cf0549c.exe (tag=Manuscrypt)",""
+"2022-11-08 09:45:46","MalwareBazaar","Lazarus","SHA256","e0e00cdc8131a6cb50c336eb05dbc4d7f47a6a77aaad73b2ed869d2fc93abe40","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2022-11-08 01:12:58","MalwareBazaar","Lazarus","SHA256","b46ea79a4cb22055864a08c0b6b9e57ac2849bfd8b94367f873fb024de19dd79","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2022-11-05 14:29:25","MalwareBazaar","Lazarus","SHA256","28d4d2d1b830a1948d1b912fcea02f08883fa03974069055af07f90eb06249b7","signature=ManusCrypt; file=file (tag=Manuscrypt)",""
+"2022-11-05 11:01:14","MalwareBazaar","Lazarus","SHA256","b1a74b0f8d970a398edd785ad9e7813d14ec5b78c46f321a5430d6a74e1a76a8","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2022-11-03 21:23:14","MalwareBazaar","Lazarus","SHA256","b4b79b967413a4e9a54c0fab57a77a21d1fe9d6f77b9c36ea360840978c192fc","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2022-10-28 09:31:49","MalwareBazaar","Lazarus","SHA256","b874044cbec881b3de5373c444f3eed3b581d96240dd5e1a92ef75ed1c026a68","signature=ManusCrypt; file=96c260683d5ddd69915ee0e241531337.exe (tag=Manuscrypt)",""
+"2022-10-20 17:46:35","MalwareBazaar","Lazarus","SHA256","ab44e4d03066fb8578285c921ce41713689418bb1ddffddd95161375be4d34e5","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2022-10-11 09:38:26","MalwareBazaar","Lazarus","SHA256","d72aa8fe30b132afe13a9be90142550b530d9687aff41954bbd3503115f37489","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2022-10-08 07:49:54","MalwareBazaar","Lazarus","SHA256","ece9002cab1e69b20645b228079c766186f5d151e55381d9232674ef352379ba","signature=Mimikatz; file=ece9002cab1e69b20645b228079c766186f5d151e55381d9232674ef352379ba (tag=Mimikatz)",
+"2022-10-04 21:21:30","MalwareBazaar","Lazarus","SHA256","504f18d7167c4ddea35f3a1514e0e1a504a246e776e45531d37a2a4accd14009","signature=Mimikatz; file=504f18d7167c4ddea35f3a1514e0e1a504a246e776e45531d37a2a4accd14009 (tag=Mimikatz)",
+"2022-10-03 13:20:03","MalwareBazaar","Lazarus","SHA256","5344eb798da4a39ccf5efc7249bbc1c9347a42fa3b67739eac718b8ed9907cab","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2022-10-03 10:37:13","MalwareBazaar","Lazarus","SHA256","02d38c71aac4208f71e2fc069e1afa14e3de5c8e1bba9b22412cde81bc893735","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2022-10-01 07:40:08","MalwareBazaar","Lazarus","SHA256","e6fe65bf78dac0ae91f706e5b382d5bcb9699b0d754dddc8c00f4716ca209e5a","signature=ManusCrypt; file=1725996a931f0f5164cb69e713608f1f (tag=Manuscrypt)",
+"2022-10-01 04:24:21","MalwareBazaar","Lazarus","SHA256","aa322d0d504531b73c40011d42acd9e94d59d3a1b15a01bc1c01168a74a66c8b","signature=ManusCrypt; file=1ba3b71abe380ea897b9943d35ac8634 (tag=Manuscrypt)",
+"2022-09-30 05:06:59","MalwareBazaar","Lazarus","SHA256","02a78c3555f268d0087589e319924abb19d8a05c4c2b40f1cf08745f31f1bf98","signature=ManusCrypt; file=7611ffb5250741886851afa80f0e3676 (tag=Manuscrypt)",""
+"2022-09-30 05:06:23","MalwareBazaar","Lazarus","SHA256","fe053759e2973f96aa9c6c23e731eb6b4bc99da873324476e2d75477c38111d5","signature=ManusCrypt; file=b9d626c926fc54eb3b765110eb63423d (tag=Manuscrypt)",""
+"2022-09-30 05:06:08","MalwareBazaar","Lazarus","SHA256","33bc3ba6eea21f1e6448c200fdb94cb9e32d4a840bedaed9bd1bce8846951a44","signature=ManusCrypt; file=b12f06efa1913b377c89a4f5b28ed0cf (tag=Manuscrypt)",""
+"2022-09-30 04:16:57","MalwareBazaar","Lazarus","SHA256","189d5c23910cd58759aafae7139b258fc85d6fd588c04e56479d0c05a4dcdffd","signature=ManusCrypt; file=fc063812fa41b939bb950a9ed47cc768 (tag=Manuscrypt)",
+"2022-09-29 02:12:53","MalwareBazaar","Lazarus","SHA256","d6df827e84530abeead1ea02aa1d58fc6350bc31667d19bd20da3b28996cd5dd","signature=ManusCrypt; file=392cb5e34eaafb38f9251145d95fae6a (tag=Manuscrypt)",
+"2022-09-23 20:12:44","MalwareBazaar","Lazarus","SHA256","f53f8d3dc49bdfa495c21942a3ba1f390f381cf50740be44d7a0afa8d7ba4c6c","signature=ManusCrypt; file=b2eafed2c51d6a60d39a862f712ccbf5 (tag=Manuscrypt)",""
+"2022-09-22 11:11:29","MalwareBazaar","Lazarus","SHA256","2a3f9ea51b3de309a822090a72178a5bb616d63780a85b065a81a8beb7346c93","signature=ManusCrypt; file=file (tag=Manuscrypt)",
+"2022-09-20 16:23:48","MalwareBazaar","Lazarus","SHA256","d92d50b0b6f7f5208048e68ed618c6b4393faa090f65e677062a2ead48f19ced","signature=ManusCrypt; file=ba53e9d792a689d193837ee3d05d77c3.exe (tag=Manuscrypt)",
+"2022-09-20 08:21:56","MalwareBazaar","Lazarus","SHA256","4d6b7a20e7b1f482eb72da51ad88767f3621867f3de10985c2260869c4193ba1","signature=MimiKatz; file=MIMIMI.zip (tag=Mimikatz)",
+"2022-09-08 14:52:21","MalwareBazaar","Lazarus","SHA256","b42725211240828ccc505d193d8ea5915e395c9f43e71496ff0ece4f72e3e4ab","signature=Mimikatz; file=mimilove.exe (tag=Mimikatz)",
+"2022-08-22 12:41:13","MalwareBazaar","Lazarus","SHA256","7904072314fdac63da52138a8a6267d4780f2d95ae5d8f9866bf83f6d8e89925","signature=MimiKatz; file=54340fbbdd7571ec8acfd4f2705848f5 (tag=Mimikatz)",""
+"2022-08-02 04:55:06","MalwareBazaar","Lazarus","SHA256","136b4b5f5e1991aa19b6e0d9f538b5fe5516b2f8dfe2877fc77399709db8d175","signature=MimiKatz; file=69.exe (tag=Mimikatz)",""
+"2022-08-02 04:53:36","MalwareBazaar","Lazarus","SHA256","995d25d3a387daf92b91f1f14e815284cf98c43fbebfbad7893f332c8b327494","signature=MimiKatz; file=duli.exe (tag=Mimikatz)",""
+"2022-08-02 04:48:15","MalwareBazaar","Lazarus","SHA256","0a1b1ccd17d08357dcba5be69e2864e61ba06608f352486948d7c3455ac3c8ff","signature=MimiKatz; file=c.exe (tag=Mimikatz)",
+"2022-08-02 04:48:05","MalwareBazaar","Lazarus","SHA256","b72231f6fde54165ef429b80a77c587917919027e4178b4acd96d3f2b576f39d","signature=MimiKatz; file=8756.exe.exe (tag=Mimikatz)",""
+"2022-08-01 17:07:51","MalwareBazaar","Lazarus","SHA256","c5709644b2d656ff7ce9032194adbc111eaefac7cea25c20286480d4b53d4e49","signature=MimiKatz; file=caiji.exe (tag=Mimikatz)",""
+"2022-08-01 17:06:49","MalwareBazaar","Lazarus","SHA256","3ffa75f79ff4f932b9434b61cdc14f3213be3ae9654edd05a5b0ac2b5ba0aa1d","signature=MimiKatz; file=123.exe (tag=Mimikatz)",
+"2022-07-22 17:27:52","MalwareBazaar","Lazarus","SHA256","ede24a9d12a86ea67a1e477f0d61fb9def9505c7efbf5f14b8c765ccfc219c2b","signature=MimiKatz; file=52d180648216ad075cc5ad7f0b19bb39 (tag=Mimikatz)",
+"2022-07-20 04:41:51","MalwareBazaar","Lazarus","SHA256","cacc818c54776b78e4616c93a7248e246334ae0e935f599bd338317b2140cba5","signature=MimiKatz; file=14d31748edea8c23004fafd751abd231 (tag=Mimikatz)",
+"2022-07-20 04:32:19","MalwareBazaar","Lazarus","SHA256","5ac360ca98525579d64d0a8e6278cb0b35bcc9df036d246e4a9fa662771dabb6","signature=MimiKatz; file=6313a14e9db6e2482e8eae7784cee58e (tag=Mimikatz)",""
+"2022-06-25 16:15:03","MalwareBazaar","Lazarus","SHA256","374ae90a613bd61ae357f2ad0a0c61250787d1b2134f5b3dad7946ded5785f54","signature=MimiKatz; file=5810069331b3d5f8bbd840c26ac35776 (tag=Mimikatz)",""
+"2022-06-24 08:38:16","MalwareBazaar","Lazarus","SHA256","86f3b511e1488811dd8d92b4b6085eefc88a2b10d89dcfb6c298244b5f9ff3ac","signature=MimiKatz; file=12.bin (tag=Mimikatz)",""
+"2022-06-21 10:53:09","MalwareBazaar","Lazarus","SHA256","31eb1de7e840a342fd468e558e5ab627bcb4c542a8fe01aec4d5ba01d539a0fc","signature=MimiKatz; file=31eb1de7e840a342fd468e558e5ab627bcb4c542a8fe01aec4d5ba01d539a0fc (tag=Mimikatz)",""
+"2022-06-06 12:55:09","MalwareBazaar","Lazarus","SHA256","5409122ed4854435632036bd0ff599fe1b3c623ab7dbf53926bd9a70f1b67888","signature=MimiKatz; file=5409122ed4854435632036bd0ff599fe1b3c623ab7dbf53926bd9a70f1b67888 (tag=Mimikatz)",""
+"2022-06-06 12:54:57","MalwareBazaar","Lazarus","SHA256","c3b1e2b8a95508b33e4a5fdf7275082a2f2578ccbfd16eca42c30c34837e579d","signature=MimiKatz; file=c3b1e2b8a95508b33e4a5fdf7275082a2f2578ccbfd16eca42c30c34837e579d (tag=Mimikatz)",
+"2022-06-06 12:54:51","MalwareBazaar","Lazarus","SHA256","26b6b6c023e4599f839e7ee26c2d77246bbd178e73b6015859ad130efc280f9b","signature=MimiKatz; file=26b6b6c023e4599f839e7ee26c2d77246bbd178e73b6015859ad130efc280f9b (tag=Mimikatz)",
+"2022-05-28 13:54:42","MalwareBazaar","Lazarus","SHA256","61d451ce5a169591bd4e8633c9030a8afb54027e66dbae6127984caa48bc2568","signature=MimiKatz; file=61D451CE5A169591BD4E8633C9030A8AFB54027E66DBAE6127984CAA48BC2568.exe (tag=Mimikatz)",""
+"2022-05-16 13:27:20","MalwareBazaar","Lazarus","SHA256","c0d82b38ed8596f0d48492cbe4120888476db451bf0b7b8a119f7480dd386fcd","signature=MimiKatz; file=$OiKuCtaCKsk   01.exe (tag=Mimikatz)",""
+"2022-05-16 13:07:13","MalwareBazaar","Lazarus","SHA256","86e69b16379a3aa41a658af413ea71364341da11e2f7d724dcefeac6eaa504ec","signature=MimiKatz; file=点‍击安‍装纸‍飞‍机-简‍体中文语言包 (3).exe (tag=Mimikatz)",
+"2022-05-15 14:14:24","MalwareBazaar","Lazarus","SHA256","6dd8e85c911bff3ca8fb5e3604ed3d719f868107de213afe7aaee16a0df8ba6a","signature=MimiKatz; file=1648816330-a23a9437790a076#igjwoianb.exe (tag=Mimikatz)",""
+"2022-05-05 23:49:56","MalwareBazaar","Lazarus","SHA256","d5ffa8d752453355afb189875f6cb5e5ba4c3f00846573b56d1ca53e8fa9aa29","signature=MimiKatz; file=表姐第一次来我家做客 就来我房间搞卫生 实在忍不住被扒光衣服 猛扎 高清在线观看.com (tag=Mimikatz)",
+"2022-05-05 23:44:10","MalwareBazaar","Lazarus","SHA256","8c8f59d71eb9a0c17dfb1b541ca3b337202f1c8dd288256159417a4cb739d217","signature=MimiKatz; file=хкт╠цШ╣╔.com (tag=Mimikatz)",
+"2022-04-06 13:01:49","MalwareBazaar","Lazarus","SHA256","20fc3cf1afcad9e6f19e9abebfc9daf374909801d874c3d276b913f12d6230ec","signature=MimiKatz; file=20fc3cf1afcad9e6f19e9abebfc9daf374909801d874c3d276b913f12d6230ec (tag=Mimikatz)",""
+"2022-03-26 06:53:28","MalwareBazaar","Lazarus","SHA256","2945881f15e98a18d27108a29963988190853838f34faf3020e6c3c97342672d","signature=njrat; file=5.exe (tag=Mimikatz)",""
+"2022-03-03 07:58:35","MalwareBazaar","Lazarus","SHA256","a5c18a8ba9f44789611b8f2a9f2caaf30bd7d2298505695a8e5f9ff896bf096a","signature=MimiKatz; file=36f89f2fb621a74f956e4fff35b16b63.exe (tag=Mimikatz)",
+"2022-03-03 07:58:32","MalwareBazaar","Lazarus","SHA256","3ca5d47d076e99c312578ef6499e1fa7b9db88551cfc0f138da11105aca7c5e1","signature=MimiKatz; file=7108b0d4021af4c41de2c223319cd4c1.exe (tag=Mimikatz)",""
+"2022-03-02 13:59:48","MalwareBazaar","Lazarus","SHA256","ebce499de915d8837bdbd47be0ac19cd6382d52904951fac75484947dfd88aab","signature=MimiKatz; file=SugarRemote_Client.exe (tag=Mimikatz)",
+"2022-01-13 19:36:40","MalwareBazaar","Lazarus","SHA256","b9ab7e0a5ab8bb14b0846f66df2991688b3fc08aaec97f18475b10ef739849e2","signature=MimiKatz; file=b9ab7e0a5ab8bb14b0846f66df2991688b3fc08aaec97f18475b10ef739849e2 (tag=Mimikatz)",""
+"2022-01-07 08:41:59","MalwareBazaar","Lazarus","SHA256","a50bac9dc3d8ed53ad87c9408bc6f019b83d14555e4c622714b8da5dba8ddd5a","signature=MimiKatz; file=a50bac9dc3d8ed53ad87c9408bc6f019b83d14555e4c622714b8da5dba8ddd5a (tag=Mimikatz)",
+"2022-01-07 08:41:50","MalwareBazaar","Lazarus","SHA256","c39ba723990f9e09ecd5f43562fe5626060450dd290b85670412f5be85c727a9","signature=MimiKatz; file=c39ba723990f9e09ecd5f43562fe5626060450dd290b85670412f5be85c727a9 (tag=Mimikatz)",""
+"2022-01-07 08:41:47","MalwareBazaar","Lazarus","SHA256","8c761b391c1df9bed3a50c21f81b15ccc27b60fd5bb9e25a4bd61788ee5608c0","signature=MimiKatz; file=8c761b391c1df9bed3a50c21f81b15ccc27b60fd5bb9e25a4bd61788ee5608c0 (tag=Mimikatz)",
+"2022-01-07 08:37:14","MalwareBazaar","Lazarus","SHA256","1bd4eeb7f7ae8a4ca1fb2fcf673cbb810ca123d6672a1d6d10ed317688ffcfac","signature=MimiKatz; file=1bd4eeb7f7ae8a4ca1fb2fcf673cbb810ca123d6672a1d6d10ed317688ffcfac (tag=Mimikatz)",""
+"2022-01-07 08:37:12","MalwareBazaar","Lazarus","SHA256","03cf1ab083083cb0b7bc90d18f9f8e3f78504f288daece26bfc0ec96aadd2947","signature=MimiKatz; file=03cf1ab083083cb0b7bc90d18f9f8e3f78504f288daece26bfc0ec96aadd2947 (tag=Mimikatz)",
+"2022-01-07 08:31:06","MalwareBazaar","Lazarus","SHA256","f769926334ff93842429c7eda5c7ba1dedf3fb39a4b7b47decd0cbe7b9454170","signature=MimiKatz; file=Desktop_irtkes.bin (tag=Mimikatz)",""
+"2022-01-06 16:15:41","MalwareBazaar","Lazarus","SHA256","b7435f97f94aec61ae91c051a8395270e492cd48c3214fbb2180fad95b6600bb","signature=MimiKatz; file=09a39fffbd634c54a18ce9897bb0a772 (tag=Mimikatz)",
+"2022-01-04 05:46:19","MalwareBazaar","Lazarus","SHA256","379a5300d2d15df700477c72b9755099a3fc39ed5f7457497612ff06539368ec","signature=MimiKatz; file=379a5300d2d15df700477c72b9755099a3fc39ed5f7457497612ff06539368ec (tag=Mimikatz)",
+"2021-11-23 23:57:26","MalwareBazaar","Lazarus","SHA256","0e7788bda2da25fa8b20310c6cb0618c0a1b989f72006f96526704a6b8c90866","signature=MimiKatz; file=福州美女在缅甸被勒索强迫卖淫视频曝光.com (tag=Mimikatz)",""
+"2021-11-23 23:54:51","MalwareBazaar","Lazarus","SHA256","62b14085994023f524c75bb0078c9bb78c5b0e5d82364b87ca7530c041f0ec5d","signature=MimiKatz; file=“一区”博彩女推广在“菲”被关小黑屋遭电击捆绑轮奸视频.com (tag=Mimikatz)",""
+"2021-11-23 23:52:31","MalwareBazaar","Lazarus","SHA256","af46e5160e837fafd904b62bd81795beefa95ec11d854cedee7565a991210d87","signature=MimiKatz; file=‘迪拜女生’在‘遭缅北佤邦男’猥琐轮奸被虐后电击致死.com (tag=Mimikatz)",
+"2021-11-11 18:54:02","MalwareBazaar","Lazarus","SHA256","5d6231c525666c6204815f4d1447bbad850bed0450c313bdf5a47612271fa539","signature=MimiKatz; file=最新通告来了：境外打算回国人员最好看一下.com (tag=Mimikatz)",
+"2021-11-11 17:19:25","MalwareBazaar","Lazarus","SHA256","1dbdc397481611fefba4b8a8291c7613a7c01de2ba1919299540d3eb40d52e80","signature=MimiKatz; file=【早 中 晚维护客户秘诀话术】.com (tag=Mimikatz)",""
+"2021-11-11 17:18:58","MalwareBazaar","Lazarus","SHA256","1c4d52717bfd4ec045a8fd37e819f92f695c962968d026c5172685c7b4cbba3d","signature=MimiKatz; file=“杀猪盘”女员工惨遭高管鸡奸后卖到灯红酒绿.com (tag=Mimikatz)",""
+"2021-11-11 17:17:59","MalwareBazaar","Lazarus","SHA256","2d948976f2523ace7a4f1f395eb3c62141acbb2523cf34de8e9dbd8f5c5e81f4","signature=MimiKatz; file=天然巨乳韩国BJ小姐姐，奶子甩到你眼睛晕.exe (tag=Mimikatz)",""
+"2021-10-10 15:33:38","MalwareBazaar","Lazarus","SHA256","f63ebd6d6e67793c1f3cb27d146d16b4894149f2ec282bdbff387a5730692b5b","signature=MimiKatz; file=2021.10.09.exe (tag=Mimikatz)",""
+"2021-09-28 23:54:08","MalwareBazaar","Lazarus","SHA256","801f8ffc72692c1c01ce8a492d13e06bc4cf7d1a1cef5ed6e4178e456fa868cb","signature=Mimikatz; file=123.txt (tag=Mimikatz)",""
+"2021-09-22 21:02:34","MalwareBazaar","Lazarus","SHA256","27c6a0334d8c8e806e37654e4180151050cd9b2ab70a8c98c2885c2aedfae400","signature=MimiKatz; file=针对垫付兼职开单十个秘诀.com (tag=Mimikatz)",""
+"2021-09-22 20:55:16","MalwareBazaar","Lazarus","SHA256","f76ff3506a59dd4c5f5544dc5461532288f287ebaba2b9c5915364c7b7019b24","signature=MimiKatz; file=高颜值极品萌妹neko露脸粗大鸡巴搞出大量白浆特写镜头.exe (tag=Mimikatz)",""
+"2021-09-22 01:15:36","MalwareBazaar","Lazarus","SHA256","640ea5a2c4ea4a2d1a5018f446c0b722407e21f2ec5b81ce2986c037e3f11a09","signature=MimiKatz; file=“江西小伙”在“迪“惨遭鸡奸、鞭打、睾丸被切视频.cmd (tag=Mimikatz)",
+"2021-08-28 10:19:56","MalwareBazaar","Lazarus","SHA256","1185fffab4b6b38a31e8b1d5e92fa8f50b7b56ce45ca42f841992735c7d15778","signature=Mimikatz; file=winpe10_8_sergei_strelec_x86_x64_2021.07.21_english.iso (tag=Mimikatz)",
+"2021-05-05 03:08:47","MalwareBazaar","Lazarus","SHA256","863853bdbdb6ed3d644305d866286c1fa25255e62851f3d7bee5f3e2bcefaa98","signature=Mimikatz; file=NFgODbNY.exe (tag=Mimikatz)",""
+"2021-01-30 12:58:10","MalwareBazaar","Lazarus","SHA256","9e562cc5c3eb48a5f1a1ccd29bf4b2ff4ab946f45aa5d8ea170f69104b684023","signature=; file=9e562cc5c3eb48a5f1a1ccd29bf4b2ff4ab946f45aa5d8ea170f69104b684023 (tag=Zinc)",""
+"2021-01-30 12:57:27","MalwareBazaar","Lazarus","SHA256","a4fb20b15efd72f983f0fb3325c0352d8a266a69bb5f6ca2eba0556c3e00bd15","signature=; file=a4fb20b15efd72f983f0fb3325c0352d8a266a69bb5f6ca2eba0556c3e00bd15 (tag=Zinc)",
+"2021-01-30 12:56:45","MalwareBazaar","Lazarus","SHA256","c23f50c8014c190afa14b4c2c9b85512fb3a75405652c9b6be1401f678295f36","signature=; file=c23f50c8014c190afa14b4c2c9b85512fb3a75405652c9b6be1401f678295f36 (tag=Zinc)",""
+"2021-01-30 11:16:29","MalwareBazaar","Lazarus","SHA256","11fef660dec27474c0c6c856a7b4619155821fdd1ce404848513a2700be806a5","signature=; file=11fef660dec27474c0c6c856a7b4619155821fdd1ce404848513a2700be806a5.bin (tag=Zinc)",
+"2021-01-28 19:31:56","MalwareBazaar","Lazarus","SHA256","d85b02b7aeb3e80162911884220f43cfb74ad2ad857a77f183217ed0d02381db","signature=; file=c23f50c8014c190afa14b4c2c9b85512fb3a75405652c9b6be1401f678295f36.7z (tag=Zinc)",
+"2021-01-28 19:31:49","MalwareBazaar","Lazarus","SHA256","6109f84e6f512a5d79733c14cfd42a8578d8a2f0bce9a82f3b2cca87e468f641","signature=; file=a4fb20b15efd72f983f0fb3325c0352d8a266a69bb5f6ca2eba0556c3e00bd15.7z (tag=Zinc)",
+"2021-01-28 19:31:43","MalwareBazaar","Lazarus","SHA256","d01456f259540c06145fb0bfe3c613804662153733e88a098c78a0b07bb1ad4b","signature=; file=11fef660dec27474c0c6c856a7b4619155821fdd1ce404848513a2700be806a5.7z (tag=Zinc)",
+"2021-01-28 19:31:36","MalwareBazaar","Lazarus","SHA256","4738c14e0e6d179cd231b7b7b45235a13b8f1a80aeb28aa59549d6c139c6c0d3","signature=; file=9e562cc5c3eb48a5f1a1ccd29bf4b2ff4ab946f45aa5d8ea170f69104b684023.7z (tag=Zinc)",
+"2021-01-28 19:23:28","MalwareBazaar","Lazarus","SHA256","284df008aa2459fd1e69b1b1c54fb64c534fce86d2704c4d4cc95d72e8c11d6f","signature=; file=284df008aa2459fd1e69b1b1c54fb64c534fce86d2704c4d4cc95d72e8c11d6f (tag=Zinc)",""
+"2021-01-28 19:23:10","MalwareBazaar","Lazarus","SHA256","39ad9ae3780c2f6d41b1897e78f2b2b6d549365f5f024bc68d1fe794b940f9f1","signature=; file=39ad9ae3780c2f6d41b1897e78f2b2b6d549365f5f024bc68d1fe794b940f9f1 (tag=Zinc)",""
+"2021-01-28 19:23:04","MalwareBazaar","Lazarus","SHA256","e0e59bfc22876c170af65dcbf19f744ae560cc43b720b23b9d248f4505c02f3e","signature=; file=e0e59bfc22876c170af65dcbf19f744ae560cc43b720b23b9d248f4505c02f3e (tag=Zinc)",
+"2021-01-28 19:22:57","MalwareBazaar","Lazarus","SHA256","e413e8094d76061f094f8b9339d00d80514065f7d37c184543c0f80c5d51bd80","signature=; file=e413e8094d76061f094f8b9339d00d80514065f7d37c184543c0f80c5d51bd80 (tag=Zinc)",""
+"2021-01-28 19:22:52","MalwareBazaar","Lazarus","SHA256","58a74dceb2022cd8a358b92acd1b48a5e01c524c3b0195d7033e4bd55eff4495","signature=; file=58a74dceb2022cd8a358b92acd1b48a5e01c524c3b0195d7033e4bd55eff4495 (tag=Zinc)",
+"2021-01-28 19:22:44","MalwareBazaar","Lazarus","SHA256","9d5320e883264a80ea214077f44b1d4b22155446ad5083f4b27d2ab5bd127ef5","signature=; file=9d5320e883264a80ea214077f44b1d4b22155446ad5083f4b27d2ab5bd127ef5 (tag=Zinc)",""
+"2021-01-28 19:21:09","MalwareBazaar","Lazarus","SHA256","b32319da446dcf83378ab714f5ad0229dff43c9c6b345b69f1a397c951c1122e","signature=; file=b32319da446dcf83378ab714f5ad0229dff43c9c6b345b69f1a397c951c1122e (tag=Zinc)",
+"2021-01-26 12:38:33","MalwareBazaar","Lazarus","SHA256","4c3499f3cc4a4fdc7e67417e055891c78540282dccc57e37a01167dfe351b244","signature=; file=4c3499f3cc4a4fdc7e67417e055891c78540282dccc57e37a01167dfe351b244 (tag=Zinc)",
+"2021-01-26 12:38:30","MalwareBazaar","Lazarus","SHA256","68e6b9d71c727545095ea6376940027b61734af5c710b2985a628131e47c6af7","signature=; file=68e6b9d71c727545095ea6376940027b61734af5c710b2985a628131e47c6af7 (tag=Zinc)",
+"2021-01-26 12:38:25","MalwareBazaar","Lazarus","SHA256","25d8ae4678c37251e7ffbaeddc252ae2530ef23f66e4c856d98ef60f399fa3dc","signature=; file=25d8ae4678c37251e7ffbaeddc252ae2530ef23f66e4c856d98ef60f399fa3dc (tag=Zinc)",""
+"2021-01-26 12:38:20","MalwareBazaar","Lazarus","SHA256","a75886b016d84c3eaacaf01a3c61e04953a7a3adf38acf77a4a2e3a8f544f855","signature=; file=a75886b016d84c3eaacaf01a3c61e04953a7a3adf38acf77a4a2e3a8f544f855 (tag=Zinc)",
+"2020-11-18 21:33:09","MalwareBazaar","Lazarus","SHA256","b71fc93811b74b31ee4d6d5ab13ed9857947845fdd3366a24007964f00c79212","signature=Mimikatz; file=BetterSafetyKatz.zip (tag=Mimikatz)",
+"2020-08-04 16:27:54","MalwareBazaar","Lazarus","SHA256","52f137c22685d15df043daabdb9c823e07ecec4df42bcc2fa2c5bd45913d32ea","signature=Mimikatz; file=PkV9U.txt (tag=Mimikatz)",
+"2020-08-04 08:42:44","MalwareBazaar","Lazarus","SHA256","a66d1021e54269963e9a54892869d569ffa1c74d9fb1b67f023ea5fdfd90c1a6","signature=Mimikatz; file=PO2008042236.exe (tag=Mimikatz)",
+"2020-04-01 10:31:47","MalwareBazaar","Lazarus","SHA256","c36572664731f058a282fa6f943e48fe80646f6613c3a46f3eee1f4a121b2158","signature=Mimikatz; file=7mxQhQbM.exe (tag=Mimikatz)",""

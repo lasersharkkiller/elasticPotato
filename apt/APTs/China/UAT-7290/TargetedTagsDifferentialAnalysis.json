@@ -1,0 +1,44 @@
+[
+    {
+        "Item_Name":  "spreader",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-03-10"
+    },
+    {
+        "Item_Name":  "64bits",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "assembly",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-03-10"
+    },
+    {
+        "Item_Name":  "pedll",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "detect-debug-environment",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-22"
+    },
+    {
+        "Item_Name":  "via-tor",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-03-10"
+    }
+]

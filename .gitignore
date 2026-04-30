@@ -16,3 +16,6 @@ output-baseline/VirusTotal-main/
 output-baseline/VirusTotal-behaviors/
 output-baseline/Cert_Analysis_Results/
 output-baseline/IntezerStrings/
+
+# Heavy per-APT raw event maps — keep local only, summaries are committed
+apt/**/Targeted_Analysis_Map.csv

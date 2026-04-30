@@ -1,0 +1,464 @@
+[
+    {
+        "Item_Name":  "pdf",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-06-09"
+    },
+    {
+        "Item_Name":  "trojan",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "bat",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-11-26"
+    },
+    {
+        "Item_Name":  "enum-windows",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2024-02-14"
+    },
+    {
+        "Item_Name":  "contains-pe",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  5,
+        "Last_Seen":  "2025-09-25"
+    },
+    {
+        "Item_Name":  "xlsx",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2024-02-14"
+    },
+    {
+        "Item_Name":  "checks-network-adapters",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  8,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "url-pattern",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2024-02-14"
+    },
+    {
+        "Item_Name":  "android",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-11-11"
+    },
+    {
+        "Item_Name":  "ipv4-pattern",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2024-02-14"
+    },
+    {
+        "Item_Name":  "checks-bios",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  10,
+        "Last_Seen":  "2025-06-08"
+    },
+    {
+        "Item_Name":  "upx",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-19"
+    },
+    {
+        "Item_Name":  "docx",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-11-11"
+    },
+    {
+        "Item_Name":  "spreader",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  27,
+        "Last_Seen":  "2025-09-27"
+    },
+    {
+        "Item_Name":  "lnk",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-06-09"
+    },
+    {
+        "Item_Name":  "auto-open",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  20,
+        "Last_Seen":  "2025-11-11"
+    },
+    {
+        "Item_Name":  "64bits",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  26,
+        "Last_Seen":  "2026-01-04"
+    },
+    {
+        "Item_Name":  "irc-communication",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-02-14"
+    },
+    {
+        "Item_Name":  "overlay",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  21,
+        "Last_Seen":  "2026-01-04"
+    },
+    {
+        "Item_Name":  "signed",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  10,
+        "Last_Seen":  "2026-01-04"
+    },
+    {
+        "Item_Name":  "bobsoft",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "download",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  14,
+        "Last_Seen":  "2024-02-14"
+    },
+    {
+        "Item_Name":  "run-dll",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  13,
+        "Last_Seen":  "2024-02-14"
+    },
+    {
+        "Item_Name":  "via-tor",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-03-23"
+    },
+    {
+        "Item_Name":  "persistence",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  19,
+        "Last_Seen":  "2025-11-26"
+    },
+    {
+        "Item_Name":  "powershell",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  16,
+        "Last_Seen":  "2025-06-09"
+    },
+    {
+        "Item_Name":  "apk",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-11-11"
+    },
+    {
+        "Item_Name":  "long-command-line-arguments",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-06-09"
+    },
+    {
+        "Item_Name":  "high-entropy",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-06-09"
+    },
+    {
+        "Item_Name":  "cve-2021-31728",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-04"
+    },
+    {
+        "Item_Name":  "native",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2026-01-04"
+    },
+    {
+        "Item_Name":  "exploit",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-04"
+    },
+    {
+        "Item_Name":  "exe-pattern",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  20,
+        "Last_Seen":  "2025-11-11"
+    },
+    {
+        "Item_Name":  "detect-debug-environment",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  74,
+        "Last_Seen":  "2025-11-26"
+    },
+    {
+        "Item_Name":  "macros",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  20,
+        "Last_Seen":  "2025-11-11"
+    },
+    {
+        "Item_Name":  "doc",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  18,
+        "Last_Seen":  "2024-02-14"
+    },
+    {
+        "Item_Name":  "create-file",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2019-06-20"
+    },
+    {
+        "Item_Name":  "pedll",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  24,
+        "Last_Seen":  "2025-11-26"
+    },
+    {
+        "Item_Name":  "runtime-modules",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  31,
+        "Last_Seen":  "2025-11-11"
+    },
+    {
+        "Item_Name":  "revoked-cert",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  8,
+        "Last_Seen":  "2025-09-28"
+    },
+    {
+        "Item_Name":  "elf",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-07-07"
+    },
+    {
+        "Item_Name":  "direct-cpu-clock-access",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  27,
+        "Last_Seen":  "2025-09-28"
+    },
+    {
+        "Item_Name":  "malware",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  25,
+        "Last_Seen":  "2025-07-31"
+    },
+    {
+        "Item_Name":  "shared-lib",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-07-07"
+    },
+    {
+        "Item_Name":  "create-ole",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  5,
+        "Last_Seen":  "2025-11-11"
+    },
+    {
+        "Item_Name":  "calls-wmi",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  26,
+        "Last_Seen":  "2025-11-14"
+    },
+    {
+        "Item_Name":  "large-file",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-06-09"
+    },
+    {
+        "Item_Name":  "hiding-window",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-06-09"
+    },
+    {
+        "Item_Name":  "nsis",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-28"
+    },
+    {
+        "Item_Name":  "irc",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-02-14"
+    },
+    {
+        "Item_Name":  "idle",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  12,
+        "Last_Seen":  "2025-09-27"
+    },
+    {
+        "Item_Name":  "reflection",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-11-11"
+    },
+    {
+        "Item_Name":  "service-scan",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-02-14"
+    },
+    {
+        "Item_Name":  "executes-dropped-file",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-05-05"
+    },
+    {
+        "Item_Name":  "peexe",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  76,
+        "Last_Seen":  "2026-01-04"
+    },
+    {
+        "Item_Name":  "run-file",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  16,
+        "Last_Seen":  "2025-11-11"
+    },
+    {
+        "Item_Name":  "obfuscated",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-11-11"
+    },
+    {
+        "Item_Name":  "zip",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-09-25"
+    },
+    {
+        "Item_Name":  "long-sleeps",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  63,
+        "Last_Seen":  "2025-11-26"
+    },
+    {
+        "Item_Name":  "suspicious-dns",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2019-02-20"
+    },
+    {
+        "Item_Name":  "invalid-signature",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-07-16"
+    },
+    {
+        "Item_Name":  "checks-user-input",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  26,
+        "Last_Seen":  "2025-11-14"
+    },
+    {
+        "Item_Name":  "self-delete",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2024-02-09"
+    },
+    {
+        "Item_Name":  "create-dir",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  5,
+        "Last_Seen":  "2024-02-14"
+    },
+    {
+        "Item_Name":  "assembly",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  17,
+        "Last_Seen":  "2026-01-04"
+    },
+    {
+        "Item_Name":  "checks-disk-space",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  7,
+        "Last_Seen":  "2025-07-03"
+    }
+]

@@ -1,0 +1,100 @@
+[
+    {
+        "Item_Name":  "Microsoft(R) Windows(R) Operating System (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-06-19"
+    },
+    {
+        "Item_Name":  "????????????; Symantec Class 3 SHA256 Code Signing CA; VeriSign (Verified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-06-14"
+    },
+    {
+        "Item_Name":  "Messenger (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-08-18"
+    },
+    {
+        "Item_Name":  "Unsigned (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-07-05"
+    },
+    {
+        "Item_Name":  "Norton Security (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-12-08"
+    },
+    {
+        "Item_Name":  "wincex.dll (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-02-10"
+    },
+    {
+        "Item_Name":  "Playtech PLC; DigiCert Assured ID Code Signing CA-1; DigiCert (Verified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-07-14"
+    },
+    {
+        "Item_Name":  "DLL Dynamic Link Library (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-02-20"
+    },
+    {
+        "Item_Name":  "Google Chrome (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-07-05"
+    },
+    {
+        "Item_Name":  "Microsoft Office 15 (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-02"
+    },
+    {
+        "Item_Name":  "Loader Dynamic Link Library (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-02-20"
+    },
+    {
+        "Item_Name":  "Advertiso GmbH; GlobalSign CodeSigning CA - SHA256 - G2; GlobalSign Root CA - R3 (Verified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-07-06"
+    },
+    {
+        "Item_Name":  "Microsoft® Windows® Operating System (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  4,
+        "Last_Seen":  "2025-07-06"
+    },
+    {
+        "Item_Name":  "Internet Explorer (Unverified)",
+        "Type":  "Certificate",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-05-05"
+    }
+]

@@ -1,0 +1,23 @@
+[
+    {
+        "Item_Name":  "T1518.001: Uses the \"uname\" system call to query kernel version information (possible evasion)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-30"
+    },
+    {
+        "Item_Name":  "T1518.001: May try to detect the virtual machine to hinder analysis (VM artifact strings found in memory)",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-30"
+    },
+    {
+        "Item_Name":  "T1027: ELF contains segments with high entropy indicating compressed/encrypted content",
+        "Type":  "MITRE Technique",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-30"
+    }
+]

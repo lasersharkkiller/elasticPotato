@@ -1,0 +1,478 @@
+[
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Segment Heap",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\\AppsUseLightTheme",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\WOW6432Node\\Microsoft\\Rpc",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\system\\CurrentControlSet\\control\\NetworkProvider\\ProviderOrder",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\FileSystem\\",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\WOW6432Node\\Microsoft\\OLE\\Tracing",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\AppModel\\Lookaside\\Packages",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\WOW6432Node\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\Srp\\GP\\DLL",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\WOW6432Node\\Policies\\Microsoft\\Windows\\Display",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\loaddll32.exe",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FolderDescriptions\\{F1B32785-6FBA-4FCF-9D55-7B8E7F157091}",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\SessionInfo\\1",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\rundll32.exe",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\NLS\\Language",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\Lsa\\FipsAlgorithmPolicy",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\Nls\\ExtendedLocale",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Ole",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\Session Manager\\AppCertDlls",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Policies\\Microsoft\\Cryptography\\Configuration",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\WOW6432Node\\Microsoft\\LanguageOverlay\\OverlayPackages\\en-US",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\WOW6432Node\\Policies\\Microsoft\\MUI\\Settings",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Nls\\CustomLocale",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FolderDescriptions\\{F1B32785-6FBA-4FCF-9D55-7B8E7F157091}\\PropertyBag",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Disable8And16BitMitigation",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Wow64\\x86",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\MUI\\UILanguages",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\Lsa",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\SafeBoot\\Option",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SYSTEM\\ControlSet001\\Services\\Tcpip\\Parameters\\Interfaces\\{44c728a6-cc3c-434d-b238-e5b6541e3476}",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\WOW6432Node\\Policies\\Microsoft\\Windows\\Safer\\CodeIdentifiers",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\DllNXOptions",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\OLE",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\System\\Setup",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\WOW6432Node\\Policies\\Microsoft\\Windows NT\\Rpc",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\MUI\\UILanguages\\PendingDelete",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\cmd.exe",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SYSTEM\\ControlSet001\\Control\\MUI\\UILanguages\\en-US",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\SideBySide",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\WOW6432Node\\Microsoft\\Windows NT\\CurrentVersion\\Windows",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\WOW6432Node\\Microsoft\\Windows NT\\CurrentVersion\\ProfileList",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows NT\\CurrentVersion\\GRE_Initialize",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\Nls\\Sorting\\Ids",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Ole\\FeatureDevelopmentProperties",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\SessionInfo\\1\\KnownFolders",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\GRE_Initialize\\DisableUmpdBufferSizeCheck",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\Nls\\Sorting\\Versions",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Policies\\Microsoft\\WindowsStore",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\MUI\\Settings\\LanguageConfiguration",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\ComputerName\\ActiveComputerName",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\WOW6432Node\\Microsoft\\Windows NT\\CurrentVersion\\GRE_Initialize",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Explorer\\KnownFolderSettings",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SYSTEM\\ControlSet001\\Services\\Tcpip\\Parameters\\Interfaces\\{d98adca8-3705-4093-b6b0-210b85ca195b}",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\OLEAUT",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\WOW6432Node\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FolderDescriptions",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\GRE_Initialize\\DisableMetaFiles",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\system\\CurrentControlSet\\control\\NetworkProvider\\HwOrder",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Wow64\\x86\\xtajit",
+        "Type":  "Registry Key",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    }
+]

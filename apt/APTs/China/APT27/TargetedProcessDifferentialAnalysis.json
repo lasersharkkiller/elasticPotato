@@ -1,0 +1,2529 @@
+[
+    {
+        "Item_Name":  "C:\\Windows\\system32\\svchost.exe -k DcomLaunch -p",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "\"C:\\Users\\\u003cUSER\u003e\\AppData\\Local\\Temp\\040cbfc95aafb50ef30a.exe\"",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/cp -fR /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "\"C:\\Users\\Public\\cnmpaui.exe\"",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/pe\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "rm -f /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "\"C:\\Windows\\system32\\msiexec.exe\" /I \"C:\\Users\\\u003cUSER\u003e\\Desktop\\2ad3f.msi\" /qb ACCEPTEULA=1 LicenseAccepted=1",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/rm rm -f /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto /usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "\"C:\\Program Files\\Adobe\\Acrobat DC\\Acrobat\\Acrobat.exe\" \"C:\\Users\\user\\Desktop\\No.4638.pdf\"",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/pe\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/cp -fR /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Users\\Elijah\\AppData\\Local\\Temp\\f949b78b040cbfc95aafb50ef30ac31efe44a1f437d51.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "/bin/sh -c rm -f \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/cp -fR /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/Chromium Embedded Framework.framework /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/Chromium Embedded Framework.framework",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto /usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/CodeResources /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/CodeResources ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/MacOS/AdobeReader",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/MacOS/AdobeReader\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "rm -f /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/cp /bin/cp -fR /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/AcroForm.acroplugin/Contents/MacOS/AcroForm ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\SysWOW64\\rundll32.exe rundll32.exe \"C:\\Users\\user\\Desktop\\readme.dll\",NimMain",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  " -v",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "C:\\a6cad2d0f8dc05246846d2a9618fc93b7d97681331d5826f8353e7c3a3206e86.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/Versions/Current ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Program Files\\Google348_1520388372\\bin\\updater.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\ProgramData\\AcroRd32DQe\\AcroRd32.exe 595",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "C:\\Program Files\\Google3124_1698718061\\bin\\updater.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "C:\\Program Files\\Google2812_1288922970\\bin\\updater.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/Assert.app/Contents/MacOS/Assert ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/bin/ditto --rsrc \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/MacOS/AdobeReader\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/MacOS/AdobeReader\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "%TEMP%\\cachedump.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/MacOS/AdobeResourceSynchronizer ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/AcroForm.acroplugin/Contents/MacOS/AcroForm ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/AcroForm.acroplugin/Contents/MacOS/AcroForm\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/AcroForm.acroplugin/Contents/MacOS/AcroForm",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "%SAMPLEPATH%\\c9d5dc956841e000bfd8762e2f0b48b66c79b79500e894b4efa7fb9ba17e4e9e.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-02-04"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\system32\\DllHost.exe /Processid:{AB8902B4-09CA-4BB6-B78D-A8F59079A8D5}",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "\"C:\\Users\\user\\VirtualFile\\LDeviceDetectionHelper.exe\" 481 58",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "/bin/cp /bin/cp -fR /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\System32\\msiexec.exe C:\\Windows\\system32\\msiexec.exe /V",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p -s StorSvc",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/MacOS/RdrCEF",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/Chromium Embedded Framework.framework ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "%SAMPLEPATH%\\4afa5fde76f1f3030cf7dbd12e37b717e1f902ac95c8bdf54a2e58a64faade04.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-02-04"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/Chromium Embedded Framework.framework\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/Accessibility.acroplugin/Contents/MacOS/Accessibility\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto /usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Plugins/Accessibility.acroplugin/Contents/MacOS/Accessibility /Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/Accessibility.acroplugin/Contents/MacOS/Accessibility ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/bin/ditto --rsrc \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/Assert.app/Contents/MacOS/Assert\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/Assert.app/Contents/MacOS/Assert\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\ProgramData\\AcroRd32DQe\\AcroRd32.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/bin/ditto --rsrc \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/MacOS/AdobeResourceSynchronizer ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Program Files\\Google2792_1826800223\\bin\\updater.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-02-04"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/Chromium Embedded Framework.framework\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/Chromium Embedded Framework.framework",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/MacOS/RdrCEF\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/Accessibility.acroplugin/Contents/MacOS/Accessibility ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\system32\\services.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/AcroForm.acroplugin/Contents/MacOS/PMP/AdobePDF417.pmp/Contents/MacOS/AdobePDF417\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/Accessibility.acroplugin/Contents/MacOS/Accessibility ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/MacOS/AdobeReader ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/rm rm -f /Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/pe ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "%USERPROFILE%\\AppData\\Local\\Temp\\servpw64.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "%SAMPLEPATH%\\.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-02-04"
+    },
+    {
+        "Item_Name":  "C:\\ProgramData\\back\\acrotrays.exe -d AAA",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/cp /bin/cp -fR /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/Versions/Current /Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/Versions/Current ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "%SAMPLEPATH%\\fgdump.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/pe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/cp /bin/cp -fR /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/pe /Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/pe ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/cp -fR \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/Versions/Current\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/Versions/Current\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "%SAMPLEPATH%\\F01A9A2D1E31332ED36C1A4D2839F412.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-02-04"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\system32\\svchost.exe -k NetworkService -p -s CryptSvc",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/bin/ditto --rsrc \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Plugins/AcroForm.acroplugin/Contents/MacOS/PMP/AdobePDF417.pmp/Contents/MacOS/AdobePDF417\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/AcroForm.acroplugin/Contents/MacOS/PMP/AdobePDF417.pmp/Contents/MacOS/AdobePDF417\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/rm rm -f /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "${SamplePath}\\f949b78b040cbfc95aafb50ef30ac3e8c16771c6b926b6f8f1efe44a1f437d51.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Plugins/AcroForm.acroplugin/Contents/MacOS/AcroForm /Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/AcroForm.acroplugin/Contents/MacOS/AcroForm",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/Accessibility.acroplugin/Contents/MacOS/Accessibility",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Program Files\\Google1884_494917381\\bin\\updater.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/Assert.app/Contents/MacOS/Assert\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/MacOS/RdrCEF",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "(2596 - y5rynqlg2t.exe) c:\\users\\xxx\\appdata\\local\\temp\\6a7267dc0e5889df7f4b88b8323fb628\\y5rynqlg2t.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/Versions/Current\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "%SAMPLEPATH%\\file.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  4,
+        "Last_Seen":  "2025-02-04"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/AcroForm.acroplugin/Contents/MacOS/PMP/AdobePDF417.pmp/Contents/MacOS/AdobePDF417",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\System32\\loaddll32.exe loaddll32.exe \"C:\\Users\\user\\Desktop\\readme.dll\"",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/pe ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Program Files\\Google1488_1846422281\\bin\\updater.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-02-04"
+    },
+    {
+        "Item_Name":  "/bin/sh -c rm -f \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/Chromium Embedded Framework.framework\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto /usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/bin/ditto --rsrc \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Plugins/AcroForm.acroplugin/Contents/MacOS/AcroForm\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/AcroForm.acroplugin/Contents/MacOS/AcroForm\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\cachedump.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "rm -f /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Users\\Mason\\AppData\\Local\\Temp\\0020745194.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/Versions/Current",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/cp /bin/cp -fR /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/Chromium Embedded Framework.framework /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/Chromium Embedded Framework.framework ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Program Files\\Google3144_954797852\\bin\\updater.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-02-04"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/MacOS/AdobeReader ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/cp -fR \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Plugins/AcroForm.acroplugin/Contents/MacOS/PMP/AdobePDF417.pmp/Contents/MacOS/AdobePDF417 /Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/AcroForm.acroplugin/Contents/MacOS/PMP/AdobePDF417.pmp/Contents/MacOS/AdobePDF417",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/cp -fR \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/Chromium Embedded Framework.framework ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "rm -f /Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/pe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto /usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "\"C:\\Users\\Public\\cnmpaui.exe\" ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "/bin/cp -fR /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/Versions/Current /Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/Versions/Current",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/AcroForm.acroplugin/Contents/MacOS/AcroForm",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/pe ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/MacOS/AdobeResourceSynchronizer",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "\"C:\\Windows\\System32\\rundll32.exe\" \"C:\\Users\\\u003cUSER\u003e\\Desktop\\library.dll\",#1",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/bin/ditto --rsrc \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto /usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "%TEMP%\\servpw.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "%TEMP%\\servpw64.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "/bin/cp /bin/cp -fR /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Program Files\\Google3628_1484785435\\bin\\updater.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-02-04"
+    },
+    {
+        "Item_Name":  "rm -f /Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/Versions/Current",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "%SAMPLEPATH%\\incognito.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/CodeResources",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/MacOS/RdrCEF ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "AcroRd32.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "/bin/rm rm -f /Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/Versions/Current ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/rm rm -f /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/bin/ditto --rsrc \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/MacOS/RdrCEF\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/MacOS/RdrCEF\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\System32\\svchost.exe -k NetworkService -p",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 664 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/CodeResources ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/cp -fR \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "\"C:\\Windows\\System32\\msiexec.exe\" /i \"C:\\Users\\user\\Desktop\\2ad3f.msi\" ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "C:\\Program Files\\Google3264_911187583\\bin\\updater.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-02-04"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto /usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/MacOS/AdobeResourceSynchronizer /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/MacOS/AdobeResourceSynchronizer ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Program Files (x86)\\Google3200_2081937026\\bin\\updater.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "/bin/cp -fR /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Program Files\\Google728_993753196\\bin\\updater.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-02-04"
+    },
+    {
+        "Item_Name":  "C:\\Users\\Elijah\\AppData\\Local\\Temp\\AcroRd32.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Program Files\\Google3008_1387193723\\bin\\updater.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-02-04"
+    },
+    {
+        "Item_Name":  "%SAMPLEPATH%\\9f5f3a9ce156213445d08d1a9ea99356d2136924dc28a8ceca6d528f9dbd718b.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "\"C:\\Windows\\System32\\rundll32.exe\" \"C:\\Users\\\u003cUSER\u003e\\Desktop\\attachment.dll\",#1",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-12-12"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto /usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/Assert.app/Contents/MacOS/Assert /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/Assert.app/Contents/MacOS/Assert ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/rm rm -f /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Plugins/Accessibility.acroplugin/Contents/MacOS/Accessibility /Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/Accessibility.acroplugin/Contents/MacOS/Accessibility",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\System32\\wuapihost.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  8,
+        "Last_Seen":  "2025-03-17"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\system32\\svchost.exe -k UnistackSvcGroup",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto /usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/MacOS/RdrCEF /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/MacOS/RdrCEF ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "\u003cPATH_SAMPLE.EXE\u003e",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/cp -fR \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Users\\\u003cUSER\u003e\\AppData\\Local\\Temp\\servpw64.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/MacOS/AdobeReader\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto /usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c rm -f \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c rm -f \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c rm -f \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/Versions/Current ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Program Files\\Google2556_908673392\\bin\\updater.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-02-04"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto /usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/MacOS/AdobeReader /Applications/Adobe Acrobat Reader DC.app/Contents/MacOS/AdobeReader ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "rm -f /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/MacOS/AdobeReader /Applications/Adobe Acrobat Reader DC.app/Contents/MacOS/AdobeReader",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/Versions/Current\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/Accessibility.acroplugin/Contents/MacOS/Accessibility\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/bin/ditto --rsrc \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/rm rm -f /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/Chromium Embedded Framework.framework ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 664 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/CodeResources",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\pwdump.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/MacOS/RdrCEF ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c rm -f \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/pe\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto /usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto /usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Program Files\\Google3232_778045186\\bin\\updater.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-02-04"
+    },
+    {
+        "Item_Name":  "%SAMPLEPATH%\\a6cad2d0f8dc05246846d2a9618fc93b7d97681331d5826f8353e7c3a3206e86.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "rm -f /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c rm -f \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "%TEMP%\\cachedump64.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/MacOS/AdobeResourceSynchronizer /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/MacOS/AdobeResourceSynchronizer",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "-v",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/cp -fR \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Users\\Mason\\AppData\\Local\\Temp\\WBWqz0Ya4pLJqWatiqQCO.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/Accessibility.acroplugin/Contents/MacOS/Accessibility",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/bin/ditto --rsrc \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\system32\\OpenWith.exe -Embedding",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "/bin/cp -fR /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/MacOS/AdobeResourceSynchronizer\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/Assert.app/Contents/MacOS/Assert",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\Explorer.EXE",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "%USERPROFILE%\\AppData\\Local\\Temp\\pwdump.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/rm rm -f /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Program Files\\Google2940_1996548566\\bin\\updater.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-02-04"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto /usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Plugins/AcroForm.acroplugin/Contents/MacOS/AcroForm /Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/AcroForm.acroplugin/Contents/MacOS/AcroForm ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "\"C:\\Users\\\u003cUSER\u003e\\AppData\\Local\\Temp\\AcroRd32.exe\"",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/bin/ditto --rsrc \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Users\\Mason\\AppData\\Local\\Temp\\AcroRd32.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\SysWOW64\\rundll32.exe rundll32.exe C:\\Users\\user\\Desktop\\readme.dll,HidD_GetHidGuid",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "-x -o C:\\Users\\\u003cUSER\u003e\\Downloads\\127.0.0.1.pwdump -u (null) -p (null) 127.0.0.1",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/bin/ditto --rsrc \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/MacOS/AdobeResourceSynchronizer\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/MacOS/AdobeResourceSynchronizer\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "\"C:\\Users\\\u003cUSER\u003e\\AppData\\Local\\Temp\\software.exe\"",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "%SAMPLEPATH%\\mimikatz.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-03-17"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "\"C:\\Users\\\u003cUSER\u003e\\Desktop\\executable.exe\"",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-03-17"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "\u003cSYSTEM32\u003e\\conhost.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "\"C:\\Program Files (x86)\\Adobe\\Acrobat Reader DC\\Reader\\AcroRd32.exe\" \"C:\\Users\\user\\AppData\\Local\\Temp\\ADSOM-Plus - Meeting Programme.pdf\"",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c rm -f \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/MacOS/AdobeResourceSynchronizer",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Users\\user\\VirtualFile\\LDeviceDetectionHelper.exe 330 80",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "%TEMP%\\pwdump.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "/bin/cp -fR /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/pe /Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/pe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/cp -fR \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/Chromium Embedded Framework.framework\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/Chromium Embedded Framework.framework\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "%USERPROFILE%\\AppData\\Local\\Temp\\cachedump64.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 664 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/CodeResources\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  " -x -o \"C:\\Users\\\u003cUSER\u003e\\Desktop\\127.0.0.1.pwdump\" -u \"(null)\" -p \"(null)\" 127.0.0.1",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "C:\\Users\\user\\AppData\\Local\\ndaEGaj\\LDeviceDetectionHelper.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "acrotrays.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "${SamplePath}\\AcroRd32.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\SysWOW64\\rundll32.exe rundll32.exe \"C:\\Users\\user\\Desktop\\readme.dll\",HidD_GetHidGuid",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/MacOS/RdrCEF\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Program Files\\Google3408_1433773110\\bin\\updater.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-02-04"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\SysWOW64\\rundll32.exe rundll32.exe  \"C:\\Users\\user\\Desktop\\readme.dll\",#1",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "\"C:\\Users\\\u003cUSER\u003e\\Desktop\\file.exe\"",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-02-04"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "${SamplePath}\\9f5f3a9ce156213445d08d1a9ea99356d2136924dc28a8ceca6d528f9dbd718b.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/cp -fR \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/pe\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/pe\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/bin/ditto --rsrc \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "\"C:\\Windows\\system32\\mshta.exe\" \"C:\\Users\\\u003cUSER\u003e\\Desktop\\No.4638.hta\"",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "/bin/cp /bin/cp -fR /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto /usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\SysWOW64\\mshta.exe mshta.exe \"C:\\Users\\user\\Desktop\\No.4638.hta\"",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "%SAMPLEPATH%\\f949b78b040cbfc95aafb50ef30ac3e8c16771c6b926b6f8f1efe44a1f437d51.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/Assert.app/Contents/MacOS/Assert",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\SysWOW64\\rundll32.exe rundll32.exe C:\\Users\\user\\Desktop\\readme.dll,NimMain",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\SysWOW64\\cmd.exe cmd.exe /C rundll32.exe \"C:\\Users\\user\\Desktop\\readme.dll\",#1",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/AcroForm.acroplugin/Contents/MacOS/PMP/AdobePDF417.pmp/Contents/MacOS/AdobePDF417 ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\ProgramData\\back\\acrotrays.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/MacOS/AdobeReader",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c rm -f \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/Versions/Current\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto /usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Plugins/AcroForm.acroplugin/Contents/MacOS/PMP/AdobePDF417.pmp/Contents/MacOS/AdobePDF417 /Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/AcroForm.acroplugin/Contents/MacOS/PMP/AdobePDF417.pmp/Contents/MacOS/AdobePDF417 ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/cp /bin/cp -fR /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/cp -fR \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\system32\\svchost.exe -k LocalService -s W32Time",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/pe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/Assert.app/Contents/MacOS/Assert /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/Assert.app/Contents/MacOS/Assert",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\c9d5dc956841e000bfd8762e2f0b48b66c79b79500e894b4efa7fb9ba17e4e9e.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-02-04"
+    },
+    {
+        "Item_Name":  "C:\\Program Files\\Google1280_552873302\\bin\\updater.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-02-04"
+    },
+    {
+        "Item_Name":  "C:\\Program Files\\Google3012_584322094\\bin\\updater.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-02-04"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/cp /bin/cp -fR /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\system32\\lsass.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-09-04"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/Adobe Crash Reporter.app/Contents/MacOS/Adobe Crash Reporter",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "${SamplePath}\\c9d5dc956841e000bfd8762e2f0b48b66c79b79500e894b4efa7fb9ba17e4e9e.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-02-04"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/bin/ditto --rsrc \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/CodeResources\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/CodeResources\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "rm -f /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/cp -fR /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/bin/ditto --rsrc \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCRDaemon.app/Contents/MacOS/AdobeCRDaemon\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/CodeResources ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/AcroForm.acroplugin/Contents/MacOS/PMP/AdobePDF417.pmp/Contents/MacOS/AdobePDF417\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Frameworks/pe.framework/Versions/Current",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/rm rm -f /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/AdobeCrashReporter ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Users\\Elijah\\AppData\\Local\\Temp\\f01a9a2d1e31332ed36c1a4d2839f412.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-02-04"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/bin/ditto --rsrc \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\System32\\conhost.exe C:\\Windows\\system32\\conhost.exe 0xffffffff -ForceV1",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/MacOS/AdobeResourceSynchronizer\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "rm -f /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/Chromium Embedded Framework.framework",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\System32\\svchost.exe -k LocalService -p -s LicenseManager",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2021-08-02"
+    },
+    {
+        "Item_Name":  "\"C:\\Users\\\u003cUSER\u003e\\Desktop\\software.exe\"",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/AdobeCrashReporter",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/Assert.app/Contents/MacOS/Assert\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/CodeResources /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/CodeResources",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown /usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/Assert.app/Contents/MacOS/Assert ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/bin/ditto --rsrc /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/MacOS/RdrCEF /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/MacOS/RdrCEF",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "\u003cSYSTEM32\u003e\\svchost.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "C:\\Windows\\System32\\UI0Detect.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  5,
+        "Last_Seen":  "2025-02-04"
+    },
+    {
+        "Item_Name":  "C:\\Program Files\\Google3352_601557717\\bin\\updater.exe",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-02-04"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /bin/chmod -h 775 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/AcroForm.acroplugin/Contents/MacOS/AcroForm\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/cp -fR /tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/Current",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "\"C:\\Users\\\u003cUSER\u003e\\AppData\\Local\\Temp\\cachedump64.exe\" -s",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-18"
+    },
+    {
+        "Item_Name":  "\"C:\\Program Files (x86)\\Adobe\\Acrobat Reader DC\\Reader\\AcroCEF\\RdrCEF.exe\" --backgroundcolor=16514043",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-09-20"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/sbin/chown -h \u0027root\u0027:\u0027wheel\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/CodeResources\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/usr/sbin/chown -h root:wheel /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AdobeResourceSynchronizer.app/Contents/Frameworks/AdobeCrashReporter.framework/Resources",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod /bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/AdobeCrashReporter.framework/Versions/A/LogTransport.app/Contents/MacOS/LogTransport ",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/chmod -h 775 /Applications/Adobe Acrobat Reader DC.app/Contents/Helpers/AcroCEF/RdrCEF.app/Contents/Frameworks/Chromium Embedded Framework.framework",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    },
+    {
+        "Item_Name":  "/bin/sh -c /usr/bin/ditto --rsrc \u0027/tmp/com.adobe.acrobat.updater/patchstore/MUI/Application/Adobe Acrobat Reader DC.app/Contents/Plugins/Accessibility.acroplugin/Contents/MacOS/Accessibility\u0027 \u0027/Applications/Adobe Acrobat Reader DC.app/Contents/Plugins/Accessibility.acroplugin/Contents/MacOS/Accessibility\u0027",
+        "Type":  "Process",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-01-08"
+    }
+]

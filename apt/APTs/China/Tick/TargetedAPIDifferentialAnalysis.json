@@ -1,0 +1,2158 @@
+[
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(1720)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetSystemDirectoryW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!WideCharToMultiByte",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(324)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "USER32.dll!GetClientRect",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(3716)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!SetStdHandle",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "USER32.dll!GetSystemMetrics",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetProcessHeap",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MSVCRT.dll!_initterm",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!MultiByteToWideChar",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(2858)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(3826)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-runtime-l1-1-0.dll!_cexit",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetModuleFileNameA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetCurrentProcessId",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-stdio-l1-1-0.dll!fclose",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-runtime-l1-1-0.dll!__p___argv",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!FindFirstFileExA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(6371)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4992)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!VirtualAlloc",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MSVCRT.dll!__dllonexit",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4370)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(5276)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!HeapAlloc",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-stdio-l1-1-0.dll!fflush",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-heap-l1-1-0.dll!free",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-runtime-l1-1-0.dll!_get_initial_narrow_environment",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(2377)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(5303)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!IsValidCodePage",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(5710)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!TlsFree",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetStartupInfoW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!LocalFree",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(5261)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-runtime-l1-1-0.dll!_initialize_narrow_environment",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4435)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4616)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(6372)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!VirtualQuery",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-locale-l1-1-0.dll!_configthreadlocale",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!SetFilePointerEx",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(3917)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(5193)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-runtime-l1-1-0.dll!_register_thread_local_exe_atexit_callback",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!ExitProcess",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetStringTypeW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MSVCRT.dll!wcscat",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetProcAddress",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  4,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-runtime-l1-1-0.dll!_controlfp_s",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(2388)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!Sleep",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!PeekNamedPipe",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-string-l1-1-0.dll!strlen",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4692)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4155)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "USER32.dll!LoadBitmapW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-heap-l1-1-0.dll!realloc",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetCurrentThreadId",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(1089)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-runtime-l1-1-0.dll!_seh_filter_exe",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-time-l1-1-0.dll!clock",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "WS2_32.dll!WSAStartup",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MSVCRT.dll!_except_handler3",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!SetProcessAffinityMask",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "WS2_32.dll!gethostname",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(3592)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!UnhandledExceptionFilter",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "WS2_32.dll!htons",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!LoadLibraryExW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-runtime-l1-1-0.dll!_initterm",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4667)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(470)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!InitializeSListHead",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(1165)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-stdio-l1-1-0.dll!__p__commode",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(823)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "USER32.dll!GetMessageW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetTickCount",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(3566)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(3254)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetSystemTimeAsFileTime",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(3733)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-stdio-l1-1-0.dll!__acrt_iob_func",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "USER32.dll!AppendMenuW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MSVCRT.dll!__wgetmainargs",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!VirtualProtect",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-utility-l1-1-0.dll!qsort",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetACP",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(2406)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(6193)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MSVCRT.dll!_XcptFilter",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "WS2_32.dll!connect",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-string-l1-1-0.dll!strcmp",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetConsoleCP",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!HeapReAlloc",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(795)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4470)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "GDI32.dll!GetStockObject",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "ADVAPI32.dll!CryptImportKey",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "USER32.dll!DrawIcon",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!CreateProcessW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4847)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MSVCRT.dll!__setusermatherr",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-string-l1-1-0.dll!strcpy",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "USER32.dll!GetProcessWindowStation",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(2640)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "USER32.dll!SendMessageW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-stdio-l1-1-0.dll!fseek",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MSVCRT.dll!__p__fmode",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-runtime-l1-1-0.dll!_initialize_onexit_table",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4419)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-runtime-l1-1-0.dll!__p___argc",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4480)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(6051)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4347)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4459)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-runtime-l1-1-0.dll!_configure_narrow_argv",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MSVCRT.dll!__set_app_type",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-stdio-l1-1-0.dll!_set_fmode",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "VCRUNTIME140.dll!_except_handler4_common",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(755)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "VCRUNTIME140.dll!memcpy",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!FreeLibrary",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(3397)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "ADVAPI32.dll!OpenProcessToken",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetFileType",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MSVCRT.dll!__p__commode",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-stdio-l1-1-0.dll!puts",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(5157)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!DeleteCriticalSection",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetCurrentProcess",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(5237)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetModuleHandleExW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!WriteConsoleW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-stdio-l1-1-0.dll!fread",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(6375)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!DeleteFileW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-string-l1-1-0.dll!strncmp",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!SetThreadAffinityMask",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4282)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(1569)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MSVCRT.dll!exit",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(561)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(2504)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "WS2_32.dll!gethostbyname",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(5059)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "WS2_32.dll!send",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4075)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(3142)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4073)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetConsoleMode",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(2506)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetVersionExW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MSVCRT.dll!_onexit",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!FreeEnvironmentStringsW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(3820)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "ADVAPI32.dll!RegOpenKeyExA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-runtime-l1-1-0.dll!_crt_atexit",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!SetLastError",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MSVCRT.dll!_exit",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!Process32FirstW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-runtime-l1-1-0.dll!_set_app_type",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!TlsAlloc",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-runtime-l1-1-0.dll!_register_onexit_function",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!RaiseException",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(5727)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(2980)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "ADVAPI32.dll!CryptAcquireContextA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(2971)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(1634)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-stdio-l1-1-0.dll!fwrite",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "SHELL32.dll!ShellExecuteW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4704)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4831)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "ADVAPI32.dll!RegCloseKey",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-runtime-l1-1-0.dll!terminate",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!MoveFileExA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(3793)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(3744)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetVersion",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!LocalAlloc",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(3658)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!DecodePointer",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "USER32.dll!LoadIconW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(5296)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!RtlUnwind",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(1131)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(2371)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-runtime-l1-1-0.dll!_c_exit",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(800)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "ADVAPI32.dll!RegQueryValueExA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(3341)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "USER32.dll!EnableWindow",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-math-l1-1-0.dll!__setusermatherr",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-stdio-l1-1-0.dll!fopen",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(1767)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(5273)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetProcessAffinityMask",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetCommandLineW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "USER32.dll!IsIconic",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(3076)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-heap-l1-1-0.dll!_set_new_mode",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!LeaveCriticalSection",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!TlsSetValue",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(2613)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!WriteFile",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!IsDebuggerPresent",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!Process32NextW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4401)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(5257)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!CompareStringW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "USER32.dll!PostThreadMessageW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(1143)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(3257)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetLastError",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(3621)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(3825)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!EnterCriticalSection",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-runtime-l1-1-0.dll!_exit",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(540)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetCommandLineA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "WS2_32.dll!inet_ntoa",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!FindClose",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!FlushFileBuffers",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(6370)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!FindNextFileA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetOEMCP",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetCPInfo",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4418)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetModuleHandleW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-stdio-l1-1-0.dll!__stdio_common_vfprintf",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(2116)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!CreateThread",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!LoadLibraryA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  4,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!HeapSize",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "USER32.dll!wsprintfW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "ADVAPI32.dll!CryptEncrypt",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MSVCRT.dll!_controlfp",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "ADVAPI32.dll!CryptDestroyKey",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "WTSAPI32.dll!WTSSendMessageW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4074)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "USER32.dll!GetSystemMenu",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!ReadFile",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "ADVAPI32.dll!CryptDecrypt",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(5285)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!CreateToolhelp32Snapshot",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!TlsGetValue",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4269)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(5286)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MSVCRT.dll!?terminate@@YAXXZ",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MSVCRT.dll!_adjust_fdiv",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!QueryPerformanceCounter",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-string-l1-1-0.dll!strcat",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(2977)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "WS2_32.dll!socket",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.DLL!VirtualFree",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!TerminateProcess",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!HeapFree",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!IsProcessorFeaturePresent",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetModuleHandleA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(5298)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetStdHandle",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(567)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(6048)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(2438)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MSVCRT.dll!_wcmdln",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "USER32.dll!GetUserObjectInformationW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(2047)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "ADVAPI32.dll!CryptReleaseContext",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "USER32.dll!SetTimer",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "VCRUNTIME140.dll!_setjmp3",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(641)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(3074)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4229)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(4621)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!CreatePipe",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetEnvironmentStringsW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(815)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-runtime-l1-1-0.dll!exit",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(825)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MSVCRT.dll!__CxxFrameHandler",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "VCRUNTIME140.dll!memcmp",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!SetEnvironmentVariableA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "ADVAPI32.dll!RegOpenKeyA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(2546)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "VCRUNTIME140.dll!memset",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(2717)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-stdio-l1-1-0.dll!ftell",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!CreateFileW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "WS2_32.dll!closesocket",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(1768)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "PSAPI.DLL!EnumProcessModules",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!InitializeCriticalSectionAndSpinCount",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-heap-l1-1-0.dll!calloc",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MSVCRT.dll!printf",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "ADVAPI32.dll!RegDeleteValueA",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "MFC42u.DLL!Ord(3131)",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "WS2_32.dll!recv",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-heap-l1-1-0.dll!malloc",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!LCMapStringW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!GetModuleFileNameW",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!CloseHandle",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "KERNEL32.dll!SetUnhandledExceptionFilter",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-runtime-l1-1-0.dll!_initterm_e",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    },
+    {
+        "Item_Name":  "api-ms-win-crt-stdio-l1-1-0.dll!fputc",
+        "Type":  "Windows API",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-09-21"
+    }
+]

@@ -1,0 +1,79 @@
+[
+    {
+        "Item_Name":  "Change PowerShell Policies to an Insecure Level - PowerShell",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  5,
+        "Last_Seen":  "2025-02-07"
+    },
+    {
+        "Item_Name":  "System File Execution Location Anomaly",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-06-30"
+    },
+    {
+        "Item_Name":  "Amsi.DLL Load By Uncommon Process",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-03-20"
+    },
+    {
+        "Item_Name":  "Windows Processes Suspicious Parent Directory",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-06-30"
+    },
+    {
+        "Item_Name":  "Uncommon Svchost Parent Process",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-06-30"
+    },
+    {
+        "Item_Name":  "Potentially Suspicious DMP/HDMP File Creation",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-07-01"
+    },
+    {
+        "Item_Name":  "Suspicious Get-WmiObject",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2024-02-17"
+    },
+    {
+        "Item_Name":  "Wow6432Node CurrentVersion Autorun Keys Modification",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-02-03"
+    },
+    {
+        "Item_Name":  "CredUI.DLL Loaded By Uncommon Process",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-06-30"
+    },
+    {
+        "Item_Name":  "Potential Dridex Activity",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-06-30"
+    },
+    {
+        "Item_Name":  "Creation of an Executable by an Executable",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-02-03"
+    }
+]

@@ -1,0 +1,240 @@
+[
+    {
+        "Item_Name":  "html",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-17"
+    },
+    {
+        "Item_Name":  "upx",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-17"
+    },
+    {
+        "Item_Name":  "persistence",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2024-10-17"
+    },
+    {
+        "Item_Name":  "cve-2010-2561",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  4,
+        "Last_Seen":  "2025-09-07"
+    },
+    {
+        "Item_Name":  "direct-cpu-clock-access",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  44,
+        "Last_Seen":  "2026-01-28"
+    },
+    {
+        "Item_Name":  "known-distributor",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2026-01-09"
+    },
+    {
+        "Item_Name":  "checks-disk-space",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2024-10-17"
+    },
+    {
+        "Item_Name":  "detect-debug-environment",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  44,
+        "Last_Seen":  "2026-01-28"
+    },
+    {
+        "Item_Name":  "checks-usb-bus",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2026-01-13"
+    },
+    {
+        "Item_Name":  "contains-embedded-js",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-17"
+    },
+    {
+        "Item_Name":  "calls-wmi",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-17"
+    },
+    {
+        "Item_Name":  "javascript",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-17"
+    },
+    {
+        "Item_Name":  "repeated-clock-access",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-12-03"
+    },
+    {
+        "Item_Name":  "long-sleeps",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  44,
+        "Last_Seen":  "2026-01-13"
+    },
+    {
+        "Item_Name":  "idle",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  36,
+        "Last_Seen":  "2026-01-29"
+    },
+    {
+        "Item_Name":  "service-scan",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-10-17"
+    },
+    {
+        "Item_Name":  "armadillo",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2026-01-28"
+    },
+    {
+        "Item_Name":  "checks-cpu-name",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2024-11-04"
+    },
+    {
+        "Item_Name":  "honeypot",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2024-08-24"
+    },
+    {
+        "Item_Name":  "cve-1999-0016",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-13"
+    },
+    {
+        "Item_Name":  "spreader",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  27,
+        "Last_Seen":  "2026-01-29"
+    },
+    {
+        "Item_Name":  "runtime-modules",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  45,
+        "Last_Seen":  "2026-01-28"
+    },
+    {
+        "Item_Name":  "checks-user-input",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  20,
+        "Last_Seen":  "2025-09-19"
+    },
+    {
+        "Item_Name":  "signed",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  4,
+        "Last_Seen":  "2026-01-13"
+    },
+    {
+        "Item_Name":  "assembly",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  34,
+        "Last_Seen":  "2026-01-09"
+    },
+    {
+        "Item_Name":  "malware",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  14,
+        "Last_Seen":  "2025-09-07"
+    },
+    {
+        "Item_Name":  "exploit",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  5,
+        "Last_Seen":  "2026-01-13"
+    },
+    {
+        "Item_Name":  "overlay",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  17,
+        "Last_Seen":  "2026-01-28"
+    },
+    {
+        "Item_Name":  "attachment",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-12-03"
+    },
+    {
+        "Item_Name":  "pedll",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  7,
+        "Last_Seen":  "2025-03-11"
+    },
+    {
+        "Item_Name":  "elf",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-01-31"
+    },
+    {
+        "Item_Name":  "64bits",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  48,
+        "Last_Seen":  "2026-01-09"
+    },
+    {
+        "Item_Name":  "peexe",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  75,
+        "Last_Seen":  "2026-01-29"
+    },
+    {
+        "Item_Name":  "checks-network-adapters",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  15,
+        "Last_Seen":  "2026-01-28"
+    }
+]

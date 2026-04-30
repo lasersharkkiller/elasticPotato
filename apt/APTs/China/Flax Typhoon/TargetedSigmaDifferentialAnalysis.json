@@ -1,0 +1,177 @@
+[
+    {
+        "Item_Name":  "Non Interactive PowerShell Process Spawned",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2026-01-18"
+    },
+    {
+        "Item_Name":  "Usage Of Web Request Commands And Cmdlets - ScriptBlock",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-23"
+    },
+    {
+        "Item_Name":  "PSScriptPolicyTest Creation By Uncommon Process",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-23"
+    },
+    {
+        "Item_Name":  "System File Execution Location Anomaly",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-06-30"
+    },
+    {
+        "Item_Name":  "Detects initial PowerShell execution by SolarMarker",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-18"
+    },
+    {
+        "Item_Name":  "Set Suspicious Files as System Files Using Attrib.EXE",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-23"
+    },
+    {
+        "Item_Name":  "Uncommon Svchost Parent Process",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-06-30"
+    },
+    {
+        "Item_Name":  "Suspicious DNS Query for IP Lookup Service APIs",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-23"
+    },
+    {
+        "Item_Name":  "CredUI.DLL Loaded By Uncommon Process",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-06-30"
+    },
+    {
+        "Item_Name":  "Change PowerShell Policies to an Insecure Level - PowerShell",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-23"
+    },
+    {
+        "Item_Name":  "Potential Dridex Activity",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-06-30"
+    },
+    {
+        "Item_Name":  "Potential PowerShell Execution Policy Tampering",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-23"
+    },
+    {
+        "Item_Name":  "Hiding Files with Attrib.exe",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-23"
+    },
+    {
+        "Item_Name":  "Powershell Defender Exclusion",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-18"
+    },
+    {
+        "Item_Name":  "Read Contents From Stdin Via Cmd.EXE",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-23"
+    },
+    {
+        "Item_Name":  "Change PowerShell Policies to an Insecure Level",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-23"
+    },
+    {
+        "Item_Name":  "Windows Defender Exclusions Added - PowerShell",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-18"
+    },
+    {
+        "Item_Name":  "Potentially Suspicious DMP/HDMP File Creation",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-07-01"
+    },
+    {
+        "Item_Name":  "Python Image Load By Non-Python Process",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-08-23"
+    },
+    {
+        "Item_Name":  "Windows Processes Suspicious Parent Directory",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-06-30"
+    },
+    {
+        "Item_Name":  "Cmd.EXE Missing Space Characters Execution Anomaly",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-23"
+    },
+    {
+        "Item_Name":  "Potential Python DLL SideLoading",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-08-23"
+    },
+    {
+        "Item_Name":  "Suspicious Script Execution From Temp Folder",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-10-23"
+    },
+    {
+        "Item_Name":  "Load Of RstrtMgr.DLL By An Uncommon Process",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2026-01-18"
+    },
+    {
+        "Item_Name":  "Amsi.DLL Load By Uncommon Process",
+        "Type":  "Sigma Rule",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2025-03-20"
+    }
+]

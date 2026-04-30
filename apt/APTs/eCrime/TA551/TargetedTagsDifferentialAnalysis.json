@@ -1,0 +1,135 @@
+[
+    {
+        "Item_Name":  "64bits",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-03-24"
+    },
+    {
+        "Item_Name":  "persistence",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "detect-debug-environment",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  7,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "direct-cpu-clock-access",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "peexe",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  5,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "assembly",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "checks-network-adapters",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-02-27"
+    },
+    {
+        "Item_Name":  "pedll",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2023-04-25"
+    },
+    {
+        "Item_Name":  "overlay",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  4,
+        "Last_Seen":  "2023-03-24"
+    },
+    {
+        "Item_Name":  "revoked-cert",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2021-05-15"
+    },
+    {
+        "Item_Name":  "executes-dropped-file",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2021-05-15"
+    },
+    {
+        "Item_Name":  "long-sleeps",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  7,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "checks-user-input",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  2,
+        "Last_Seen":  "2024-05-14"
+    },
+    {
+        "Item_Name":  "spreader",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  6,
+        "Last_Seen":  "2025-04-04"
+    },
+    {
+        "Item_Name":  "pdf",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-02-27"
+    },
+    {
+        "Item_Name":  "calls-wmi",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2024-05-14"
+    },
+    {
+        "Item_Name":  "one",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  1,
+        "Last_Seen":  "2023-02-17"
+    },
+    {
+        "Item_Name":  "signed",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  4,
+        "Last_Seen":  "2023-03-24"
+    },
+    {
+        "Item_Name":  "runtime-modules",
+        "Type":  "VT Tag",
+        "Baseline_Rarity_Score":  100,
+        "Malicious_Count":  3,
+        "Last_Seen":  "2025-04-04"
+    }
+]

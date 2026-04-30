@@ -1,0 +1,14 @@
+﻿"Date","Source","Actor","IOCType","IOCValue","Context","Link"
+"2025-10-07 12:20:36","MalwareBazaar","UAT-8099","SHA256","0afa8830d2c664a192af94b638ab6b1c096d13e41a7f1886b71ff020e0d9bd93","signature=; file=0afa8830d2c664a192af94b638ab6b1c096d13e41a7f1886b71ff020e0d9bd93 (tag=UAT-8099)",""
+"2025-10-07 12:11:52","MalwareBazaar","UAT-8099","SHA256","0511345f452e8c5ff2ca903553ba72f4fcb4f029f72b12e27f6a33e33977e5d2","signature=; file=0511345f452e8c5ff2ca903553ba72f4fcb4f029f72b12e27f6a33e33977e5d2.bin.sample (tag=UAT-8099)",
+"2024-09-08 00:41:04","MalwareBazaar","UAT-8099","SHA256","a5fc4afd2d4c753aaacd77bdfcfcbd30537c8113a7a8d9c47856366eb77e1443","signature=; file=sbscmp40.dll (tag=BadIIS)",""
+"2024-09-08 00:40:51","MalwareBazaar","UAT-8099","SHA256","6c75e6a3fd8ab21468cc3b527a0d312a29a06f81c054f550a2b1ba8f6a0ffdd7","signature=; file=sbscmp30.dll (tag=BadIIS)",
+"2024-09-08 00:40:37","MalwareBazaar","UAT-8099","SHA256","0c8082ef001e114bf62dc21d687ef0d3b0b22683b69d369c58da05e95db92f29","signature=; file=HttpResetModule.dll (tag=BadIIS)",""
+"2024-09-08 00:40:25","MalwareBazaar","UAT-8099","SHA256","47c878c88823bf3f8425fc1e671781c1b977b18f0f1a6d5b8982313c815517dd","signature=; file=64HttpResetModule.dll (tag=BadIIS)",""
+"2024-09-08 00:40:08","MalwareBazaar","UAT-8099","SHA256","e06389e610d1b7a4f623ec6161430315e5b63a6a65e001144972dbeb9ba5de83","signature=; file=sbscmp30.dll (tag=BadIIS)",
+"2024-09-08 00:39:55","MalwareBazaar","UAT-8099","SHA256","06b1ccc90d86fb20b0432306d68466b4713c9eaa85d545c04fcc580162720b60","signature=; file=HttpResetModule.dll (tag=BadIIS)",""
+"2024-08-05 18:27:46","MalwareBazaar","UAT-8099","SHA256","a056fa033e4bc469d89054f2d2af373c7975b555d833bd66d209df8367fe3d33","signature=; file=a056fa033e4bc469d89054f2d2af373c7975b555d833bd66d209df8367fe3d33 (tag=BadIIS)",
+"2024-08-05 18:27:35","MalwareBazaar","UAT-8099","SHA256","9605c78cdd209e34080857fd62b04688b562450c9911ffd697462a56fee1459b","signature=; file=9605c78cdd209e34080857fd62b04688b562450c9911ffd697462a56fee1459b (tag=BadIIS)",
+"2024-08-05 17:19:45","MalwareBazaar","UAT-8099","SHA256","cfa7bebd2482201fed8918f8bf911dd222e79ff286a62a7a4cdfec2ae20283c7","signature=; file=cfa7bebd2482201fed8918f8bf911dd222e79ff286a62a7a4cdfec2ae20283c7 (tag=BadIIS)",
+"2024-08-05 17:19:39","MalwareBazaar","UAT-8099","SHA256","492ff42581db27d067f6f3c87ff5e53e1669e1b4050727fcbb5c7f3b13819522","signature=; file=492ff42581db27d067f6f3c87ff5e53e1669e1b4050727fcbb5c7f3b13819522 (tag=BadIIS)",""
+"2024-08-05 17:19:32","MalwareBazaar","UAT-8099","SHA256","f270b101c1d73f135a68da2d7ed1c9c8f5002e527fd9f39df6a0a341e52ec429","signature=; file=f270b101c1d73f135a68da2d7ed1c9c8f5002e527fd9f39df6a0a341e52ec429 (tag=BadIIS)",""
