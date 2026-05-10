@@ -1,8 +1,9 @@
 function Get-ElasticForensicLongTailAnalysis {
     <#
     .SYNOPSIS
-        Performs long tail forensic analysis against Elastic/ECS telemetry,
-        mirroring the SentinelOne Get-ForensicLongTailAnalysis workflow.
+        Performs long tail forensic analysis against Elastic/ECS telemetry
+        to surface rare artifacts that appear on a target host but are
+        uncommon enterprise-wide.
 
         For each artifact category, finds what occurred on the target host
         then cross-references against the enterprise to surface only items
@@ -11,7 +12,7 @@ function Get-ElasticForensicLongTailAnalysis {
 
     .PARAMETER RarityThreshold
         Maximum number of unique hosts an artifact can appear on enterprise-wide
-        and still be considered rare. Default: 50 (matches S1 version).
+        and still be considered rare. Default: 50.
     #>
 
     param(
@@ -274,7 +275,7 @@ function Get-ElasticForensicLongTailAnalysis {
     # ---------------------------------------------------------
     # HELPER: Get-RareArtifacts
     #
-    # Two-phase approach mirroring the S1 join logic:
+    # Two-phase approach:
     #   Phase A - get the set of values seen on the target host
     #   Phase B - for each of those values, count unique hosts
     #             enterprise-wide; keep only those below threshold
@@ -353,10 +354,10 @@ function Get-ElasticForensicLongTailAnalysis {
 
     # ---------------------------------------------------------
     # ARTIFACT DEFINITIONS
-    # Each entry mirrors a query in the S1 version.
+    # Each entry defines a rare-artifact query.
     # HostFilter    = event type scope for the target host
     # EnterpriseFilter = event type scope enterprise-wide
-    # AggField      = ECS field equivalent to S1 column
+    # AggField      = ECS field aggregated for rarity check
     # ---------------------------------------------------------
     $artifacts = [ordered]@{
 

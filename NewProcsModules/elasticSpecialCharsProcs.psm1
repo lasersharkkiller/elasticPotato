@@ -70,7 +70,7 @@ function Get-ElasticSpecialCharsProcs {
                 $data = Get-Content $Path | ConvertFrom-Json
                 foreach ($entry in $data) {
                     # Support both new Elastic baseline format (Sha256 property)
-                    # and old S1 baseline format (value array, SHA256 at index 2)
+                    # and legacy baseline format (value array, SHA256 at index 2)
                     if ($entry.Sha256)       { [void]$set.Add($entry.Sha256) }
                     elseif ($entry.value[2]) { [void]$set.Add($entry.value[2]) }
                 }
@@ -126,7 +126,7 @@ function Get-ElasticSpecialCharsProcs {
     # =========================================================
     # PHASE 1: QUERY - processes with non-ASCII publisher names
     #
-    # S1 query: src.process.publisher matches '[^\x00-\x7F]'
+    # ECS query: process.code_signature.subject_name matches '[^\x00-\x7F]'
     #
     # Elastic equivalent: use a script query to check whether
     # the publisher field contains any character with code > 127.
@@ -215,7 +215,7 @@ return false;
 
     # =========================================================
     # PHASE 2: DIFFERENTIAL against both baselines
-    # S1 checks unverifiedProcsBaseline + signedVerifiedProcsBaseline
+    # Checks unverifiedProcsBaseline + signedVerifiedProcsBaseline
     # =========================================================
     Write-Host "`nPhase 2: Diffing against baselines..." -ForegroundColor DarkCyan
 
@@ -252,7 +252,7 @@ return false;
         Write-Host "  SHA256    : $($proc.Sha256)"
         Write-Host "  Verified  : $($proc.VerifiedStatus) | Signed: $($proc.SignedStatus)"
 
-        # Route to correct baseline - mirrors S1 logic
+        # Route to correct baseline based on signature/verification status
         $targetBaseline = if ($proc.VerifiedStatus -eq "false") {
             "output\unverifiedProcsBaseline.json"
         } else {

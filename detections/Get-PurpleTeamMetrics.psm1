@@ -126,7 +126,7 @@ function Get-PurpleTeamMetrics {
         'bing\.com','msn\.com','live\.com','msftconnecttest','gvt','googleapis',
         'gstatic','akamai','windowsupdate','visualstudio','github','ocsp\.',
         'pki\.','crl\.','ctldl\.','smartscreen','sophosxl','trendmicro',
-        'kaspersky','mcafee','cylance','sentinelone','crowdstrike'
+        'kaspersky','mcafee','cylance','crowdstrike'
     )
     $knownGoodPattern = ($knownGoodDomains -join '|')
 

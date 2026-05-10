@@ -1,7 +1,7 @@
 function Get-ElasticProcessBaseline {
     <#
     .SYNOPSIS
-        Elastic equivalent of the S1 process baselining suite.
+        Process baselining suite for Elastic/ECS telemetry.
         Covers four workflows:
           1. Unverified processes  (code_signature.trusted = false)
           2. Unsigned processes    (code_signature.exists = false, Win + Linux)
@@ -26,7 +26,7 @@ function Get-ElasticProcessBaseline {
 
     .PARAMETER BaselineDays
         How far back the Baseline query looks when no baseline file exists. Default: 37 days ago
-        to 30 days ago (matching S1 version).
+        to 30 days ago.
     #>
 
     param(
@@ -335,7 +335,6 @@ function Get-ElasticProcessBaseline {
 
     # --------------------------------------------------
     # WORKFLOW: Unverified Processes
-    # S1: src.process.verifiedStatus = 'unverified'
     # ECS: process.code_signature.trusted = false
     # --------------------------------------------------
     if ($Mode -eq "UnverifiedProcs") {
@@ -365,7 +364,6 @@ function Get-ElasticProcessBaseline {
 
     # --------------------------------------------------
     # WORKFLOW: Unsigned Processes (Windows or Linux)
-    # S1: src.process.signedStatus = 'unsigned' and endpoint.os = '$os'
     # ECS: process.code_signature.exists = false + host.os.family
     # --------------------------------------------------
     if ($Mode -in @("UnsignedWin","UnsignedLinux")) {
@@ -398,7 +396,7 @@ function Get-ElasticProcessBaseline {
 
     # --------------------------------------------------
     # WORKFLOW: New Windows Publishers
-    # S1: signedStatus=signed, verifiedStatus=verified, endpoint.os=windows
+    # ECS: code_signature.signed=true, code_signature.trusted=true, host.os.family=windows
     # Step 1: find unique publishers in recent that are NOT in baseline publisher list
     # Step 2: for each new publisher, drill into their specific hashes
     # --------------------------------------------------
@@ -489,7 +487,6 @@ function Get-ElasticProcessBaseline {
 
     # --------------------------------------------------
     # WORKFLOW: Drivers (not marked benign/clean)
-    # S1: driver.loadVerdict not in (BENIGN, EXCLUDED)
     # ECS: event.category=driver + event.action=load
     #      exclude where process.code_signature.trusted=true AND no detections
     # Note: Elastic Endpoint stores driver load events; filter out known-good
@@ -579,7 +576,6 @@ function Get-ElasticProcessBaseline {
 
     # --------------------------------------------------
     # WORKFLOW: Specific Process
-    # S1: query by src.process.name, check all four baselines for SHA256
     # ECS: query by process.name, check all four baseline files
     # --------------------------------------------------
     if ($Mode -eq "SpecificProc") {
