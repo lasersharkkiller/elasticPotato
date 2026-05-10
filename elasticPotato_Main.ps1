@@ -46,6 +46,10 @@ Import-Module -Name ".\NewProcsModules\elasticProcessBaseline.psm1"
 # Elastic detonation logs used by Group 4
 Import-Module -Name ".\purpleTeaming\GetElasticDetonationLogs.psm1" -ErrorAction SilentlyContinue
 
+# Detection cache refreshers (called by 4f and as standalone 4g/4h)
+Import-Module -Name ".\detections\Update-LolDriversCache.psm1"
+Import-Module -Name ".\detections\Update-ElasticYaraRules.psm1"
+
 # Connectivity check
 try {
     $ping = Test-Connection -ComputerName "8.8.8.8" -Count 1 -Quiet
@@ -88,6 +92,8 @@ Write-Host "4c) [AI Agent] Elastic Alert Triage (Linux)   - Offline Forensic Ana
 Write-Host "4d) Pull Elastic Logs from Detonation Window" -ForegroundColor DarkRed
 Write-Host "4e) Run IOC/YARA Scanner Against Downloaded Malicious Files (Thor/Loki auto-detect)" -ForegroundColor DarkRed
 Write-Host "4f) [AI Agent] Offline Analysis + IOC/YARA Scan (Windows)" -ForegroundColor DarkRed
+Write-Host "4g) Update LOL Drivers Cache (loldrivers.io + LOLDrivers Sigma + SigmaHQ)" -ForegroundColor DarkRed
+Write-Host "4h) Update Elastic YARA Rules (elastic/protections-artifacts -> detections\yara\)" -ForegroundColor DarkRed
 Write-Host ""
 
 # -- GROUP 5: Elastic Baseline (was Group 12 in Loaded-Potato) ----------------
@@ -216,7 +222,20 @@ elseif ($functionChoice -eq "4e") {
     Write-Host "Option 4e is unavailable (Invoke-LokiScan module removed)." -ForegroundColor Yellow
 }
 elseif ($functionChoice -eq "4f") {
-    Write-Host "Option 4f is unavailable (detection-pack refresh modules removed)." -ForegroundColor Yellow
+    $chosenDir = (Read-Host "[?] Enter full path to detonation log directory").Trim()
+    if ($chosenDir -and (Test-Path $chosenDir)) {
+        Update-ElasticYaraRules
+        Update-LolDriversCache
+        Invoke-ElasticAlertAgentAnalysis -DetonationLogsDir $chosenDir
+    } else {
+        Write-Host "Path not found or not specified: $chosenDir" -ForegroundColor Red
+    }
+}
+elseif ($functionChoice -eq "4g") {
+    Update-LolDriversCache
+}
+elseif ($functionChoice -eq "4h") {
+    Update-ElasticYaraRules
 }
 
 # -- GROUP 5: Elastic Baseline (was Group 12 in Loaded-Potato) ----------------
