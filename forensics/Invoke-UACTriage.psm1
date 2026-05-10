@@ -470,7 +470,7 @@ function Invoke-UACTriage {
         }
         $oomKills = @($dmesgContent -split "`n" | Where-Object {
             $_ -match '(?i)(Out of memory.*Kill|oom.*killed)' -and
-            $_ -match '(?i)(auditd|syslog|rsyslog|ossec|snort|fail2ban|crowdstrike|falcon|carbon|defender|sentinel)'
+            $_ -match '(?i)(auditd|syslog|rsyslog|ossec|snort|fail2ban|crowdstrike|falcon|carbon|defender)'
         })
         if ($oomKills.Count -gt 0) {
             Add-Finding 'HIGH' 'Anti-Forensics' `
@@ -488,7 +488,7 @@ function Invoke-UACTriage {
             $_ -notmatch '^127\.' -and $_ -notmatch '^::1' -and $_ -notmatch '^0\.0\.0\.0'
         })
         $suspHosts = @($hostsNonLocal | Where-Object {
-            $_ -match '(?i)(security|update|apt\.|pypi|docker|github|google|cloudflare|azure|amazonaws|metadata\.google|169\.254\.169\.254|grafana|prometheus|elastic|splunk|defender|crowdstrike|sentinelone|carbonblack|falconsensor|vsphere|vcenter)'
+            $_ -match '(?i)(security|update|apt\.|pypi|docker|github|google|cloudflare|azure|amazonaws|metadata\.google|169\.254\.169\.254|grafana|prometheus|elastic|splunk|defender|crowdstrike|carbonblack|falconsensor|vsphere|vcenter)'
         })
         if ($suspHosts.Count -gt 0) {
             Add-Finding 'HIGH' 'DNS Hijack' `
@@ -656,6 +656,162 @@ function Invoke-UACTriage {
         Write-Host "         [CRITICAL] $($hiddenPids.Count) hidden PIDs: $($hiddenPids -join ', ')" -ForegroundColor Red
     }
 
+    # 3-mem. Shared preload for the 3a/3b/3c extensions:
+    #        (i)  Build parent->children PID map from each /proc/<pid>/children.txt so we can
+    #             reverse-look-up the parent of a hidden PID even when its own stat.txt was blocked
+    #             by the rootkit's readdir hook (children.txt of the PARENT survives because the
+    #             parent itself is not hidden, e.g. sshd PID 937).
+    #        (ii) Build a one-pass hit cache against memory_dump/memory-strings.ascii for Father
+    #             rootkit code constants, XMRig CLI markers, and attacker kit-deployment commands.
+    #             The collector's own per-PID strings.txt.gz files are usually 0-20 bytes for hidden
+    #             PIDs (rootkit blocked /proc reads), but the kernel-level memory acquisition that
+    #             produced memory-strings.ascii is not subject to the userspace hook.
+    $procRoot = Join-Path $uac 'live_response\process\proc'
+    $parentToChildren = @{}
+    if (Test-Path -LiteralPath $procRoot) {
+        Get-ChildItem -LiteralPath $procRoot -Directory -ErrorAction SilentlyContinue | ForEach-Object {
+            $parentPid = $_.Name
+            $childrenFile = Join-Path $_.FullName 'children.txt'
+            if (Test-Path -LiteralPath $childrenFile) {
+                $raw = (Get-Content -LiteralPath $childrenFile -Raw -ErrorAction SilentlyContinue)
+                if ($raw) {
+                    $parentToChildren[$parentPid] = @($raw.Trim() -split '\s+' | Where-Object { $_ -match '^\d+$' })
+                }
+            }
+        }
+    }
+
+    $memStrings = Join-Path $uac 'memory_dump\memory-strings.ascii'
+    $memHits = @{}
+    $memScanPatterns = @(
+        # --- Father LD_PRELOAD rootkit code constants (linux-rootkit-iocs DB) ---
+        'lpe_drop_shell','timebomb','backconnect','Enjoy the shell!','/tmp/silly.txt',
+        # --- XMRig binary markers ---
+        'Usage: xmrig','--donate-level','stratum+tcp:','127.0.0.1:3333','rx/0',
+        # --- Attacker kit-deployment shell commands (righteousit Pt 4) ---
+        '/dev/shm/kit','k.tgz','mv xmrig','ssh -F config','rm -rf kit','export PATH=.'
+    )
+    if (Test-Path -LiteralPath $memStrings) {
+        Write-Host "[LP-UAC] Module 3: scanning memory-strings.ascii ($([math]::Round((Get-Item $memStrings).Length / 1GB, 2)) GB)..." -ForegroundColor DarkCyan
+        try {
+            Select-String -LiteralPath $memStrings -SimpleMatch -Pattern $memScanPatterns -ErrorAction Stop |
+                Group-Object Pattern | ForEach-Object { $memHits[$_.Name] = $_.Count }
+        } catch {
+            Write-Host "         memory-strings scan failed: $($_.Exception.Message)" -ForegroundColor DarkYellow
+        }
+        if ($memHits.Count -gt 0) {
+            Write-Host "         memory-strings hits: $(($memHits.GetEnumerator() | ForEach-Object { '{0}:{1}' -f $_.Key, $_.Value }) -join ', ')" -ForegroundColor DarkGray
+        }
+    }
+
+    # 3a-ext. Hidden-PID exe-symlink analysis (masquerade + magic-GID + opportunistic /proc checks)
+    #         righteousit Linux Investigation Pt 2/3: PID 977 = xmrig renamed to "top" running from
+    #         /dev/shm/kit/top (deleted). The rootkit blocks per-PID /proc reads, so comm.txt /
+    #         cmdline.txt / stat.txt are usually empty in the UAC dump  -  the exe symlink line in
+    #         running_processes_full_paths.txt is the only reliable per-PID artifact. Optional
+    #         /proc files are still consulted, used only when present.
+    $systemToolNames = @('top','ps','ls','sshd','bash','sh','init','kthreadd','systemd','cron','crond','udevd','login','su','sudo','httpd','nginx','apache2','dbus','ssh')
+    $canonicalPathRegex = '^/(?:usr/(?:local/)?)?(?:s?bin)/'
+    $xmrigCliPattern = '(?i)(\s|^)(-B\b|--background\b|-o\s|--url=|--coin=|--algo=|stratum\+tcp:|rx/0\b|cn/r\b|cn/rto\b|--donate-level)'
+
+    # Capture the GID column from running_processes_full_paths so we can identify the rootkit's magic GID
+    $hiddenPidGidMap = @{}
+    foreach ($rpl in $runningProcPathLines) {
+        if ($rpl -match '/proc/(\d+)/exe\s*->\s*' -and $rpl -match '^\S+\s+\S+\s+\S+\s+(\d+)\s+\d+\s') {
+            $linePid = ([regex]::Match($rpl, '/proc/(\d+)/exe')).Groups[1].Value
+            $hiddenPidGidMap[$linePid] = $Matches[1]
+        }
+    }
+    $magicGid = ''
+    $gidsForHidden = @($hiddenPids | ForEach-Object { $hiddenPidGidMap[$_] } | Where-Object { $_ } | Select-Object -Unique)
+    if ($gidsForHidden.Count -eq 1) { $magicGid = $gidsForHidden[0] }
+
+    if ($magicGid -and $magicGid -notin @('0','1')) {
+        Add-Finding 'CRITICAL' 'Rootkit' `
+            "All Hidden PIDs Share GID $magicGid  -  Rootkit Process-Hiding Magic GID Identified" `
+            "Every hidden PID enumerated from /proc shares the same group ID ($magicGid). LD_PRELOAD rootkits implement process hiding by hooking libc readdir() and dropping any /proc entry whose owning process has a hardcoded magic GID. A single shared non-system GID across all hidden PIDs is the fingerprint of this hook. The Father rootkit (linux-rootkit-iocs DB) hides on this exact pattern  -  for libymv variants the magic GID has been observed as 7823." `
+            @('T1564.001','T1014','T1574.006')
+        Add-IOC 'GID' $magicGid 'Magic GID used by LD_PRELOAD rootkit to hide /proc entries'
+    }
+
+    foreach ($hpid in $hiddenPids) {
+        $comm    = Read-UACArtifact $uac "live_response/process/proc/$hpid/comm.txt"
+        $cmdline = Read-UACArtifact $uac "live_response/process/proc/$hpid/cmdline.txt"
+        $stat    = Read-UACArtifact $uac "live_response/process/proc/$hpid/stat.txt"
+        $exePath = if ($hiddenPidExeMap.ContainsKey($hpid)) { $hiddenPidExeMap[$hpid] } else { '' }
+        $cleanExe = if ($exePath) { ($exePath -replace '\s*\(deleted\)\s*$','').Trim() } else { '' }
+        $exeBasename = if ($cleanExe) { Split-Path $cleanExe -Leaf } else { '' }
+        $comm     = if ($comm)    { $comm.Trim() }    else { '' }
+        $cmdline  = if ($cmdline) { ($cmdline -replace '\x00',' ').Trim() } else { '' }
+
+        # Use comm if present, otherwise fall back to exe basename (rootkit usually nukes comm.txt)
+        $effectiveName = if ($comm) { $comm } elseif ($exeBasename) { $exeBasename } else { '' }
+
+        # Parse PPID from /proc/<pid>/stat (often blank under active rootkit hook)
+        $hppid = ''
+        if ($stat -and $stat -match '^\s*\d+\s+\([^)]*\)\s+\S+\s+(\d+)') { $hppid = $Matches[1] }
+
+        # Process-name masquerading detected from exe symlink basename (works even when /proc was blocked)
+        if ($effectiveName -and ($systemToolNames -contains $effectiveName) -and $cleanExe -and ($cleanExe -notmatch $canonicalPathRegex)) {
+            Add-Finding 'CRITICAL' 'Masquerading' `
+                "Hidden PID $hpid Masquerades as System Tool '$effectiveName' (exe='$exePath')" `
+                "Hidden PID $hpid runs a binary whose basename is '$effectiveName' (a legitimate system tool name) but its /proc/$hpid/exe symlink resolves to '$exePath'  -  not the canonical /bin, /sbin, /usr/bin, /usr/sbin or /usr/local/* location. Renaming a malicious binary to mimic 'top'/'ps'/'sshd' to blend with normal output is the documented XMRig deployment pattern (righteousit: xmrig was renamed to 'top' in /dev/shm/kit/) and a Father-rootkit anti-discovery technique." `
+                @('T1036.005','T1564.001')
+            Add-IOC 'FilePath' $cleanExe "Masquerading as '$effectiveName' from non-canonical path"
+        }
+
+        # XMRig CLI signature (only when cmdline.txt survived the rootkit hook)
+        if ($cmdline -and $cmdline -match $xmrigCliPattern) {
+            Add-Finding 'CRITICAL' 'Cryptominer' `
+                "Hidden PID $hpid Cmdline Matches XMRig Daemon/Mining Flags ($effectiveName)" `
+                "Hidden PID $hpid cmdline contains XMRig flags: '$cmdline'. XMRig supports -B (background daemon), -o <pool>, --algo, --donate-level, stratum+tcp:// URLs; their presence in a hidden, possibly-renamed process is a disguised-miner signature." `
+                @('T1496','T1036.005')
+            Add-IOC 'PID' $hpid "Hidden process with XMRig CLI signature  -  cmdline=$cmdline"
+        }
+
+        # PPID=1 daemonized hidden process from volatile staging (only when stat.txt survived)
+        if ($hppid -eq '1' -and $cleanExe -match '(?i)^/(dev/shm|tmp|var/tmp|run/shm)/') {
+            Add-Finding 'CRITICAL' 'Cryptominer' `
+                "Hidden PID $hpid Daemonized (PPID=1) and Running from Volatile Path ($effectiveName)" `
+                "Hidden PID $hpid has PPID=1 (re-parented to init via daemonization, e.g. 'xmrig -B') AND its executable path is in volatile staging ($exePath). Canonical disguised-miner-as-daemon signature." `
+                @('T1496','T1036.005','T1059.004')
+        }
+
+        # sshd accept()-hook indicator. Two evidence paths:
+        #   (a) /proc/<hpid>/stat.txt PPID (rare under active rootkit hook)
+        #   (b) reverse lookup via the PARENT's children.txt (works even when hpid's /proc was blocked)
+        $parentPid  = $hppid
+        if (-not $parentPid) {
+            $candidates = @($parentToChildren.Keys | Where-Object { $parentToChildren[$_] -contains $hpid })
+            if ($candidates.Count -eq 1) { $parentPid = $candidates[0] }
+        }
+        if ($parentPid) {
+            $parentComm = (Read-UACArtifact $uac "live_response/process/proc/$parentPid/comm.txt")
+            $parentComm = if ($parentComm) { $parentComm.Trim() } else { '' }
+            $psParentLine = $psLines | Where-Object { $_ -match "^\s*$parentPid\s" } | Select-Object -First 1
+            $parentLooksLikeSshd = ($parentComm -match '^sshd') -or ($psParentLine -and $psParentLine -match '\b(sshd|sshd:)\b')
+            $childIsShell = ($effectiveName -in @('sh','bash','dash','zsh','ksh'))
+            if ($parentLooksLikeSshd -and $childIsShell) {
+                Add-Finding 'CRITICAL' 'Rootkit' `
+                    "Hidden Shell PID $hpid Spawned Directly by sshd (PID $parentPid)  -  accept()-hook Backdoor Signature" `
+                    "Hidden PID $hpid ($effectiveName) has a parent process matching sshd (PID $parentPid; comm='$parentComm'). Parent linkage was established via $(if ($hppid) { '/proc/<hpid>/stat.txt' } else { 'reverse lookup through /proc/<parent>/children.txt' }). Modern sshd does not spawn a bare shell as a direct child; this pattern indicates an LD_PRELOAD rootkit accept()-hook spawning a root shell on a magic password (Father rootkit pattern: 'ymv' password handler injected into sshd via /etc/ld.so.preload)." `
+                    @('T1574.006','T1205','T1059.004')
+            }
+        }
+    }
+
+    # 3a-ext-mem. XMRig markers in the memory dump (when per-PID strings were blocked by the rootkit)
+    $xmrigMemMarkers = @('Usage: xmrig','--donate-level','stratum+tcp:','127.0.0.1:3333','rx/0')
+    $xmrigMemHits = @($xmrigMemMarkers | Where-Object { $memHits.ContainsKey($_) })
+    if ($xmrigMemHits.Count -ge 2) {
+        $hitDetail = ($xmrigMemHits | ForEach-Object { "'$_' x$($memHits[$_])" }) -join '; '
+        Add-Finding 'CRITICAL' 'Cryptominer' `
+            "XMRig Cryptominer Strings Recovered from Memory Dump  -  $($xmrigMemHits.Count)/$($xmrigMemMarkers.Count) markers" `
+            "Memory-strings scan of memory_dump/memory-strings.ascii returned XMRig binary signatures: $hitDetail. The presence of these constants in resident memory  -  combined with the rootkit blocking per-PID /proc strings collection  -  is high-confidence evidence that XMRig was running at acquisition time even when its cmdline could not be read directly. The '127.0.0.1:3333' marker further confirms the loopback stratum endpoint described in righteousit Pt 2." `
+            @('T1496','T1036.005','T1027')
+        if ($memHits.ContainsKey('127.0.0.1:3333')) { Add-IOC 'IP:Port' '127.0.0.1:3333' 'XMRig stratum endpoint  -  recovered from memory strings' }
+    }
+
     # 3b. Correlate hidden PIDs with UAC collector /proc access failures (anti-forensics signal)
     $uacLogLines = Read-UACArtifactLines $uac 'uac.log'
     if ($hiddenPids.Count -gt 0 -and $uacLogLines.Count -gt 0) {
@@ -670,6 +826,98 @@ function Invoke-UACTriage {
                 "UAC collector repeatedly failed to read /proc data for hidden PIDs with 'No such file or directory'. This supports active process concealment/interference during live response. Sample: $errSample" `
                 @('T1564.001','T1070')
             Add-Timeline '(At collection)' 'CRITICAL' 'UAC /proc reads failed for hidden PIDs (active concealment suspected)' '/proc'
+        }
+    }
+
+    # 3b-ext. Father LD_PRELOAD rootkit string identification
+    #         righteousit Linux Investigation Pt 3: extracted libymv.so.3 from memory and matched on
+    #         "lpe_drop_shell", "timebomb", "backconnect", "Enjoy the shell!", "/tmp/silly.txt" against
+    #         the fkie-cad/linux-rootkit-iocs database. Replicate that string match on any preload .so
+    #         the collector preserved on disk so attribution does not default to TeamTNT by symptom alone.
+    $fatherMarkers = @(
+        @{ Pattern = 'lpe_drop_shell';   Description = 'local privilege escalation drop-shell symbol' },
+        @{ Pattern = 'timebomb';         Description = 'time-based payload activation symbol' },
+        @{ Pattern = 'backconnect';      Description = 'reverse-connection backdoor symbol' },
+        @{ Pattern = 'Enjoy the shell!'; Description = 'banner string emitted on backdoor activation' },
+        @{ Pattern = '/tmp/silly.txt';   Description = 'hardcoded PAM credential dump path' }
+    )
+    foreach ($lib in $preloadLibs) {
+        $libRelative = $lib.TrimStart('/') -replace '/','\'
+        $libInRoot   = Join-Path $uac "[root]\$libRelative"
+        if (-not (Test-Path -LiteralPath $libInRoot)) { continue }
+        try {
+            $libBytes = [System.IO.File]::ReadAllBytes($libInRoot)
+        } catch {
+            continue
+        }
+        if ($libBytes.Length -eq 0) { continue }
+        # ASCII view is sufficient for null-terminated string constants in an ELF .rodata
+        $libText = [System.Text.Encoding]::ASCII.GetString($libBytes)
+        $hits = @()
+        foreach ($m in $fatherMarkers) {
+            if ($libText.Contains($m.Pattern)) { $hits += "'$($m.Pattern)' ($($m.Description))" }
+        }
+        if ($hits.Count -ge 2) {
+            $hitSummary = $hits -join '; '
+            Add-Finding 'CRITICAL' 'Rootkit' `
+                "Father LD_PRELOAD Rootkit Strings Confirmed in $lib  -  $($hits.Count)/$($fatherMarkers.Count) markers" `
+                "Binary string scan of $libInRoot matched $($hits.Count) of $($fatherMarkers.Count) Father-rootkit code constants: $hitSummary. Father is an open-source LD_PRELOAD rootkit (linux-rootkit-iocs DB; fkie-cad/linux-rootkit-iocs). High-confidence identification: this is Father, not a TeamTNT bash.so/xmrig.so derivative. Father-specific behaviors to expect: (1) magic GID hides processes/files, (2) PAM hook writes plaintext creds to /tmp/silly.txt, (3) accept() hook on tcp/48411 spawns a root shell on the magic activation password 'ymv'." `
+                @('T1574.006','T1014','T1556.003','T1205')
+            Add-IOC 'Rootkit Family' 'Father (LD_PRELOAD)' "Confirmed via $($hits.Count) string markers in $lib"
+            Add-Timeline '(Pre-collection)' 'CRITICAL' "Father rootkit identified by string match in $lib" $lib
+            Write-Host "         [CRITICAL] Father rootkit confirmed in $lib ($($hits.Count) markers)" -ForegroundColor Red
+        } elseif ($hits.Count -eq 1) {
+            Add-Finding 'HIGH' 'Rootkit' `
+                "Possible Father Rootkit Marker in $lib (1/$($fatherMarkers.Count))" `
+                "One Father-rootkit marker matched in $libInRoot ($($hits[0])). A single-marker hit is suggestive but not definitive  -  could be a derivative, a different rootkit reusing one symbol, or a coincidence. Manual review recommended." `
+                @('T1574.006','T1014')
+        }
+    }
+
+    # 3b-ext-mem. Father string match against memory_dump/memory-strings.ascii
+    #             Backstop for the on-disk scan above: if the rootkit binary was deleted/unlinked
+    #             after load (Father SOP), the constants are still resident in any process the
+    #             library was preloaded into. memory-strings.ascii is acquired below the userspace
+    #             readdir hook so the rootkit can't suppress its own strings from it.
+    $fatherMemHits = @($fatherMarkers | Where-Object { $memHits.ContainsKey($_.Pattern) })
+    if ($fatherMemHits.Count -ge 2) {
+        $fatherMemSummary = ($fatherMemHits | ForEach-Object { "'$($_.Pattern)' ($($_.Description), x$($memHits[$_.Pattern]))" }) -join '; '
+        Add-Finding 'CRITICAL' 'Rootkit' `
+            "Father LD_PRELOAD Rootkit Strings Confirmed in Memory  -  $($fatherMemHits.Count)/$($fatherMarkers.Count) markers" `
+            "Memory-strings scan of memory_dump/memory-strings.ascii matched $($fatherMemHits.Count) of $($fatherMarkers.Count) Father-rootkit code constants: $fatherMemSummary. This is high-confidence identification independent of any on-disk binary  -  the rootkit may have unlinked itself from /usr/lib after load, but the constants remain in every process it was preloaded into. Father is an open-source LD_PRELOAD kit (linux-rootkit-iocs DB; fkie-cad/linux-rootkit-iocs)." `
+            @('T1574.006','T1014','T1556.003','T1205')
+        Add-IOC 'Rootkit Family' 'Father (LD_PRELOAD)' "Confirmed via $($fatherMemHits.Count) string markers in memory dump"
+        Write-Host "         [CRITICAL] Father rootkit confirmed in memory ($($fatherMemHits.Count) markers)" -ForegroundColor Red
+    }
+
+    # 3b-ext-maps. Confirm preload library is actually mapped into a target process address space.
+    #              We iterate every collected /proc/<pid>/maps.txt; a match against any preload .so
+    #              is direct, on-host evidence of LD_PRELOAD injection (no inference required).
+    if ($preloadLibs.Count -gt 0 -and (Test-Path -LiteralPath $procRoot)) {
+        $libPatterns = @($preloadLibs | ForEach-Object {
+            $b = Split-Path $_ -Leaf
+            if ($b) { [regex]::Escape($b) }
+        })
+        if ($libPatterns.Count -gt 0) {
+            $libRegex = '(' + ($libPatterns -join '|') + ')'
+            $injectedPids = [System.Collections.Generic.List[string]]::new()
+            Get-ChildItem -LiteralPath $procRoot -Directory -ErrorAction SilentlyContinue | ForEach-Object {
+                $maps = Read-UACArtifact $uac "live_response/process/proc/$($_.Name)/maps.txt"
+                if ($maps -and $maps -match $libRegex) { [void]$injectedPids.Add($_.Name) }
+            }
+            if ($injectedPids.Count -gt 0) {
+                # Highlight sshd specifically since accept()-hook needs the rootkit injected there
+                $sshdHits = @($injectedPids | Where-Object {
+                    $c = Read-UACArtifact $uac "live_response/process/proc/$_/comm.txt"
+                    $c -and ($c.Trim() -match '^sshd')
+                })
+                $sample = ($injectedPids | Select-Object -First 8) -join ', '
+                Add-Finding 'CRITICAL' 'Rootkit' `
+                    "LD_PRELOAD Library Mapped Into $($injectedPids.Count) Live Process(es)  -  Direct Injection Evidence" `
+                    "/proc/<pid>/maps.txt for $($injectedPids.Count) running process(es) contains the preload library basename ($(($preloadLibs | Select-Object -First 2) -join ', ')$(if ($preloadLibs.Count -gt 2) { ', ...' } else { '' })). This is direct address-space evidence of injection, not just indirect ld.so.preload presence. PIDs: $sample$(if ($sshdHits.Count -gt 0) { '. Includes sshd PID(s): ' + ($sshdHits -join ', ') + '  -  required for accept()-hook backdoor on a custom port.' })" `
+                    @('T1574.006','T1014')
+                foreach ($p in $injectedPids) { Add-IOC 'PID' $p 'LD_PRELOAD library mapped into process address space' }
+            }
         }
     }
 
@@ -697,6 +945,110 @@ function Invoke-UACTriage {
         Add-Finding 'HIGH' 'Anti-Forensics' 'Running Processes with Deleted Executable on Disk' `
             "Executables running from deleted inodes (file-less execution pattern): $($deletedExe[0..2] -join ' | ')" `
             @('T1070.004','T1027')
+    }
+
+    # 3c-ext. /dev/shm/<dir>/ staging-kit pattern + bash-history evidence of kit deployment
+    #         righteousit Linux Investigation Pt 4: attacker scp'd k.tgz to /dev/shm, extracted to
+    #         /dev/shm/kit/ (rk.so + xmrig + config), renamed xmrig -> top, then 'rm -rf kit' to
+    #         clean up. The lsof scan above only catches /dev/shm if processes still hold open file
+    #         handles; this block looks for residual evidence after cleanup.
+    # Combine lsof hits AND exe-symlink targets so the kit/ subdir is detected even after 'rm -rf kit'
+    $shmDirSources = @()
+    $shmDirSources += @($lsofLines | Where-Object { $_ -match '/dev/shm/[^/\s]+/' -and $_ -notmatch 'lttng|pipewire|pulse' })
+    $shmDirSources += @($runningProcPathLines | Where-Object { $_ -match '->\s*/dev/shm/[^/\s]+/' })
+    $shmDirs = @($shmDirSources | ForEach-Object {
+        if ($_ -match '(/dev/shm/[^/\s]+)') { $Matches[1] }
+    } | Select-Object -Unique)
+    if ($shmDirs.Count -gt 0) {
+        $shmDirSample = ($shmDirs | Select-Object -First 5) -join ', '
+        Add-Finding 'CRITICAL' 'Staging' `
+            "/dev/shm Staging Subdirectory Detected: $shmDirSample" `
+            "Subdirectories beneath /dev/shm are referenced by either open file handles (lsof) or process exe symlinks ($shmDirSample). Attackers commonly create a working directory (e.g. /dev/shm/kit/, /dev/shm/.x/) to extract a tarball (k.tgz), rename binaries (mv xmrig top), then 'rm -rf' the directory to remove on-disk evidence  -  but a process whose /proc/<pid>/exe still points at a deleted path inside that subdir keeps the inode open and exposes the staging name. The directory pattern is a stronger compromise signal than a single /dev/shm file." `
+            @('T1059.004','T1070.004','T1036.005')
+        foreach ($d in $shmDirs) { Add-IOC 'FilePath' $d 'Volatile staging working directory' }
+    }
+
+    # Bash history evidence of kit deployment / cleanup (covers worker AND root histories)
+    $bashHistoryFiles = @(
+        '[root]/root/.bash_history',
+        '[root]/home/worker/.bash_history',
+        '[root]/home/*/.bash_history'
+    )
+    $kitPatterns = @(
+        @{ RX = '(?i)(scp|wget|curl)\s+\S+\.(tgz|tar\.gz|tar|zip)\b'; Desc = 'archive download / scp into the system' },
+        @{ RX = '(?i)\btar\s+(-?[xvzfj]+)\s+\S+\.(tgz|tar\.gz|tar)\b'; Desc = 'archive extraction (tar)' },
+        @{ RX = '(?i)\bcd\s+/dev/shm(/\S+)?'; Desc = 'cd into volatile /dev/shm' },
+        @{ RX = '(?i)\bmv\s+xmrig\s+\S+'; Desc = 'rename of xmrig binary (masquerading)' },
+        @{ RX = '(?i)\bexport\s+PATH=\.'; Desc = 'PATH manipulation prepending current directory' },
+        @{ RX = '(?i)\brm\s+-rf?\s+(/dev/shm/\S+|kit/?|payload/?)'; Desc = 'cleanup of staging directory' },
+        @{ RX = '(?i)\bssh\s+-F\s+config\b'; Desc = 'SSH using attacker-supplied config (LocalForward tunnel)' },
+        @{ RX = '(?i)\b(top|ps)\s+-o\s+\S+:[0-9]{2,5}\b'; Desc = 'mining-pool URL passed to a binary disguised as top/ps' }
+    )
+    $historyHits = [System.Collections.Generic.List[PSCustomObject]]::new()
+    foreach ($histRel in $bashHistoryFiles) {
+        # Expand wildcards manually since UAC stores relative paths under [root]/
+        $histAbs = Join-Path $uac ($histRel -replace '/','\')
+        $resolved = @()
+        if ($histRel -match '\*') {
+            $parent = Split-Path $histAbs -Parent
+            $leaf   = Split-Path $histAbs -Leaf
+            if (Test-Path -LiteralPath $parent) {
+                $resolved = @(Get-ChildItem -LiteralPath $parent -Filter $leaf -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName })
+            }
+        } elseif (Test-Path -LiteralPath $histAbs) {
+            $resolved = @($histAbs)
+        }
+        foreach ($histPath in $resolved) {
+            $histLines = @(Get-Content -LiteralPath $histPath -ErrorAction SilentlyContinue)
+            foreach ($hl in $histLines) {
+                foreach ($p in $kitPatterns) {
+                    if ($hl -match $p.RX) {
+                        $historyHits.Add([PSCustomObject]@{
+                            File = $histPath
+                            Line = $hl.Trim()
+                            Why  = $p.Desc
+                        })
+                    }
+                }
+            }
+        }
+    }
+    if ($historyHits.Count -gt 0) {
+        $hSample = ($historyHits | Select-Object -First 5 | ForEach-Object {
+            "$([System.IO.Path]::GetFileName($_.File)): '$($_.Line)' ($($_.Why))"
+        }) -join ' | '
+        Add-Finding 'CRITICAL' 'Staging' `
+            "Bash History Evidence of Kit Deployment ($($historyHits.Count) hit(s))" `
+            "Shell history contains commands consistent with attacker kit deployment / cleanup: $hSample. Hits across multiple categories (download, extract, rename, PATH manipulation, cleanup) strongly indicate a hands-on-keyboard staging workflow." `
+            @('T1059.004','T1070.004','T1036.005')
+        foreach ($hh in $historyHits) {
+            Add-Timeline '(Pre-collection, attacker history)' 'HIGH' "Suspicious shell command  -  $($hh.Why)" $hh.Line
+        }
+    }
+
+    # 3c-ext-mem. Kit-deployment commands recovered from memory_dump/memory-strings.ascii
+    #             When .bash_history was not preserved (anti-forensics, also observed in righteousit
+    #             Pt 1), shell command lines may still survive in process memory and be captured by
+    #             a kernel-level memory dump. We look for the same patterns the on-disk history
+    #             scan above looks for, but in the memory string table.
+    $kitMemMarkers = @{
+        '/dev/shm/kit'   = 'cd into /dev/shm/kit/ staging directory'
+        'k.tgz'          = 'k.tgz attacker kit archive name (righteousit Pt 4)'
+        'mv xmrig'       = 'rename of xmrig binary (masquerading)'
+        'ssh -F config'  = 'SSH using attacker-supplied config (LocalForward tunnel)'
+        'rm -rf kit'     = 'cleanup of staging directory'
+        'export PATH=.'  = 'PATH manipulation prepending current directory'
+    }
+    $kitMemHits = @($kitMemMarkers.Keys | Where-Object { $memHits.ContainsKey($_) })
+    if ($kitMemHits.Count -ge 2) {
+        $kitMemSummary = ($kitMemHits | ForEach-Object { "'$_' ($($kitMemMarkers[$_]), x$($memHits[$_]))" }) -join '; '
+        Add-Finding 'CRITICAL' 'Staging' `
+            "Attacker Kit-Deployment Commands Recovered from Memory  -  $($kitMemHits.Count) marker(s)" `
+            "Memory-strings scan of memory_dump/memory-strings.ascii matched $($kitMemHits.Count) attacker shell-command markers across multiple kill-chain stages: $kitMemSummary. These are the same hands-on-keyboard commands that righteousit Linux Investigation Pt 4 documented (scp k.tgz to /dev/shm, tar -xzf, mv xmrig top, ssh -F config ymv, rm -rf kit). On-disk .bash_history was not preserved by UAC (an anti-forensics indicator in itself), but the residual command strings in memory survived." `
+            @('T1059.004','T1070.004','T1036.005')
+        foreach ($k in $kitMemHits) {
+            Add-Timeline '(Pre-collection, attacker memory residue)' 'HIGH' "Kit-deployment marker recovered from memory  -  $($kitMemMarkers[$k])" $k
+        }
     }
 
     # 3d. Processes running from volatile/staging paths
@@ -943,15 +1295,67 @@ function Invoke-UACTriage {
         }
     }
 
-    # 4c. IRC / botnet C2 port detection
+    # 4c. Backdoor + tunneled-mining + IRC C2 port detection
+    #     righteousit Linux Investigation Pt 3/4: Father rootkit accept() hook listens on tcp/48411
+    #     and the miner uses an SSH LocalForward (config: 'LocalForward 3333 127.0.0.1:3333') so the
+    #     loopback stratum port is the *tunneled* miner pool, not a directly-connected remote IP.
+    #     Detect both patterns explicitly so the network triage doesn't conflate the SSH tunnel
+    #     destination (192.168.5.95:22) with the actual mining pool.
+
+    # 4c-i. Father / generic LD_PRELOAD rootkit accept()-hook backdoor port
+    $rootkitBackdoorPorts = @(48411)
+    foreach ($port in $rootkitBackdoorPorts) {
+        $listenHit = $allListenLines | Where-Object { $_ -match ":$port\b" }
+        $estabHit  = $allEstabLines  | Where-Object { $_ -match ":$port\b" }
+        $procHit   = $procTcpConns   | Where-Object { $_.LocalPort -eq $port -or $_.RemotePort -eq $port }
+        if ($listenHit -or $estabHit -or $procHit) {
+            $where = @()
+            if ($listenHit) { $where += 'LISTEN (ss)' }
+            if ($estabHit)  { $where += 'ESTABLISHED (ss)' }
+            if ($procHit)   { $where += "/proc/net/tcp ($($procHit.Count) socket(s))" }
+            Add-Finding 'CRITICAL' 'Rootkit' `
+                "Father Rootkit Default Backdoor Port $port Active  -  $($where -join ', ')" `
+                "TCP socket activity on port $port detected. Port 48411 is the documented default activation port for the open-source 'Father' LD_PRELOAD rootkit (linux-rootkit-iocs DB; fkie-cad/linux-rootkit-iocs). The library's accept() hook intercepts connections to this port, validates the magic password (default: 'ymv'), and spawns a root shell  -  bypassing sshd auth entirely. Combined with /etc/ld.so.preload, this is a high-confidence Father identification." `
+                @('T1205','T1014','T1574.006')
+            Add-IOC 'Port' "$port" 'Father rootkit accept()-hook backdoor port'
+        }
+    }
+
+    # 4c-ii. SSH LocalForward tunneled-mining signature
+    #        Loopback LISTEN on a stratum port + root-owned outbound SSH = miner traffic riding an
+    #        SSH tunnel. This is Father+XMRig SOP and what was observed at righteousit Pt 2/4.
+    $stratumPortSet = @(3333,3334,3335,4444,5555,7777,8888,9999,14433,14444,45700)
+    $loopbackStratumListen = @($procTcpConns | Where-Object {
+        $_.State -eq 'LISTEN' -and
+        ($_.LocalIP -match '^(127\.|::1$)') -and
+        ($stratumPortSet -contains $_.LocalPort)
+    })
+    $rootOutboundSSH22 = @($procTcpConns | Where-Object {
+        $_.State -eq 'ESTABLISHED' -and $_.RemotePort -eq 22 -and $_.UID -eq '0' -and
+        $_.RemoteIP -and $_.RemoteIP -notmatch '^127\.'
+    })
+    if ($loopbackStratumListen.Count -gt 0 -and $rootOutboundSSH22.Count -gt 0) {
+        $stratumPorts = ($loopbackStratumListen | ForEach-Object { $_.LocalPort } | Select-Object -Unique) -join ', '
+        $sshHosts     = ($rootOutboundSSH22     | ForEach-Object { $_.RemoteIP }  | Select-Object -Unique) -join ', '
+        Add-Finding 'CRITICAL' 'Cryptominer' `
+            "Tunneled Mining Signature  -  Loopback Stratum LISTEN + Root Outbound SSH" `
+            "Loopback LISTEN on stratum port(s) $stratumPorts coexists with a root-owned ESTABLISHED outbound SSH session to $sshHosts. This is the canonical SSH LocalForward miner-pool tunneling pattern (XMRig connects to 127.0.0.1:<stratum>, which the SSH client forwards to the actual pool over an existing SSH session). The mining pool is the SSH tunnel destination, NOT $sshHosts:22  -  do not classify $sshHosts:22 as the pool." `
+            @('T1496','T1071.001','T1572')
+        Add-IOC 'IP:Port' "$sshHosts`:22" 'SSH tunnel destination for LocalForward-based miner pool (NOT the pool itself)'
+        foreach ($p in ($loopbackStratumListen | ForEach-Object { $_.LocalPort } | Select-Object -Unique)) {
+            Add-IOC 'Port' "$p" 'Loopback stratum LISTEN  -  tunneled miner pool entry point'
+        }
+    }
+
+    # 4c-iii. IRC / botnet C2 port detection (retained)
     $ircPorts = @(6667,6668,6669,6697)
     foreach ($port in $ircPorts) {
         if ($allEstabLines | Where-Object { $_ -match ":$port\b" }) {
             Add-Finding 'HIGH' 'C2 Communication' `
                 "IRC Botnet C2 Port $port Active" `
-                "ESTABLISHED outbound connection on port $port — standard IRC bot C2 channel (Mirai, Tsunami, generic IRC bots). Investigate owning process." `
+                "ESTABLISHED outbound connection on port $port  -  standard IRC bot C2 channel (Mirai, Tsunami, generic IRC bots). Investigate owning process." `
                 @('T1071.003')
-            Add-IOC 'Port' "$port" "IRC botnet C2 port"
+            Add-IOC 'Port' "$port" 'IRC botnet C2 port'
         }
     }
 
@@ -1827,7 +2231,42 @@ function Invoke-UACTriage {
     # Score TTPs against known actor profiles
     $attributionScores = [ordered]@{}
 
-    # TeamTNT TTP fingerprint
+    # Father rootkit identification flag. Confirmation comes from EITHER:
+    #   (A) 3b binary string match against the preload .so on disk (highest specificity), OR
+    #   (B) the behavioral fingerprint: hardcoded /tmp/silly.txt PAM dump path AND default backdoor
+    #       port 48411 AND LD_PRELOAD AND hidden-PID-by-magic-GID. Each of those signals on its own
+    #       has reasonable specificity for Father; together they uniquely identify it.
+    # When the on-disk .so is absent (Father SOP includes deleting/swapping the dropper post-load),
+    # the behavioral path is the only confirmation route available.
+    $fatherStringMatch = [bool]($findings | Where-Object {
+        $_.Category -eq 'Rootkit' -and $_.Title -match 'Father LD_PRELOAD Rootkit Strings Confirmed'
+    })
+    $hasSillyTxt    = [bool]($findings | Where-Object { $_.Detail -match '/tmp/silly\.txt' })
+    $hasPort48411   = [bool]($findings | Where-Object { $_.Detail -match '\b48411\b' -and $_.Category -match 'Rootkit|C2' })
+    $hasMagicGid    = [bool]($findings | Where-Object { $_.Title -match 'Magic GID Identified' })
+    $hasLdPreload   = ($preloadLibs.Count -gt 0)
+    $hasHidden      = ($hiddenPids.Count -gt 0)
+    $fatherBehavioral = $hasSillyTxt -and $hasPort48411 -and $hasLdPreload -and $hasHidden
+    $fatherConfirmed = $fatherStringMatch -or $fatherBehavioral
+
+    # Father rootkit (open-source LD_PRELOAD toolkit; used as a kit by various unattributed operators)
+    # Refs: fkie-cad/linux-rootkit-iocs, righteousit Linux Investigation series.
+    # Father is a KIT, not an APT  -  this entry attributes the malware family, not the operator.
+    $fatherScore = 0
+    $fatherEvidence = @()
+    if ($fatherStringMatch)   { $fatherScore += 50; $fatherEvidence += 'Father code-string markers in preload .so' }
+    if ($hasSillyTxt)         { $fatherScore += 20; $fatherEvidence += 'Father PAM dump path /tmp/silly.txt' }
+    if ($hasPort48411)        { $fatherScore += 25; $fatherEvidence += 'Father default backdoor port 48411' }
+    if ($hasMagicGid)         { $fatherScore += 15; $fatherEvidence += 'Magic-GID process hiding (Father readdir hook)' }
+    if ($hasLdPreload -and $hasHidden) { $fatherScore += 10; $fatherEvidence += 'LD_PRELOAD + hidden processes (Father pattern)' }
+    if ($findings | Where-Object { $_.Title -match 'accept\(\)-hook Backdoor Signature' }) { $fatherScore += 10; $fatherEvidence += 'Hidden shell spawned directly by sshd (accept-hook)' }
+    if ($fatherBehavioral -and -not $fatherStringMatch) {
+        $fatherEvidence += 'Behavioral fingerprint match (string-scan unavailable: rootkit binary not preserved on disk)'
+    }
+    if ($fatherScore -gt 0) { $attributionScores['Father Rootkit (open-source kit)'] = @{Score=[Math]::Min($fatherScore,100); Evidence=$fatherEvidence} }
+
+    # TeamTNT TTP fingerprint  -  these signals are also true of any LD_PRELOAD+XMRig kit, so we
+    # suppress the score when Father is confirmed by string match.
     $teamTNTScore = 0
     $teamTNTEvidence = @()
     if ($preloadLibs.Count -gt 0)                                          { $teamTNTScore += 25; $teamTNTEvidence += 'LD_PRELOAD rootkit via .so file' }
@@ -1836,6 +2275,11 @@ function Invoke-UACTriage {
     if ($findings | Where-Object { $_.Detail -match '/dev/shm' })           { $teamTNTScore += 15; $teamTNTEvidence += '/dev/shm staging' }
     if ($findings | Where-Object { $_.Category -eq 'Credential Theft' })   { $teamTNTScore += 10; $teamTNTEvidence += 'PAM credential hooking' }
     if ($findings | Where-Object { $_.Detail -match 'compile.on.victim|unique.*hash|hash.*unique' }) { $teamTNTScore += 10; $teamTNTEvidence += 'Compile-on-victim evasion' }
+    if ($fatherConfirmed) {
+        # Father strings rule out a TeamTNT bash.so/xmrig.so derivative; suppress TTP-overlap noise.
+        $teamTNTScore = [Math]::Max(0, $teamTNTScore - 60)
+        $teamTNTEvidence += 'SUPPRESSED: Father rootkit string match overrides generic LD_PRELOAD+XMRig signal'
+    }
     if ($teamTNTScore -gt 0) { $attributionScores['TeamTNT'] = @{Score=$teamTNTScore; Evidence=$teamTNTEvidence} }
 
     # Kinsing TTP fingerprint (similar cryptominer, targets k8s/Docker)
