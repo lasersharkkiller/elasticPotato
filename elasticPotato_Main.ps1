@@ -50,6 +50,9 @@ Import-Module -Name ".\purpleTeaming\GetElasticDetonationLogs.psm1" -ErrorAction
 Import-Module -Name ".\detections\Update-LolDriversCache.psm1"
 Import-Module -Name ".\detections\Update-ElasticYaraRules.psm1"
 
+# Thor/Loki IOC + YARA scanner (4e)
+Import-Module -Name ".\baseline\Invoke-LokiScan.psm1"
+
 # Connectivity check
 try {
     $ping = Test-Connection -ComputerName "8.8.8.8" -Count 1 -Quiet
@@ -219,7 +222,7 @@ elseif ($functionChoice -eq "4d") {
     Get-ElasticDetonationLogs
 }
 elseif ($functionChoice -eq "4e") {
-    Write-Host "Option 4e is unavailable (Invoke-LokiScan module removed)." -ForegroundColor Yellow
+    Invoke-LokiScan
 }
 elseif ($functionChoice -eq "4f") {
     $chosenDir = (Read-Host "[?] Enter full path to detonation log directory").Trim()
