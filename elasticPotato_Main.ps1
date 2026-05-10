@@ -46,10 +46,6 @@ Import-Module -Name ".\NewProcsModules\elasticProcessBaseline.psm1"
 # Elastic detonation logs used by Group 4
 Import-Module -Name ".\purpleTeaming\GetElasticDetonationLogs.psm1" -ErrorAction SilentlyContinue
 
-# Hardening modules (Group 1)
-Import-Module -Name ".\Hardening\ComplianceScan\ComplianceScan.psd1"
-Import-Module -Name ".\Hardening\HardenedGPO\HardenedGPO.psd1"
-
 # Connectivity check
 try {
     $ping = Test-Connection -ComputerName "8.8.8.8" -Count 1 -Quiet
@@ -60,36 +56,6 @@ try {
 
 Write-Host "elasticPotato - Elastic triage toolkit"
 Write-Host "Choose which function you would like to use:"
-Write-Host ""
-
-# -- GROUP 1: Windows Hardening & Compliance -----------------------------------
-Write-Host "  $([char]27)[4m+------------------------------------------------------------+$([char]27)[24m" -ForegroundColor DarkCyan
-Write-Host "  $([char]27)[4m|           Windows Hardening & Compliance                   |$([char]27)[24m" -ForegroundColor DarkCyan
-Write-Host "  $([char]27)[4m+------------------------------------------------------------+$([char]27)[24m" -ForegroundColor DarkCyan
-Write-Host "  -- NIST 800-53 --" -ForegroundColor DarkCyan
-Write-Host "1a) NIST 800-53 Scan - Auto Detect Profile (Workstation / Server / DC)" -ForegroundColor DarkCyan
-Write-Host "1b) NIST 800-53 Scan - Workstation" -ForegroundColor DarkCyan
-Write-Host "1c) NIST 800-53 Scan - Server" -ForegroundColor DarkCyan
-Write-Host "1d) NIST 800-53 Scan - Domain Controller" -ForegroundColor DarkCyan
-Write-Host "1e) Export NIST 800-53 Report (HTML + CSV)" -ForegroundColor DarkCyan
-Write-Host "  -- CIS Benchmarks --" -ForegroundColor DarkCyan
-Write-Host "1f) Run CIS Benchmark Scan - Level 1" -ForegroundColor DarkCyan
-Write-Host "1g) Run CIS Benchmark Scan - Level 1 + Level 2" -ForegroundColor DarkCyan
-Write-Host "1h) Export CIS Scan Report (HTML + CSV)" -ForegroundColor DarkCyan
-Write-Host "  -- CMMC --" -ForegroundColor DarkCyan
-Write-Host "1i) Run CMMC Level 1 Assessment (57 Practices)" -ForegroundColor DarkCyan
-Write-Host "1j) Run CMMC Level 2 Assessment (110 Practices)" -ForegroundColor DarkCyan
-Write-Host "1k) Export CMMC Assessment Report (HTML + CSV)" -ForegroundColor DarkCyan
-Write-Host "  -- NIST 800-171 --" -ForegroundColor DarkCyan
-Write-Host "1l) Run NIST 800-171 Assessment (110 Controls)" -ForegroundColor DarkCyan
-Write-Host "1m) Export NIST 800-171 Report (HTML + CSV)" -ForegroundColor DarkCyan
-Write-Host "  -- GPO Generation & Hardening --" -ForegroundColor DarkCyan
-Write-Host "1n) Generate Hardened GPO - Workstation" -ForegroundColor DarkCyan
-Write-Host "1o) Generate Hardened GPO - Server" -ForegroundColor DarkCyan
-Write-Host "1p) Generate Hardened GPO - Domain Controller" -ForegroundColor DarkCyan
-Write-Host "1q) Generate Hardened GPO - ALL Profiles (Workstation + Server + DC)" -ForegroundColor DarkCyan
-Write-Host "1r) Import Hardened GPO into Active Directory" -ForegroundColor DarkCyan
-Write-Host "1s) Apply Local Hardening Directly (secedit + auditpol + registry)" -ForegroundColor DarkCyan
 Write-Host ""
 
 # -- GROUP 2: Remote Collection Tool Deployment -------------------------------
@@ -142,123 +108,6 @@ $functionChoice = (Read-Host "Please enter an option").Trim().ToLowerInvariant()
 if ($functionChoice -eq "2a") { $functionChoice = "__deploy_uac__" }
 elseif ($functionChoice -eq "2b") { $functionChoice = "__deploy_kape__" }
 elseif ($functionChoice -eq "2c") { $functionChoice = "__deploy_dfirorc__" }
-
-# -- GROUP 1: Windows Hardening & Compliance -----------------------------------
-if ($functionChoice -eq "1a") {
-    $results = Invoke-ComplianceScan
-    $out = Read-Host -Prompt "Output path for report [default: .\ComplianceScan_Output]"
-    if (-not $out) { $out = ".\ComplianceScan_Output" }
-    $results | Export-ScanReport -OutputPath $out
-    $failCount = ($results | Where-Object { $_.Status -eq "FAIL" }).Count
-    if ($failCount -gt 0) {
-        Write-Host ""
-        Write-Host "  $failCount check(s) failed." -ForegroundColor Yellow
-        $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-        if (-not $isAdmin) {
-            Write-Host "  [!] Re-run elasticPotato_Main.ps1 as Administrator to apply hardening." -ForegroundColor Red
-        } else {
-            $fix = Read-Host -Prompt "Apply local hardening? (y/N)"
-            if ($fix -match "^[yY]$") { Invoke-LocalHardening -Profile Auto -Force }
-        }
-    }
-}
-elseif ($functionChoice -eq "1b") {
-    $results = Invoke-ComplianceScan -Profile Workstation
-    $out = Read-Host -Prompt "Output path for report [default: .\ComplianceScan_Output]"
-    if (-not $out) { $out = ".\ComplianceScan_Output" }
-    $results | Export-ScanReport -OutputPath $out
-}
-elseif ($functionChoice -eq "1c") {
-    $results = Invoke-ComplianceScan -Profile Server
-    $out = Read-Host -Prompt "Output path for report [default: .\ComplianceScan_Output]"
-    if (-not $out) { $out = ".\ComplianceScan_Output" }
-    $results | Export-ScanReport -OutputPath $out
-}
-elseif ($functionChoice -eq "1d") {
-    $results = Invoke-ComplianceScan -Profile DomainController
-    $out = Read-Host -Prompt "Output path for report [default: .\ComplianceScan_Output]"
-    if (-not $out) { $out = ".\ComplianceScan_Output" }
-    $results | Export-ScanReport -OutputPath $out
-}
-elseif ($functionChoice -eq "1e") {
-    $out = Read-Host -Prompt "Output path for report [default: .\ComplianceScan_Output]"
-    if (-not $out) { $out = ".\ComplianceScan_Output" }
-    Invoke-ComplianceScan -Quiet | Export-ScanReport -OutputPath $out -Format All
-}
-elseif ($functionChoice -eq "1f") { $global:lastCISScan = Invoke-CISScan -Level 1 }
-elseif ($functionChoice -eq "1g") { $global:lastCISScan = Invoke-CISScan -Level 2 }
-elseif ($functionChoice -eq "1h") {
-    $findings = $global:lastCISScan
-    $outPath  = Read-Host -Prompt "Output path for CIS report [default: .\CISScan_Output]"
-    if ([string]::IsNullOrWhiteSpace($outPath)) { $outPath = ".\CISScan_Output" }
-    if ($null -ne $findings -and @($findings).Count -gt 0) {
-        Export-CISScanReport -Findings $findings -OutputPath $outPath
-    } else {
-        $global:lastCISScan = Invoke-CISScan -Level 1
-        Export-CISScanReport -Findings $global:lastCISScan -OutputPath $outPath
-    }
-}
-elseif ($functionChoice -eq "1i") { $global:lastCMMCScan = Invoke-CMMCScan -Level 1 }
-elseif ($functionChoice -eq "1j") { $global:lastCMMCScan = Invoke-CMMCScan -Level 2 }
-elseif ($functionChoice -eq "1k") {
-    $findings = $global:lastCMMCScan
-    $outPath  = Read-Host -Prompt "Output path for CMMC report [default: .\CMMCScan_Output]"
-    if ([string]::IsNullOrWhiteSpace($outPath)) { $outPath = ".\CMMCScan_Output" }
-    if ($null -ne $findings -and @($findings).Count -gt 0) {
-        Export-CMMCScanReport -Findings $findings -OutputPath $outPath
-    } else {
-        $global:lastCMMCScan = Invoke-CMMCScan -Level 1
-        Export-CMMCScanReport -Findings $global:lastCMMCScan -OutputPath $outPath
-    }
-}
-elseif ($functionChoice -eq "1l") { $global:lastNIST171Scan = Invoke-NIST800171Scan }
-elseif ($functionChoice -eq "1m") {
-    $findings = $global:lastNIST171Scan
-    $outPath  = Read-Host -Prompt "Output path for NIST 800-171 report [default: .\NIST171Scan_Output]"
-    if ([string]::IsNullOrWhiteSpace($outPath)) { $outPath = ".\NIST171Scan_Output" }
-    if ($null -ne $findings -and @($findings).Count -gt 0) {
-        Export-NIST800171Report -Findings $findings -OutputPath $outPath
-    } else {
-        $global:lastNIST171Scan = Invoke-NIST800171Scan
-        Export-NIST800171Report -Findings $global:lastNIST171Scan -OutputPath $outPath
-    }
-}
-elseif ($functionChoice -eq "1n") {
-    $out = Read-Host -Prompt "Output path [default: .\HardenedGPO_Output]"
-    if (-not $out) { $out = ".\HardenedGPO_Output" }
-    New-HardenedGPO -Profile Workstation -OutputPath $out
-}
-elseif ($functionChoice -eq "1o") {
-    $out = Read-Host -Prompt "Output path [default: .\HardenedGPO_Output]"
-    if (-not $out) { $out = ".\HardenedGPO_Output" }
-    New-HardenedGPO -Profile Server -OutputPath $out
-}
-elseif ($functionChoice -eq "1p") {
-    $out = Read-Host -Prompt "Output path [default: .\HardenedGPO_Output]"
-    if (-not $out) { $out = ".\HardenedGPO_Output" }
-    New-HardenedGPO -Profile DomainController -OutputPath $out
-    Write-Host "REMINDER: Link the DC GPO to the Domain Controllers OU ONLY." -ForegroundColor Yellow
-}
-elseif ($functionChoice -eq "1q") {
-    $out = Read-Host -Prompt "Output path [default: .\HardenedGPO_Output]"
-    if (-not $out) { $out = ".\HardenedGPO_Output" }
-    New-HardenedGPO -Profile All -OutputPath $out
-    Write-Host "REMINDER: Link the DC GPO to the Domain Controllers OU ONLY." -ForegroundColor Yellow
-}
-elseif ($functionChoice -eq "1r") {
-    $backupPath = Read-Host -Prompt "GPO BackupPath"
-    $gpoName    = Read-Host -Prompt "GPO Name"
-    $targetOU   = Read-Host -Prompt "Target OU DN"
-    $enforced   = Read-Host -Prompt "Enforced? [y/N]"
-    if ($enforced -match "^[yY]") {
-        Import-HardenedGPO -BackupPath $backupPath -GPOName $gpoName -TargetOU $targetOU -Enforced
-    } else {
-        Import-HardenedGPO -BackupPath $backupPath -GPOName $gpoName -TargetOU $targetOU
-    }
-}
-elseif ($functionChoice -eq "1s") {
-    Invoke-LocalHardening -Profile Auto -Force
-}
 
 # -- GROUP 2: Remote Collection Tool Deployment -------------------------------
 elseif ($functionChoice -eq "__deploy_uac__") {
