@@ -28,29 +28,29 @@
 Import-Module -Name ".\baseline\NsrlEnrichment.psm1" -ErrorAction SilentlyContinue
 Import-Module -Name ".\baseline\NsrlTools.psm1" -ErrorAction SilentlyContinue
 
-# Agentic Elastic triage (Group 4)
+# Agentic Elastic triage (Group 3)
 Import-Module -Name ".\agentic\ElasticAlertAgent.psm1"
 Import-Module -Name ".\agentic\Invoke-ElasticLinuxTriage.psm1"
 
-# Forensic triage (Groups 2d, 3)
+# Forensic triage (Groups 1d, 2)
 Import-Module -Name ".\forensics\Invoke-UACTriage.psm1"
 Import-Module -Name ".\forensics\Invoke-RouterTriage.psm1"
 
-# Group 5 (Elastic Baseline) -- remaining enrichment deps
+# Group 4 (Elastic Baseline) -- remaining enrichment deps
 Import-Module -Name ".\NewProcsModules\CheckAgainstVT.psm1"
 Import-Module -Name ".\NewProcsModules\CheckApiVoid.psm1"
 Import-Module -Name ".\NewProcsModules\CheckSuspiciousASNs.psm1"
 Import-Module -Name ".\NewProcsModules\DomainCleanup.psm1"
 Import-Module -Name ".\NewProcsModules\elasticProcessBaseline.psm1"
 
-# Elastic detonation logs used by Group 4
+# Elastic detonation logs used by Group 3
 Import-Module -Name ".\purpleTeaming\GetElasticDetonationLogs.psm1" -ErrorAction SilentlyContinue
 
-# Detection cache refreshers (called by 4f and as standalone 4g/4h)
+# Detection cache refreshers (called by 3f and as standalone 3g/3h)
 Import-Module -Name ".\detections\Update-LolDriversCache.psm1"
 Import-Module -Name ".\detections\Update-ElasticYaraRules.psm1"
 
-# Thor/Loki IOC + YARA scanner (4e)
+# Thor/Loki IOC + YARA scanner (3e)
 Import-Module -Name ".\baseline\Invoke-LokiScan.psm1"
 
 # Connectivity check
@@ -65,60 +65,60 @@ Write-Host "elasticPotato - Elastic triage toolkit"
 Write-Host "Choose which function you would like to use:"
 Write-Host ""
 
-# -- GROUP 2: Remote Collection Tool Deployment -------------------------------
+# -- GROUP 1: Remote Collection Tool Deployment -------------------------------
 Write-Host "  $([char]27)[4m+----------------------------------------------------------+$([char]27)[24m" -ForegroundColor DarkYellow
 Write-Host "  $([char]27)[4m|   Remote Collection Tool Deployment (Offline Packages)    |$([char]27)[24m" -ForegroundColor DarkYellow
 Write-Host "  $([char]27)[4m+----------------------------------------------------------+$([char]27)[24m" -ForegroundColor DarkYellow
-Write-Host "2a) Deploy UAC Collector to Remote Host(s)" -ForegroundColor DarkYellow
-Write-Host "2b) Deploy KAPE to Remote Windows Host(s)" -ForegroundColor DarkYellow
-Write-Host "2c) Deploy DFIR-ORC to Remote Windows Host(s)" -ForegroundColor DarkYellow
+Write-Host "1a) Deploy UAC Collector to Remote Host(s)" -ForegroundColor DarkYellow
+Write-Host "1b) Deploy KAPE to Remote Windows Host(s)" -ForegroundColor DarkYellow
+Write-Host "1c) Deploy DFIR-ORC to Remote Windows Host(s)" -ForegroundColor DarkYellow
 Write-Host "     -> Requires offline packages already staged under .\tools\" -ForegroundColor DarkGray
-Write-Host "2d) [Live SSH] Collect Router Forensic Dump (Save-RouterDump)" -ForegroundColor DarkYellow
-Write-Host "     -> Pulls ~75 forensic commands from a live router; saves files for offline 3c analysis" -ForegroundColor DarkGray
+Write-Host "1d) [Live SSH] Collect Router Forensic Dump (Save-RouterDump)" -ForegroundColor DarkYellow
+Write-Host "     -> Pulls ~75 forensic commands from a live router; saves files for offline 2c analysis" -ForegroundColor DarkGray
 Write-Host ""
 
-# -- GROUP 3: Linux / UAC Forensic Triage (Offline) ---------------------------
+# -- GROUP 2: Linux / UAC Forensic Triage (Offline) ---------------------------
 Write-Host "  $([char]27)[4m+----------------------------------------------+$([char]27)[24m" -ForegroundColor DarkYellow
 Write-Host "  $([char]27)[4m|        Linux / UAC Forensic Triage            |$([char]27)[24m" -ForegroundColor DarkYellow
 Write-Host "  $([char]27)[4m+----------------------------------------------+$([char]27)[24m" -ForegroundColor DarkYellow
-Write-Host "3a) [Offline] UAC Dump Triage - Full Expert Analysis (Rootkit/C2/Creds/Timeline/Attribution)" -ForegroundColor DarkYellow
-Write-Host "3b) [Live SSH] Edge Router APT Triage - Full Expert Analysis" -ForegroundColor DarkYellow
-Write-Host "3c) [Offline] Edge Router APT Triage - Analyze offline dump directory" -ForegroundColor DarkYellow
+Write-Host "2a) [Offline] UAC Dump Triage - Full Expert Analysis (Rootkit/C2/Creds/Timeline/Attribution)" -ForegroundColor DarkYellow
+Write-Host "2b) [Live SSH] Edge Router APT Triage - Full Expert Analysis" -ForegroundColor DarkYellow
+Write-Host "2c) [Offline] Edge Router APT Triage - Analyze offline dump directory" -ForegroundColor DarkYellow
 Write-Host ""
 
-# -- GROUP 4: Elastic Alerts ---------------------------------------------------
+# -- GROUP 3: Elastic Alerts ---------------------------------------------------
 Write-Host "  $([char]27)[4m+----------------------------------------------+$([char]27)[24m" -ForegroundColor DarkRed
 Write-Host "  $([char]27)[4m|  (Elastic env) Analyze Artifacts for An Alert |$([char]27)[24m" -ForegroundColor DarkRed
 Write-Host "  $([char]27)[4m+----------------------------------------------+$([char]27)[24m" -ForegroundColor DarkRed
-Write-Host "4b) [AI Agent] Elastic Alert Triage (Windows) - Offline VT Enrichment" -ForegroundColor DarkRed
-Write-Host "4c) [AI Agent] Elastic Alert Triage (Linux)   - Offline Forensic Analysis" -ForegroundColor DarkRed
-Write-Host "4d) Pull Elastic Logs from Detonation Window" -ForegroundColor DarkRed
-Write-Host "4e) Run IOC/YARA Scanner Against Downloaded Malicious Files (Thor/Loki auto-detect)" -ForegroundColor DarkRed
-Write-Host "4f) [AI Agent] Offline Analysis + IOC/YARA Scan (Windows)" -ForegroundColor DarkRed
-Write-Host "4g) Update LOL Drivers Cache (loldrivers.io + LOLDrivers Sigma + SigmaHQ)" -ForegroundColor DarkRed
-Write-Host "4h) Update Elastic YARA Rules (elastic/protections-artifacts -> detections\yara\)" -ForegroundColor DarkRed
+Write-Host "3b) [AI Agent] Elastic Alert Triage (Windows) - Offline VT Enrichment" -ForegroundColor DarkRed
+Write-Host "3c) [AI Agent] Elastic Alert Triage (Linux)   - Offline Forensic Analysis" -ForegroundColor DarkRed
+Write-Host "3d) Pull Elastic Logs from Detonation Window" -ForegroundColor DarkRed
+Write-Host "3e) Run IOC/YARA Scanner Against Downloaded Malicious Files (Thor/Loki auto-detect)" -ForegroundColor DarkRed
+Write-Host "3f) [AI Agent] Offline Analysis + IOC/YARA Scan (Windows)" -ForegroundColor DarkRed
+Write-Host "3g) Update LOL Drivers Cache (loldrivers.io + LOLDrivers Sigma + SigmaHQ)" -ForegroundColor DarkRed
+Write-Host "3h) Update Elastic YARA Rules (elastic/protections-artifacts -> detections\yara\)" -ForegroundColor DarkRed
 Write-Host ""
 
-# -- GROUP 5: Elastic Baseline (was Group 12 in Loaded-Potato) ----------------
+# -- GROUP 4: Elastic Baseline (was Group 12 in Loaded-Potato) ----------------
 Write-Host "  $([char]27)[4m+----------------------------------------------------------+$([char]27)[24m" -ForegroundColor DarkCyan
 Write-Host "  $([char]27)[4m|  (Elastic env) Baseline New Processes in the Environment  |$([char]27)[24m" -ForegroundColor DarkCyan
 Write-Host "  $([char]27)[4m+----------------------------------------------------------+$([char]27)[24m" -ForegroundColor DarkCyan
-Write-Host "5a) Specific Processes Name" -ForegroundColor DarkCyan
-Write-Host "5b) New Drivers in the Env" -ForegroundColor DarkCyan
-Write-Host "5c) New Unverified Processes" -ForegroundColor DarkCyan
-Write-Host "5d) New Unsigned Windows Processes" -ForegroundColor DarkCyan
-Write-Host "5e) New Unsigned Linux Processes" -ForegroundColor DarkCyan
+Write-Host "4a) Specific Processes Name" -ForegroundColor DarkCyan
+Write-Host "4b) New Drivers in the Env" -ForegroundColor DarkCyan
+Write-Host "4c) New Unverified Processes" -ForegroundColor DarkCyan
+Write-Host "4d) New Unsigned Windows Processes" -ForegroundColor DarkCyan
+Write-Host "4e) New Unsigned Linux Processes" -ForegroundColor DarkCyan
 Write-Host ""
 
 
 $functionChoice = (Read-Host "Please enter an option").Trim().ToLowerInvariant()
 
-# Group 2 deploy sub-handlers
-if ($functionChoice -eq "2a") { $functionChoice = "__deploy_uac__" }
-elseif ($functionChoice -eq "2b") { $functionChoice = "__deploy_kape__" }
-elseif ($functionChoice -eq "2c") { $functionChoice = "__deploy_dfirorc__" }
+# Group 1 deploy sub-handlers
+if ($functionChoice -eq "1a") { $functionChoice = "__deploy_uac__" }
+elseif ($functionChoice -eq "1b") { $functionChoice = "__deploy_kape__" }
+elseif ($functionChoice -eq "1c") { $functionChoice = "__deploy_dfirorc__" }
 
-# -- GROUP 2: Remote Collection Tool Deployment -------------------------------
+# -- GROUP 1: Remote Collection Tool Deployment -------------------------------
 elseif ($functionChoice -eq "__deploy_uac__") {
     $deployScript = Join-Path $PSScriptRoot "tools\deploy\Deploy-UAC.ps1"
     if (Test-Path -LiteralPath $deployScript) { & $deployScript } else { Write-Host "Deploy script not found: $deployScript" -ForegroundColor Red }
@@ -131,7 +131,7 @@ elseif ($functionChoice -eq "__deploy_dfirorc__") {
     $deployScript = Join-Path $PSScriptRoot "tools\deploy\Deploy-DFIR-ORC.ps1"
     if (Test-Path -LiteralPath $deployScript) { & $deployScript } else { Write-Host "Deploy script not found: $deployScript" -ForegroundColor Red }
 }
-elseif ($functionChoice -eq "2d") {
+elseif ($functionChoice -eq "1d") {
     $target = (Read-Host "[?] Router hostname or IP").Trim()
     if ($target) {
         $user   = (Read-Host "[?] SSH username").Trim()
@@ -152,15 +152,15 @@ elseif ($functionChoice -eq "2d") {
         $savedDir = Save-RouterDump @dumpParams
         if ($savedDir) {
             Write-Host "[+] Dump saved to: $savedDir" -ForegroundColor Green
-            Write-Host "    Copy this directory to an air-gapped machine and run option 3c to analyze." -ForegroundColor DarkGray
+            Write-Host "    Copy this directory to an air-gapped machine and run option 2c to analyze." -ForegroundColor DarkGray
         }
     } else {
         Write-Host "No target specified." -ForegroundColor Red
     }
 }
 
-# -- GROUP 3: Linux / UAC Forensic Triage (Offline) ---------------------------
-elseif ($functionChoice -eq "3a") {
+# -- GROUP 2: Linux / UAC Forensic Triage (Offline) ---------------------------
+elseif ($functionChoice -eq "2a") {
     $uacPath = (Read-Host "[?] Enter full path to extracted UAC dump directory").Trim()
     if ($uacPath -and (Test-Path -LiteralPath $uacPath)) {
         $outPath = (Read-Host "[?] Output directory for HTML report [default: .\reports\alertTriage]").Trim()
@@ -170,7 +170,7 @@ elseif ($functionChoice -eq "3a") {
         Write-Host "Path not found or not specified: $uacPath" -ForegroundColor Red
     }
 }
-elseif ($functionChoice -eq "3b") {
+elseif ($functionChoice -eq "2b") {
     $target = (Read-Host "[?] Router hostname or IP").Trim()
     if ($target) {
         $user   = (Read-Host "[?] SSH username").Trim()
@@ -190,7 +190,7 @@ elseif ($functionChoice -eq "3b") {
         Write-Host "No target specified." -ForegroundColor Red
     }
 }
-elseif ($functionChoice -eq "3c") {
+elseif ($functionChoice -eq "2c") {
     $dumpDir = (Read-Host "[?] Path to offline router dump directory (created by Save-RouterDump)").Trim()
     if ($dumpDir -and (Test-Path -LiteralPath $dumpDir)) {
         $outPath = (Read-Host "[?] Output directory for HTML report [default: .\reports\routerTriage]").Trim()
@@ -201,8 +201,8 @@ elseif ($functionChoice -eq "3c") {
     }
 }
 
-# -- GROUP 4: Elastic Alerts ---------------------------------------------------
-elseif ($functionChoice -eq "4b") {
+# -- GROUP 3: Elastic Alerts ---------------------------------------------------
+elseif ($functionChoice -eq "3b") {
     $detonationLogPath = Read-Host "[?] Path to detonation log directory (NDJSON files)"
     if ($detonationLogPath -and (Test-Path -LiteralPath $detonationLogPath)) {
         Invoke-ElasticAlertAgentAnalysis -DetonationLogsDir $detonationLogPath
@@ -210,7 +210,7 @@ elseif ($functionChoice -eq "4b") {
         Write-Host "Invalid path: $detonationLogPath" -ForegroundColor Red
     }
 }
-elseif ($functionChoice -eq "4c") {
+elseif ($functionChoice -eq "3c") {
     $detonationLogPath = Read-Host "[?] Path to detonation log directory (NDJSON files)"
     if ($detonationLogPath -and (Test-Path -LiteralPath $detonationLogPath)) {
         Invoke-ElasticLinuxTriage -DetonationLogsDir $detonationLogPath
@@ -218,13 +218,13 @@ elseif ($functionChoice -eq "4c") {
         Write-Host "Invalid path: $detonationLogPath" -ForegroundColor Red
     }
 }
-elseif ($functionChoice -eq "4d") {
+elseif ($functionChoice -eq "3d") {
     Get-ElasticDetonationLogs
 }
-elseif ($functionChoice -eq "4e") {
+elseif ($functionChoice -eq "3e") {
     Invoke-LokiScan
 }
-elseif ($functionChoice -eq "4f") {
+elseif ($functionChoice -eq "3f") {
     $chosenDir = (Read-Host "[?] Enter full path to detonation log directory").Trim()
     if ($chosenDir -and (Test-Path $chosenDir)) {
         Update-ElasticYaraRules
@@ -234,28 +234,28 @@ elseif ($functionChoice -eq "4f") {
         Write-Host "Path not found or not specified: $chosenDir" -ForegroundColor Red
     }
 }
-elseif ($functionChoice -eq "4g") {
+elseif ($functionChoice -eq "3g") {
     Update-LolDriversCache
 }
-elseif ($functionChoice -eq "4h") {
+elseif ($functionChoice -eq "3h") {
     Update-ElasticYaraRules
 }
 
-# -- GROUP 5: Elastic Baseline (was Group 12 in Loaded-Potato) ----------------
-elseif ($functionChoice -eq "5a") {
+# -- GROUP 4: Elastic Baseline (was Group 12 in Loaded-Potato) ----------------
+elseif ($functionChoice -eq "4a") {
     $procToQuery = Read-Host -Prompt "Enter process name (i.e. lsass.exe)"
     Invoke-ElasticProcessSurvey -Mode SpecificProc -ProcName $procToQuery
 }
-elseif ($functionChoice -eq "5b") {
+elseif ($functionChoice -eq "4b") {
     Invoke-ElasticProcessSurvey -Mode Drivers -QueryDays -30
 }
-elseif ($functionChoice -eq "5c") {
+elseif ($functionChoice -eq "4c") {
     Invoke-ElasticProcessSurvey -Mode UnverifiedProcs
 }
-elseif ($functionChoice -eq "5d") {
+elseif ($functionChoice -eq "4d") {
     Invoke-ElasticProcessSurvey -Mode UnsignedWin -QueryDays -2
 }
-elseif ($functionChoice -eq "5e") {
+elseif ($functionChoice -eq "4e") {
     Invoke-ElasticProcessSurvey -Mode UnsignedLinux
 }
 else {
