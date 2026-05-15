@@ -319,11 +319,20 @@ function Invoke-UACTriage {
     $uac = $UACPath.TrimEnd('\','/')
 
     # -- Auto-detect Intel base path ---------------------------------------------
+    # Walk up from this script, checking for an apt/ directory either directly
+    # at the current level OR inside a known sibling repo. apt/ now lives in
+    # statisticalDifferentialPotato; Loaded-Potato is kept as a historical
+    # fallback for older clones.
     if (-not $IntelBasePath) {
         $search = $PSScriptRoot
         for ($i = 0; $i -lt 4; $i++) {
             $candidate = Join-Path $search 'apt'
             if (Test-Path $candidate) { $IntelBasePath = $candidate; break }
+            foreach ($sibling in @('statisticalDifferentialPotato','Loaded-Potato')) {
+                $c = Join-Path (Join-Path $search $sibling) 'apt'
+                if (Test-Path $c) { $IntelBasePath = $c; break }
+            }
+            if ($IntelBasePath) { break }
             $search = Split-Path $search -Parent
         }
         if (-not $IntelBasePath) {
