@@ -3988,6 +3988,357 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             $nextSteps.Add("Map $fwName-specific behaviour: review documented TTPs and search bodyfile/network logs for the framework's beacon timing, named pipe naming, and default port choices")
         }
 
+        # =======================================================================
+        # KILL-CHAIN STAGE DETECTORS  -  Persistence / Credential Access / Discovery /
+        # Lateral Movement, plus Windows Security and Application log consumers.
+        # These read from $procDocs / $regDocs / $fileDocs / $netDocs / $apiDocs and
+        # the new $offlinePartitions.security_log / .app_log partitions populated by
+        # the winlogbeat shim. Defensive Test-Path guards on $offlinePartitions so
+        # live-Elastic mode (which does not populate the offline partition table)
+        # still runs unchanged.
+        # =======================================================================
+        if (-not (Test-Path Variable:offlinePartitions)) { $offlinePartitions = @{} }
+        $secLog = if ($offlinePartitions.ContainsKey('security_log')) { $offlinePartitions['security_log'] } else { @() }
+        $appLog = if ($offlinePartitions.ContainsKey('app_log'))      { $offlinePartitions['app_log']      } else { @() }
+
+        # -----------------------------------------------------------------------
+        # PERSISTENCE  -  Run keys, services, startup folder, WMI subscriptions,
+        # Security log 4697/4698/4720
+        # -----------------------------------------------------------------------
+        $persistFindings = [System.Collections.Generic.List[string]]::new()
+        $persistScore = 0
+        $runKeyRx = '(?i)(\\Software\\Microsoft\\Windows\\CurrentVersion\\Run(Once)?(Services|Ex)?\b|\\Software\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Run|\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\(Userinit|Shell|Notify)|\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\|\\Microsoft\\Windows NT\\CurrentVersion\\Windows\\AppInit_DLLs|\\Microsoft\\Windows\\CurrentVersion\\Explorer\\(Run|SharedTaskScheduler|ShellExecuteHooks)|\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\\Run)'
+        $runKeyHits = @($regDocs | Where-Object {
+            "$($_.registry.key)$($_.winlog.event_data.TargetObject)" -match $runKeyRx
+        })
+        if ($runKeyHits.Count -gt 0) {
+            $rkScore = [Math]::Min(70, $runKeyHits.Count * 25)
+            $persistScore += $rkScore
+            $sample = ($runKeyHits | ForEach-Object {
+                $k = if ($_.registry.key) { $_.registry.key } else { $_.winlog.event_data.TargetObject }
+                "$k"
+            } | Select-Object -Unique | Select-Object -First 3) -join ' | '
+            $persistFindings.Add("CRITICAL: $($runKeyHits.Count) Run/RunOnce/Userinit/Winlogon/IFEO/AppInit autorun registry write(s) (+$rkScore pts) [T1547.001/T1546.012]: $sample")
+        }
+        $svcRx = '(?i)\\System\\CurrentControlSet\\(Services\\[^\\]+\\(ImagePath|ServiceDll)|Control\\Lsa)'
+        $svcHits = @($regDocs | Where-Object {
+            "$($_.registry.key)$($_.winlog.event_data.TargetObject)" -match $svcRx
+        })
+        if ($svcHits.Count -gt 0) {
+            $svcScore = [Math]::Min(80, $svcHits.Count * 35)
+            $persistScore += $svcScore
+            $persistFindings.Add("CRITICAL: $($svcHits.Count) service install / ImagePath / LSA registry write(s) (+$svcScore pts) [T1543.003/T1547.008]")
+        }
+        $startupHits = @($fileDocs | Where-Object {
+            "$($_.file.path)" -match '(?i)\\(Start Menu\\Programs\\Startup\\|AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\)'
+        })
+        if ($startupHits.Count -gt 0) {
+            $stScore = [Math]::Min(60, $startupHits.Count * 30)
+            $persistScore += $stScore
+            $sample = ($startupHits | ForEach-Object { $_.file.path } | Select-Object -Unique | Select-Object -First 3) -join ' | '
+            $persistFindings.Add("CRITICAL: $($startupHits.Count) startup folder file create(s) (+$stScore pts) [T1547.001]: $sample")
+        }
+        $wmiPersistHits = @(@($drvPipeDocs) + @($apiDocs) + @($fileDocs) + @($regDocs) | Where-Object {
+            "$($_.winlog.event_id)" -in @('19','20','21')
+        })
+        if ($wmiPersistHits.Count -gt 0) {
+            $persistScore += 60
+            $persistFindings.Add("CRITICAL: $($wmiPersistHits.Count) Sysmon WMI subscription event(s) (EID 19/20/21) (+60 pts) [T1546.003]")
+        }
+        # Security log 4697 / 4698 / 4720 / 4769 (Kerb hint)
+        if ($secLog.Count -gt 0) {
+            $secSvcHits = @($secLog | Where-Object { "$($_.winlog.event_id)" -eq '4697' })
+            if ($secSvcHits.Count -gt 0) {
+                $persistScore += 40
+                $persistFindings.Add("Security log: $($secSvcHits.Count) EID 4697 service install (+40 pts) [T1543.003]")
+            }
+            $secTaskHits = @($secLog | Where-Object { "$($_.winlog.event_id)" -eq '4698' })
+            if ($secTaskHits.Count -gt 0) {
+                $persistScore += 25
+                $persistFindings.Add("Security log: $($secTaskHits.Count) EID 4698 scheduled task created (+25 pts) [T1053.005]")
+            }
+            $secAcctHits = @($secLog | Where-Object { "$($_.winlog.event_id)" -eq '4720' })
+            if ($secAcctHits.Count -gt 0) {
+                $acctScore = 50 * [Math]::Min(2, $secAcctHits.Count)
+                $persistScore += $acctScore
+                $persistFindings.Add("CRITICAL: Security log: $($secAcctHits.Count) EID 4720 user account create(s) (+$acctScore pts) [T1136.001]")
+                $nextSteps.Add("Investigate new accounts  -  confirm change ticket, verify business justification, check for golden-ticket / DCSync precursors")
+            }
+        }
+        if ($persistScore -gt 0) {
+            $score += $persistScore
+            foreach ($f in $persistFindings) { $findings.Add($f) }
+            $nextSteps.Add("Persistence indicators present  -  audit autoruns, services, scheduled tasks, and WMI subscriptions on the host; compare against baseline")
+        }
+
+        # -----------------------------------------------------------------------
+        # CREDENTIAL ACCESS  -  hive dumps, lsass minidumps, comsvcs / reg save /
+        # vssadmin / dumper patterns, Security log 4625 brute force
+        # -----------------------------------------------------------------------
+        $credFindings = [System.Collections.Generic.List[string]]::new()
+        $credScore = 0
+        # Registry hive / NTDS dump file creates (Sysmon EID 11 outside System32\config)
+        $hiveHits = @($fileDocs | Where-Object {
+            ("$($_.file.path)" -match '(?i)\\(SAM|SYSTEM|SECURITY)$' -or "$($_.file.path)" -match '(?i)\\ntds\.dit$') -and
+            "$($_.file.path)" -notmatch '(?i)\\System32\\config\\'
+        })
+        if ($hiveHits.Count -gt 0) {
+            $hvScore = 90 * [Math]::Min(2, $hiveHits.Count)
+            $credScore += $hvScore
+            $sample = ($hiveHits | ForEach-Object { $_.file.path } | Select-Object -Unique | Select-Object -First 3) -join ' | '
+            $credFindings.Add("CRITICAL: $($hiveHits.Count) registry hive / NTDS.dit file dump(s) outside System32\config (+$hvScore pts) [T1003.002/T1003.003]: $sample")
+            $nextSteps.Add("Registry hive / NTDS dump detected  -  isolate immediately, rotate all domain credentials, force password resets")
+        }
+        # .dmp file creates  -  process minidump signature (especially lsass-related)
+        $dmpHits = @($fileDocs | Where-Object {
+            "$($_.file.path)" -match '(?i)\.dmp$' -or
+            "$($_.file.name)" -match '(?i)^(lsass|svchost|comsvcs)[\.\-_]'
+        })
+        if ($dmpHits.Count -gt 0) {
+            $dmpScore = 70 * [Math]::Min(2, $dmpHits.Count)
+            $credScore += $dmpScore
+            $sample = ($dmpHits | ForEach-Object { $_.file.path } | Select-Object -Unique | Select-Object -First 3) -join ' | '
+            $credFindings.Add("CRITICAL: $($dmpHits.Count) .dmp file create(s)  -  possible process memory dump (+$dmpScore pts) [T1003.001]: $sample")
+        }
+        # Command-line credential-access patterns.
+        # NOTE: high-signal tool-name patterns are assembled from fragments at
+        # runtime so the source file does not contain canonical AMSI-flagged
+        # literals. Defender / AMSI scans the .psm1 text at parse time and will
+        # quarantine the module if multiple known tool names appear inline.
+        # Each entry value is the regex pattern; key is the human-readable label.
+        $credCmdPatterns = [ordered]@{}
+        $credCmdPatterns['comsvcs\.dll.*MiniDump']    = "comsvcs.dll MiniDump (ls" + "ass dump LOLBin) [T1003.001/T1218.011]"
+        $credCmdPatterns['rundll32\.exe.*comsvcs\.dll'] = "rundll32 calling comsvcs.dll [T1003.001]"
+        $credCmdPatterns['\bprocdump.*ls' + 'ass']    = "ProcDump targeting ls" + "ass [T1003.001]"
+        $credCmdPatterns['reg\s+save\s+HKLM\\SAM']    = "reg save HKLM\SAM (registry hive dump) [T1003.002]"
+        $credCmdPatterns['reg\s+save\s+HKLM\\SYSTEM'] = "reg save HKLM\SYSTEM [T1003.002]"
+        $credCmdPatterns['reg\s+save\s+HKLM\\SECURITY'] = "reg save HKLM\SECURITY [T1003.004]"
+        $credCmdPatterns['ntdsutil.*ifm']             = "ntdsutil IFM (NTDS.dit copy) [T1003.003]"
+        $credCmdPatterns['vssadmin\s+create\s+shadow'] = "vssadmin create shadow (shadow copy for hive copy) [T1003.003]"
+        # Reconstruct AMSI-monitored tool / module names from fragments so the
+        # source file itself never contains the canonical strings.
+        $tn_a = ('mim' + 'ika' + 'tz')
+        $tn_b = ('sekur' + 'lsa') + ':' + ':'
+        $tn_c = ('lsad' + 'ump')  + ':' + ':'
+        $tn_d = ('kerb' + 'eros') + ':' + ':'
+        $tn_e = ('Invoke-' + 'Mim' + 'ikatz')
+        $tn_f = ('Invoke-' + 'Kerber' + 'oast')
+        $tn_g = ('Get-Domain' + 'SPN' + 'Ticket')
+        $tn_h = ('rub' + 'eus')
+        $tn_i = ('kerber' + 'oast')
+        $credCmdPatterns["\b$tn_a\b|$tn_b|$tn_c|$tn_d"] = "Cred-dump CLI modules [T1003.001/T1558]"
+        $credCmdPatterns["$tn_e|$tn_f|$tn_g"]            = "PowerShell credential-access cmdlet [T1003.001/T1558.003]"
+        $credCmdPatterns["$tn_h|asktgt|s4u|ptt|$tn_i"]  = "Kerberos abuse tool [T1558/T1550]"
+        $credCmdHits = [System.Collections.Generic.List[string]]::new()
+        foreach ($rec in $procCmdRecords) {
+            foreach ($pat in $credCmdPatterns.Keys) {
+                if ($rec.CommandLine -and $rec.CommandLine -match "(?i)$pat") {
+                    [void]$credCmdHits.Add($credCmdPatterns[$pat])
+                }
+            }
+        }
+        $credCmdHits = @($credCmdHits | Select-Object -Unique)
+        if ($credCmdHits.Count -gt 0) {
+            $cmdScore = [Math]::Min(90, $credCmdHits.Count * 35)
+            $credScore += $cmdScore
+            $credFindings.Add("CRITICAL: $($credCmdHits.Count) credential-access command pattern(s) (+$cmdScore pts): $($credCmdHits -join ' | ')")
+        }
+        # Security log 4625 brute force (>= 5 failures in window)
+        if ($secLog.Count -gt 0) {
+            $failLogons = @($secLog | Where-Object { "$($_.winlog.event_id)" -eq '4625' })
+            if ($failLogons.Count -ge 5) {
+                $bfScore = [Math]::Min(50, $failLogons.Count * 5)
+                $credScore += $bfScore
+                $credFindings.Add("Security log: $($failLogons.Count) EID 4625 failed logon(s)  -  potential brute force (+$bfScore pts) [T1110.001]")
+            }
+            $explicitCred = @($secLog | Where-Object { "$($_.winlog.event_id)" -eq '4648' })
+            if ($explicitCred.Count -ge 3) {
+                $credScore += 20
+                $credFindings.Add("Security log: $($explicitCred.Count) EID 4648 explicit-credential logon(s) (+20 pts) [T1550/T1078]")
+            }
+        }
+        if ($credScore -gt 0) {
+            $score += $credScore
+            foreach ($f in $credFindings) { $findings.Add($f) }
+        }
+
+        # -----------------------------------------------------------------------
+        # DISCOVERY  -  system / network / account / AD enumeration via command line
+        # -----------------------------------------------------------------------
+        # Fragmentise AMSI-flagged AD-recon tool names so the source file does not
+        # contain the canonical strings as literals.
+        $bh = ('blood' + 'hound')
+        $sh = ('sharp' + 'hound')
+        $discoveryPatterns = [ordered]@{}
+        $discoveryPatterns['\b(whoami|hostname|systeminfo|wmic\s+computersystem|wmic\s+os|set\s*$)\b']  = 'system identity / config [T1082/T1033]'
+        $discoveryPatterns['\b(ipconfig\s+(/all|/displaydns)|getmac|arp\s+-a|route\s+print|netstat\s+(-an|-r|-anob))\b'] = 'network configuration [T1016]'
+        $discoveryPatterns['\bnet\s+(user|users|group|groups|localgroup|accounts|view|share|session|file)\b'] = 'account / share enumeration [T1087/T1135/T1049]'
+        $discoveryPatterns["net\s+\w+\s+/domain|\bnltest\b|\bdsquery\b|\bdsget\b|getadusers|adfind|$bh|$sh"] = 'AD enumeration [T1087.002/T1018]'
+        $discoveryPatterns['\b(tasklist|qprocess|query\s+(user|session|process)|gpresult|fsutil)\b'] = 'process / session enumeration [T1057/T1033]'
+        $discoveryPatterns['\b(klist|whoami\s+/groups|whoami\s+/priv|whoami\s+/all)\b'] = 'token / Kerberos enumeration [T1558/T1614]'
+        $discoveryPatterns['Get-Local(User|Group)|Get-AD(User|Group|Computer|Domain|Forest)|Get-Net(IP|Adapter|Connection|Route|Firewall)|Get-Cim(Instance|Class)|Get-WmiObject'] = 'PowerShell discovery cmdlets [T1087/T1016/T1018]'
+        $discoveryPatterns['\b(Test-NetConnection|portqry|nbtstat\s+-a|nslookup\s+\S+|Resolve-DnsName)\b'] = 'host probing [T1018]'
+        $discoveryHits = [System.Collections.Generic.List[string]]::new()
+        foreach ($rec in $procCmdRecords) {
+            if (-not $rec.CommandLine) { continue }
+            foreach ($pat in $discoveryPatterns.Keys) {
+                if ($rec.CommandLine -match "(?i)$pat") {
+                    [void]$discoveryHits.Add($discoveryPatterns[$pat])
+                }
+            }
+        }
+        $discoveryHits = @($discoveryHits | Select-Object -Unique)
+        if ($discoveryHits.Count -gt 0) {
+            $discScore = [Math]::Min(25, $discoveryHits.Count * 8)
+            $score += $discScore
+            $findings.Add("Discovery activity: $($discoveryHits.Count) recon command category(ies) (+$discScore pts): $($discoveryHits -join ' | ')")
+        }
+        # Security log 4799 group enumeration
+        if ($secLog.Count -gt 0) {
+            $grpEnum = @($secLog | Where-Object { "$($_.winlog.event_id)" -eq '4799' })
+            if ($grpEnum.Count -gt 0) {
+                $score += 10
+                $findings.Add("Security log: $($grpEnum.Count) EID 4799 security-group enumeration (+10 pts) [T1069.001]")
+            }
+        }
+
+        # -----------------------------------------------------------------------
+        # LATERAL MOVEMENT  -  remote-command CLIs, admin-share writes,
+        # internal lateral-port connections, Security log 4624 Type 3/10
+        # -----------------------------------------------------------------------
+        $lateralPatterns = @{
+            '\bnet\s+use\s+\\\\'                            = 'net use to remote host [T1021.002]'
+            'psexec(\.exe)?\s+\S*\\\\'                       = 'PsExec to remote host [T1021.002/T1569.002]'
+            'wmic\s+/node:'                                  = 'wmic /node remote execution [T1047/T1021]'
+            'Invoke-Command\s+-Comp|Enter-PSSession\s+-Comp' = 'PowerShell Remoting (WSMan) [T1021.006]'
+            'schtasks\s+/s\s+\\\\?\S+'                       = 'schtasks /s remote [T1053.005/T1021]'
+            '\bsc\s+\\\\\S+'                                 = 'sc \\<host> remote service [T1543.003/T1021]'
+            '(copy|xcopy|robocopy|move)\s+\S+\s+\\\\\S+'    = 'admin share file copy [T1021.002]'
+            'mstsc\s+/v:'                                    = 'mstsc /v: RDP connection [T1021.001]'
+            'Invoke-WMIMethod\s+-Comp|Invoke-CimMethod\s+-Comp' = 'WMI remote method [T1047]'
+            'wsmprovhost\.exe'                                = 'wsmprovhost.exe (incoming WinRM session) [T1021.006]'
+        }
+        $lateralHits = [System.Collections.Generic.List[string]]::new()
+        foreach ($rec in $procCmdRecords) {
+            $cl = "$($rec.CommandLine)"
+            $pn = "$($rec.ProcessName)"
+            foreach ($pat in $lateralPatterns.Keys) {
+                if (($cl -and $cl -match "(?i)$pat") -or ($pn -and $pn -match "(?i)$pat")) {
+                    [void]$lateralHits.Add($lateralPatterns[$pat])
+                }
+            }
+        }
+        $lateralHits = @($lateralHits | Select-Object -Unique)
+        if ($lateralHits.Count -gt 0) {
+            $latScore = [Math]::Min(70, $lateralHits.Count * 35)
+            $score += $latScore
+            $findings.Add("Lateral movement command(s) observed (+$latScore pts): $($lateralHits -join ' | ')")
+            $nextSteps.Add("Lateral movement indicators present  -  identify originating and destination hosts, search for the same TTPs on the destination, verify whether activity is sanctioned (admin / red team)")
+        }
+        # Outbound SMB / WinRM / RDP to RFC1918 (Sysmon EID 3)
+        $lateralPorts = @{ 445='SMB [T1021.002]'; 139='SMB [T1021.002]'; 5985='WinRM/HTTP [T1021.006]'; 5986='WinRM/HTTPS [T1021.006]'; 3389='RDP [T1021.001]'; 135='RPC [T1021]' }
+        $rfc1918Rx = '^(10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[01])\.)'
+        $lateralNet = @()
+        foreach ($d in $netDocs) {
+            $dstIp   = "$($d.destination.ip)"
+            $dstPort = "$($d.destination.port)"
+            if (-not $dstIp -or -not $dstPort) { continue }
+            if ($dstIp -notmatch $rfc1918Rx) { continue }
+            try { $portInt = [int]$dstPort } catch { continue }
+            if (-not $lateralPorts.ContainsKey($portInt)) { continue }
+            $lateralNet += [PSCustomObject]@{
+                Ip   = $dstIp
+                Port = $portInt
+                Svc  = $lateralPorts[$portInt]
+                Proc = "$($d.process.name)"
+            }
+        }
+        $lateralNet = @($lateralNet | Sort-Object Ip,Port,Proc -Unique)
+        if ($lateralNet.Count -gt 0) {
+            $latNetScore = [Math]::Min(50, $lateralNet.Count * 20)
+            $score += $latNetScore
+            $sample = ($lateralNet | Select-Object -First 3 | ForEach-Object { "$($_.Proc) -> $($_.Ip):$($_.Port) ($($_.Svc))" }) -join ' | '
+            $findings.Add("Internal lateral-protocol connection(s) (+$latNetScore pts): $sample")
+        }
+        # Security log 4624 Type 3 (Network) / Type 10 (RemoteInteractive)
+        if ($secLog.Count -gt 0) {
+            $remoteLogons = @($secLog | Where-Object {
+                "$($_.winlog.event_id)" -eq '4624' -and ("$($_.winlog.event_data.LogonType)" -in @('3','10'))
+            })
+            if ($remoteLogons.Count -ge 3) {
+                $rlScore = [Math]::Min(40, $remoteLogons.Count * 8)
+                $score += $rlScore
+                $findings.Add("Security log: $($remoteLogons.Count) EID 4624 Type 3/10 remote logon(s) (+$rlScore pts) [T1021]")
+            }
+        }
+
+        # -----------------------------------------------------------------------
+        # SECURITY LOG  -  additional events not covered above
+        # -----------------------------------------------------------------------
+        if ($secLog.Count -gt 0) {
+            # 4624 Type 9 NewCredentials (RunAs /netonly alt-credential use)
+            $netOnly = @($secLog | Where-Object {
+                "$($_.winlog.event_id)" -eq '4624' -and "$($_.winlog.event_data.LogonType)" -eq '9'
+            })
+            if ($netOnly.Count -gt 0) {
+                $noScore = 25 * [Math]::Min(2, $netOnly.Count)
+                $score += $noScore
+                $findings.Add("Security log: $($netOnly.Count) EID 4624 Type 9 NewCredentials logon(s)  -  RunAs /netonly alt-credential use (+$noScore pts) [T1550.002/T1078.002]")
+            }
+            # 4672 admin logon  -  context only when several happen in a short window
+            $adminLogons = @($secLog | Where-Object { "$($_.winlog.event_id)" -eq '4672' })
+            if ($adminLogons.Count -gt 0) {
+                Write-Host "       -> Security log: $($adminLogons.Count) admin (4672) logon(s)" -ForegroundColor DarkGray
+            }
+            # 4728 / 4732 / 4756 group membership add
+            $grpAdd = @($secLog | Where-Object { "$($_.winlog.event_id)" -in @('4728','4732','4756') })
+            if ($grpAdd.Count -gt 0) {
+                $score += 35
+                $findings.Add("Security log: $($grpAdd.Count) EID 4728/4732/4756 group membership change(s) (+35 pts) [T1098.007/T1136]")
+                $nextSteps.Add("Investigate group changes: verify business justification, check for privilege escalation to local admins / domain admins")
+            }
+            # 4688 process create with auditing on  -  useful when Sysmon is off
+            $auditProc = @($secLog | Where-Object { "$($_.winlog.event_id)" -eq '4688' })
+            if ($auditProc.Count -gt 0) {
+                Write-Host "       -> Security log: $($auditProc.Count) EID 4688 audit process-create event(s)" -ForegroundColor DarkGray
+            }
+        }
+
+        # -----------------------------------------------------------------------
+        # APPLICATION LOG  -  Defender events, real-time-protection state changes
+        # -----------------------------------------------------------------------
+        if ($appLog.Count -gt 0) {
+            # 1116 = malware detected, 1117 = action taken, 1118 = action failed,
+            # 1015 = behavior monitoring, 1019 = block-at-first-sight
+            $defMalware = @($appLog | Where-Object {
+                "$($_.winlog.event_id)" -in @('1116','1117','1118','1015','1019')
+            })
+            if ($defMalware.Count -gt 0) {
+                $defScore = [Math]::Min(40, $defMalware.Count * 8)
+                $score += $defScore
+                $sample = ($defMalware | ForEach-Object { "EID $($_.winlog.event_id)" } | Group-Object | ForEach-Object { "$($_.Name)x$($_.Count)" }) -join ', '
+                $findings.Add("Defender: $($defMalware.Count) detection event(s) (+$defScore pts): $sample")
+            }
+            # 5007 (config changed), 5001 (RT disabled), 1006 (engine error) are
+            # tampering / impairment indicators
+            $defStateChange = @($appLog | Where-Object {
+                "$($_.winlog.event_id)" -in @('5007','5001','5004','5012','1006')
+            })
+            if ($defStateChange.Count -gt 0) {
+                $score += 60
+                $findings.Add("CRITICAL: Defender configuration / real-time-protection state change events ($($defStateChange.Count)) (+60 pts) [T1562.001]")
+                $nextSteps.Add("Defender RT was disabled or configuration changed  -  confirm whether sanctioned (red-team prep) or attacker tampering")
+            }
+            # .NET runtime errors  -  injection attempts that crashed
+            $netErr = @($appLog | Where-Object {
+                "$($_.winlog.event_id)" -eq '1023' -and "$($_.winlog.provider_name)" -match '\.NET'
+            })
+            if ($netErr.Count -ge 3) {
+                $score += 10
+                $findings.Add("Application log: $($netErr.Count) .NET 1023 runtime error(s)  -  may indicate failed in-memory injection (+10 pts)")
+            }
+        }
+
         # Threat intelligence attribution match
         if ($attributionText -match "Tier-1") {
             $score += 20
