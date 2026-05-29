@@ -1945,20 +1945,157 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             }
             # -----------------------------------------------------------------------
 
-            # --- Session metadata from session_info.txt ---
+            # --- Session metadata from session_info.txt (supports both legacy and explodedPotato formats) ---
             $siLines   = if (Test-Path (Join-Path $DetonationLogsDir "session_info.txt")) {
                              Get-Content (Join-Path $DetonationLogsDir "session_info.txt")
                          } else { @() }
-            $agentHost = ($siLines | Where-Object { $_ -match '^\s*Session\s*:' } |
-                          ForEach-Object { ($_ -split ':\s*',2)[1].Trim() } | Select-Object -First 1)
+            $agentHost = ($siLines | Where-Object { $_ -match '^\s*(Session|Detonation\s*host|Host)\s*:' } |
+                          ForEach-Object { ($_ -split ':\s*',2)[1].Trim() -replace '\s*\(.*$','' } | Select-Object -First 1)
             if ([string]::IsNullOrWhiteSpace($agentHost)) { $agentHost = Split-Path $DetonationLogsDir -Leaf }
-            $fromTs = ($siLines | Where-Object { $_ -match '^\s*Start\s*:' } | ForEach-Object {
+            $fromTs = ($siLines | Where-Object { $_ -match '^\s*(Start|Detonation\s*start|Window\s*start)\s*:' } | ForEach-Object {
                 if ($_ -match '(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)') { $Matches[1] }
             } | Select-Object -First 1)
-            $toTs   = ($siLines | Where-Object { $_ -match '^\s*End\s*:' } | ForEach-Object {
+            $toTs   = ($siLines | Where-Object { $_ -match '^\s*(End|Detonation\s*end|Window\s*end)\s*:' } | ForEach-Object {
                 if ($_ -match '(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)') { $Matches[1] }
             } | Select-Object -First 1)
-            Write-Host "  Session: $agentHost  |  $fromTs --> $toTs" -ForegroundColor DarkCyan
+            $campaign = ($siLines | Where-Object { $_ -match '^\s*Campaign\s*:' } |
+                         ForEach-Object { ($_ -split ':\s*',2)[1].Trim() } | Select-Object -First 1)
+            if ($campaign) {
+                Write-Host "  Campaign: $campaign  |  Host: $agentHost  |  $fromTs --> $toTs" -ForegroundColor DarkCyan
+            } else {
+                Write-Host "  Session: $agentHost  |  $fromTs --> $toTs" -ForegroundColor DarkCyan
+            }
+
+            # =====================================================================
+            # WINLOGBEAT / SECURITY ONION PARTITION SHIM
+            # The legacy offline path expects category-named files (process_events.
+            # ndjson, network_events.ndjson, ...) produced by Get-ElasticDetonation
+            # Logs against Elastic Defend's endpoint.events.* datasets. Pulls from
+            # Security Onion / filebeat-winlog are partitioned by *dataset* instead
+            # (windows.sysmon_operational.ndjson, windows.powershell_operational.
+            # ndjson, system.security.ndjson, ...). Without this shim the legacy
+            # path Read-Ndjson's every category file, finds nothing, populates
+            # everything with @(), and reports CLEAN on real detonations.
+            #
+            # Strategy: pre-load the dataset files, partition Sysmon by EID into the
+            # same in-memory arrays the legacy code expects ($procDocs / $netDocs /
+            # ...), then have the legacy Read-Ndjson calls fall through to those
+            # partitions via the Get-OfflineCategory helper below.
+            # =====================================================================
+            $sysmonPath = Join-Path $DetonationLogsDir 'windows.sysmon_operational.ndjson'
+            $psOpPath   = Join-Path $DetonationLogsDir 'windows.powershell_operational.ndjson'
+            $psClsPath  = Join-Path $DetonationLogsDir 'windows.powershell.ndjson'
+            $secPath    = Join-Path $DetonationLogsDir 'system.security.ndjson'
+            $appPath    = Join-Path $DetonationLogsDir 'system.application.ndjson'
+            $sysPath    = Join-Path $DetonationLogsDir 'system.system.ndjson'
+
+            $winlogbeatMode = (Test-Path $sysmonPath) -or (Test-Path $psOpPath) -or (Test-Path $secPath)
+
+            $offlinePartitions = @{
+                process_events    = @()
+                network_events    = @()
+                file_events       = @()
+                registry_events   = @()
+                api_events        = @()
+                image_load        = @()
+                driver_and_pipe   = @()
+                ps_script_block   = @()  # NEW: Sysmon-blind PowerShell EID 4104 ScriptBlockText
+                ps_classic        = @()  # NEW: classic PS engine events (400/600/etc.)
+                security_log      = @()  # NEW: Windows Security channel (4624/4625/4688/4720/...)
+                app_log           = @()  # NEW: Windows Application channel (Defender 1116/1117/1118)
+                system_log        = @()  # NEW: Windows System channel (service install 7045)
+            }
+
+            if ($winlogbeatMode) {
+                Write-Host "  Mode  : winlogbeat / filebeat dataset partitions detected" -ForegroundColor DarkGray
+                # ---- Sysmon partition by EID ---------------------------------
+                if (Test-Path $sysmonPath) {
+                    $sysmonAll = Read-Ndjson $sysmonPath
+                    Write-Host "  Sysmon: $($sysmonAll.Count) doc(s) loaded; partitioning by event_id..." -ForegroundColor DarkGray
+                    foreach ($d in $sysmonAll) {
+                        $eid = ''
+                        if ($d.winlog -and $d.winlog.event_id) { $eid = "$($d.winlog.event_id)" }
+                        elseif ($d.event -and $d.event.code)   { $eid = "$($d.event.code)" }
+                        switch ($eid) {
+                            '1'  { $offlinePartitions.process_events  += ,$d }              # ProcessCreate
+                            '2'  { $offlinePartitions.file_events     += ,$d }              # FileCreateTime
+                            '3'  { $offlinePartitions.network_events  += ,$d }              # NetworkConnect
+                            '5'  { $offlinePartitions.process_events  += ,$d }              # ProcessTerminate
+                            '6'  { $offlinePartitions.driver_and_pipe += ,$d }              # DriverLoad
+                            '7'  { $offlinePartitions.image_load      += ,$d }              # ImageLoad
+                            '8'  { $offlinePartitions.api_events      += ,$d }              # CreateRemoteThread
+                            '10' { $offlinePartitions.api_events      += ,$d }              # ProcessAccess
+                            '11' { $offlinePartitions.file_events     += ,$d }              # FileCreate
+                            '12' { $offlinePartitions.registry_events += ,$d }              # RegistryCreate
+                            '13' { $offlinePartitions.registry_events += ,$d }              # RegistrySetValue
+                            '14' { $offlinePartitions.registry_events += ,$d }              # RegistryRename
+                            '15' { $offlinePartitions.file_events     += ,$d }              # FileCreateStreamHash
+                            '17' { $offlinePartitions.driver_and_pipe += ,$d }              # PipeCreated
+                            '18' { $offlinePartitions.driver_and_pipe += ,$d }              # PipeConnected
+                            '22' { $offlinePartitions.network_events  += ,$d }              # DnsQuery (routed to net so dns.question.name aggregation picks it up)
+                            '23' { $offlinePartitions.file_events     += ,$d }              # FileDelete (archived)
+                            '24' { $offlinePartitions.api_events      += ,$d }              # ClipboardChange
+                            '25' { $offlinePartitions.api_events      += ,$d }              # ProcessTampering (AMSI / hollowing)
+                            '26' { $offlinePartitions.file_events     += ,$d }              # FileDeleteDetected (anti-forensics)
+                            '29' { $offlinePartitions.file_events     += ,$d }              # FileExecutableDetected
+                            default { }
+                        }
+                    }
+                    # Backfill DNS into dns.question.name for EID 22 events where filebeat did not auto-map
+                    foreach ($d in $offlinePartitions.network_events) {
+                        $eid = "$($d.winlog.event_id)"
+                        if ($eid -eq '22' -and -not ($d.dns -and $d.dns.question -and $d.dns.question.name)) {
+                            $q = ''
+                            if ($d.winlog -and $d.winlog.event_data -and $d.winlog.event_data.QueryName) { $q = "$($d.winlog.event_data.QueryName)" }
+                            if ($q) {
+                                if (-not $d.dns) { $d | Add-Member -NotePropertyName dns -NotePropertyValue ([PSCustomObject]@{ question = [PSCustomObject]@{ name = $q } }) -Force }
+                            }
+                        }
+                    }
+                    Write-Host ("    -> EID dist: " + (
+                        ($offlinePartitions.GetEnumerator() | Where-Object { $_.Key -in @('process_events','network_events','file_events','registry_events','api_events','image_load','driver_and_pipe') } |
+                            ForEach-Object { "$($_.Key)=$($_.Value.Count)" }) -join ', '
+                    )) -ForegroundColor DarkGray
+                }
+                # ---- PowerShell Script Block (EID 4104) + classic (EID 400/600/etc.) ----
+                if (Test-Path $psOpPath) {
+                    $psOpAll = Read-Ndjson $psOpPath
+                    $offlinePartitions.ps_script_block = @($psOpAll | Where-Object { "$($_.winlog.event_id)" -eq '4104' })
+                    Write-Host "  PS-Op : $($psOpAll.Count) doc(s); $($offlinePartitions.ps_script_block.Count) EID 4104 ScriptBlock event(s)" -ForegroundColor DarkGray
+                }
+                if (Test-Path $psClsPath) {
+                    $offlinePartitions.ps_classic = Read-Ndjson $psClsPath
+                    Write-Host "  PS-Cls: $($offlinePartitions.ps_classic.Count) classic PS engine doc(s)" -ForegroundColor DarkGray
+                }
+                # ---- Windows Security log ---------------------------------------
+                if (Test-Path $secPath) {
+                    $offlinePartitions.security_log = Read-Ndjson $secPath
+                    Write-Host "  SecLog: $($offlinePartitions.security_log.Count) Windows Security event(s)" -ForegroundColor DarkGray
+                }
+                # ---- Windows Application log (Defender lives here: EID 1116/1117/1118) ----
+                if (Test-Path $appPath) {
+                    $offlinePartitions.app_log = Read-Ndjson $appPath
+                    Write-Host "  AppLog: $($offlinePartitions.app_log.Count) Windows Application event(s)" -ForegroundColor DarkGray
+                }
+                if (Test-Path $sysPath) {
+                    $offlinePartitions.system_log = Read-Ndjson $sysPath
+                    Write-Host "  SysLog: $($offlinePartitions.system_log.Count) Windows System event(s)" -ForegroundColor DarkGray
+                }
+            }
+
+            # Replacement for the eight legacy Read-Ndjson category reads. If we
+            # populated the partition from winlogbeat, return that; otherwise fall
+            # back to the legacy file-on-disk pattern for backward compatibility
+            # with old Get-ElasticDetonationLogs pulls.
+            function Get-OfflineCategory {
+                param([string]$Category)
+                if ($offlinePartitions.ContainsKey($Category) -and $offlinePartitions[$Category].Count -gt 0) {
+                    return ,$offlinePartitions[$Category]
+                }
+                $legacy = Join-Path $DetonationLogsDir "$Category.ndjson"
+                if (Test-Path $legacy) { return ,(Read-Ndjson $legacy) }
+                return ,@()
+            }
 
             # --- [1/8] Alerts ---
             Write-Host "[1/8] Alerts (offline: alerts.ndjson)..." -ForegroundColor DarkGray
@@ -2008,7 +2145,7 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
 
             # --- [2/8] Processes ---
             Write-Host "[2/8] Processes (offline: process_events.ndjson)..." -ForegroundColor DarkGray
-            $procDocs     = Read-Ndjson (Join-Path $DetonationLogsDir "process_events.ndjson")
+            $procDocs     = Get-OfflineCategory 'process_events'
             $privateRx    = '^(10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[01])\.|127\.|169\.254\.)'
             $procNameGrps = @($procDocs | Where-Object { $_.process.name } | Group-Object { $_.process.name })
             $procNames    = @($procNameGrps | ForEach-Object { "($($_.Count)x) $($_.Name)" })
@@ -2089,7 +2226,7 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
 
             # --- [3/8] Network ---
             Write-Host "[3/8] Network (offline: network_events.ndjson)..." -ForegroundColor DarkGray
-            $netDocs    = Read-Ndjson (Join-Path $DetonationLogsDir "network_events.ndjson")
+            $netDocs    = Get-OfflineCategory 'network_events'
             $extIPList  = @($netDocs | Where-Object { $_.destination.ip -and $_.destination.ip -notmatch $privateRx } |
                 ForEach-Object { $_.destination.ip } | Where-Object { $_ } | Select-Object -Unique)
             $extIPs     = @($netDocs | Where-Object { $_.destination.ip -and $_.destination.ip -notmatch $privateRx } |
@@ -2097,13 +2234,29 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             $extPortStr = ($netDocs | ForEach-Object { $_.destination.port } | Where-Object { $_ } |
                 Select-Object -Unique | Sort-Object) -join ', '
             $netProcStr = ($netDocs | ForEach-Object { $_.process.name } | Where-Object { $_ } | Select-Object -Unique) -join ', '
-            $dnsGroups  = @($netDocs | Where-Object { $_.dns.question.name } | Group-Object { $_.dns.question.name })
+            # Per-doc agent host name (for filtering local mDNS / NetBIOS leakage out of DNS analysis)
+            $detonationAgentHost = ($netDocs | ForEach-Object { $_.agent.name } | Where-Object { $_ } | Select-Object -First 1)
+            if (-not $detonationAgentHost) { $detonationAgentHost = $agentHost }
+            $hostNameLow = if ($detonationAgentHost) { "$detonationAgentHost".ToLowerInvariant() } else { '' }
+
+            $dnsGroups  = @($netDocs | Where-Object {
+                $_.dns.question.name -and
+                # Filter mDNS / NetBIOS / single-label artifacts that aren't really C2 candidates
+                "$($_.dns.question.name)".ToLowerInvariant() -ne $hostNameLow -and
+                "$($_.dns.question.name)" -match '\.' -and
+                "$($_.dns.question.name)" -notmatch '(?i)\.(local|arpa|home|lan|internal|home\.arpa)$'
+            } | Group-Object { $_.dns.question.name })
             $dnsNames   = @($dnsGroups | ForEach-Object { "($($_.Count)x) $($_.Name)" })
             # Surface suspicious non-Microsoft DNS  -  potential C2 beaconing
-            # Whitelisted benign domains include: OS vendors, CDNs, CAs, OCSP, package repos, time services
+            # Whitelisted benign domains: OS vendors, CDNs, CAs, OCSP, package repos, time services
             $c2DNS = @($dnsGroups | Where-Object {
                 $_.Name -notmatch "microsoft|windows|office365|azure|akamai|google|apple|amazon|cloudflare|github|githubusercontent|wns\.windows|windowsupdate|digicert|symantec|live\.com|bing\.com|msftncsi|skype|msecnd|msn\.com|hotmail|msauth|msoidentity|ocsp\.|sectigo\.com|verisign\.com|godaddy\.com|comodo\.com|globalsign\.com|letsencrypt\.org|isrg\.x3\.letsencrypt|crt\.sh|crl\.|pki\.|ntp\.org|time\.nist\.gov|pool\.ntp\.org|chromeupdate|gvt1\.com|gstatic\.com|googleapis\.com|packages\.ubuntu\.com|archive\.ubuntu\.com|deb\.debian\.org|security\.debian\.org|fedoraproject\.org|dl\.fedoraproject\.org|mirror\.centos\.org|yum\.baseurl"
             } | ForEach-Object { $_.Name })
+            # Sub-category: tunneling / dynamic-DNS providers (ngrok, localtunnel, serveo) are
+            # near-pathognomonic for C2 in an enterprise environment.
+            $dynC2DNS = @($c2DNS | Where-Object {
+                $_ -match '(?i)\.(ngrok-free\.|ngrok\.io|ngrok\.app|ngrok\.dev|loca\.lt|serveo\.net|localtunnel\.me|trycloudflare\.com|pinggy\.io|bore\.pub|tuns\.sh|hooks\.serveo\.net|cloudflareaccess\.com|github\.dev|gitpod\.io)'
+            })
             Write-Host "       -> $($extIPs.Count) external IPs, $($dnsNames.Count) DNS queries" -ForegroundColor DarkGray
             if ($c2DNS.Count -gt 0) {
                 $c2Str = $c2DNS -join ' | '
@@ -2119,7 +2272,7 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
 
             # --- [4/8] Files ---
             Write-Host "[4/8] Files (offline: file_events.ndjson)..." -ForegroundColor DarkGray
-            $fileDocs     = Read-Ndjson (Join-Path $DetonationLogsDir "file_events.ndjson")
+            $fileDocs     = Get-OfflineCategory 'file_events'
             $fileNameGrps = @($fileDocs | Where-Object { $_.file.name } | Group-Object { $_.file.name })
             $fileNames    = @($fileNameGrps | ForEach-Object { "($($_.Count)x) $($_.Name)" })
             $fileHashes   = @($fileDocs | ForEach-Object { $_.file.hash.sha256 } |
@@ -2134,7 +2287,7 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
 
             # --- [5/8] Registry ---
             Write-Host "[5/8] Registry (offline: registry_events.ndjson)..." -ForegroundColor DarkGray
-            $regDocs   = Read-Ndjson (Join-Path $DetonationLogsDir "registry_events.ndjson")
+            $regDocs   = Get-OfflineCategory 'registry_events'
             $regGroups = @($regDocs | Where-Object { $_.registry.key } | Group-Object { $_.registry.key })
             $regKeys   = @($regGroups | ForEach-Object { "($($_.Count)x) $($_.Name)" })
             $rR = New-MockAgg @{ by_key = @($regGroups | ForEach-Object { $_.Name }) }
@@ -2142,7 +2295,7 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
 
             # --- [6/8] API events ---
             Write-Host "[6/8] API events (offline: api_events.ndjson)..." -ForegroundColor DarkGray
-            $apiDocs      = Read-Ndjson (Join-Path $DetonationLogsDir "api_events.ndjson")
+            $apiDocs      = Get-OfflineCategory 'api_events'
             $apiBehaviors = @($apiDocs | ForEach-Object { $_.process.Ext.api.behaviors } | Where-Object { $_ } | Select-Object -Unique)
             $apiNames     = @($apiDocs | ForEach-Object { $_.process.Ext.api.name }      | Where-Object { $_ } | Select-Object -Unique)
             $apiProcs     = @($apiDocs | Where-Object { $_.process.name } | Group-Object { $_.process.name } |
@@ -2152,8 +2305,14 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
 
             # --- [7/8] Image loads ---
             Write-Host "[7/8] Image loads (offline: image_load.ndjson)..." -ForegroundColor DarkGray
-            $imgDocs         = Read-Ndjson (Join-Path $DetonationLogsDir "image_load.ndjson")
-            $sysmonImages    = @($imgDocs | ForEach-Object { $_.dll.path } | Where-Object { $_ } | Select-Object -Unique)
+            $imgDocs         = Get-OfflineCategory 'image_load'
+            # Sysmon EID 7 / winlogbeat puts the loaded image path in file.path or
+            # winlog.event_data.ImageLoaded rather than dll.path. Check all three.
+            $sysmonImages    = @($imgDocs | ForEach-Object {
+                if ($_.dll -and $_.dll.path) { $_.dll.path }
+                elseif ($_.file -and $_.file.path) { $_.file.path }
+                elseif ($_.winlog -and $_.winlog.event_data -and $_.winlog.event_data.ImageLoaded) { $_.winlog.event_data.ImageLoaded }
+            } | Where-Object { $_ } | Select-Object -Unique)
             $sysmonSrcProcs  = @(); $sysmonTgtProcs  = @(); $sysmonEventIds  = @()
             $sysmonRules     = @(); $sysmonAccess    = @(); $sysmonUnknownCt = 0
             $syRA = $null; $syRB = $null
@@ -2161,7 +2320,7 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             Write-Host "       -> $($sysmonImages.Count) unique DLL load paths" -ForegroundColor DarkGray
 
             # Driver load events (Sysmon EID 6 + Elastic Defend driver category)
-            $drvPipeDocs    = Read-Ndjson (Join-Path $DetonationLogsDir "driver_and_pipe.ndjson")
+            $drvPipeDocs    = Get-OfflineCategory 'driver_and_pipe'
             $driverLoadDocs = @($drvPipeDocs | Where-Object {
                 "$($_.winlog.event_id)" -eq '6' -or $_.event.category -eq 'driver'
             })
@@ -2594,23 +2753,38 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                 $procEntry = if ($procBaselineMap) { $procBaselineMap.$pn } else { $null }
 
                 if ($procEntry) {
-                    # Path masquerading: process running from a directory not seen in known-good baseline
+                    # Path masquerading: process running from a directory not seen in known-good baseline.
+                    #
+                    # The VT-derived baseline encodes directories as concatenated path tokens with
+                    # sandbox-artifact prefixes mixed in, e.g.
+                    #   "%samplepath%c:\users\user\desktop%samplepath%c:\windows\system32\windowspowershell\v1.0"
+                    # A naive split on '%samplepath%' produces tokens that still glue two paths
+                    # together (e.g. "c:\users\user\desktopc:\windows\system32\windowspowershell\v1.0"),
+                    # which then fails both the sandbox-token filter (no exact match) and the
+                    # exe-dir prefix check - flagging canonical system locations as masquerading.
+                    # Fix: regex-extract every drive-letter-rooted substring as an independent path.
                     if ($exe -and $procEntry.D -and $procEntry.D.Count -gt 0) {
                         $exeDir = [System.IO.Path]::GetDirectoryName($exe).ToLower().TrimEnd('\')
-                        # Strip sandbox artifact tokens from each baseline dir entry and collect real Windows paths.
-                        # VT sandbox records paths like "%samplepath%c:\windows\system32" or
-                        # "%samplepath%c:\users\user\desktop%samplepath%..." - split and discard sandbox tokens.
                         $sandboxOnlyTokens = @('%samplepath%', 'c:\users\user\desktop', 'c:\users\user\appdata\local\temp')
                         $realBaseDirs = [System.Collections.Generic.List[string]]::new()
+                        $allCandidates = [System.Collections.Generic.List[string]]::new()
+                        # Match every drive-letter-prefixed substring; lazy-match up to the next
+                        # drive letter, the next '%samplepath%' marker, or end of string.
+                        $pathRx = '[a-z]:\\[^%]*?(?=[a-z]:\\|%samplepath%|$)'
                         foreach ($kd in $procEntry.D) {
-                            foreach ($part in ($kd -split '%samplepath%')) {
-                                $p = $part.ToLower().Trim().TrimEnd('\')
+                            $s = "$kd".ToLower()
+                            foreach ($m in [regex]::Matches($s, $pathRx)) {
+                                $p = $m.Value.Trim().TrimEnd('\')
                                 if ([string]::IsNullOrWhiteSpace($p)) { continue }
+                                if ($p.Length -le 2) { continue }     # "c:" alone is not a directory
+                                [void]$allCandidates.Add($p)
                                 $isSandbox = $false
-                                foreach ($tok in $sandboxOnlyTokens) { if ($p -like "*$tok*") { $isSandbox = $true; break } }
+                                foreach ($tok in $sandboxOnlyTokens) { if ($p -eq $tok) { $isSandbox = $true; break } }
                                 if (-not $isSandbox) { [void]$realBaseDirs.Add($p) }
                             }
                         }
+                        $realBaseDirs = @($realBaseDirs | Select-Object -Unique)
+                        $allCandidates = @($allCandidates | Select-Object -Unique)
                         # If only sandbox-path evidence exists and the exe lives under Program Files,
                         # the VT baseline simply has no real-world install data - suppress the alert.
                         $inProgramFiles = $exeDir -like 'c:\program files*'
@@ -2618,12 +2792,12 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                             # Baseline only knows sandbox paths; legitimate install - skip
                         } else {
                             $pathOk = $false
-                            $checkDirs = if ($realBaseDirs.Count -gt 0) { $realBaseDirs } else { @($procEntry.D | ForEach-Object { $_.ToLower().TrimEnd('\') }) }
+                            $checkDirs = if ($realBaseDirs.Count -gt 0) { $realBaseDirs } else { $allCandidates }
                             foreach ($kd in $checkDirs) {
-                                if ($exeDir -like "$kd*" -or $kd -like "$exeDir*") { $pathOk = $true; break }
+                                if ($exeDir -eq $kd -or $exeDir -like "$kd\*" -or $kd -like "$exeDir\*") { $pathOk = $true; break }
                             }
                             if (-not $pathOk) {
-                                $sample = ($checkDirs | Select-Object -First 2) -join '; '
+                                $sample = ($checkDirs | Select-Object -First 3) -join '; '
                                 [void]$pathAnomalies.Add("MASQUERADE: $pn from '$exe' (baseline dirs: $sample)")
                             }
                         }
@@ -3612,6 +3786,208 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             $findings.Add("Elevated registry modifications: $($regKeys.Count) unique keys touched")
         }
 
+        # -----------------------------------------------------------------------
+        # SUSPICIOUS DNS  -  potential C2 beaconing
+        # -----------------------------------------------------------------------
+        # $c2DNS and $dynC2DNS are populated in offline mode; default to @() in live mode
+        if (-not (Test-Path Variable:c2DNS))    { $c2DNS    = @() }
+        if (-not (Test-Path Variable:dynC2DNS)) { $dynC2DNS = @() }
+        if ($c2DNS.Count -gt 0) {
+            $dnsC2Score = [Math]::Min(25, $c2DNS.Count * 12)
+            $score += $dnsC2Score
+            $findings.Add("Suspicious DNS (non-allowlisted, potential C2): $(($c2DNS | Select-Object -First 5) -join ' | ') (+$dnsC2Score pts)")
+            $nextSteps.Add("Investigate non-allowlisted DNS queries  -  resolve domains, check WHOIS / VT / passive DNS")
+        }
+        if ($dynC2DNS.Count -gt 0) {
+            $dynC2Score = [Math]::Min(45, $dynC2DNS.Count * 30)
+            $score += $dynC2Score
+            $findings.Add("CRITICAL: $($dynC2DNS.Count) dynamic-DNS / tunneling C2 domain(s) observed (ngrok / loca.lt / trycloudflare / serveo  -  pathognomonic for C2 in enterprise): $($dynC2DNS -join ' | ') (+$dynC2Score pts) [T1568.002/T1572/T1071.001]")
+            $nextSteps.Add("Block dynamic-DNS / tunneling provider domains at the perimeter; identify originating process via Sysmon EID 22 process.name attribution")
+        }
+
+        # -----------------------------------------------------------------------
+        # HASH-NAMED EXECUTABLES  -  MalwareBazaar / live-malware staging signature
+        # -----------------------------------------------------------------------
+        # When the file basename of a running process is a SHA256/SHA1/MD5 hex string,
+        # it's almost always staged malware (analyst rename, MalwareBazaar 'infected' zip,
+        # automated dropper) rather than a legitimately installed application.
+        $hashNamedProcs = @()
+        if ($procDetails) {
+            foreach ($pd in $procDetails) {
+                $pnLow = if ($pd.process -and $pd.process.name) { "$($pd.process.name)".ToLowerInvariant() } else { '' }
+                if (-not $pnLow) { continue }
+                # Match basename<.ext> where basename is 32+ hex chars (allow optional _<hash> suffix from MB)
+                if ($pnLow -match '^[a-f0-9]{32,}(_[a-f0-9]{32,})?\.(exe|dll|scr|sys|cpl|ocx)$') {
+                    $hashNamedProcs += $pnLow
+                }
+            }
+        }
+        $hashNamedProcs = @($hashNamedProcs | Select-Object -Unique)
+        if ($hashNamedProcs.Count -gt 0) {
+            $hashNamedScore = [Math]::Min(60, $hashNamedProcs.Count * 12)
+            $score += $hashNamedScore
+            $sample = ($hashNamedProcs | Select-Object -First 3 | ForEach-Object { ($_ -split '_')[0].Substring(0,[Math]::Min(16,($_.Split('_')[0]).Length)) + '...' }) -join ', '
+            $findings.Add("CRITICAL: $($hashNamedProcs.Count) hash-named executable(s) running  -  binary file name IS the SHA256 hash, characteristic of MalwareBazaar 'infected' archive deployments and analyst-staged malware (+$hashNamedScore pts) [T1204.002/T1036.005]: $sample")
+            $nextSteps.Add("Hash-named PE binaries are extremely rare in production environments  -  verify whether this is sanctioned red-team / malware analysis activity or live attacker staging")
+        }
+
+        # -----------------------------------------------------------------------
+        # EID 10 PROCESS ACCESS  -  credential dumping / process hollowing
+        # -----------------------------------------------------------------------
+        # Sysmon EID 10 captures cross-process handle opens. The classic credential
+        # theft signature is TargetImage=lsass.exe with GrantedAccess containing the
+        # PROCESS_QUERY_INFORMATION + PROCESS_VM_READ bits (0x1010 / 0x1410 / 0x1438).
+        $lsassAccessDocs = @()
+        $highPrivAccessDocs = @()
+        if ($apiDocs) {
+            foreach ($d in $apiDocs) {
+                if ("$($d.winlog.event_id)" -ne '10') { continue }
+                $targetImg = "$($d.winlog.event_data.TargetImage)".ToLowerInvariant()
+                $access    = "$($d.winlog.event_data.GrantedAccess)".ToLowerInvariant()
+                $sourceProc = if ($d.process -and $d.process.name) { "$($d.process.name)".ToLowerInvariant() } else { '' }
+                if ($targetImg -match '\\lsass\.exe$' -and $sourceProc -notmatch '^(svchost|wininit|csrss|services|msmpeng|mpdefendercoreservice|sysmon|sysmon64)\.exe$') {
+                    $lsassAccessDocs += [PSCustomObject]@{ Src=$sourceProc; Access=$access; Target=$targetImg }
+                }
+                if ($access -match '0x1fffff' -and $sourceProc -notmatch '^(svchost|wininit|csrss|services|msmpeng|mpdefendercoreservice|sysmon|sysmon64)\.exe$' -and $targetImg) {
+                    $highPrivAccessDocs += [PSCustomObject]@{ Src=$sourceProc; Access=$access; Target=$targetImg }
+                }
+            }
+        }
+        if ($lsassAccessDocs.Count -gt 0) {
+            $score += 80
+            $srcSample = ($lsassAccessDocs | ForEach-Object { $_.Src } | Select-Object -Unique | Select-Object -First 3) -join ', '
+            $findings.Add("CRITICAL: $($lsassAccessDocs.Count) Sysmon EID 10 cross-process access to lsass.exe by non-system process(es) (+80 pts) [T1003.001 OS Credential Dumping]: $srcSample")
+            $nextSteps.Add("Investigate lsass.exe handle opens  -  the canonical credential-dumping signature (Mimikatz, comsvcs.exe minidump, custom dumpers)")
+        }
+        if ($highPrivAccessDocs.Count -gt 0 -and $lsassAccessDocs.Count -eq 0) {
+            $hpScore = [Math]::Min(20, $highPrivAccessDocs.Count * 4)
+            $score += $hpScore
+            $tgtSample = ($highPrivAccessDocs | ForEach-Object { "$($_.Src)->$([System.IO.Path]::GetFileName($_.Target))" } | Select-Object -Unique | Select-Object -First 3) -join ', '
+            $findings.Add("$($highPrivAccessDocs.Count) Sysmon EID 10 PROCESS_ALL_ACCESS handle opens between non-system processes (+$hpScore pts) [T1055 Process Injection candidate]: $tgtSample")
+        }
+
+        # -----------------------------------------------------------------------
+        # POWERSHELL 4104 SCRIPT BLOCK CONTENT
+        # -----------------------------------------------------------------------
+        # Scan EID 4104 message bodies for AMSI bypass, IEX execution, base64 payloads,
+        # Set-MpPreference, reflective .NET assembly load, etc.
+        $psScriptBlockHits = @()
+        if ($offlinePartitions -and $offlinePartitions.ps_script_block) {
+            $psMarkers = @{
+                'AmsiUtils|AmsiContext|amsiInitFailed|System\.Management\.Automation\.AmsiUtils' = 'AMSI bypass attempt [T1562.001]'
+                '\[Reflection\.Assembly\]::Load\(|Assembly\.Load\s*\(\s*\[Convert\]::FromBase64String' = 'In-memory .NET assembly load [T1027.011]'
+                '\bIEX\b\s*\(.*[Dd]ownloadString|Invoke-Expression.*[Dd]ownloadString|Invoke-WebRequest.*\|.*Invoke-Expression' = 'IEX download cradle [T1059.001/T1105]'
+                'Set-MpPreference\s+-DisableRealtimeMonitoring|Add-MpPreference\s+-ExclusionPath|Set-MpPreference\s+-DisableScriptScanning' = 'Defender tampering [T1562.001]'
+                '\[System\.Convert\]::FromBase64String\(.{200,}\)' = 'Large base64 payload decode [T1027]'
+                'VirtualAlloc.*ReadWriteExecute|VirtualProtect.*ExecuteReadWrite|GetProcAddress.*LoadLibrary' = 'Shellcode loader API references [T1055.001]'
+                'wevtutil\s+cl\s+|Clear-EventLog|Remove-EventLog' = 'Event log clearing [T1070.001]'
+                'Get-WmiObject\s+.*Win32_ShadowCopy|vssadmin\s+delete\s+shadows' = 'Shadow copy deletion [T1490]'
+            }
+            foreach ($d in $offlinePartitions.ps_script_block) {
+                $text = "$($d.message)"
+                if (-not $text) { $text = "$($d.winlog.event_data.ScriptBlockText)" }
+                if (-not $text) { continue }
+                foreach ($pat in $psMarkers.Keys) {
+                    if ($text -match $pat) {
+                        $psScriptBlockHits += "$($psMarkers[$pat])"
+                    }
+                }
+            }
+            $psScriptBlockHits = @($psScriptBlockHits | Select-Object -Unique)
+        }
+        if ($psScriptBlockHits.Count -gt 0) {
+            $psHitScore = [Math]::Min(50, $psScriptBlockHits.Count * 15)
+            $score += $psHitScore
+            $findings.Add("Suspicious PowerShell Script Block content (EID 4104, +$psHitScore pts): $($psScriptBlockHits -join ' | ')")
+            $nextSteps.Add("Review full PowerShell 4104 transcripts (windows.powershell_operational.ndjson) for the script-block content quoted above")
+        }
+
+        # -----------------------------------------------------------------------
+        # C2 FRAMEWORK ATTRIBUTION (Sliver / Merlin / Havoc / Mythic / Cobalt)
+        # -----------------------------------------------------------------------
+        # Combine path tokens, hash-named binaries, DNS patterns and process-tree signals
+        # to attribute observed activity to a specific open-source C2 framework. Generic
+        # "framework not found" Cobalt Strike beacon detection stays in module 4.
+        $frameworkSignals = @{
+            'Sliver'      = 0
+            'Merlin'      = 0
+            'Havoc'       = 0
+            'Mythic'      = 0
+            'CobaltStrike'= 0
+            'BruteRatel'  = 0
+            'PoshC2'      = 0
+        }
+        $frameworkEvidence = @{
+            'Sliver'      = [System.Collections.Generic.List[string]]::new()
+            'Merlin'      = [System.Collections.Generic.List[string]]::new()
+            'Havoc'       = [System.Collections.Generic.List[string]]::new()
+            'Mythic'      = [System.Collections.Generic.List[string]]::new()
+            'CobaltStrike'= [System.Collections.Generic.List[string]]::new()
+            'BruteRatel'  = [System.Collections.Generic.List[string]]::new()
+            'PoshC2'      = [System.Collections.Generic.List[string]]::new()
+        }
+        # Path-token attribution: \FreeSamples\Sliver\, \FreeSamples\Merlin\, etc.
+        if ($procDetails) {
+            foreach ($pd in $procDetails) {
+                $exeLow = if ($pd.process -and $pd.process.executable) { "$($pd.process.executable)".ToLowerInvariant() } else { '' }
+                $cmdLow = if ($pd.process -and $pd.process.command_line) { "$($pd.process.command_line)".ToLowerInvariant() } else { '' }
+                $parLow = if ($pd.process -and $pd.process.parent -and $pd.process.parent.command_line) { "$($pd.process.parent.command_line)".ToLowerInvariant() } else { '' }
+                foreach ($fw in @('Sliver','Merlin','Havoc','Mythic','CobaltStrike','BruteRatel','PoshC2')) {
+                    $tag = $fw.ToLowerInvariant()
+                    if ($exeLow -match "[\\/](freesamples|samples|kit|payloads?|c2|implants?)[\\/]$tag[\\/]" -or
+                        $cmdLow -match "[\\/](freesamples|samples|kit|payloads?|c2|implants?)[\\/]$tag[\\/]" -or
+                        $parLow -match "[\\/](freesamples|samples|kit|payloads?|c2|implants?)[\\/]$tag[\\/]") {
+                        $frameworkSignals[$fw] += 40
+                        [void]$frameworkEvidence[$fw].Add("staging path contains [$fw]")
+                        break
+                    }
+                }
+            }
+        }
+        # Merlin: rundll32 spawned from PowerShell (Go-binary DLL loading pattern)
+        if ($procCmdRecords) {
+            $rdll = @($procCmdRecords | Where-Object { $_.ProcessName -eq 'rundll32.exe' -and $_.CommandLine })
+            if ($rdll.Count -ge 2) {
+                $frameworkSignals['Merlin'] += 15
+                [void]$frameworkEvidence['Merlin'].Add("$($rdll.Count)x rundll32.exe (Go-binary DLL load pattern)")
+            }
+        }
+        # Havoc: ngrok / dynamic-DNS tunneling is heavily favoured by Havoc red-team setups
+        if ($dynC2DNS.Count -gt 0) {
+            $frameworkSignals['Havoc'] += 20
+            [void]$frameworkEvidence['Havoc'].Add("dynamic-DNS C2 tunnel: $($dynC2DNS -join ',')")
+        }
+        # Hash-named binaries push a generic +10 to all open-source frameworks (signature of
+        # MalwareBazaar staged samples, which span Sliver/Merlin/Havoc roughly equally).
+        if ($hashNamedProcs.Count -gt 0) {
+            foreach ($fw in @('Sliver','Merlin','Havoc')) {
+                $frameworkSignals[$fw] += [Math]::Min(20, $hashNamedProcs.Count * 5)
+                [void]$frameworkEvidence[$fw].Add("$($hashNamedProcs.Count) hash-named EXE(s) staged")
+            }
+        }
+        # Campaign hint from session_info.txt - strong prior when present
+        if ($campaign) {
+            $cLow = "$campaign".ToLowerInvariant()
+            foreach ($fw in @('Sliver','Merlin','Havoc','Mythic','CobaltStrike','BruteRatel','PoshC2')) {
+                if ($cLow -eq $fw.ToLowerInvariant() -or $cLow -match $fw.ToLowerInvariant()) {
+                    $frameworkSignals[$fw] += 30
+                    [void]$frameworkEvidence[$fw].Add("Campaign field declares [$fw]")
+                }
+            }
+        }
+        # Top-ranked framework gets its own finding when confidence >= 30
+        $topFramework = ($frameworkSignals.GetEnumerator() | Where-Object { $_.Value -ge 30 } | Sort-Object -Property Value -Descending | Select-Object -First 1)
+        if ($topFramework) {
+            $fwName     = $topFramework.Key
+            $fwScore    = $topFramework.Value
+            $fwEvidence = ($frameworkEvidence[$fwName] | Select-Object -Unique) -join '; '
+            $confLabel = if ($fwScore -ge 70) { 'HIGH' } elseif ($fwScore -ge 45) { 'MEDIUM' } else { 'LOW' }
+            $addPts = [Math]::Min(30, [int]($fwScore / 3))
+            $score += $addPts
+            $findings.Add("C2 framework attribution: $fwName ($confLabel confidence, $fwScore/100, +$addPts pts) - evidence: $fwEvidence")
+            $nextSteps.Add("Map $fwName-specific behaviour: review documented TTPs and search bodyfile/network logs for the framework's beacon timing, named pipe naming, and default port choices")
+        }
+
         # Threat intelligence attribution match
         if ($attributionText -match "Tier-1") {
             $score += 20
@@ -3777,6 +4153,95 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             Write-Host "`nBEHAVIORAL INDICATOR OVERLAPS (host activity vs VT sandbox behavior):" -ForegroundColor Yellow
             Write-Host $behaviorOverlap.ToString() -ForegroundColor Yellow
         }
+
+        # -----------------------------------------------------------------------
+        # KILL-CHAIN COVERAGE ROLLUP
+        # Maps every MITRE T-code that appeared in any finding to its ATT&CK tactic
+        # so the analyst can immediately see which kill-chain stages were exercised
+        # and where coverage gaps exist for this detonation.
+        # -----------------------------------------------------------------------
+        $mitreToTactic = @{
+            # Initial Access (TA0001)
+            'T1078'='Initial Access';     'T1078.001'='Initial Access'; 'T1078.002'='Initial Access'; 'T1078.003'='Initial Access'; 'T1078.004'='Initial Access'
+            'T1190'='Initial Access';     'T1133'='Initial Access';      'T1566'='Initial Access';     'T1566.001'='Initial Access'; 'T1566.002'='Initial Access'
+            'T1199'='Initial Access';     'T1195'='Initial Access';      'T1091'='Initial Access';     'T1200'='Initial Access'
+            # Execution (TA0002)
+            'T1059'='Execution';          'T1059.001'='Execution';       'T1059.003'='Execution';      'T1059.004'='Execution';      'T1059.005'='Execution'; 'T1059.006'='Execution'; 'T1059.007'='Execution'
+            'T1106'='Execution';          'T1129'='Execution';           'T1203'='Execution';          'T1204'='Execution';          'T1204.001'='Execution'; 'T1204.002'='Execution'
+            'T1559'='Execution';          'T1559.001'='Execution';       'T1559.002'='Execution';      'T1569'='Execution';          'T1569.001'='Execution'; 'T1569.002'='Execution'
+            'T1610'='Execution';          'T1053'='Execution';           'T1053.005'='Execution'
+            # Persistence (TA0003)
+            'T1543'='Persistence';        'T1543.003'='Persistence';     'T1546'='Persistence';        'T1546.008'='Persistence';    'T1546.012'='Persistence'
+            'T1547'='Persistence';        'T1547.001'='Persistence';     'T1574'='Persistence';        'T1574.001'='Persistence';    'T1574.002'='Persistence'; 'T1574.006'='Persistence'
+            'T1556'='Persistence';        'T1556.003'='Persistence';     'T1556.004'='Persistence';    'T1098'='Persistence';        'T1136'='Persistence'
+            'T1037'='Persistence';        'T1505'='Persistence';         'T1505.003'='Persistence'
+            # Privilege Escalation (TA0004)
+            'T1068'='Privilege Escalation';   'T1134'='Privilege Escalation'; 'T1548'='Privilege Escalation'; 'T1055'='Privilege Escalation'; 'T1055.001'='Privilege Escalation'; 'T1055.004'='Privilege Escalation'; 'T1055.012'='Privilege Escalation'
+            # Defense Evasion (TA0005)
+            'T1027'='Defense Evasion';    'T1027.001'='Defense Evasion'; 'T1027.010'='Defense Evasion'; 'T1027.011'='Defense Evasion'
+            'T1036'='Defense Evasion';    'T1036.005'='Defense Evasion'; 'T1070'='Defense Evasion';     'T1070.001'='Defense Evasion'; 'T1070.004'='Defense Evasion'; 'T1070.006'='Defense Evasion'
+            'T1112'='Defense Evasion';    'T1140'='Defense Evasion';     'T1218'='Defense Evasion';     'T1218.001'='Defense Evasion'; 'T1218.011'='Defense Evasion'
+            'T1562'='Defense Evasion';    'T1562.001'='Defense Evasion'; 'T1562.002'='Defense Evasion'; 'T1562.004'='Defense Evasion'; 'T1620'='Defense Evasion'; 'T1497'='Defense Evasion'
+            # Credential Access (TA0006)
+            'T1003'='Credential Access';  'T1003.001'='Credential Access'; 'T1003.002'='Credential Access'; 'T1003.003'='Credential Access'; 'T1003.004'='Credential Access'
+            'T1056'='Credential Access';  'T1056.001'='Credential Access'; 'T1552'='Credential Access';    'T1552.001'='Credential Access'; 'T1555'='Credential Access'
+            'T1110'='Credential Access';  'T1110.001'='Credential Access'; 'T1558'='Credential Access';    'T1558.003'='Credential Access'
+            # Discovery (TA0007)
+            'T1057'='Discovery';          'T1082'='Discovery';           'T1083'='Discovery';          'T1087'='Discovery';          'T1087.002'='Discovery'
+            'T1016'='Discovery';          'T1018'='Discovery';           'T1049'='Discovery';          'T1069'='Discovery';          'T1069.002'='Discovery'
+            'T1482'='Discovery';          'T1614'='Discovery'
+            # Lateral Movement (TA0008)
+            'T1021'='Lateral Movement';   'T1021.001'='Lateral Movement'; 'T1021.002'='Lateral Movement'; 'T1021.003'='Lateral Movement'; 'T1021.004'='Lateral Movement'; 'T1021.006'='Lateral Movement'
+            'T1570'='Lateral Movement';   'T1080'='Lateral Movement'
+            # Collection (TA0009)
+            'T1005'='Collection';         'T1113'='Collection';          'T1115'='Collection';         'T1123'='Collection';         'T1119'='Collection'
+            'T1560'='Collection';         'T1213'='Collection'
+            # Command and Control (TA0011)
+            'T1071'='Command and Control';   'T1071.001'='Command and Control'; 'T1071.003'='Command and Control'; 'T1071.004'='Command and Control'
+            'T1090'='Command and Control';   'T1090.003'='Command and Control'; 'T1095'='Command and Control';     'T1102'='Command and Control'
+            'T1104'='Command and Control';   'T1105'='Command and Control';     'T1132'='Command and Control';     'T1568'='Command and Control'; 'T1568.002'='Command and Control'
+            'T1571'='Command and Control';   'T1572'='Command and Control';     'T1573'='Command and Control';     'T1583.001'='Command and Control'
+            # Exfiltration (TA0010)
+            'T1041'='Exfiltration';       'T1048'='Exfiltration';        'T1052'='Exfiltration';       'T1567'='Exfiltration';       'T1029'='Exfiltration'
+            # Impact (TA0040)
+            'T1485'='Impact';             'T1486'='Impact';              'T1489'='Impact';             'T1490'='Impact';             'T1496'='Impact';             'T1499'='Impact'
+            'T1531'='Impact';             'T1561'='Impact'
+        }
+        $stageOrder = @('Initial Access','Execution','Persistence','Privilege Escalation','Defense Evasion','Credential Access','Discovery','Lateral Movement','Collection','Command and Control','Exfiltration','Impact')
+        $stageHits = @{}
+        foreach ($stage in $stageOrder) { $stageHits[$stage] = [System.Collections.Generic.HashSet[string]]::new() }
+        # Mine every finding string for T-codes
+        $allFindingText = ($findings -join ' ') + ' ' + ($nextSteps -join ' ')
+        foreach ($m in [regex]::Matches($allFindingText, 'T\d{4}(?:\.\d{3})?')) {
+            $tid = $m.Value
+            if ($mitreToTactic.ContainsKey($tid)) {
+                [void]$stageHits[$mitreToTactic[$tid]].Add($tid)
+            }
+        }
+        # Light heuristic backstops: tag a stage even when no explicit T-code was emitted,
+        # so a stage with strong implicit evidence still shows as covered.
+        if ($hashNamedProcs -and $hashNamedProcs.Count -gt 0) { [void]$stageHits['Initial Access'].Add('(implicit: staged binary)') }
+        if ($psCmds       -and $psCmds.Count       -gt 0)     { [void]$stageHits['Execution'].Add('(implicit: PowerShell)') }
+        if ($shellCmds    -and $shellCmds.Count    -gt 0)     { [void]$stageHits['Execution'].Add('(implicit: shell cmds)') }
+        if ($taskCmds     -and $taskCmds.Count     -gt 0)     { [void]$stageHits['Persistence'].Add('(implicit: schtasks)') }
+        if ($lolBinsFound -and $lolBinsFound.Count -gt 0)     { [void]$stageHits['Defense Evasion'].Add('(implicit: LOLBin)') }
+        if ($lsassAccessDocs -and $lsassAccessDocs.Count -gt 0) { [void]$stageHits['Credential Access'].Add('(implicit: lsass touch)') }
+        if ($c2DNS    -and $c2DNS.Count    -gt 0) { [void]$stageHits['Command and Control'].Add('(implicit: suspicious DNS)') }
+        if ($dynC2DNS -and $dynC2DNS.Count -gt 0) { [void]$stageHits['Command and Control'].Add('(implicit: dynamic-DNS)') }
+
+        Write-Host "`nKILL-CHAIN COVERAGE (MITRE ATT&CK tactic rollup):" -ForegroundColor DarkCyan
+        $stagesCovered = 0
+        foreach ($stage in $stageOrder) {
+            $tids = @($stageHits[$stage]) | Sort-Object
+            if ($tids.Count -gt 0) {
+                $stagesCovered++
+                $col = 'Yellow'
+                Write-Host ("  [+]  {0,-22} {1}" -f $stage, ($tids -join ', ')) -ForegroundColor $col
+            } else {
+                Write-Host ("  [ ]  {0,-22} (no evidence in window)" -f $stage) -ForegroundColor DarkGray
+            }
+        }
+        Write-Host ("  -- {0}/{1} kill-chain stages exercised in this window" -f $stagesCovered, $stageOrder.Count) -ForegroundColor DarkCyan
 
         Write-Host "`nRECOMMENDED NEXT STEPS:" -ForegroundColor DarkCyan
         $i = 1; $nextSteps | ForEach-Object { Write-Host "  $i. $_"; $i++ }
