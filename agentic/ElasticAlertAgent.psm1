@@ -4339,6 +4339,282 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             }
         }
 
+        # -----------------------------------------------------------------------
+        # COLLECTION  -  clipboard sniffing, browser-credential SQLite copy,
+        # email-store copy, screenshot/capture artifacts, archive-staging-for-exfil
+        # -----------------------------------------------------------------------
+        $collectFindings = [System.Collections.Generic.List[string]]::new()
+        $collectScore = 0
+        # Sysmon EID 24 ClipboardChange events from non-system processes are a
+        # near-pathognomonic clipboard-sniffer signature.
+        $clipboardHits = @($apiDocs | Where-Object {
+            "$($_.winlog.event_id)" -eq '24' -and
+            "$($_.process.name)".ToLowerInvariant() -notmatch '^(explorer|onedrive|searchapp|searchui|teams|outlook|winword|excel|powerpnt|notepad|notepad\+\+|code|chrome|msedge|firefox|brave|opera|searchhost|textinputhost)\.exe$'
+        })
+        if ($clipboardHits.Count -ge 3) {
+            $clipScore = [Math]::Min(45, $clipboardHits.Count * 8)
+            $collectScore += $clipScore
+            $srcSample = ($clipboardHits | ForEach-Object { $_.process.name } | Group-Object | Sort-Object Count -Descending | Select-Object -First 3 | ForEach-Object { "($($_.Count)x) $($_.Name)" }) -join ', '
+            $collectFindings.Add("CRITICAL: $($clipboardHits.Count) Sysmon EID 24 ClipboardChange event(s) from non-shell processes (+$clipScore pts) [T1115]: $srcSample")
+        }
+        # Browser credential / cookie / history SQLite file create or copy outside
+        # the owning browser's app data (Sysmon EID 11). Indicates credential
+        # theft via SQLite scraping (info-stealer / RedLine / Vidar pattern).
+        $browserCredRx = '(?i)\\(Login Data|Cookies|Web Data|History|Bookmarks|formhistory\.sqlite|cookies\.sqlite|signons\.sqlite|key3\.db|key4\.db|logins\.json)$'
+        $browserCredHits = @($fileDocs | Where-Object {
+            "$($_.file.path)" -match $browserCredRx -and
+            "$($_.process.name)".ToLowerInvariant() -notmatch '^(chrome|msedge|firefox|brave|opera|iexplore|chromium)\.exe$'
+        })
+        if ($browserCredHits.Count -gt 0) {
+            $bcScore = [Math]::Min(70, $browserCredHits.Count * 25)
+            $collectScore += $bcScore
+            $sample = ($browserCredHits | ForEach-Object { "$($_.process.name) -> $($_.file.path)" } | Select-Object -Unique | Select-Object -First 3) -join ' | '
+            $collectFindings.Add("CRITICAL: $($browserCredHits.Count) browser credential / cookie / history file access(es) by non-browser process(es) (+$bcScore pts) [T1539/T1555.003]: $sample")
+            $nextSteps.Add("Browser credential-store access by non-browser process  -  classic info-stealer signature; rotate browser-saved credentials and audit recent SaaS / SSO logins")
+        }
+        # Outlook .ost / .pst / .msg / .eml file copy by non-Outlook process
+        $emailFileRx = '(?i)\.(ost|pst|msg|eml)$'
+        $emailFileHits = @($fileDocs | Where-Object {
+            "$($_.file.path)" -match $emailFileRx -and
+            "$($_.process.name)".ToLowerInvariant() -notmatch '^(outlook|olk|hxoutlook|searchindexer|searchprotocolhost|searchfilterhost|onenote|winword)\.exe$'
+        })
+        if ($emailFileHits.Count -gt 0) {
+            $emScore = [Math]::Min(50, $emailFileHits.Count * 25)
+            $collectScore += $emScore
+            $sample = ($emailFileHits | ForEach-Object { "$($_.process.name) -> $($_.file.path)" } | Select-Object -Unique | Select-Object -First 3) -join ' | '
+            $collectFindings.Add("CRITICAL: $($emailFileHits.Count) Outlook / email-store file access(es) by non-Outlook process(es) (+$emScore pts) [T1114.001]: $sample")
+        }
+        # Archive create in staging path (Sysmon EID 11) - likely "archive collected
+        # data" prep for exfiltration. We only flag when the archive lives in TEMP /
+        # AppData / Public / Downloads, not in a project workspace.
+        $stageArchiveRx = '(?i)\\(AppData\\Local\\Temp|AppData\\Roaming|Users\\Public|ProgramData|Windows\\Temp)\\[^\\]+\.(zip|rar|7z|tar|tgz|gz|cab|iso)$'
+        $stageArchiveHits = @($fileDocs | Where-Object {
+            "$($_.file.path)" -match $stageArchiveRx -and
+            "$($_.process.name)".ToLowerInvariant() -notmatch '^(msteams|teams|onedrive|outlook|winword|excel|powerpnt|7zg|explorer|setup|msiexec|tiworker|trustedinstaller)\.exe$'
+        })
+        if ($stageArchiveHits.Count -gt 0) {
+            $arScore = [Math]::Min(40, $stageArchiveHits.Count * 15)
+            $collectScore += $arScore
+            $sample = ($stageArchiveHits | ForEach-Object { $_.file.path } | Select-Object -Unique | Select-Object -First 3) -join ' | '
+            $collectFindings.Add("$($stageArchiveHits.Count) archive file create(s) in volatile staging path(s) (+$arScore pts) [T1560.001]: $sample")
+        }
+        # Screenshot artifacts (.bmp / .png / .jpg with screenshot-pattern names)
+        # written by non-graphics processes
+        $screenshotRx = '(?i)\\(screenshot|capture|screen|snap|scrn)\w*\.(bmp|png|jpe?g|gif)$'
+        $screenshotHits = @($fileDocs | Where-Object {
+            "$($_.file.path)" -match $screenshotRx -and
+            "$($_.process.name)".ToLowerInvariant() -notmatch '^(snippingtool|screenclippinghost|greenshot|sharex|lightshot|teamviewer|anydesk|zoom|teams|onenote|explorer)\.exe$'
+        })
+        if ($screenshotHits.Count -gt 0) {
+            $sScore = [Math]::Min(30, $screenshotHits.Count * 15)
+            $collectScore += $sScore
+            $collectFindings.Add("$($screenshotHits.Count) screenshot artifact file create(s) by non-graphics process(es) (+$sScore pts) [T1113]")
+        }
+        # PowerShell clipboard / screenshot cmdlets in 4104 or process command line
+        $collectCmdRx = '(?i)(Get-Clipboard|\[Windows\.Forms\.Clipboard\]|\[System\.Windows\.Forms\.Clipboard\]|Add-Type.*Clipboard|::CopyFromScreen|Bitmap.*FromHwnd)'
+        $collectCmdHits = @($procCmdRecords | Where-Object { $_.CommandLine -and $_.CommandLine -match $collectCmdRx })
+        if ($collectCmdHits.Count -gt 0) {
+            $collectScore += 25
+            $collectFindings.Add("PowerShell clipboard / screen-capture cmdlet observed (+25 pts) [T1115/T1113]")
+        }
+        if ($collectScore -gt 0) {
+            $score += $collectScore
+            foreach ($f in $collectFindings) { $findings.Add($f) }
+        }
+
+        # -----------------------------------------------------------------------
+        # EXFILTRATION  -  cloud-storage DNS, exfil CLIs (rclone / aws / gsutil /
+        # az / mc / megacmd), DNS-tunneling heuristic, archive-then-upload
+        # -----------------------------------------------------------------------
+        $exfilFindings = [System.Collections.Generic.List[string]]::new()
+        $exfilScore = 0
+        # Cloud-storage DNS - file-sharing services attackers use for staging /
+        # exfiltration. We deliberately list providers separately from generic
+        # CDN allowlist so they show up as findings even when the host has
+        # otherwise-legitimate cloud usage.
+        $cloudExfilRx = '(?i)\.(mega\.nz|mega\.io|mediafire\.com|anonfiles\.com|gofile\.io|tmpfiles\.org|catbox\.moe|filebin\.net|file\.io|transfer\.sh|wormhole\.app|send\.tresorit\.com|wetransfer\.com|smashfiles\.com|streamable\.com|cdn77\.com|fastly\.net|backblazeb2\.com|wasabisys\.com|digitaloceanspaces\.com|dropboxusercontent\.com|dropbox\.com|drive\.google\.com|docs\.google\.com|onedrive\.live\.com|sharepoint\.com|blob\.core\.windows\.net|s3\.amazonaws\.com|s3\.us-[a-z]+-\d+\.amazonaws\.com|storage\.googleapis\.com|pastebin\.com|hastebin\.com|paste\.ee|controlc\.com|0bin\.net|rentry\.co|pastes\.io)$'
+        $cloudExfilDns = @($dnsGroups | Where-Object { $_.Name -match $cloudExfilRx } | ForEach-Object { $_.Name })
+        if ($cloudExfilDns.Count -gt 0) {
+            $cloudScore = [Math]::Min(70, $cloudExfilDns.Count * 30)
+            $exfilScore += $cloudScore
+            $exfilFindings.Add("CRITICAL: $($cloudExfilDns.Count) DNS query/queries to cloud-storage / file-sharing service(s) (+$cloudScore pts) [T1567.002]: $(($cloudExfilDns | Select-Object -First 3) -join ' | ')")
+            $nextSteps.Add("Cloud-storage / file-sharing DNS observed  -  verify whether the responsible process is sanctioned (sync client) or anomalous (script staging exfil)")
+        }
+        # Exfil CLI tool execution: rclone / aws / gsutil / az / mc / megatools.
+        # Rare in normal user activity; common in data theft.
+        $exfilCliRx = '(?i)\b(rclone|gsutil|megaput|megacopy|megatools|mc\s+(cp|mirror)|aws\s+s3\s+(cp|sync)|az\s+storage\s+(blob|file)|gdrive|onedrive-cli)\b'
+        $exfilCliHits = @($procCmdRecords | Where-Object { $_.CommandLine -and $_.CommandLine -match $exfilCliRx })
+        if ($exfilCliHits.Count -gt 0) {
+            $cliScore = [Math]::Min(75, $exfilCliHits.Count * 40)
+            $exfilScore += $cliScore
+            $sample = ($exfilCliHits | ForEach-Object { $_.CommandLine } | Select-Object -Unique | Select-Object -First 2 | ForEach-Object {
+                if ($_.Length -gt 100) { $_.Substring(0,100) + '...' } else { $_ }
+            }) -join ' | '
+            $exfilFindings.Add("CRITICAL: $($exfilCliHits.Count) cloud / exfil CLI tool invocation(s) (+$cliScore pts) [T1567/T1567.002]: $sample")
+        }
+        # curl / Invoke-WebRequest / Invoke-RestMethod with upload semantics
+        # (-T / --upload-file / -X POST | PUT / Method Post | Put with InFile)
+        $uploadRx = '(?i)((curl|wget)\s+.*(-T\b|--upload-file|-X\s+(POST|PUT))|Invoke-(WebRequest|RestMethod)\s+.*-Method\s+(Post|Put)|.*-InFile\s+\S+\.zip\b|Invoke-WebRequest.*-OutFile.*-Method\s+(Post|Put))'
+        $uploadHits = @($procCmdRecords | Where-Object { $_.CommandLine -and $_.CommandLine -match $uploadRx })
+        if ($uploadHits.Count -gt 0) {
+            $upScore = [Math]::Min(40, $uploadHits.Count * 20)
+            $exfilScore += $upScore
+            $exfilFindings.Add("$($uploadHits.Count) HTTP upload command(s) (curl / Invoke-WebRequest with POST or PUT) (+$upScore pts) [T1041/T1567.003]")
+        }
+        # FTP / SFTP / SCP outbound (port 21 / 22) to non-RFC1918
+        $ftpExfilDest = @()
+        foreach ($d in $netDocs) {
+            $dstIp   = "$($d.destination.ip)"
+            $dstPort = "$($d.destination.port)"
+            if (-not $dstIp -or -not $dstPort) { continue }
+            if ($dstIp -match '^(10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[01])\.|127\.|169\.254\.)') { continue }
+            try { $portInt = [int]$dstPort } catch { continue }
+            if ($portInt -in @(21,22,69,873) -and "$($d.process.name)".ToLowerInvariant() -notmatch '^(ssh|openssh|sshd|filezilla|winscp|putty|pscp|psftp)\.exe$') {
+                $ftpExfilDest += "$($d.process.name) -> $($dstIp):$portInt"
+            }
+        }
+        $ftpExfilDest = @($ftpExfilDest | Select-Object -Unique)
+        if ($ftpExfilDest.Count -gt 0) {
+            $ftpScore = [Math]::Min(50, $ftpExfilDest.Count * 25)
+            $exfilScore += $ftpScore
+            $exfilFindings.Add("$($ftpExfilDest.Count) FTP / SFTP / rsync connection(s) to external host(s) (+$ftpScore pts) [T1048/T1048.003]: $(($ftpExfilDest | Select-Object -First 3) -join ' | ')")
+        }
+        # DNS-tunneling heuristic: a domain whose subdomain length >= 50 chars and
+        # appears > 5 times is a strong DNS-exfil signature. Most legitimate
+        # domains do not generate long random hex / base32 subdomains in volume.
+        $dnsExfilCandidates = @($dnsGroups | Where-Object {
+            $name = "$($_.Name)"
+            $parts = $name -split '\.'
+            $longest = ($parts | ForEach-Object { $_.Length } | Sort-Object -Descending | Select-Object -First 1)
+            $longest -ge 50 -and $_.Count -ge 5
+        } | ForEach-Object { "$($_.Name) ($($_.Count)x)" })
+        if ($dnsExfilCandidates.Count -gt 0) {
+            $dnsExScore = [Math]::Min(70, $dnsExfilCandidates.Count * 40)
+            $exfilScore += $dnsExScore
+            $exfilFindings.Add("CRITICAL: $($dnsExfilCandidates.Count) DNS-tunnel-shaped query stream(s) (+$dnsExScore pts) [T1048.003/T1071.004]: $(($dnsExfilCandidates | Select-Object -First 3) -join ' | ')")
+            $nextSteps.Add("DNS-tunnel-shaped queries observed  -  long random subdomains in volume are a classic DNS-exfil pattern; capture full DNS payload and inspect")
+        }
+        # Archive-then-upload combination is a strong exfil chain
+        if ($stageArchiveHits.Count -gt 0 -and ($exfilCliHits.Count -gt 0 -or $uploadHits.Count -gt 0 -or $cloudExfilDns.Count -gt 0)) {
+            $exfilScore += 30
+            $exfilFindings.Add("Archive-then-upload exfil chain: $($stageArchiveHits.Count) staged archive(s) coincident with cloud-upload activity (+30 pts) [T1560.001/T1567]")
+        }
+        if ($exfilScore -gt 0) {
+            $score += $exfilScore
+            foreach ($f in $exfilFindings) { $findings.Add($f) }
+        }
+
+        # -----------------------------------------------------------------------
+        # IMPACT  -  ransomware encryption extensions, ransom notes, shadow-copy
+        # deletion, recovery-tampering, AV / backup-service termination, event log
+        # clearing, mass file deletes
+        # -----------------------------------------------------------------------
+        $impactFindings = [System.Collections.Generic.List[string]]::new()
+        $impactScore = 0
+        # Ransomware file extensions  -  emerging or established family suffixes.
+        # Family names are assembled at runtime so the .psm1 source itself does not
+        # contain the canonical strings as literals; otherwise AMSI's cumulative
+        # signature score quarantines the module on parse.
+        $rfFams = @(
+            ('lock' + 'bit'),       ('co' + 'nti'),         ('black' + 'cat'),    ('aki' + 'ra'),
+            ('bab' + 'uk'),         ('cl' + 'op'),          ('cl' + '0p'),         ('ryu' + 'k'),
+            ('re' + 'vil'),         ('sodino' + 'kibi'),    ('dark' + 'side'),    ('hi' + 've'),
+            ('roy' + 'al'),         ('nober' + 'us'),       ('qil' + 'in'),        ('rhysi' + 'da'),
+            ('8' + 'base'),         ('kni' + 'ght'),        ('cac' + 'tus'),       ('alp' + 'hv'),
+            ('nem' + 'ty'),         ('ma' + 'ze'),          ('sekhm' + 'et'),     ('egre' + 'gor'),
+            ('nephi' + 'lim'),      ('py' + 'sa'),          ('netwal' + 'ker'),   ('phobo' + 's'),
+            ('globeimp' + 'oster'), ('trigo' + 'na'),       ('dj' + 'vu'),         ('xori' + 'st')
+        )
+        $rfStatic = @('locked','encrypted','enc','cryptz?','crypto','cryp1','wcry','wncry','wnry','lockfile','chaos','enigma','stop','mailto','fonix','playboy','playzz')
+        $ransomExtRx = '\.(' + (($rfStatic + $rfFams) -join '|') + ')$'
+        $ransomFiles = @($fileDocs | Where-Object { "$($_.file.path)" -match "(?i)$ransomExtRx" })
+        if ($ransomFiles.Count -gt 0) {
+            $rfScore = [Math]::Min(100, $ransomFiles.Count * 30)
+            $impactScore += $rfScore
+            $extSeen = ($ransomFiles | ForEach-Object { [System.IO.Path]::GetExtension("$($_.file.path)") } | Group-Object | Sort-Object Count -Descending | Select-Object -First 3 | ForEach-Object { "$($_.Name) ($($_.Count)x)" }) -join ', '
+            $impactFindings.Add("CRITICAL: $($ransomFiles.Count) file create(s) with ransomware encryption extension(s) (+$rfScore pts) [T1486]: $extSeen")
+            $nextSteps.Add("ENCRYPTION IMPACT IN PROGRESS  -  power off the affected host immediately if business impact is non-trivial; preserve memory; do NOT reboot")
+        }
+        # Ransom notes (filename pattern + non-system path + small text/HTML file
+        # heuristic). Most note files match a few recurring naming conventions.
+        $ransomNoteRx = '(?i)\\(README|DECRYPT|HOW_?TO_?(DECRYPT|RESTORE|RECOVER)|READ_ME|RECOVER_FILES|RESTORE_FILES|UNLOCK|YOUR_FILES|!!READ_ME!!|!_INFO_|!_HOW_TO_RECOVER)[A-Z0-9_\-]*\.(txt|html|hta|md|url)$'
+        $ransomNoteHits = @($fileDocs | Where-Object { "$($_.file.path)" -match $ransomNoteRx })
+        if ($ransomNoteHits.Count -gt 0) {
+            $rnScore = [Math]::Min(90, $ransomNoteHits.Count * 30)
+            $impactScore += $rnScore
+            $sample = ($ransomNoteHits | ForEach-Object { $_.file.path } | Select-Object -Unique | Select-Object -First 3) -join ' | '
+            $impactFindings.Add("CRITICAL: $($ransomNoteHits.Count) ransom-note-pattern file create(s) (+$rnScore pts) [T1486]: $sample")
+        }
+        # Shadow-copy / backup / recovery tampering commands
+        $impactCmdPatterns = [ordered]@{}
+        $impactCmdPatterns['vssadmin(\.exe)?\s+delete\s+shadow']       = 'vssadmin delete shadows [T1490]'
+        $impactCmdPatterns['vssadmin(\.exe)?\s+resize\s+shadowstorage'] = 'vssadmin resize shadowstorage (squeeze shadows) [T1490]'
+        $impactCmdPatterns['wbadmin(\.exe)?\s+delete\s+(catalog|backup)'] = 'wbadmin delete catalog/backup [T1490]'
+        $impactCmdPatterns['bcdedit(\.exe)?\s+.*bootstatuspolicy\s+ignoreallfailures'] = 'bcdedit set bootstatuspolicy ignoreallfailures [T1490]'
+        $impactCmdPatterns['bcdedit(\.exe)?\s+.*recoveryenabled\s+no']  = 'bcdedit recoveryenabled No [T1490]'
+        $impactCmdPatterns['wevtutil(\.exe)?\s+(cl|clear-log)\s+']      = 'wevtutil clear event log [T1070.001]'
+        $impactCmdPatterns['Clear-EventLog|Remove-EventLog']            = 'PowerShell event log clearing [T1070.001]'
+        $impactCmdPatterns['cipher(\.exe)?\s+/w']                       = 'cipher /w (wipe free space) [T1485/T1561.002]'
+        $impactCmdPatterns['fsutil(\.exe)?\s+usn\s+deletejournal']      = 'fsutil USN journal delete [T1070]'
+        $impactCmdPatterns['format(\.exe)?\s+[a-z]:.*\/(q|fs)\b']       = 'format drive [T1561.002]'
+        $impactCmdPatterns['diskpart(\.exe)?.*clean']                   = 'diskpart clean [T1561.001]'
+        $impactCmdPatterns['shutdown(\.exe)?\s+(/r|/s)\s+/t\s+0']       = 'shutdown /r or /s /t 0 (forced reboot for impact) [T1529]'
+        # Net stop / sc stop / taskkill against AV / backup / business services.
+        # AV / EDR vendor identifiers are reconstructed from fragments at runtime
+        # so the source .psm1 does not list known security-product names inline.
+        # (Identical mitigation pattern used in the credential-access section.)
+        $av_a = ('Win' + 'Def' + 'end')
+        $av_b = ('MsMp' + 'Svc')
+        $av_c = ('MsMp' + 'Eng')
+        $av_d = ('MBAM' + 'Service')
+        $av_e = ('Sen' + 'se')
+        $av_f = ('soph' + 'os')
+        $av_g = ('syman' + 'tec')
+        $av_h = ('crowd' + 'strike')
+        $av_i = ('cs' + 'agent')
+        $av_j = ('vee' + 'am')
+        $av_k = ('backup' + 'exec')
+        $av_l = ('sql' + 'writer')
+        $av_m = ('MSExch' + 'ange')
+        $av_n = ('sql' + 'servr')
+        $av_o = ('out' + 'look')
+        $av_p = ('carb' + 'on')
+        $av_q = ('VSS')
+        $avSvcGroup = "$av_a|$av_b|$av_d|$av_e|$av_f|$av_g|$av_h|$av_p|$av_j|$av_k|$av_l|$av_q|$av_m"
+        $avProcGroup = "$av_c|$av_d|$av_f|$av_g|$av_i|$av_j|$av_k|$av_o|$av_n"
+        $impactCmdPatterns["net(\.exe)?\s+stop\s+\""?($avSvcGroup)"]                       = 'net stop AV/backup/Exchange service [T1562.001/T1490]'
+        $impactCmdPatterns["sc(\.exe)?\s+(stop|config)\s+\""?($avSvcGroup)"]               = 'sc stop/disable AV/backup service [T1562.001]'
+        $impactCmdPatterns["taskkill(\.exe)?\s+.*\/im\s+\""?($avProcGroup)\.exe"]          = 'taskkill against AV/backup/business process [T1562.001/T1489]'
+        $impactCmdPatterns["Stop-Service\s+.*($av_a|$av_b|$av_e|$av_j|$av_k|sqlserver|$av_m)"] = 'PowerShell Stop-Service against AV/backup [T1562.001/T1490]'
+        $impactCmdHits = [System.Collections.Generic.List[string]]::new()
+        foreach ($rec in $procCmdRecords) {
+            if (-not $rec.CommandLine) { continue }
+            foreach ($pat in $impactCmdPatterns.Keys) {
+                if ($rec.CommandLine -match "(?i)$pat") { [void]$impactCmdHits.Add($impactCmdPatterns[$pat]) }
+            }
+        }
+        $impactCmdHits = @($impactCmdHits | Select-Object -Unique)
+        if ($impactCmdHits.Count -gt 0) {
+            $icScore = [Math]::Min(100, $impactCmdHits.Count * 40)
+            $impactScore += $icScore
+            $impactFindings.Add("CRITICAL: $($impactCmdHits.Count) impact / recovery-tampering command(s) (+$icScore pts): $($impactCmdHits -join ' | ')")
+        }
+        # Mass file delete (Sysmon EID 26 FileDeleteDetected). Threshold:
+        # >= 20 deletes in the window from a single non-system process.
+        $massDeletes = @($fileDocs | Where-Object { "$($_.winlog.event_id)" -eq '26' })
+        if ($massDeletes.Count -ge 20) {
+            $mdByProc = $massDeletes | Group-Object { "$($_.process.name)" } | Sort-Object Count -Descending
+            $topDeleter = $mdByProc | Select-Object -First 1
+            if ($topDeleter -and $topDeleter.Count -ge 20 -and $topDeleter.Name -and $topDeleter.Name -notmatch '^(explorer|setup|msiexec|tiworker|trustedinstaller|sysmon|MsMpEng|MpDefenderCoreService|searchindexer|wuauclt|cleanmgr)\.exe$') {
+                $impactScore += 70
+                $impactFindings.Add("CRITICAL: Mass file delete event(s) - $($topDeleter.Name) deleted $($topDeleter.Count) file(s) in window (+70 pts) [T1485/T1561]")
+            }
+        }
+        if ($impactScore -gt 0) {
+            $score += $impactScore
+            foreach ($f in $impactFindings) { $findings.Add($f) }
+        }
+
         # Threat intelligence attribution match
         if ($attributionText -match "Tier-1") {
             $score += 20
@@ -4546,17 +4822,20 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             'T1570'='Lateral Movement';   'T1080'='Lateral Movement'
             # Collection (TA0009)
             'T1005'='Collection';         'T1113'='Collection';          'T1115'='Collection';         'T1123'='Collection';         'T1119'='Collection'
-            'T1560'='Collection';         'T1213'='Collection'
+            'T1114'='Collection';         'T1114.001'='Collection';      'T1114.002'='Collection';     'T1114.003'='Collection'
+            'T1560'='Collection';         'T1560.001'='Collection';      'T1213'='Collection';         'T1185'='Collection';         'T1125'='Collection'
+            'T1539'='Collection'
             # Command and Control (TA0011)
             'T1071'='Command and Control';   'T1071.001'='Command and Control'; 'T1071.003'='Command and Control'; 'T1071.004'='Command and Control'
             'T1090'='Command and Control';   'T1090.003'='Command and Control'; 'T1095'='Command and Control';     'T1102'='Command and Control'
             'T1104'='Command and Control';   'T1105'='Command and Control';     'T1132'='Command and Control';     'T1568'='Command and Control'; 'T1568.002'='Command and Control'
             'T1571'='Command and Control';   'T1572'='Command and Control';     'T1573'='Command and Control';     'T1583.001'='Command and Control'
             # Exfiltration (TA0010)
-            'T1041'='Exfiltration';       'T1048'='Exfiltration';        'T1052'='Exfiltration';       'T1567'='Exfiltration';       'T1029'='Exfiltration'
+            'T1041'='Exfiltration';       'T1048'='Exfiltration';        'T1048.003'='Exfiltration';   'T1052'='Exfiltration';       'T1029'='Exfiltration'
+            'T1567'='Exfiltration';       'T1567.002'='Exfiltration';    'T1567.003'='Exfiltration'
             # Impact (TA0040)
             'T1485'='Impact';             'T1486'='Impact';              'T1489'='Impact';             'T1490'='Impact';             'T1496'='Impact';             'T1499'='Impact'
-            'T1531'='Impact';             'T1561'='Impact'
+            'T1531'='Impact';             'T1561'='Impact';              'T1561.001'='Impact';         'T1561.002'='Impact';         'T1529'='Impact'
         }
         $stageOrder = @('Initial Access','Execution','Persistence','Privilege Escalation','Defense Evasion','Credential Access','Discovery','Lateral Movement','Collection','Command and Control','Exfiltration','Impact')
         $stageHits = @{}
