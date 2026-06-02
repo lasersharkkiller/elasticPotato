@@ -3665,6 +3665,152 @@ function Invoke-UACTriage {
     }
 
     # ==========================================================================
+    # MODULE 20  -  BOOT-CHAIN INTEGRITY (UEFI / GRUB / kernel / initramfs)
+    # ==========================================================================
+    # Bootkit detection for Linux:
+    #   - Unusual files in the ESP (/boot/efi/EFI/*) beyond the expected
+    #     distribution + Microsoft signed-shim manifest
+    #   - Multiple vmlinuz / initrd images with mismatched timestamps (indicator
+    #     of attacker-installed alternate kernel)
+    #   - GRUB cmdline reductions (module.sig_enforce=0, lockdown=none,
+    #     init_on_alloc=0, nosmep, etc.) that disable kernel hardening
+    #   - Bootkitty-specific filenames (first public Linux UEFI bootkit, 2024)
+    #     in /boot/efi/ or /boot/grub/
+    #   - Initramfs file dropped outside the package-managed location
+    #   - Secure-boot disabled state from mokutil --sb-state output
+    #   - Kernel taint=4 (already flagged in Module 1) cross-referenced here
+    Write-Host "[LP-UAC] Module 20: Boot-chain integrity..." -ForegroundColor DarkCyan
+
+    $bootRoot = Join-Path $uac '[root]\boot'
+    $espRoot  = Join-Path $bootRoot 'efi'
+    $bootkitFound = 0
+
+    if (Test-Path -LiteralPath $bootRoot) {
+        # 20a. Multiple vmlinuz images, especially with timestamps outside the
+        # package-manager window. Two kernels is normal (current + previous);
+        # three or more is worth examining; an unsigned / non-distro kernel name
+        # is highly suspicious.
+        $vmlinuzList = @(Get-ChildItem -LiteralPath $bootRoot -File -Filter 'vmlinuz*' -ErrorAction SilentlyContinue)
+        if ($vmlinuzList.Count -ge 3) {
+            $kSample = ($vmlinuzList | Sort-Object LastWriteTime -Descending | Select-Object -First 3 |
+                        ForEach-Object { "$($_.Name) ($([math]::Round($_.Length/1MB,1)) MB, $($_.LastWriteTime.ToString('yyyy-MM-dd')))" }) -join ' | '
+            Add-Finding 'HIGH' 'Boot-Chain' "$($vmlinuzList.Count) kernel image(s) in /boot" `
+                "Three or more vmlinuz images present: $kSample. Two are typical on Linux (current + previous on upgrade). Three or more warrants inspecting whether the extra image is package-managed or attacker-installed. Compare against 'dpkg -l linux-image-*' / 'rpm -q kernel'." `
+                @('T1542.003','T1014')
+        }
+        # Any vmlinuz NOT matching the distribution naming convention (kernel
+        # version + arch) is suspicious; attackers sometimes drop alternate
+        # bootable kernels with names like 'vmlinuz.bak' or 'vmlinuz-debug'
+        $oddVmlinuz = @($vmlinuzList | Where-Object { $_.Name -notmatch '^vmlinuz-\d+\.\d+\.\d+' })
+        if ($oddVmlinuz.Count -gt 0) {
+            $bootkitFound++
+            $oddSample = ($oddVmlinuz | ForEach-Object { $_.Name }) -join ', '
+            Add-Finding 'CRITICAL' 'Boot-Chain' "Non-Standard Kernel Image File Name(s) in /boot" `
+                "Found $($oddVmlinuz.Count) vmlinuz file(s) with names that do not match the canonical 'vmlinuz-<version>-<arch>' format: $oddSample. Verify whether these are package-managed or attacker-installed." `
+                @('T1542.003','T1014')
+        }
+    }
+
+    # 20b. GRUB configuration hardening relaxations  -  cmdline arguments that
+    # weaken kernel integrity / verified-boot enforcement
+    $grubDefaults = Read-UACArtifact $uac '[root]/etc/default/grub'
+    $grubCfg      = Read-UACArtifact $uac '[root]/boot/grub/grub.cfg'
+    $grubHardeningRx = '(?i)(module\.sig_enforce\s*=\s*0|lockdown\s*=\s*(none|integrity)|init_on_(alloc|free)\s*=\s*0|nosmep\b|nosmap\b|nokaslr\b|kaslr\s*=\s*0|noexec=off|page_alloc\.shuffle\s*=\s*0|enforcing\s*=\s*0|selinux\s*=\s*0|apparmor\s*=\s*0|integrity\s*=\s*off|ima_appraise=off)'
+    foreach ($grub in @(@{ Name='/etc/default/grub'; Content=$grubDefaults }, @{ Name='/boot/grub/grub.cfg'; Content=$grubCfg })) {
+        if (-not $grub.Content) { continue }
+        $grubMatches = [regex]::Matches($grub.Content, $grubHardeningRx)
+        if ($grubMatches.Count -gt 0) {
+            $bootkitFound++
+            $tokens = ($grubMatches | ForEach-Object { $_.Value } | Select-Object -Unique | Select-Object -First 5) -join ', '
+            Add-Finding 'CRITICAL' 'Boot-Chain' "GRUB Kernel-Hardening Disabled  -  $($grub.Name)" `
+                "Boot configuration file '$($grub.Name)' contains kernel-cmdline tokens that disable Linux integrity / verified-boot enforcement: $tokens. These flags relax module signature enforcement, kernel lockdown, ASLR, IMA appraisal, or LSMs, which is a documented bootkit / rootkit prerequisite (allowing unsigned malicious modules / initramfs hooks to load)." `
+                @('T1553.006','T1542.003','T1562.001')
+            Add-IOC 'FilePath' $grub.Name 'GRUB cmdline disables kernel hardening'
+        }
+    }
+
+    # 20c. Bootkitty / IronViper / Linux UEFI bootkit filename signatures
+    # Known public Linux UEFI bootkit (Bootkitty, ESET 2024) stages:
+    #   /boot/efi/EFI/Microsoft/Boot/grubx64-real.efi
+    #   /boot/efi/grub/bootkit.efi
+    #   /boot/efi/EFI/<distro>/grubx64.efi modifications
+    if (Test-Path -LiteralPath $espRoot) {
+        $bootkitMarkers = @('grubx64-real.efi','bootkit.efi','bootkitty.efi','ironviper.efi','grubaa64-real.efi')
+        $espFiles = @(Get-ChildItem -LiteralPath $espRoot -Recurse -File -ErrorAction SilentlyContinue)
+        foreach ($mark in $bootkitMarkers) {
+            $matchFiles = @($espFiles | Where-Object { $_.Name -ieq $mark })
+            foreach ($mf in $matchFiles) {
+                $bootkitFound++
+                Add-Finding 'CRITICAL' 'Boot-Chain' "Known UEFI Bootkit Filename in ESP: $($mf.Name)" `
+                    "File '$($mf.FullName)' matches a known UEFI bootkit staging filename. 'grubx64-real.efi' / 'bootkit.efi' are the documented Bootkitty deployment shim names. Capture and offline-analyse the binary; do NOT trust the running OS until firmware re-verification." `
+                    @('T1542.003','T1542.001','T1014')
+                Add-IOC 'FilePath' $mf.FullName 'Linux UEFI bootkit staging file'
+            }
+        }
+        # Surface every non-distro / non-Microsoft directory in the ESP (a clean
+        # ESP only contains EFI/<vendor>/ and EFI/BOOT/ subdirectories).
+        $espEfiRoot = Join-Path $espRoot 'EFI'
+        if (Test-Path -LiteralPath $espEfiRoot) {
+            $expectedVendors = @('Microsoft','BOOT','Ubuntu','Debian','RedHat','Fedora','CentOS','SuSE','Manjaro','Arch','Pop_OS','Mint','Boot','grub','systemd')
+            $espVendorDirs = @(Get-ChildItem -LiteralPath $espEfiRoot -Directory -ErrorAction SilentlyContinue)
+            $unexpected = @($espVendorDirs | Where-Object { $_.Name -notin $expectedVendors })
+            if ($unexpected.Count -gt 0) {
+                $sample = ($unexpected | ForEach-Object { $_.Name }) -join ', '
+                Add-Finding 'HIGH' 'Boot-Chain' "$($unexpected.Count) Unexpected Vendor Director(ies) in ESP" `
+                    "ESP /EFI/ contains directories that do not match a standard distribution or firmware vendor: $sample. Standard ESPs only contain EFI/BOOT/ + EFI/<your-distro>/ + EFI/Microsoft/ (dual-boot). An unexpected vendor name is a bootkit staging signal." `
+                    @('T1542.001','T1542.003')
+            }
+        }
+    }
+
+    # 20d. Secure-boot disabled state. UAC stores the output with the command
+    # name as a prefix, so we probe both forms.
+    $sbCandidates = @(
+        'live_response/system/cat_mokutil_--sb-state.txt',
+        'live_response/system/mokutil_--sb-state.txt',
+        'live_response/system/mokutil_sb_state.txt'
+    )
+    foreach ($sbPath in $sbCandidates) {
+        $sbStateLines = Read-UACArtifactLines $uac $sbPath
+        if ($sbStateLines.Count -eq 0) { continue }
+        $sbDisabled = @($sbStateLines | Where-Object { $_ -match '(?i)secureboot\s*disabled' })
+        if ($sbDisabled.Count -gt 0) {
+            $bootkitFound++
+            Add-Finding 'HIGH' 'Boot-Chain' 'Secure Boot DISABLED' `
+                "mokutil reports Secure Boot is disabled on this host. Without Secure Boot, unsigned UEFI applications and kernels can run. In an enterprise environment Secure Boot should normally be enforced; investigate whether disablement was sanctioned or attacker-induced." `
+                @('T1542.003','T1553.006')
+        }
+        break
+    }
+
+    # 20e. Kernel taint=4 cross-reference. Module 1 already flags taint=4 (forced
+    # module load); surface it again under the Boot-Chain category so the
+    # kill-chain rollup picks up the T1542.003 / Persistence tag. UAC prefixes
+    # the collected file with the originating command name (cat_*).
+    $taintCandidates = @(
+        'live_response/system/cat_proc_sys_kernel_tainted.txt',
+        'live_response/system/proc_sys_kernel_tainted.txt'
+    )
+    foreach ($taintPath in $taintCandidates) {
+        $taintFile = Read-UACArtifact $uac $taintPath
+        if (-not $taintFile) { continue }
+        $tv = $taintFile.Trim()
+        if ($tv -match '^\d+$' -and ([int]$tv -band 4) -ne 0) {
+            $bootkitFound++
+            Add-Finding 'HIGH' 'Boot-Chain' "Kernel Taint Bit 2 (Forced Module Load) Active" `
+                "Kernel taint value $tv has bit 2 set, indicating at least one module was loaded with insmod --force despite a signature or version mismatch. Forced module loading is a documented bootkit / kernel-rootkit prerequisite. Cross-reference with lsmod and /sys/module signing attributes." `
+                @('T1014','T1542.003','T1553.006')
+        }
+        break
+    }
+
+    if ($bootkitFound -eq 0) {
+        Write-Host "         No bootkit / boot-chain tamper indicators detected" -ForegroundColor DarkGray
+    } else {
+        Write-Host "         [CRITICAL] $bootkitFound boot-chain tamper indicator(s)" -ForegroundColor Red
+    }
+
+    # ==========================================================================
     # BUILD HTML REPORT
     # ==========================================================================
     Write-Host "[LP-UAC] Building HTML report..." -ForegroundColor DarkCyan

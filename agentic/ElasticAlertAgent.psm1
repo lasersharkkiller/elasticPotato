@@ -4615,6 +4615,113 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             foreach ($f in $impactFindings) { $findings.Add($f) }
         }
 
+        # -----------------------------------------------------------------------
+        # BOOTKIT / PRE-OS BOOT PERSISTENCE  -  BCD tampering, ESP / Boot folder
+        # file writes, secure-boot disable patterns, unsigned-driver-load enablement.
+        # Maps to MITRE T1542 (Pre-OS Boot) sub-techniques and T1553.006 (Code
+        # Signing Policy Modification). Bootkits run before the kernel and OS
+        # auditing start, so the detection surface is everything that primes the
+        # boot chain: BCD edits, ESP writes, driver-signing toggles. Drop into the
+        # Persistence stage in the kill-chain rollup.
+        # -----------------------------------------------------------------------
+        $bootkitFindings = [System.Collections.Generic.List[string]]::new()
+        $bootkitScore = 0
+        # BCD-edit / driver-signing-disable command patterns
+        $bootkitCmdPatterns = [ordered]@{}
+        $bootkitCmdPatterns['bcdedit(\.exe)?\s+.*\btestsigning\s+(on|yes)\b']         = 'bcdedit testsigning ON (allows unsigned driver load) [T1553.006/T1542.003]'
+        $bootkitCmdPatterns['bcdedit(\.exe)?\s+.*\bnointegritychecks\s+(on|yes)\b']   = 'bcdedit nointegritychecks ON (kernel integrity off) [T1542.003/T1553]'
+        $bootkitCmdPatterns['bcdedit(\.exe)?\s+.*\bdisabledynamictick\s+(on|yes)\b']  = 'bcdedit disabledynamictick ON (VBS / HVCI bypass primer) [T1542.003/T1562]'
+        $bootkitCmdPatterns['bcdedit(\.exe)?\s+.*\bloadoptions\s+[A-Z_]*DISABLE_INTEGRITY_CHECKS'] = 'bcdedit loadoptions DISABLE_INTEGRITY_CHECKS [T1542.003]'
+        $bootkitCmdPatterns['bcdedit(\.exe)?\s+.*\bhypervisorlaunchtype\s+off']       = 'bcdedit hypervisorlaunchtype off (VBS / Credential Guard kill) [T1562.001/T1542]'
+        $bootkitCmdPatterns['bcdedit(\.exe)?\s+.*\bbootdebug\s+(on|yes)\b']           = 'bcdedit bootdebug ON (kernel debug shim, signing relaxation) [T1542.003]'
+        $bootkitCmdPatterns['bcdedit(\.exe)?\s+.*\bbootstatuspolicy\s+IgnoreAllFailures'] = 'bcdedit bootstatuspolicy IgnoreAllFailures (suppress boot failures) [T1542.003/T1490]'
+        $bootkitCmdPatterns['bcdedit(\.exe)?\s+/(create|export|import)\b.*\.bcd\b']   = 'bcdedit BCD export / import / create on alternate store [T1542.003]'
+        $bootkitCmdPatterns['Set-ItemProperty.*HKLM:\\BCD']                            = 'PowerShell write into HKLM\BCD registry hive [T1542.003]'
+        $bootkitCmdPatterns['mountvol(\.exe)?\s+[a-z]:\s+/s\b']                       = 'mountvol /s (mount ESP for write) [T1542.001/T1542.003]'
+        $bootkitCmdPatterns['diskpart(\.exe)?.*\bset\s+id=[0-9a-fA-F\-]+EFI']         = 'diskpart partition ID EFI (re-label / mount ESP) [T1542.001]'
+        $bootkitCmdPatterns['bootice(\.exe)?']                                          = 'BOOTICE bootloader-edit utility [T1542.001/T1542.003]'
+        $bootkitCmdPatterns['fsutil(\.exe)?\s+repair\s+set']                          = 'fsutil repair (boot-volume repair flag tamper) [T1542]'
+        $bootkitCmdPatterns['reagentc(\.exe)?\s+/disable']                            = 'reagentc /disable (Windows Recovery off, removes boot-time integrity check) [T1542]'
+        $bootkitCmdHits = [System.Collections.Generic.List[string]]::new()
+        foreach ($rec in $procCmdRecords) {
+            if (-not $rec.CommandLine) { continue }
+            foreach ($pat in $bootkitCmdPatterns.Keys) {
+                if ($rec.CommandLine -match "(?i)$pat") { [void]$bootkitCmdHits.Add($bootkitCmdPatterns[$pat]) }
+            }
+        }
+        $bootkitCmdHits = @($bootkitCmdHits | Select-Object -Unique)
+        if ($bootkitCmdHits.Count -gt 0) {
+            $bcScore = [Math]::Min(95, $bootkitCmdHits.Count * 45)
+            $bootkitScore += $bcScore
+            $bootkitFindings.Add("CRITICAL: $($bootkitCmdHits.Count) BCD / boot-chain tamper command(s) (+$bcScore pts): $($bootkitCmdHits -join ' | ')")
+            $nextSteps.Add("Pre-OS boot tampering indicators present  -  validate bcdedit /enum output, BCD store integrity, secure-boot state, and re-run system-file-check; consider firmware reflash if MoonBounce / LoJax / similar suspected")
+        }
+
+        # File creates in boot-chain directories from non-Windows-Update processes
+        $bootPathRx = '(?i)\\(EFI|Boot|Windows\\Boot|System32\\Boot)\\(.+\.(efi|exe|dll|sys|bin|cfg|dat|wim|nvram|bak))$'
+        $bootPathHits = @($fileDocs | Where-Object {
+            "$($_.file.path)" -match $bootPathRx -and
+            "$($_.process.name)".ToLowerInvariant() -notmatch '^(tiworker|trustedinstaller|wuauclt|usoclient|cleanmgr|msiexec|setup|setuphost|systemsetup|installagent|dism|setupcl|drvinst)\.exe$'
+        })
+        if ($bootPathHits.Count -gt 0) {
+            $bpScore = [Math]::Min(90, $bootPathHits.Count * 40)
+            $bootkitScore += $bpScore
+            $sample = ($bootPathHits | ForEach-Object { "$($_.process.name) -> $($_.file.path)" } | Select-Object -Unique | Select-Object -First 3) -join ' | '
+            $bootkitFindings.Add("CRITICAL: $($bootPathHits.Count) boot-chain file write(s) by non-Windows-Update process(es) (+$bpScore pts) [T1542.001/T1542.003]: $sample")
+            $nextSteps.Add("Boot-chain file modification observed  -  capture and hash all ESP / Windows\Boot binaries, compare against known-good Microsoft signatures, audit secure-boot state and disabled secure-boot rules")
+        }
+
+        # Registry edits to BCD store or boot configuration (Sysmon EID 13)
+        $bootRegRx = '(?i)\\(BCD00000000\\Objects\\|System\\Setup\\BootDevice|System\\CurrentControlSet\\Control\\(BootEnvironment|HAL|BootDriverFlags|SecureBoot)|Control\\SafeBoot\\Network)'
+        $bootRegHits = @($regDocs | Where-Object {
+            "$($_.registry.key)$($_.winlog.event_data.TargetObject)" -match $bootRegRx
+        })
+        if ($bootRegHits.Count -gt 0) {
+            $brScore = [Math]::Min(80, $bootRegHits.Count * 25)
+            $bootkitScore += $brScore
+            $sample = ($bootRegHits | ForEach-Object {
+                $k = if ($_.registry.key) { $_.registry.key } else { $_.winlog.event_data.TargetObject }
+                "$k"
+            } | Select-Object -Unique | Select-Object -First 3) -join ' | '
+            $bootkitFindings.Add("CRITICAL: $($bootRegHits.Count) BCD / Boot / SecureBoot / SafeBoot registry write(s) (+$brScore pts) [T1542.003]: $sample")
+        }
+
+        # Driver load from non-system path (Sysmon EID 6).  Drivers normally live
+        # in System32\drivers, WinSxS, or DriverStore.  Anything else is suspect.
+        $driverLoadDocs = @($drvPipeDocs | Where-Object { "$($_.winlog.event_id)" -eq '6' })
+        $suspDrivers = @($driverLoadDocs | Where-Object {
+            $imgPath = "$($_.file.path)$($_.winlog.event_data.ImageLoaded)$($_.dll.path)"
+            $imgPath -and $imgPath -notmatch '(?i)\\(System32\\(drivers|DriverStore)|WinSxS|FileRepository|Program Files\\Windows Defender|Program Files\\Microsoft|Windows\\Microsoft\.NET)\\'
+        })
+        if ($suspDrivers.Count -gt 0) {
+            $sdScore = [Math]::Min(80, $suspDrivers.Count * 35)
+            $bootkitScore += $sdScore
+            $sample = ($suspDrivers | ForEach-Object {
+                "$($_.file.path)$($_.winlog.event_data.ImageLoaded)"
+            } | Select-Object -Unique | Select-Object -First 3) -join ' | '
+            $bootkitFindings.Add("CRITICAL: $($suspDrivers.Count) driver load(s) from non-system path (+$sdScore pts) [T1014/T1542.003]: $sample")
+            $nextSteps.Add("Driver load(s) from non-canonical path  -  hash, check signer, and verify driver-signing-policy state; chained with bcdedit testsigning this is the BlackLotus / unsigned-driver bootkit path")
+        }
+
+        # Secure Boot disable indicators from the Application or System log.
+        # Defender / Code Integrity emits these event IDs when SB is disabled
+        # or a violation is bypassed.
+        if ($appLog.Count -gt 0) {
+            $sbDisable = @($appLog | Where-Object {
+                "$($_.winlog.event_id)" -in @('1006','1037','1041') -and
+                "$($_.message)" -match '(?i)(secure\s*boot|code\s*integrity|driver\s*signing)'
+            })
+            if ($sbDisable.Count -gt 0) {
+                $bootkitScore += 60
+                $bootkitFindings.Add("CRITICAL: Application log: $($sbDisable.Count) Secure Boot / Code Integrity event(s) (+60 pts) [T1553/T1542.003]")
+            }
+        }
+
+        if ($bootkitScore -gt 0) {
+            $score += $bootkitScore
+            foreach ($f in $bootkitFindings) { $findings.Add($f) }
+        }
+
         # Threat intelligence attribution match
         if ($attributionText -match "Tier-1") {
             $score += 20
@@ -4802,6 +4909,9 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             'T1547'='Persistence';        'T1547.001'='Persistence';     'T1574'='Persistence';        'T1574.001'='Persistence';    'T1574.002'='Persistence'; 'T1574.006'='Persistence'
             'T1556'='Persistence';        'T1556.003'='Persistence';     'T1556.004'='Persistence';    'T1098'='Persistence';        'T1136'='Persistence'
             'T1037'='Persistence';        'T1505'='Persistence';         'T1505.003'='Persistence'
+            # Pre-OS Boot persistence (TA0003 + boot-integrity family)
+            'T1542'='Persistence';        'T1542.001'='Persistence';     'T1542.002'='Persistence';    'T1542.003'='Persistence';    'T1542.004'='Persistence'; 'T1542.005'='Persistence'
+            'T1553.006'='Persistence';    'T1014'='Persistence'
             # Privilege Escalation (TA0004)
             'T1068'='Privilege Escalation';   'T1134'='Privilege Escalation'; 'T1548'='Privilege Escalation'; 'T1055'='Privilege Escalation'; 'T1055.001'='Privilege Escalation'; 'T1055.004'='Privilege Escalation'; 'T1055.012'='Privilege Escalation'
             # Defense Evasion (TA0005)
