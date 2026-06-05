@@ -10,9 +10,12 @@
 #   6. Cross-run differential        (alert coverage delta: latest 2 runs per family)
 #   7. Observable indicators         (process drops, suspicious DNS, persistence)
 #
-# Auth:
-#   Kibana rules  -> Kibana_URL  + Elastic_User / Elastic_Pass  (port 5601)
-#   Alert signals -> Elastic_URL + Elastic_User / Elastic_Pass  (port 9200)
+# Auth (per-endpoint precedence, first available wins):
+#   Kibana rules  -> Kibana_URL  + (Kibana_ApiKey  > Kibana_User/Kibana_Pass > Elastic_*)
+#   Alert signals -> Elastic_URL + (Elastic_ApiKey > Elastic_User/Elastic_Pass)
+# URL examples:
+#   Security Onion 3.0  : https://192.168.71.10/elasticsearch  +  https://192.168.71.10
+#   Vanilla Elastic     : https://elasticsearch.lab:9200       +  https://kibana.lab:5601
 
 function Get-PurpleTeamMetrics {
     [CmdletBinding()]
@@ -47,24 +50,107 @@ function Get-PurpleTeamMetrics {
     }
 
     # ---- Credentials -------------------------------------------------------------
-    $esUser = $null; $esPass = $null
-    try {
-        $esUser = (Get-Secret -Name 'Elastic_User' -AsPlainText -ErrorAction SilentlyContinue).Trim()
-        $esPass = (Get-Secret -Name 'Elastic_Pass' -AsPlainText -ErrorAction SilentlyContinue).Trim()
-    } catch { }
-    if (-not $esUser) { $esUser = (Read-Host 'Elastic/Kibana username').Trim() }
-    if (-not $esPass) { $esPass = (Read-Host 'Elastic/Kibana password').Trim() }
+    # Auth precedence (first available wins) per endpoint:
+    #   Elasticsearch : Elastic_ApiKey  > Elastic_User + Elastic_Pass > prompt
+    #   Kibana        : Kibana_ApiKey   > Kibana_User  + Kibana_Pass  > Elastic_*  > prompt
+    # API key secrets accept either raw 'id:api_key' (we base64-encode at request
+    # time) or a pre-encoded base64 blob -- we detect which form was supplied.
+    $esApiKey = $null; $esUser = $null; $esPass = $null
+    $kbApiKey = $null; $kbUser = $null; $kbPass = $null
+    try { $esApiKey = (Get-Secret -Name 'Elastic_ApiKey' -AsPlainText -ErrorAction SilentlyContinue).Trim() } catch { }
+    try { $esUser   = (Get-Secret -Name 'Elastic_User'   -AsPlainText -ErrorAction SilentlyContinue).Trim() } catch { }
+    try { $esPass   = (Get-Secret -Name 'Elastic_Pass'   -AsPlainText -ErrorAction SilentlyContinue).Trim() } catch { }
+    try { $kbApiKey = (Get-Secret -Name 'Kibana_ApiKey'  -AsPlainText -ErrorAction SilentlyContinue).Trim() } catch { }
+    try { $kbUser   = (Get-Secret -Name 'Kibana_User'    -AsPlainText -ErrorAction SilentlyContinue).Trim() } catch { }
+    try { $kbPass   = (Get-Secret -Name 'Kibana_Pass'    -AsPlainText -ErrorAction SilentlyContinue).Trim() } catch { }
 
-    $b64Auth   = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${esUser}:${esPass}"))
-    $esHeaders = @{ 'Authorization' = "Basic $b64Auth"; 'Content-Type' = 'application/json' }
-    $kbHeaders = @{ 'Authorization' = "Basic $b64Auth"; 'Content-Type' = 'application/json'; 'kbn-xsrf' = 'true' }
+    # Helper: turn raw 'id:api_key' into canonical base64, leave already-encoded keys alone
+    function _Encode-ApiKey([string]$raw) {
+        if ([string]::IsNullOrWhiteSpace($raw)) { return $null }
+        if ($raw -match '^[^:]+:[^:]+$' -and $raw -notmatch '=$') {
+            return [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes($raw))
+        }
+        return $raw
+    }
+
+    # ---- Elasticsearch auth header ----
+    $esAuthMode = ''
+    if (-not [string]::IsNullOrWhiteSpace($esApiKey)) {
+        $esHeaders  = @{ 'Authorization' = "ApiKey $(_Encode-ApiKey $esApiKey)"; 'Content-Type' = 'application/json' }
+        $esAuthMode = 'ApiKey'
+    } else {
+        if (-not $esUser) { $esUser = (Read-Host 'Elastic username').Trim() }
+        if (-not $esPass) { $esPass = (Read-Host 'Elastic password').Trim() }
+        $b64Es      = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${esUser}:${esPass}"))
+        $esHeaders  = @{ 'Authorization' = "Basic $b64Es"; 'Content-Type' = 'application/json' }
+        $esAuthMode = "Basic ($esUser)"
+    }
+
+    # ---- Kibana auth header (independent precedence, falls back to Elastic creds) ----
+    $kbAuthMode = ''
+    if (-not [string]::IsNullOrWhiteSpace($kbApiKey)) {
+        $kbHeaders  = @{ 'Authorization' = "ApiKey $(_Encode-ApiKey $kbApiKey)"; 'Content-Type' = 'application/json'; 'kbn-xsrf' = 'true' }
+        $kbAuthMode = 'ApiKey'
+    } elseif (-not [string]::IsNullOrWhiteSpace($kbUser) -and -not [string]::IsNullOrWhiteSpace($kbPass)) {
+        $b64Kb      = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${kbUser}:${kbPass}"))
+        $kbHeaders  = @{ 'Authorization' = "Basic $b64Kb"; 'Content-Type' = 'application/json'; 'kbn-xsrf' = 'true' }
+        $kbAuthMode = "Basic ($kbUser)"
+    } else {
+        # Re-use whatever the ES side resolved (backward-compatible: old configs
+        # only had Elastic_User/Elastic_Pass and used the same creds for both).
+        $kbHeaders = $esHeaders.Clone()
+        $kbHeaders['kbn-xsrf'] = 'true'
+        $kbAuthMode = "$esAuthMode (shared w/ ES)"
+    }
 
     # ---- URLs --------------------------------------------------------------------
     $kibanaUrl = $null; $esUrl = $null
     try { $kibanaUrl = (Get-Secret -Name 'Kibana_URL'  -AsPlainText -ErrorAction SilentlyContinue).Trim().TrimEnd('/') } catch { }
     try { $esUrl     = (Get-Secret -Name 'Elastic_URL' -AsPlainText -ErrorAction SilentlyContinue).Trim().TrimEnd('/') } catch { }
-    if (-not $kibanaUrl) { $kibanaUrl = (Read-Host 'Kibana URL (e.g. https://192.168.1.10:5601)').Trim().TrimEnd('/') }
-    if (-not $esUrl)     { $esUrl     = (Read-Host 'Elasticsearch URL (e.g. https://192.168.1.10:9200)').Trim().TrimEnd('/') }
+    if (-not $kibanaUrl) { $kibanaUrl = (Read-Host 'Kibana URL (e.g. https://192.168.71.10  or  https://kibana.lab:5601)').Trim().TrimEnd('/') }
+    if (-not $esUrl)     { $esUrl     = (Read-Host 'Elasticsearch URL (e.g. https://192.168.71.10/elasticsearch  or  https://elasticsearch.lab:9200)').Trim().TrimEnd('/') }
+
+    Write-Host ("  Auth ES : {0}" -f $esAuthMode) -ForegroundColor DarkGray
+    Write-Host ("  Auth Kb : {0}" -f $kbAuthMode) -ForegroundColor DarkGray
+
+    # ---- Security Onion proxy probes ---------------------------------------------
+    # SO 3.0 redirects unauthenticated Basic requests to its SOC login page
+    # (HTTP 302 to /login). If we see a 302 here, surface a clear hint instead
+    # of failing with a cryptic JSON parse error later.
+    try {
+        Invoke-WebRequest -Uri "$esUrl/_cluster/health" -Headers $esHeaders -Method Get -MaximumRedirection 0 -UseBasicParsing @restArgs -ErrorAction Stop | Out-Null
+    } catch {
+        $resp = $_.Exception.Response
+        if ($resp -and ([int]$resp.StatusCode) -eq 302) {
+            $loc = $resp.Headers.Location
+            Write-Host "  [WARN] Elastic URL '$esUrl' returned HTTP 302 -> $loc" -ForegroundColor Yellow
+            Write-Host "         Detected an nginx-proxied Elasticsearch stack." -ForegroundColor Yellow
+            Write-Host "         For Security Onion 3.0 (Kratos session-cookie auth):" -ForegroundColor Yellow
+            Write-Host "           Headless HTTP auth (ApiKey / Basic / Bearer) is NOT supported  -  Kratos rejects all 3." -ForegroundColor Yellow
+            Write-Host "           Use the SSH connector instead: Invoke-TorchElasticQuery" -ForegroundColor Yellow
+            Write-Host "           Required vault secrets: TORCH_SSH_Host, TORCH_SSH_User, TORCH_SSH_Pass (or TORCH_SSH_KeyPath)." -ForegroundColor Yellow
+            Write-Host "         For other nginx-proxied stacks where ApiKey IS supported:" -ForegroundColor Yellow
+            Write-Host "           Update Elastic_URL to the proxy path (e.g. https://<host>/elasticsearch)" -ForegroundColor Yellow
+            Write-Host "           AND set Elastic_ApiKey to a valid API key." -ForegroundColor Yellow
+        }
+    }
+    try {
+        Invoke-WebRequest -Uri "$kibanaUrl/api/status" -Headers $kbHeaders -Method Get -MaximumRedirection 0 -UseBasicParsing @kibanaArgs -ErrorAction Stop | Out-Null
+    } catch {
+        $resp = $_.Exception.Response
+        if ($resp -and ([int]$resp.StatusCode) -eq 302) {
+            $loc = $resp.Headers.Location
+            Write-Host "  [WARN] Kibana URL '$kibanaUrl' returned HTTP 302 -> $loc" -ForegroundColor Yellow
+            Write-Host "         Detected an nginx-proxied Kibana stack." -ForegroundColor Yellow
+            Write-Host "         For Security Onion 3.0 (Kratos session-cookie auth):" -ForegroundColor Yellow
+            Write-Host "           Headless HTTP auth (ApiKey / Basic / Bearer) is NOT supported  -  Kratos rejects all 3." -ForegroundColor Yellow
+            Write-Host "           Use the SSH connector instead: Invoke-TorchElasticQuery" -ForegroundColor Yellow
+            Write-Host "           Required vault secrets: TORCH_SSH_Host, TORCH_SSH_User, TORCH_SSH_Pass (or TORCH_SSH_KeyPath)." -ForegroundColor Yellow
+            Write-Host "         For other nginx-proxied stacks where ApiKey IS supported:" -ForegroundColor Yellow
+            Write-Host "           Update Kibana_URL to the proxy path (e.g. https://<host>/kibana)" -ForegroundColor Yellow
+            Write-Host "           AND set Kibana_ApiKey to a valid API key." -ForegroundColor Yellow
+        }
+    }
 
     # ---- Resolve DetonationLogsPath ----------------------------------------------
     if (-not $DetonationLogsPath) {

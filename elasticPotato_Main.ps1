@@ -11,10 +11,30 @@
 #Set-Secret -Name 'Github_Access_Token' -Secret 'API_Key_Here'
 #Set-Secret -Name 'VT_API_Key_1' -Secret 'API_Key_Here'
 #Set-Secret -Name 'VT_API_Key_2' -Secret 'API_Key_Here'
-#Set-Secret -Name 'Elastic_URL' -Secret 'API_Key_Here'  # e.g. https://elasticsearch.yourdomain:9200
-#Set-Secret -Name 'Kibana_URL'  -Secret 'API_Key_Here'  # e.g. https://kibana.yourdomain:5601
-#Set-Secret -Name 'Elastic_User' -Secret 'API_Key_Here'
-#Set-Secret -Name 'Elastic_Pass' -Secret 'API_Key_Here'
+#Set-Secret -Name 'Elastic_URL' -Secret 'API_Key_Here'  # e.g. https://192.168.71.10/elasticsearch  or  https://elasticsearch.lab:9200
+#Set-Secret -Name 'Kibana_URL'  -Secret 'API_Key_Here'  # e.g. https://192.168.71.10/kibana       or  https://kibana.lab:5601
+#
+# Auth precedence (first available wins) for both Elasticsearch and Kibana:
+#   1. ApiKey  -  vault secret Elastic_ApiKey / Kibana_ApiKey  (PREFERRED;
+#                 required for Security Onion 3.0 + similar nginx-proxied
+#                 stacks that redirect unauthenticated Basic requests to a
+#                 SOC login page). Value may be either raw 'id:api_key' (we
+#                 base64-encode at request time) or the pre-encoded base64.
+#   2. Basic   -  vault secrets Elastic_User+Elastic_Pass / Kibana_User+Kibana_Pass
+#                 (vanilla Elasticsearch native auth, or any stack that
+#                 exposes :9200 / :5601 with Basic enabled)
+#   3. Prompt  -  if neither is set, the module prompts at run time.
+#
+#Set-Secret -Name 'Elastic_ApiKey' -Secret 'API_Key_Here'  # preferred; raw 'id:api_key' or pre-encoded base64
+#Set-Secret -Name 'Kibana_ApiKey'  -Secret 'API_Key_Here'  # preferred for Kibana; same format as Elastic_ApiKey
+#Set-Secret -Name 'Elastic_User' -Secret 'API_Key_Here'   # fallback Basic auth
+#Set-Secret -Name 'Elastic_Pass' -Secret 'API_Key_Here'   # fallback Basic auth
+#Set-Secret -Name 'Kibana_User'  -Secret 'API_Key_Here'   # fallback Basic auth (Kibana)
+#Set-Secret -Name 'Kibana_Pass'  -Secret 'API_Key_Here'   # fallback Basic auth (Kibana)
+#Set-Secret -Name 'TORCH_SSH_Host'    -Secret 'API_Key_Here'  # e.g. 192.168.71.10
+#Set-Secret -Name 'TORCH_SSH_User'    -Secret 'API_Key_Here'  # e.g. secon
+#Set-Secret -Name 'TORCH_SSH_Pass'    -Secret 'API_Key_Here'  # OR set TORCH_SSH_KeyPath instead
+#Set-Secret -Name 'TORCH_SSH_KeyPath' -Secret 'API_Key_Here'  # absolute path to OpenSSH private key
 #Paid Vendors (optional - used by baseline enrichment)
 #Set-Secret -Name 'APIVoid_API_Key' -Secret 'API_Key_Here'
 #Set-Secret -Name 'Intezer_API_Key' -Secret 'API_Key_Here'
@@ -45,6 +65,7 @@ Import-Module -Name ".\NewProcsModules\elasticProcessBaseline.psm1"
 
 # Elastic detonation logs used by Group 3
 Import-Module -Name ".\purpleTeaming\GetElasticDetonationLogs.psm1" -ErrorAction SilentlyContinue
+Import-Module -Name ".\purpleTeaming\Invoke-TorchElasticQuery.psm1" -ErrorAction SilentlyContinue
 
 # Detection cache refreshers (called by 3f and as standalone 3g/3h)
 Import-Module -Name ".\detections\Update-LolDriversCache.psm1"

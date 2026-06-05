@@ -19,15 +19,77 @@ function Get-ElasticSpecialCharsProcs {
     )
 
     # --- API SETUP ---
-    $esUrl  = Get-Secret -Name 'Elastic_URL'  -AsPlainText
-    $esUser = Get-Secret -Name 'Elastic_User' -AsPlainText
-    $esPass = Get-Secret -Name 'Elastic_Pass' -AsPlainText
-    $vtKey  = $null
+    # Auth precedence (first available wins):
+    #   1. ApiKey  -  vault secret Elastic_ApiKey  (preferred; required for
+    #      Security Onion 3.0 + similar nginx-proxied SO/ECS stacks that
+    #      redirect unauthenticated Basic requests to a SOC login page)
+    #   2. Basic   -  vault secrets Elastic_User + Elastic_Pass  (vanilla
+    #      Elasticsearch native auth)
+    #
+    # Elastic_URL examples:
+    #   Security Onion : 'https://192.168.71.10/elasticsearch'
+    #   Vanilla Elastic: 'https://elasticsearch.lab:9200'
+    $esUrl    = (Get-Secret -Name 'Elastic_URL'    -AsPlainText -ErrorAction SilentlyContinue).Trim().TrimEnd('/')
+    $esApiKey = (Get-Secret -Name 'Elastic_ApiKey' -AsPlainText -ErrorAction SilentlyContinue).Trim()
+    $esUser   = (Get-Secret -Name 'Elastic_User'   -AsPlainText -ErrorAction SilentlyContinue).Trim()
+    $esPass   = (Get-Secret -Name 'Elastic_Pass'   -AsPlainText -ErrorAction SilentlyContinue).Trim()
+    $vtKey    = $null
     try { $vtKey = (Get-Secret -Name 'VT_API_Key_1' -AsPlainText -ErrorAction Stop).Trim() } catch {}
 
-    $b64Auth  = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${esUser}:${esPass}"))
-    $esHeaders = @{ 'Authorization' = "Basic $b64Auth"; 'Content-Type' = 'application/json' }
+    if ([string]::IsNullOrWhiteSpace($esUrl)) {
+        $esUrl = Read-Host "[?] Elastic URL not found in vault (e.g. https://192.168.71.10/elasticsearch or https://elasticsearch.lab:9200)"
+        $esUrl = $esUrl.TrimEnd('/')
+    }
+    if ([string]::IsNullOrWhiteSpace($esUrl)) { Write-Error "Elastic URL required."; return }
+
+    # Build the auth header. Prefer API key when present; fall back to Basic.
+    # API key encoding: accept either raw 'id:api_key' (base64-encode at request
+    # time) or pre-encoded base64; emit the canonical "ApiKey <base64>" header.
+    $authMode = ''
+    if (-not [string]::IsNullOrWhiteSpace($esApiKey)) {
+        $apiKeyEncoded = $esApiKey
+        if ($esApiKey -match '^[^:]+:[^:]+$' -and $esApiKey -notmatch '=$') {
+            $apiKeyEncoded = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes($esApiKey))
+        }
+        $esHeaders = @{ 'Authorization' = "ApiKey $apiKeyEncoded"; 'Content-Type' = 'application/json' }
+        $authMode = 'ApiKey'
+    } elseif (-not [string]::IsNullOrWhiteSpace($esUser) -and -not [string]::IsNullOrWhiteSpace($esPass)) {
+        $b64Auth   = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${esUser}:${esPass}"))
+        $esHeaders = @{ 'Authorization' = "Basic $b64Auth"; 'Content-Type' = 'application/json' }
+        $authMode  = "Basic ($esUser)"
+    } else {
+        Write-Host "[ERROR] No Elastic credentials in vault. Set ONE of:" -ForegroundColor Red
+        Write-Host "  Set-Secret -Name Elastic_ApiKey -Secret '<id>:<api_key>'   (or pre-encoded base64)" -ForegroundColor DarkGray
+        Write-Host "  Set-Secret -Name Elastic_User   -Secret '<user>'           (and Elastic_Pass)" -ForegroundColor DarkGray
+        return
+    }
+    Write-Host "  Auth    : $authMode" -ForegroundColor DarkGray
+
     $vtHeaders  = @{ 'x-apikey' = $vtKey; 'Content-Type' = 'application/json' }
+
+    # Security Onion proxy probe: SO 3.0 redirects unauthenticated requests
+    # to its SOC login (HTTP 302 to /login). If we get a 302 back from the
+    # /_cluster/health probe, suggest the /elasticsearch/ proxy path so the
+    # user knows the URL pattern (Elastic_URL = 'https://<so-host>' is wrong;
+    # it needs to be 'https://<so-host>/elasticsearch').
+    try {
+        Invoke-WebRequest -Uri "$esUrl/_cluster/health" -Headers $esHeaders -Method Get -MaximumRedirection 0 -ErrorAction Stop | Out-Null
+    } catch {
+        $resp = $_.Exception.Response
+        if ($resp -and ([int]$resp.StatusCode) -eq 302) {
+            $loc = $resp.Headers.Location
+            Write-Host "[WARN] Elastic URL '$esUrl' returned HTTP 302 -> $loc" -ForegroundColor Yellow
+            Write-Host "       Detected an nginx-proxied Elasticsearch stack." -ForegroundColor Yellow
+            Write-Host "       For Security Onion 3.0 (Kratos session-cookie auth):" -ForegroundColor Yellow
+            Write-Host "         Headless HTTP auth (ApiKey / Basic / Bearer) is NOT supported  -  Kratos rejects all 3." -ForegroundColor Yellow
+            Write-Host "         Use the SSH connector instead: Invoke-TorchElasticQuery" -ForegroundColor Yellow
+            Write-Host "         Required vault secrets: TORCH_SSH_Host, TORCH_SSH_User, TORCH_SSH_Pass (or TORCH_SSH_KeyPath)." -ForegroundColor Yellow
+            Write-Host "       For other nginx-proxied stacks where ApiKey IS supported:" -ForegroundColor Yellow
+            Write-Host "         Update Elastic_URL to the proxy path (e.g. https://<host>/elasticsearch)" -ForegroundColor Yellow
+            Write-Host "         AND set Elastic_ApiKey to a valid API key." -ForegroundColor Yellow
+        }
+        # Continue regardless; let the main query report the real failure.
+    }
 
     $eventsIndex = "logs-*,winlogbeat-*,filebeat-*,endgame-*"
 

@@ -107,9 +107,14 @@
         if ($resp -and ([int]$resp.StatusCode) -eq 302) {
             $loc = $resp.Headers.Location
             Write-Host "[WARN] Elastic URL '$esUrl' returned HTTP 302 -> $loc" -ForegroundColor Yellow
-            Write-Host "       Looks like a Security Onion / proxy-protected stack." -ForegroundColor Yellow
-            Write-Host "       If the SO host is X, update Elastic_URL to 'https://X/elasticsearch' (or whichever proxy path)" -ForegroundColor Yellow
-            Write-Host "       AND switch to API-key auth (Elastic_ApiKey secret) - Basic auth gets bounced to SOC login." -ForegroundColor Yellow
+            Write-Host "       Detected an nginx-proxied Elasticsearch stack." -ForegroundColor Yellow
+            Write-Host "       For Security Onion 3.0 (Kratos session-cookie auth):" -ForegroundColor Yellow
+            Write-Host "         Headless HTTP auth (ApiKey / Basic / Bearer) is NOT supported  -  Kratos rejects all 3." -ForegroundColor Yellow
+            Write-Host "         Use the SSH connector instead: Invoke-TorchElasticQuery" -ForegroundColor Yellow
+            Write-Host "         Required vault secrets: TORCH_SSH_Host, TORCH_SSH_User, TORCH_SSH_Pass (or TORCH_SSH_KeyPath)." -ForegroundColor Yellow
+            Write-Host "       For other nginx-proxied stacks where ApiKey IS supported:" -ForegroundColor Yellow
+            Write-Host "         Update Elastic_URL to the proxy path (e.g. https://<host>/elasticsearch)" -ForegroundColor Yellow
+            Write-Host "         AND set Elastic_ApiKey to a valid API key." -ForegroundColor Yellow
         }
         # Continue regardless; let the main query report the real failure.
     }

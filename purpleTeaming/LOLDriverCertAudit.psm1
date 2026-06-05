@@ -31,16 +31,82 @@
 # ==================== Internal helpers ====================
 
 function Get-ElasticApiKeyInternal {
+    <#
+        Backward-compat shim: returns an API key from -ElasticApiKey,
+        vault secret 'Elastic_ApiKey' (canonical), 'Elastic_API_Key' (legacy),
+        or $env:ELASTIC_API_KEY - in that order.
+    #>
     param([string]$ApiKeyFromParam)
 
     if ($ApiKeyFromParam) { return $ApiKeyFromParam }
 
     try {
-        $k = Get-Secret -Name 'Elastic_API_Key' -AsPlainText
+        $k = Get-Secret -Name 'Elastic_ApiKey' -AsPlainText -ErrorAction SilentlyContinue
+        if ($k) { return $k }
+    } catch { }
+
+    try {
+        $k = Get-Secret -Name 'Elastic_API_Key' -AsPlainText -ErrorAction SilentlyContinue
         if ($k) { return $k }
     } catch { }
 
     if ($env:ELASTIC_API_KEY) { return $env:ELASTIC_API_KEY }
+
+    return $null
+}
+
+function Get-ElasticAuthHeaderInternal {
+    <#
+        Builds an Authorization header for Elasticsearch using the auth-
+        precedence pattern shared across this repo (matches GetElasticDetonationLogs):
+
+          1. ApiKey  -  -ElasticApiKey param, then vault 'Elastic_ApiKey'
+                        (legacy 'Elastic_API_Key' as fallback), then
+                        $env:ELASTIC_API_KEY
+          2. Basic   -  vault 'Elastic_User' + 'Elastic_Pass'
+
+        API key may be raw 'id:api_key' OR pre-encoded base64; both are
+        accepted and emitted as the canonical "ApiKey <base64>" header.
+
+        Returns @{ Headers = <hashtable>; AuthMode = '<string>' } or $null
+        if no credentials are available.
+    #>
+    param([string]$ApiKeyFromParam)
+
+    $apiKey = Get-ElasticApiKeyInternal -ApiKeyFromParam $ApiKeyFromParam
+
+    if (-not [string]::IsNullOrWhiteSpace($apiKey)) {
+        $apiKey = $apiKey.Trim()
+        $apiKeyEncoded = $apiKey
+        # Raw 'id:api_key' format -> base64-encode it ourselves.
+        if ($apiKey -match '^[^:]+:[^:]+$' -and $apiKey -notmatch '=$') {
+            $apiKeyEncoded = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes($apiKey))
+        }
+        return @{
+            Headers  = @{
+                'Authorization' = "ApiKey $apiKeyEncoded"
+                'Content-Type'  = 'application/json'
+            }
+            AuthMode = 'ApiKey'
+        }
+    }
+
+    $esUser = $null; $esPass = $null
+    try { $esUser = (Get-Secret -Name 'Elastic_User' -AsPlainText -ErrorAction SilentlyContinue) } catch { }
+    try { $esPass = (Get-Secret -Name 'Elastic_Pass' -AsPlainText -ErrorAction SilentlyContinue) } catch { }
+    if ($esUser) { $esUser = $esUser.Trim() }
+    if ($esPass) { $esPass = $esPass.Trim() }
+
+    if (-not [string]::IsNullOrWhiteSpace($esUser) -and -not [string]::IsNullOrWhiteSpace($esPass)) {
+        $b64 = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${esUser}:${esPass}"))
+        return @{
+            Headers  = @{
+                'Authorization' = "Basic $b64"
+                'Content-Type'  = 'application/json'
+            }
+            AuthMode = "Basic ($esUser)"
+        }
+    }
 
     return $null
 }
@@ -318,9 +384,13 @@ function Invoke-LOLDriverAudit {
     .PARAMETER DriverPath
         Path to the .sys driver file to test.
     .PARAMETER ElasticUrl
-        (Optional) Elastic SIEM base URL (e.g., https://elastic.lab:9200).
+        (Optional) Elastic SIEM base URL.  Examples:
+            https://192.168.71.10/elasticsearch   (Security Onion proxy path)
+            https://elasticsearch.lab:9200        (vanilla Elastic)
     .PARAMETER ElasticApiKey
-        (Optional) Elastic API key for querying detections.
+        (Optional) Elastic API key for querying detections.  Accepts either
+        raw 'id:api_key' or pre-encoded base64.  If omitted, vault secrets
+        'Elastic_ApiKey' (preferred) or 'Elastic_User'+'Elastic_Pass' are used.
     .PARAMETER OutputCsv
         Path for the results CSV (default: LOLDriverAudit_results.csv).
     .PARAMETER SkipLoad
@@ -329,8 +399,14 @@ function Invoke-LOLDriverAudit {
         Invoke-LOLDriverAudit -DriverPath C:\test\RTCore64.sys
 
     .EXAMPLE
+        # Vanilla Elasticsearch
         Invoke-LOLDriverAudit -DriverPath C:\test\RTCore64.sys `
-            -ElasticUrl https://elastic:9200 -ElasticApiKey "base64key"
+            -ElasticUrl https://elasticsearch.lab:9200 -ElasticApiKey "id:apikey"
+
+    .EXAMPLE
+        # Security Onion (proxy path + ApiKey from vault)
+        Invoke-LOLDriverAudit -DriverPath C:\test\RTCore64.sys `
+            -ElasticUrl https://192.168.71.10/elasticsearch
 
     .EXAMPLE
         # Batch test all .sys files in a directory
@@ -424,14 +500,37 @@ function Invoke-LOLDriverAudit {
 
     # --- Step 5: Elastic SIEM query ---
     $elasticDetections = @()
-    $apiKey = Get-ElasticApiKeyInternal -ApiKeyFromParam $ElasticApiKey
+    $auth = Get-ElasticAuthHeaderInternal -ApiKeyFromParam $ElasticApiKey
 
-    if ($ElasticUrl -and $apiKey) {
+    if ($ElasticUrl -and $auth) {
         Write-Host "[3/4] Querying Elastic SIEM..." -ForegroundColor Cyan
 
-        $headers = @{
-            "Authorization" = "ApiKey $apiKey"
-            "Content-Type"  = "application/json"
+        $headers = $auth.Headers
+        Write-Host "  Auth    : $($auth.AuthMode)" -ForegroundColor DarkGray
+
+        $esUrlTrim = $ElasticUrl.TrimEnd('/')
+        $restArgs = if ($PSVersionTable.PSVersion.Major -ge 6) { @{ SkipCertificateCheck = $true } } else { @{} }
+
+        # 302 probe: Security Onion redirects unauthenticated / wrong-path
+        # requests to its SOC login. Surface a clear hint if Elastic_URL is
+        # pointed at the SO root instead of /elasticsearch.
+        try {
+            Invoke-WebRequest -Uri "$esUrlTrim/_cluster/health" -Headers $headers -Method Get -MaximumRedirection 0 @restArgs -ErrorAction Stop | Out-Null
+        } catch {
+            $resp = $_.Exception.Response
+            if ($resp -and ([int]$resp.StatusCode) -eq 302) {
+                $loc = $resp.Headers.Location
+                Write-Host "[WARN] Elastic URL '$esUrlTrim' returned HTTP 302 -> $loc" -ForegroundColor Yellow
+                Write-Host "       Detected an nginx-proxied Elasticsearch stack." -ForegroundColor Yellow
+                Write-Host "       For Security Onion 3.0 (Kratos session-cookie auth):" -ForegroundColor Yellow
+                Write-Host "         Headless HTTP auth (ApiKey / Basic / Bearer) is NOT supported  -  Kratos rejects all 3." -ForegroundColor Yellow
+                Write-Host "         Use the SSH connector instead: Invoke-TorchElasticQuery" -ForegroundColor Yellow
+                Write-Host "         Required vault secrets: TORCH_SSH_Host, TORCH_SSH_User, TORCH_SSH_Pass (or TORCH_SSH_KeyPath)." -ForegroundColor Yellow
+                Write-Host "       For other nginx-proxied stacks where ApiKey IS supported:" -ForegroundColor Yellow
+                Write-Host "         Update Elastic_URL to the proxy path (e.g. https://<host>/elasticsearch)" -ForegroundColor Yellow
+                Write-Host "         AND set Elastic_ApiKey to a valid API key." -ForegroundColor Yellow
+            }
+            # Continue regardless; the main query will surface the real error.
         }
 
         $driverName = Split-Path $DriverPath -Leaf
@@ -456,8 +555,8 @@ function Invoke-LOLDriverAudit {
         } | ConvertTo-Json -Depth 10
 
         try {
-            $response = Invoke-RestMethod -Uri "$ElasticUrl/.ds-logs-*/_search" `
-                -Method Post -Headers $headers -Body $query -SkipCertificateCheck
+            $response = Invoke-RestMethod -Uri "$esUrlTrim/.ds-logs-*/_search" `
+                -Method Post -Headers $headers -Body $query @restArgs
 
             $elasticDetections = $response.hits.hits | ForEach-Object {
                 [PSCustomObject]@{
