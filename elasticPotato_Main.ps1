@@ -66,8 +66,6 @@ Import-Module -Name ".\NewProcsModules\elasticProcessBaseline.psm1"
 # Elastic detonation logs used by Group 3
 Import-Module -Name ".\purpleTeaming\GetElasticDetonationLogs.psm1" -ErrorAction SilentlyContinue
 Import-Module -Name ".\purpleTeaming\Invoke-TorchElasticQuery.psm1" -ErrorAction SilentlyContinue
-# Live Elastic forensic + alert pull used by Group 3 option 3a
-Import-Module -Name ".\purpleTeaming\elasticAlertsandThreats.psm1" -ErrorAction SilentlyContinue
 
 # Detection cache refreshers (called by 3f and as standalone 3g/3h)
 Import-Module -Name ".\detections\Update-LolDriversCache.psm1"
@@ -113,7 +111,7 @@ Write-Host ""
 Write-Host "  $([char]27)[4m+----------------------------------------------+$([char]27)[24m" -ForegroundColor DarkRed
 Write-Host "  $([char]27)[4m|  (Elastic env) Analyze Artifacts for An Alert |$([char]27)[24m" -ForegroundColor DarkRed
 Write-Host "  $([char]27)[4m+----------------------------------------------+$([char]27)[24m" -ForegroundColor DarkRed
-Write-Host "3a) [Live Elastic] Pull Alerts + Forensics for Host/Window (process / network / file / registry / DNS / scheduled tasks)" -ForegroundColor DarkRed
+Write-Host "3a) [AI Agent] LIVE Elastic Alert Triage (Windows) - same logic as 3b but queries Elastic directly (no offline NDJSON needed)" -ForegroundColor DarkRed
 Write-Host "3b) [AI Agent] Elastic Alert Triage (Windows) - Offline VT Enrichment" -ForegroundColor DarkRed
 Write-Host "3c) [AI Agent] Elastic Alert Triage (Linux)   - Offline Forensic Analysis" -ForegroundColor DarkRed
 Write-Host "3d) Pull Elastic Logs from Detonation Window" -ForegroundColor DarkRed
@@ -227,12 +225,18 @@ elseif ($functionChoice -eq "2c") {
 
 # -- GROUP 3: Elastic Alerts ---------------------------------------------------
 elseif ($functionChoice -eq "3a") {
-    # Live pull of forensic artifacts + alerts for a host across a time window.
-    # Function prompts internally for host name, start time, end time. Auth and
-    # URL come from the vault (Elastic_ApiKey > Elastic_User+Elastic_Pass, plus
-    # Elastic_URL). Against TORCH SO 3.0 this will 302-probe and tell the user
-    # to use the SSH path instead.
-    Get-ElasticAlertsAndThreats
+    # Same AI Agent analysis as 3b (kill-chain rollup, C2 framework attribution,
+    # 60+ finding categories, HTML report) but running in LIVE mode against
+    # Elasticsearch instead of pre-pulled NDJSON files. Called with no
+    # -DetonationLogsDir and no -AlertContext, which routes
+    # Invoke-ElasticAlertAgentAnalysis into its built-in 'Host forensic mode'
+    # branch: prompts internally for host name + start/end times, queries
+    # alerts + process + network + file + registry + DNS + PowerShell + shell
+    # categories via Invoke-AgentESQuery, runs the same fidelity / attribution /
+    # kill-chain pipeline as offline mode. Auth comes from the vault
+    # (Elastic_ApiKey > Elastic_User+Elastic_Pass). Against TORCH SO 3.0 this
+    # will 302-probe and tell the user to use the SSH path instead.
+    Invoke-ElasticAlertAgentAnalysis
 }
 elseif ($functionChoice -eq "3b") {
     $detonationLogPath = Read-Host "[?] Path to detonation log directory (NDJSON files)"
