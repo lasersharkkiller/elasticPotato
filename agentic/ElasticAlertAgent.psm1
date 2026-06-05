@@ -592,7 +592,11 @@
                         $today = Get-Date
                         $parsed = [datetime]::new($today.Year, $today.Month, $today.Day, $parsed.Hour, $parsed.Minute, $parsed.Second)
                     }
-                    if ($null -ne $tzOffset) { return $parsed.AddHours(-$tzOffset) }
+                    # SpecifyKind=Utc on the returned DateTime so downstream
+                    # callers don't re-convert a Local-treated Unspecified value
+                    # (which previously shifted a user-typed "16:12 UTC" by the
+                    # local TZ offset on subsequent .ToUniversalTime() calls).
+                    if ($null -ne $tzOffset) { return [DateTime]::SpecifyKind($parsed.AddHours(-$tzOffset), [DateTimeKind]::Utc) }
                     else                     { return $parsed.ToUniversalTime() }
                 }
 
@@ -2676,7 +2680,9 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                 $today = Get-Date
                 $parsed = [datetime]::new($today.Year, $today.Month, $today.Day, $parsed.Hour, $parsed.Minute, $parsed.Second)
             }
-            if ($null -ne $tzOffset) { return $parsed.AddHours(-$tzOffset) }
+            # SpecifyKind=Utc so downstream callers do not re-convert (see fix
+            # in ConvertTo-FallbackUtc for full rationale).
+            if ($null -ne $tzOffset) { return [DateTime]::SpecifyKind($parsed.AddHours(-$tzOffset), [DateTimeKind]::Utc) }
             else                     { return $parsed.ToUniversalTime() }
         }
 

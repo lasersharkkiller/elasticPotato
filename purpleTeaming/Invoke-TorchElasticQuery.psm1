@@ -205,9 +205,29 @@ function Invoke-TorchElasticQuery {
         $tempPath = "/tmp/tq_$([guid]::NewGuid().ToString('N')).json"
         $urlPath  = "$IndexPattern/_search?size=$Size"
 
+        # --- resolve sudo password ---
+        # so-elasticsearch-query reads /opt/so/conf/elasticsearch/curl.config
+        # which is root-owned mode 600, so sudo is required. Over Posh-SSH
+        # there's no TTY for the interactive password prompt, so we have to
+        # feed sudo via stdin using `sudo -S`. Try a dedicated TORCH_SSH_
+        # SudoPass secret first; fall back to TORCH_SSH_Pass (which is the
+        # same SSH login password on most SO 3.0 setups since the secon
+        # account uses the same password for both).
+        $sudoPass = $null
+        try { $sudoPass = (Get-Secret -Name 'TORCH_SSH_SudoPass' -AsPlainText -ErrorAction Stop).Trim() } catch {}
+        if ([string]::IsNullOrWhiteSpace($sudoPass)) {
+            try { $sudoPass = (Get-Secret -Name 'TORCH_SSH_Pass' -AsPlainText -ErrorAction Stop).Trim() } catch {}
+        }
+        if ([string]::IsNullOrWhiteSpace($sudoPass)) {
+            throw "sudo so-elasticsearch-query requires a password but neither TORCH_SSH_SudoPass nor TORCH_SSH_Pass is set in the vault. Set one with Set-Secret, or ask the SO admin to configure NOPASSWD sudo for /usr/sbin/so-elasticsearch-query."
+        }
+
         # --- build remote command ---
         # Single-quoted base64 is shell-safe (no $, no `, no \).
-        $cmd = "echo '$b64' | base64 -d > $tempPath && sudo so-elasticsearch-query '$urlPath' -d '@$tempPath' ; rc=`$? ; rm -f $tempPath ; exit `$rc"
+        # For the sudo password embedded in the shell command, single-quote
+        # escape any literal apostrophes via the '\'' idiom.
+        $sudoPassQuoted = $sudoPass -replace "'", "'\''"
+        $cmd = "echo '$b64' | base64 -d > $tempPath && printf '%s\n' '$sudoPassQuoted' | sudo -S -p '' so-elasticsearch-query '$urlPath' -d '@$tempPath' ; rc=`$? ; rm -f $tempPath ; exit `$rc"
 
         # --- execute ---
         $result = Invoke-SSHCommand -SessionId $Session.SessionId -Command $cmd -TimeOut $CommandTimeout -ErrorAction Stop
