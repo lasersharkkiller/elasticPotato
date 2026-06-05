@@ -57,12 +57,12 @@ function Get-PurpleTeamMetrics {
     # time) or a pre-encoded base64 blob -- we detect which form was supplied.
     $esApiKey = $null; $esUser = $null; $esPass = $null
     $kbApiKey = $null; $kbUser = $null; $kbPass = $null
-    try { $esApiKey = (Get-Secret -Name 'Elastic_ApiKey' -AsPlainText -ErrorAction SilentlyContinue).Trim() } catch { }
-    try { $esUser   = (Get-Secret -Name 'Elastic_User'   -AsPlainText -ErrorAction SilentlyContinue).Trim() } catch { }
-    try { $esPass   = (Get-Secret -Name 'Elastic_Pass'   -AsPlainText -ErrorAction SilentlyContinue).Trim() } catch { }
-    try { $kbApiKey = (Get-Secret -Name 'Kibana_ApiKey'  -AsPlainText -ErrorAction SilentlyContinue).Trim() } catch { }
-    try { $kbUser   = (Get-Secret -Name 'Kibana_User'    -AsPlainText -ErrorAction SilentlyContinue).Trim() } catch { }
-    try { $kbPass   = (Get-Secret -Name 'Kibana_Pass'    -AsPlainText -ErrorAction SilentlyContinue).Trim() } catch { }
+    try { $esApiKey = (Get-Secret -Name 'Elastic_ApiKey' -AsPlainText -ErrorAction Stop).Trim() } catch { }
+    try { $esUser   = (Get-Secret -Name 'Elastic_User'   -AsPlainText -ErrorAction Stop).Trim() } catch { }
+    try { $esPass   = (Get-Secret -Name 'Elastic_Pass'   -AsPlainText -ErrorAction Stop).Trim() } catch { }
+    try { $kbApiKey = (Get-Secret -Name 'Kibana_ApiKey'  -AsPlainText -ErrorAction Stop).Trim() } catch { }
+    try { $kbUser   = (Get-Secret -Name 'Kibana_User'    -AsPlainText -ErrorAction Stop).Trim() } catch { }
+    try { $kbPass   = (Get-Secret -Name 'Kibana_Pass'    -AsPlainText -ErrorAction Stop).Trim() } catch { }
 
     # Helper: turn raw 'id:api_key' into canonical base64, leave already-encoded keys alone
     function _Encode-ApiKey([string]$raw) {
@@ -105,8 +105,8 @@ function Get-PurpleTeamMetrics {
 
     # ---- URLs --------------------------------------------------------------------
     $kibanaUrl = $null; $esUrl = $null
-    try { $kibanaUrl = (Get-Secret -Name 'Kibana_URL'  -AsPlainText -ErrorAction SilentlyContinue).Trim().TrimEnd('/') } catch { }
-    try { $esUrl     = (Get-Secret -Name 'Elastic_URL' -AsPlainText -ErrorAction SilentlyContinue).Trim().TrimEnd('/') } catch { }
+    try { $kibanaUrl = (Get-Secret -Name 'Kibana_URL'  -AsPlainText -ErrorAction Stop).Trim().TrimEnd('/') } catch { }
+    try { $esUrl     = (Get-Secret -Name 'Elastic_URL' -AsPlainText -ErrorAction Stop).Trim().TrimEnd('/') } catch { }
     if (-not $kibanaUrl) { $kibanaUrl = (Read-Host 'Kibana URL (e.g. https://192.168.71.10  or  https://kibana.lab:5601)').Trim().TrimEnd('/') }
     if (-not $esUrl)     { $esUrl     = (Read-Host 'Elasticsearch URL (e.g. https://192.168.71.10/elasticsearch  or  https://elasticsearch.lab:9200)').Trim().TrimEnd('/') }
 

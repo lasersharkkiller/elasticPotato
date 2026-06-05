@@ -35,10 +35,15 @@
     $restArgs = if ($PSVersionTable.PSVersion.Major -ge 6) { @{ SkipCertificateCheck = $true } } else { @{} }
 
     # --- AUTH ---
-    $esUrl    = (Get-Secret -Name 'Elastic_URL'    -AsPlainText -ErrorAction SilentlyContinue).Trim().TrimEnd('/')
-    $esApiKey = (Get-Secret -Name 'Elastic_ApiKey' -AsPlainText -ErrorAction SilentlyContinue).Trim()
-    $esUser   = (Get-Secret -Name 'Elastic_User'   -AsPlainText -ErrorAction SilentlyContinue).Trim()
-    $esPass   = (Get-Secret -Name 'Elastic_Pass'   -AsPlainText -ErrorAction SilentlyContinue).Trim()
+    # Pre-init so .Trim() on a null Get-Secret result does not throw
+    # NullReferenceException ('You cannot call a method on a null-valued
+    # expression') when a vault entry is missing. -ErrorAction Stop inside
+    # try/catch absorbs both the Get-Secret error AND the trim's null deref.
+    $esUrl = $null; $esApiKey = $null; $esUser = $null; $esPass = $null
+    try { $esUrl    = (Get-Secret -Name 'Elastic_URL'    -AsPlainText -ErrorAction Stop).Trim().TrimEnd('/') } catch {}
+    try { $esApiKey = (Get-Secret -Name 'Elastic_ApiKey' -AsPlainText -ErrorAction Stop).Trim() } catch {}
+    try { $esUser   = (Get-Secret -Name 'Elastic_User'   -AsPlainText -ErrorAction Stop).Trim() } catch {}
+    try { $esPass   = (Get-Secret -Name 'Elastic_Pass'   -AsPlainText -ErrorAction Stop).Trim() } catch {}
 
     if ([string]::IsNullOrWhiteSpace($esUrl)) {
         $esUrl = Read-Host "[?] Elastic URL not found in vault (e.g. https://192.168.71.10/elasticsearch or https://elasticsearch.lab:9200)"
