@@ -633,14 +633,22 @@ function Save-TorchElasticDetonationLogs {
     $startIso = $StartTime.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
     $endIso   = $EndTime.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 
-    $datasets = @(
-        'windows.sysmon_operational',
-        'windows.powershell_operational',
-        'windows.powershell',
-        'system.security',
-        'system.application',
-        'system.system'
-    )
+    # Canonical Fleet dataset name -> acceptable alternates we'll OR against.
+    # SO 3.0 Fleet ships windows.* via the Windows integration today, but
+    # historically the same telemetry has landed under bare 'sysmon',
+    # 'winlog.sysmon', 'powershell.operational', etc. depending on the
+    # integration version or whether it shipped via Winlogbeat. Using `terms`
+    # (plural) with the alias list keeps a renamed/older deployment from
+    # silently returning zero events.
+    $datasetAliases = [ordered]@{
+        'windows.sysmon_operational'      = @('windows.sysmon_operational', 'windows.sysmon', 'sysmon', 'winlog.sysmon')
+        'windows.powershell_operational'  = @('windows.powershell_operational', 'windows.powershell.operational', 'powershell.operational', 'powershell_operational')
+        'windows.powershell'              = @('windows.powershell', 'powershell')
+        'system.security'                 = @('system.security', 'windows.security', 'security', 'winlog.security')
+        'system.application'              = @('system.application', 'windows.application', 'application', 'winlog.application')
+        'system.system'                   = @('system.system', 'windows.system', 'system', 'winlog.system')
+    }
+    $datasets = @($datasetAliases.Keys)
 
     $session = Get-TorchSSHSession
     $summary = @()
@@ -663,12 +671,37 @@ function Save-TorchElasticDetonationLogs {
         foreach ($ds in $datasets) {
             Write-Host "[*] Pulling $ds  $startIso -> $endIso" -ForegroundColor DarkCyan
 
+            # `terms` (plural) lets event.dataset match any of the canonical
+            # name or its known alternates (see $datasetAliases above).
             $filters = @(
-                @{ term  = @{ 'event.dataset' = $ds } },
+                @{ terms = @{ 'event.dataset' = $datasetAliases[$ds] } },
                 @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } }
             )
             if (-not [string]::IsNullOrWhiteSpace($HostFilter)) {
-                $filters += @{ term = @{ 'host.name' = $HostFilter } }
+                # Match the supplied -HostFilter against any of the five
+                # fields Fleet / winlogbeat / Elastic Agent commonly populate
+                # for Windows hosts, in any casing the user might have
+                # supplied OR that Fleet's "Host name format" policy may have
+                # written. Wildcard clauses on the lowercased value catch
+                # FQDN-formatted values (e.g. win11_sandbox.lab.local) per
+                # ECS host.name guidance + the SO 3.0 Fleet FQDN toggle.
+                $hostCasings = @(
+                    $HostFilter,
+                    $HostFilter.ToLowerInvariant(),
+                    $HostFilter.ToUpperInvariant()
+                ) | Select-Object -Unique
+                $hostFields = @('host.name', 'host.hostname', 'agent.name', 'agent.hostname', 'winlog.computer_name')
+                $hostShould = @()
+                foreach ($field in $hostFields) {
+                    foreach ($casing in $hostCasings) {
+                        $hostShould += @{ term = @{ $field = $casing } }
+                    }
+                }
+                $hostLower = $HostFilter.ToLowerInvariant()
+                foreach ($field in @('host.name', 'host.hostname', 'agent.name', 'agent.hostname')) {
+                    $hostShould += @{ wildcard = @{ $field = "*$hostLower*" } }
+                }
+                $filters += @{ bool = @{ should = $hostShould; minimum_should_match = 1 } }
             }
 
             $outFile = Join-Path $OutputDir "$ds.ndjson"
