@@ -9,7 +9,20 @@
         registry, and alert events separately and saves each as NDJSON + a
         combined summary CSV.
     .NOTES
-        Requires vault secrets: Elastic_URL, Elastic_User, Elastic_Pass
+        Auth precedence (first available wins):
+          1. ApiKey  -  vault secret Elastic_ApiKey  (preferred; required for
+             Security Onion 3.0 + similar nginx-proxied SO/ECS stacks that
+             redirect unauthenticated Basic requests to a SOC login page)
+          2. Basic   -  vault secrets Elastic_User + Elastic_Pass  (vanilla
+             Elasticsearch native auth, or any stack that exposes :9200 with
+             Basic enabled)
+
+        Required regardless: vault secret Elastic_URL.
+
+        For Security Onion 3.0 the URL is usually the proxy path, e.g.
+        'https://192.168.71.10/elasticsearch' (not the :9200 endpoint, which
+        is firewalled off). For vanilla Elastic the URL is the :9200 endpoint
+        directly, e.g. 'https://elasticsearch.lab:9200'.
     #>
 
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -22,12 +35,13 @@
     $restArgs = if ($PSVersionTable.PSVersion.Major -ge 6) { @{ SkipCertificateCheck = $true } } else { @{} }
 
     # --- AUTH ---
-    $esUrl  = (Get-Secret -Name 'Elastic_URL'  -AsPlainText -ErrorAction SilentlyContinue).Trim().TrimEnd('/')
-    $esUser = (Get-Secret -Name 'Elastic_User' -AsPlainText -ErrorAction SilentlyContinue).Trim()
-    $esPass = (Get-Secret -Name 'Elastic_Pass' -AsPlainText -ErrorAction SilentlyContinue).Trim()
+    $esUrl    = (Get-Secret -Name 'Elastic_URL'    -AsPlainText -ErrorAction SilentlyContinue).Trim().TrimEnd('/')
+    $esApiKey = (Get-Secret -Name 'Elastic_ApiKey' -AsPlainText -ErrorAction SilentlyContinue).Trim()
+    $esUser   = (Get-Secret -Name 'Elastic_User'   -AsPlainText -ErrorAction SilentlyContinue).Trim()
+    $esPass   = (Get-Secret -Name 'Elastic_Pass'   -AsPlainText -ErrorAction SilentlyContinue).Trim()
 
     if ([string]::IsNullOrWhiteSpace($esUrl)) {
-        $esUrl = Read-Host "[?] Elastic URL not found in vault (e.g. https://elasticsearch.yourdomain:9200)"
+        $esUrl = Read-Host "[?] Elastic URL not found in vault (e.g. https://192.168.71.10/elasticsearch or https://elasticsearch.lab:9200)"
         $esUrl = $esUrl.TrimEnd('/')
     }
     if ([string]::IsNullOrWhiteSpace($esUrl)) { Write-Error "Elastic URL required."; return }
@@ -42,8 +56,31 @@
         Write-Host "[ERROR] Elastic URL is not valid: '$esUrl'" -ForegroundColor Red; return
     }
 
-    $b64   = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${esUser}:${esPass}"))
-    $esHdr = @{ 'Authorization' = "Basic $b64"; 'Content-Type' = 'application/json' }
+    # Build the auth header. Prefer API key when present; fall back to Basic.
+    # API key encoding: the secret can be stored in either the already-base64-
+    # encoded form (id:api_key base64) or as the raw 'id:api_key' string; we
+    # accept both and emit the canonical "ApiKey <base64>" header.
+    $authMode = ''
+    if (-not [string]::IsNullOrWhiteSpace($esApiKey)) {
+        $apiKeyEncoded = $esApiKey
+        # If it doesn't look like base64 (contains a literal ':' and not '='),
+        # assume it's raw 'id:api_key' and base64-encode it ourselves.
+        if ($esApiKey -match '^[^:]+:[^:]+$' -and $esApiKey -notmatch '=$') {
+            $apiKeyEncoded = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes($esApiKey))
+        }
+        $esHdr = @{ 'Authorization' = "ApiKey $apiKeyEncoded"; 'Content-Type' = 'application/json' }
+        $authMode = 'ApiKey'
+    } elseif (-not [string]::IsNullOrWhiteSpace($esUser) -and -not [string]::IsNullOrWhiteSpace($esPass)) {
+        $b64   = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${esUser}:${esPass}"))
+        $esHdr = @{ 'Authorization' = "Basic $b64"; 'Content-Type' = 'application/json' }
+        $authMode = "Basic ($esUser)"
+    } else {
+        Write-Host "[ERROR] No Elastic credentials in vault. Set ONE of:" -ForegroundColor Red
+        Write-Host "  Set-Secret -Name Elastic_ApiKey -Secret '<id>:<api_key>'   (or pre-encoded base64)" -ForegroundColor DarkGray
+        Write-Host "  Set-Secret -Name Elastic_User   -Secret '<user>'           (and Elastic_Pass)" -ForegroundColor DarkGray
+        return
+    }
+    Write-Host "  Auth    : $authMode" -ForegroundColor DarkGray
 
     # If stored as http:// but server is actually HTTPS (common with ES 8.x),
     # auto-upgrade to https:// so -SkipCertificateCheck can handle self-signed certs.
@@ -56,6 +93,25 @@
         } catch {
             # https didn't work either -- keep original http:// and let the main check report the error
         }
+    }
+
+    # Security Onion proxy probe: SO 3.0 redirects unauthenticated Basic requests
+    # to its SOC login (HTTP 302 to /login). If we get a 302 back from the
+    # /_cluster/health probe, auto-suggest the /elasticsearch/ proxy path so the
+    # user knows the URL pattern (Elastic_URL = 'https://<so-host>' is wrong for
+    # SO; it needs to be 'https://<so-host>/elasticsearch').
+    try {
+        Invoke-WebRequest -Uri "$esUrl/_cluster/health" -Headers $esHdr -Method Get -MaximumRedirection 0 @restArgs -ErrorAction Stop | Out-Null
+    } catch {
+        $resp = $_.Exception.Response
+        if ($resp -and ([int]$resp.StatusCode) -eq 302) {
+            $loc = $resp.Headers.Location
+            Write-Host "[WARN] Elastic URL '$esUrl' returned HTTP 302 -> $loc" -ForegroundColor Yellow
+            Write-Host "       Looks like a Security Onion / proxy-protected stack." -ForegroundColor Yellow
+            Write-Host "       If the SO host is X, update Elastic_URL to 'https://X/elasticsearch' (or whichever proxy path)" -ForegroundColor Yellow
+            Write-Host "       AND switch to API-key auth (Elastic_ApiKey secret) - Basic auth gets bounced to SOC login." -ForegroundColor Yellow
+        }
+        # Continue regardless; let the main query report the real failure.
     }
 
     # --- TIME PARSING HELPER ---
