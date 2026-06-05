@@ -112,7 +112,7 @@ Write-Host "  $([char]27)[4m+----------------------------------------------+$([c
 Write-Host "  $([char]27)[4m|  (Elastic env) Analyze Artifacts for An Alert |$([char]27)[24m" -ForegroundColor DarkRed
 Write-Host "  $([char]27)[4m+----------------------------------------------+$([char]27)[24m" -ForegroundColor DarkRed
 Write-Host "3a) [AI Agent] LIVE Elastic Alert Triage (Windows) - same logic as 3b but queries Elastic directly (no offline NDJSON needed)" -ForegroundColor DarkRed
-Write-Host "3b) [AI Agent] Elastic Alert Triage (Windows) - Offline VT Enrichment" -ForegroundColor DarkRed
+Write-Host "3b) [AI Agent] Elastic Alert Triage (Windows) - Offline Forensic Analysis" -ForegroundColor DarkRed
 Write-Host "3c) [AI Agent] Elastic Alert Triage (Linux)   - Offline Forensic Analysis" -ForegroundColor DarkRed
 Write-Host "3d) Pull Elastic Logs from Detonation Window" -ForegroundColor DarkRed
 Write-Host "3e) Run IOC/YARA Scanner Against Downloaded Malicious Files (Thor/Loki auto-detect)" -ForegroundColor DarkRed
