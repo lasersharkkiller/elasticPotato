@@ -452,6 +452,226 @@
         )
 
         # =====================================================================
+        # PRE-LIVE CONNECTIVITY + SECURITY ONION 3.0 AUTO-DISPATCH
+        # Runs only when caller did not pass -DetonationLogsDir (i.e. live mode
+        # was requested). Resolves Elastic auth, then probes /_cluster/health.
+        # Probe outcomes:
+        #   200             -> proceed to live Elastic block as before.
+        #   302 (SO 3.0)    -> emit existing diagnostic warning; if the SSH
+        #                      connector vault entry (TORCH_SSH_Host) is set,
+        #                      offer to auto-pull a time window via SSH and
+        #                      flip into offline-NDJSON analysis. If declined
+        #                      or the vault entry is missing, return.
+        #   conn refused /  -> print clear error and return (do NOT fall
+        #   timeout            through to a doomed live-query loop).
+        # If SSH pull succeeds: $DetonationLogsDir is set to the new dir and
+        # $offlineMode flips to $true so the offline block below picks it up.
+        # =====================================================================
+        if (-not $offlineMode) {
+            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+            if ($PSVersionTable.PSVersion.Major -lt 6) {
+                [Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
+            }
+            $esRestArgs = if ($PSVersionTable.PSVersion.Major -ge 6) { @{ SkipCertificateCheck = $true } } else { @{} }
+
+            $esUrl = $null; $esApiKey = $null; $esUser = $null; $esPass = $null
+            try { $esUrl    = (Get-Secret -Name 'Elastic_URL'    -AsPlainText -ErrorAction Stop).Trim().TrimEnd('/') } catch {}
+            try { $esApiKey = (Get-Secret -Name 'Elastic_ApiKey' -AsPlainText -ErrorAction Stop).Trim() } catch {}
+            try { $esUser   = (Get-Secret -Name 'Elastic_User'   -AsPlainText -ErrorAction Stop).Trim() } catch {}
+            try { $esPass   = (Get-Secret -Name 'Elastic_Pass'   -AsPlainText -ErrorAction Stop).Trim() } catch {}
+            if ([string]::IsNullOrWhiteSpace($esUrl)) { $esUrl = (Read-Host "[?] Elastic URL (e.g. https://192.168.71.10/elasticsearch  or  https://elasticsearch.lab:9200)").TrimEnd('/') }
+            if ($esUrl -notmatch '^https?://') { $esUrl = "https://$esUrl" }
+
+            $esAuthMode = ''
+            if (-not [string]::IsNullOrWhiteSpace($esApiKey)) {
+                $apiKeyEncoded = $esApiKey
+                if ($esApiKey -match '^[^:]+:[^:]+$' -and $esApiKey -notmatch '=$') {
+                    $apiKeyEncoded = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes($esApiKey))
+                }
+                $esHdr = @{ 'Authorization' = "ApiKey $apiKeyEncoded"; 'Content-Type' = 'application/json' }
+                $esAuthMode = 'ApiKey'
+            } elseif (-not [string]::IsNullOrWhiteSpace($esUser) -and -not [string]::IsNullOrWhiteSpace($esPass)) {
+                $esB64 = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("${esUser}:${esPass}"))
+                $esHdr = @{ 'Authorization' = "Basic $esB64"; 'Content-Type' = 'application/json' }
+                $esAuthMode = "Basic ($esUser)"
+            } else {
+                Write-Host "[ERROR] No Elastic credentials in vault. Set ONE of:" -ForegroundColor Red
+                Write-Host "  Set-Secret -Name Elastic_ApiKey -Secret '<id>:<api_key>'   (or pre-encoded base64)" -ForegroundColor DarkGray
+                Write-Host "  Set-Secret -Name Elastic_User   -Secret '<user>'           (and Elastic_Pass)" -ForegroundColor DarkGray
+                return
+            }
+            Write-Host "  Auth    : $esAuthMode" -ForegroundColor DarkGray
+
+            if ($esUrl -match '^http://') {
+                $httpsUrl = $esUrl -replace '^http://','https://'
+                try {
+                    [void](Invoke-RestMethod -Uri "$httpsUrl/_cluster/health" -Headers $esHdr -Method Get @esRestArgs -ErrorAction Stop)
+                    Write-Host "  [INFO] Auto-upgraded URL from http:// to https:// (ES 8.x HTTPS detected)" -ForegroundColor DarkCyan
+                    $esUrl = $httpsUrl
+                } catch {}
+            }
+
+            $probeStatus = $null
+            $probeErrMsg = $null
+            try {
+                $probeResp = Invoke-WebRequest -Uri "$esUrl/_cluster/health" -Headers $esHdr -Method Get -MaximumRedirection 0 @esRestArgs -ErrorAction Stop
+                $probeStatus = [int]$probeResp.StatusCode
+            } catch {
+                $r = $_.Exception.Response
+                if ($r) {
+                    try { $probeStatus = [int]$r.StatusCode } catch {}
+                }
+                $probeErrMsg = $_.Exception.Message
+            }
+
+            if ($probeStatus -eq 302) {
+                $probeLoc = $null
+                try { $probeLoc = $r.Headers.Location } catch {}
+                Write-Host "[INFO] Elastic URL '$esUrl/_cluster/health' returned HTTP 302 -> $probeLoc" -ForegroundColor Cyan
+                Write-Host "       Looks like an nginx-proxied stack (e.g. Security Onion 3.0 / Kratos)." -ForegroundColor Cyan
+                Write-Host "       The /_cluster/health endpoint redirects to a browser login, but" -ForegroundColor Cyan
+                Write-Host "       /<index>/_search calls usually still pass Basic / ApiKey - we will try." -ForegroundColor Cyan
+                Write-Host "       If queries fail with 302 / 401, fall back to the SSH connector:" -ForegroundColor Cyan
+                Write-Host "         Invoke-TorchElasticQuery / Save-TorchElasticDetonationLogs" -ForegroundColor Cyan
+                Write-Host "         (vault: TORCH_SSH_Host / _User / _Pass / _KeyPath)" -ForegroundColor Cyan
+
+                $torchSshHost = $null
+                try { $torchSshHost = (Get-Secret -Name 'TORCH_SSH_Host' -AsPlainText -ErrorAction Stop).Trim() } catch {}
+
+                if ([string]::IsNullOrWhiteSpace($torchSshHost)) {
+                    Write-Host ""
+                    Write-Host "[INFO] Security Onion 3.0 detected but TORCH_SSH_Host is not in the vault." -ForegroundColor Cyan
+                    Write-Host "       Set TORCH_SSH_Host / TORCH_SSH_User / TORCH_SSH_Pass via Set-Secret, then retry." -ForegroundColor Cyan
+                    Write-Host "       Or use Save-TorchElasticDetonationLogs directly if you have the connector module loaded." -ForegroundColor Cyan
+                    return
+                }
+
+                Write-Host ""
+                $fbAns = Read-Host "Auto-fallback to SSH-pull-then-analyze? [Y/n]"
+                if ([string]::IsNullOrWhiteSpace($fbAns)) { $fbAns = 'Y' }
+                if ($fbAns.Trim().ToUpper() -ne 'Y') {
+                    Write-Host "Stopping. Run option 3d via SSH manually if needed, or use Save-TorchElasticDetonationLogs from the prompt." -ForegroundColor DarkGray
+                    return
+                }
+
+                # Inline timezone-aware parser (same shape as live-mode ConvertTo-AgentUtc /
+                # 3d's parser): supports PDT/EST/CDT/etc. plus bare time formats.
+                function ConvertTo-FallbackUtc {
+                    param([string]$Raw, [string]$Label, [datetime]$Fallback)
+                    $Raw = $Raw.Trim()
+                    $tzMap = @{
+                        "EST" = -5; "EDT" = -4
+                        "CST" = -6; "CDT" = -5
+                        "MST" = -7; "MDT" = -6
+                        "PST" = -8; "PDT" = -7
+                        "UTC" = 0;  "GMT" = 0
+                    }
+                    $tzOffset = $null
+                    foreach ($tz in $tzMap.Keys) {
+                        if ($Raw -match "\b$tz\b") {
+                            $tzOffset = $tzMap[$tz]
+                            $Raw = ($Raw -replace "\b$tz\b", "" -replace "\s{2,}", " ").Trim()
+                            break
+                        }
+                    }
+                    $parsed = $null
+                    $formats = @(
+                        "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM-dd h:mm tt",
+                        "M/d/yyyy HH:mm:ss",   "M/d/yyyy HH:mm",   "M/d/yyyy h:mm tt",
+                        "HH:mm:ss", "HH:mm", "h:mm tt", "h tt", "htt"
+                    )
+                    foreach ($fmt in $formats) {
+                        try { $parsed = [datetime]::ParseExact($Raw, $fmt, [System.Globalization.CultureInfo]::InvariantCulture); break } catch {}
+                    }
+                    if (-not $parsed) { try { $parsed = [datetime]::Parse($Raw) } catch {} }
+                    if (-not $parsed) {
+                        Write-Host "  [!] Could not parse $Label time '$Raw'  -  using fallback." -ForegroundColor Yellow
+                        return $Fallback.ToUniversalTime()
+                    }
+                    if ($parsed.Year -eq 1 -or $parsed.Year -eq 1899) {
+                        $today = Get-Date
+                        $parsed = [datetime]::new($today.Year, $today.Month, $today.Day, $parsed.Hour, $parsed.Minute, $parsed.Second)
+                    }
+                    if ($null -ne $tzOffset) { return $parsed.AddHours(-$tzOffset) }
+                    else                     { return $parsed.ToUniversalTime() }
+                }
+
+                $fbHost = Read-Host "Agent host name (ECS host.name / agent.name)"
+                if ([string]::IsNullOrWhiteSpace($fbHost)) {
+                    Write-Host "[ERROR] Host name is required for the SSH pull." -ForegroundColor Red
+                    return
+                }
+                $fbHost = $fbHost.Trim()
+                $fbStartRaw = Read-Host "Start date/time (e.g. 2026-03-18 08:00 PDT, 8PM EST, 20:00, 2026-03-18 20:00 UTC -- blank = yesterday)"
+                $fbEndRaw   = Read-Host "End date/time   (e.g. 2026-03-19 20:00 PDT -- blank = now)"
+                $fbLabelRaw = Read-Host "Optional campaign label (blank = 'campaign')"
+                $fbStartDt = if ($fbStartRaw) { ConvertTo-FallbackUtc -Raw $fbStartRaw -Label "start" -Fallback (Get-Date).AddDays(-1) } else { (Get-Date).AddDays(-1).ToUniversalTime() }
+                $fbEndDt   = if ($fbEndRaw)   { ConvertTo-FallbackUtc -Raw $fbEndRaw   -Label "end"   -Fallback (Get-Date)             } else { (Get-Date).ToUniversalTime() }
+                $fbLabel   = if ([string]::IsNullOrWhiteSpace($fbLabelRaw)) { 'campaign' } else { ($fbLabelRaw.Trim() -replace '[^A-Za-z0-9_\-]', '_') }
+
+                $fbStartIso = $fbStartDt.ToString("yyyy-MM-ddTHH-mm-ssZ")
+                $fbEndIso   = $fbEndDt.ToString("yyyy-MM-ddTHH-mm-ssZ")
+                $fbDirName  = "${fbLabel}_${fbStartIso}_to_${fbEndIso}UTC"
+                $fbBaseRoot = Join-Path $env:USERPROFILE 'detonation_logs'
+                if (-not (Test-Path $fbBaseRoot)) { try { New-Item -ItemType Directory -Path $fbBaseRoot -Force | Out-Null } catch {} }
+                $fbOutDir   = Join-Path $fbBaseRoot $fbDirName
+
+                Write-Host ""
+                Write-Host "[Auto-Dispatch] Pulling detonation window via SSH connector..." -ForegroundColor DarkCyan
+                Write-Host "  Host    : $fbHost" -ForegroundColor DarkGray
+                Write-Host "  Window  : $($fbStartDt.ToString('yyyy-MM-ddTHH:mm:ssZ')) -> $($fbEndDt.ToString('yyyy-MM-ddTHH:mm:ssZ'))" -ForegroundColor DarkGray
+                Write-Host "  Label   : $fbLabel" -ForegroundColor DarkGray
+                Write-Host "  OutDir  : $fbOutDir" -ForegroundColor DarkGray
+
+                $pullOk = $false
+                try {
+                    if (-not (Get-Command Save-TorchElasticDetonationLogs -ErrorAction SilentlyContinue)) {
+                        Write-Host "[ERROR] Save-TorchElasticDetonationLogs is not loaded. Import the connector first:" -ForegroundColor Red
+                        Write-Host "        Import-Module (Join-Path \$PSScriptRoot 'purpleTeaming\\Invoke-TorchElasticQuery.psm1') -Force" -ForegroundColor DarkGray
+                        return
+                    }
+                    Save-TorchElasticDetonationLogs `
+                        -StartTime $fbStartDt `
+                        -EndTime   $fbEndDt `
+                        -OutputDir $fbOutDir `
+                        -HostFilter $fbHost `
+                        -SessionInfoCampaign $fbLabel -ErrorAction Stop
+                    $pullOk = $true
+                } catch {
+                    $msg = $_.Exception.Message
+                    if ($msg -match 'Posh-?SSH' -or $msg -match 'New-SSHSession' -or $msg -match 'Get-SCPItem') {
+                        Write-Host "[ERROR] Posh-SSH module missing. Install it then retry:" -ForegroundColor Red
+                        Write-Host "        Install-Module -Name Posh-SSH -Scope CurrentUser -Force" -ForegroundColor DarkGray
+                    } else {
+                        Write-Host "[ERROR] SSH pull failed: $msg" -ForegroundColor Red
+                    }
+                    return
+                }
+
+                if (-not $pullOk -or -not (Test-Path $fbOutDir)) {
+                    Write-Host "[ERROR] SSH pull did not produce an output directory at $fbOutDir" -ForegroundColor Red
+                    return
+                }
+
+                # Flip into offline mode so the existing offline block below
+                # consumes the freshly pulled NDJSON files.
+                $DetonationLogsDir = $fbOutDir
+                $offlineMode = $true
+                Write-Host "[Auto-Dispatch] SSH pull complete. Switching to offline NDJSON analysis." -ForegroundColor DarkCyan
+            }
+            elseif ($probeStatus -eq 200) {
+                # Vanilla Elastic / proxied Elastic with valid auth - fall through.
+            }
+            else {
+                $statusStr = if ($null -ne $probeStatus) { "HTTP $probeStatus" } else { "no HTTP response" }
+                Write-Host "[ERROR] Elastic probe to '$esUrl/_cluster/health' failed ($statusStr)." -ForegroundColor Red
+                if ($probeErrMsg) { Write-Host "        $probeErrMsg" -ForegroundColor DarkGray }
+                Write-Host "        Check Elastic_URL / Elastic_ApiKey (or Elastic_User+Elastic_Pass) and network reachability." -ForegroundColor DarkGray
+                return
+            }
+        }
+
+        # =====================================================================
         # OFFLINE NDJSON MODE
         # Reads the NDJSON files saved by Get-ElasticDetonationLogs and
         # populates the same variable set as the live Elastic mode, so the
@@ -2404,15 +2624,13 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             $resp = $_.Exception.Response
             if ($resp -and ([int]$resp.StatusCode) -eq 302) {
                 $loc = $resp.Headers.Location
-                Write-Host "[WARN] Elastic URL '$esUrl' returned HTTP 302 -> $loc" -ForegroundColor Yellow
-                Write-Host "       Detected an nginx-proxied Elasticsearch stack." -ForegroundColor Yellow
-                Write-Host "       For Security Onion 3.0 (Kratos session-cookie auth):" -ForegroundColor Yellow
-                Write-Host "         Headless HTTP auth (ApiKey / Basic / Bearer) is NOT supported  -  Kratos rejects all 3." -ForegroundColor Yellow
-                Write-Host "         Use the SSH connector instead: Invoke-TorchElasticQuery" -ForegroundColor Yellow
-                Write-Host "         Required vault secrets: TORCH_SSH_Host, TORCH_SSH_User, TORCH_SSH_Pass (or TORCH_SSH_KeyPath)." -ForegroundColor Yellow
-                Write-Host "       For other nginx-proxied stacks where ApiKey IS supported:" -ForegroundColor Yellow
-                Write-Host "         Update Elastic_URL to the proxy path (e.g. https://<host>/elasticsearch)" -ForegroundColor Yellow
-                Write-Host "         AND set Elastic_ApiKey to a valid API key." -ForegroundColor Yellow
+                Write-Host "[INFO] Elastic URL '$esUrl/_cluster/health' returned HTTP 302 -> $loc" -ForegroundColor Cyan
+                Write-Host "       Looks like an nginx-proxied stack (e.g. Security Onion 3.0 / Kratos)." -ForegroundColor Cyan
+                Write-Host "       The /_cluster/health endpoint redirects to a browser login, but" -ForegroundColor Cyan
+                Write-Host "       /<index>/_search calls usually still pass Basic / ApiKey - we will try." -ForegroundColor Cyan
+                Write-Host "       If queries fail with 302 / 401, fall back to the SSH connector:" -ForegroundColor Cyan
+                Write-Host "         Invoke-TorchElasticQuery / Save-TorchElasticDetonationLogs" -ForegroundColor Cyan
+                Write-Host "         (vault: TORCH_SSH_Host / _User / _Pass / _KeyPath)" -ForegroundColor Cyan
             }
             # Continue regardless; let the main query report the real failure.
         }

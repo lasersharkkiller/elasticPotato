@@ -126,15 +126,13 @@ function Get-ElasticProcessBaseline {
         $resp = $_.Exception.Response
         if ($resp -and ([int]$resp.StatusCode) -eq 302) {
             $loc = $resp.Headers.Location
-            Write-Host "[WARN] Elastic URL '$esUrl' returned HTTP 302 -> $loc" -ForegroundColor Yellow
-            Write-Host "       Detected an nginx-proxied Elasticsearch stack." -ForegroundColor Yellow
-            Write-Host "       For Security Onion 3.0 (Kratos session-cookie auth):" -ForegroundColor Yellow
-            Write-Host "         Headless HTTP auth (ApiKey / Basic / Bearer) is NOT supported  -  Kratos rejects all 3." -ForegroundColor Yellow
-            Write-Host "         Use the SSH connector instead: Invoke-TorchElasticQuery" -ForegroundColor Yellow
-            Write-Host "         Required vault secrets: TORCH_SSH_Host, TORCH_SSH_User, TORCH_SSH_Pass (or TORCH_SSH_KeyPath)." -ForegroundColor Yellow
-            Write-Host "       For other nginx-proxied stacks where ApiKey IS supported:" -ForegroundColor Yellow
-            Write-Host "         Update Elastic_URL to the proxy path (e.g. https://<host>/elasticsearch)" -ForegroundColor Yellow
-            Write-Host "         AND set Elastic_ApiKey to a valid API key." -ForegroundColor Yellow
+            Write-Host "[INFO] Elastic URL '$esUrl/_cluster/health' returned HTTP 302 -> $loc" -ForegroundColor Cyan
+            Write-Host "       Looks like an nginx-proxied stack (e.g. Security Onion 3.0 / Kratos)." -ForegroundColor Cyan
+            Write-Host "       The /_cluster/health endpoint redirects to a browser login, but" -ForegroundColor Cyan
+            Write-Host "       /<index>/_search calls usually still pass Basic / ApiKey - we will try." -ForegroundColor Cyan
+            Write-Host "       If queries fail with 302 / 401, fall back to the SSH connector:" -ForegroundColor Cyan
+            Write-Host "         Invoke-TorchElasticQuery / Save-TorchElasticDetonationLogs" -ForegroundColor Cyan
+            Write-Host "         (vault: TORCH_SSH_Host / _User / _Pass / _KeyPath)" -ForegroundColor Cyan
         }
         # Continue regardless; let the main query report the real failure.
     }
