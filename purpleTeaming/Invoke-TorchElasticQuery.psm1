@@ -791,7 +791,8 @@ function Save-TorchElasticDetonationLogs {
     Write-Host ""
     Write-Host "Done. Detonation logs saved to:" -ForegroundColor Green
     Write-Host "  $OutputDir" -ForegroundColor DarkCyan
-    $summary | Format-Table -AutoSize
+    $summary | Format-Table -AutoSize | Out-Host
+    return $OutputDir
 }
 
 # -----------------------------------------------------------------------------

@@ -101,27 +101,25 @@
     }
 
     # Security Onion proxy probe: SO 3.0 redirects unauthenticated Basic requests
-    # to its SOC login (HTTP 302 to /login). If we get a 302 back from the
-    # /_cluster/health probe, auto-suggest the /elasticsearch/ proxy path so the
-    # user knows the URL pattern (Elastic_URL = 'https://<so-host>' is wrong for
-    # SO; it needs to be 'https://<so-host>/elasticsearch').
+    # to its SOC login (HTTP 302 to /login). When detected we set a flag so the
+    # function auto-routes the pull through the SSH connector
+    # (Save-TorchElasticDetonationLogs) AFTER collecting the standard inputs
+    # (start/end/host/label), and skips the HTTP pull entirely.
+    $soKratosDetected = $false
     try {
         Invoke-WebRequest -Uri "$esUrl/_cluster/health" -Headers $esHdr -Method Get -MaximumRedirection 0 @restArgs -ErrorAction Stop | Out-Null
     } catch {
         $resp = $_.Exception.Response
         if ($resp -and ([int]$resp.StatusCode) -eq 302) {
             $loc = $resp.Headers.Location
-            Write-Host "[WARN] Elastic URL '$esUrl' returned HTTP 302 -> $loc" -ForegroundColor Yellow
-            Write-Host "       Detected an nginx-proxied Elasticsearch stack." -ForegroundColor Yellow
-            Write-Host "       For Security Onion 3.0 (Kratos session-cookie auth):" -ForegroundColor Yellow
-            Write-Host "         Headless HTTP auth (ApiKey / Basic / Bearer) is NOT supported  -  Kratos rejects all 3." -ForegroundColor Yellow
-            Write-Host "         Use the SSH connector instead: Invoke-TorchElasticQuery" -ForegroundColor Yellow
-            Write-Host "         Required vault secrets: TORCH_SSH_Host, TORCH_SSH_User, TORCH_SSH_Pass (or TORCH_SSH_KeyPath)." -ForegroundColor Yellow
-            Write-Host "       For other nginx-proxied stacks where ApiKey IS supported:" -ForegroundColor Yellow
-            Write-Host "         Update Elastic_URL to the proxy path (e.g. https://<host>/elasticsearch)" -ForegroundColor Yellow
-            Write-Host "         AND set Elastic_ApiKey to a valid API key." -ForegroundColor Yellow
+            $soKratosDetected = $true
+            Write-Host "[INFO] Elastic URL '$esUrl' returned HTTP 302 -> $loc" -ForegroundColor Cyan
+            Write-Host "       Detected nginx-proxied Elasticsearch (Security Onion 3.0 / Kratos)." -ForegroundColor Cyan
+            Write-Host "       Headless HTTP auth (ApiKey / Basic / Bearer) is NOT supported here." -ForegroundColor Cyan
+            Write-Host "       Will auto-route the pull through the SSH connector after collecting window inputs." -ForegroundColor Cyan
+            Write-Host "       Required vault secrets: TORCH_SSH_Host, TORCH_SSH_User, TORCH_SSH_Pass (or TORCH_SSH_KeyPath)." -ForegroundColor DarkGray
         }
-        # Continue regardless; let the main query report the real failure.
+        # Continue regardless; non-302 errors fall through to the main query.
     }
 
     # --- TIME PARSING HELPER ---
@@ -228,6 +226,39 @@
     # --- OPTIONAL HOSTNAME FILTER ---
     $hostFilter = Read-Host "[?] Filter by sandbox hostname (leave blank for all hosts)"
     $hostFilter = $hostFilter.Trim()
+
+    # --- SO 3.0 / KRATOS AUTO-ROUTE ----------------------------------------
+    # If the URL probe at the top of the function returned HTTP 302 we know
+    # headless HTTP auth will fail. All the inputs the SSH connector needs
+    # (start/end/host/label/outdir) have been collected by this point, so we
+    # hand off to Save-TorchElasticDetonationLogs and return its output dir
+    # instead of running the HTTP pull.
+    if ($soKratosDetected) {
+        Write-Host ""
+        Write-Host "[Auto-Route] SO 3.0 / Kratos detected - calling Save-TorchElasticDetonationLogs (SSH connector)..." -ForegroundColor DarkCyan
+        $connectorPath = Join-Path $PSScriptRoot 'Invoke-TorchElasticQuery.psm1'
+        if (Test-Path $connectorPath) {
+            try { Import-Module $connectorPath -Force -DisableNameChecking -ErrorAction Stop | Out-Null } catch {
+                Write-Host "[WARN] Could not force-reimport connector ($($_.Exception.Message)) - using whatever is cached." -ForegroundColor Yellow
+            }
+        }
+        if (-not (Get-Command Save-TorchElasticDetonationLogs -ErrorAction SilentlyContinue)) {
+            Write-Host "[ERROR] Save-TorchElasticDetonationLogs is not available. Falling back to HTTP path (likely to fail)." -ForegroundColor Red
+        } else {
+            try {
+                Save-TorchElasticDetonationLogs `
+                    -StartTime  $startUtc `
+                    -EndTime    $endUtc `
+                    -OutputDir  $outDir `
+                    -HostFilter $hostFilter `
+                    -SessionInfoCampaign $label -ErrorAction Stop | Out-Null
+                return $outDir
+            } catch {
+                Write-Host "[ERROR] SSH pull failed: $($_.Exception.Message)" -ForegroundColor Red
+                Write-Host "        Falling back to HTTP path (likely to also fail against SO 3.0)." -ForegroundColor DarkGray
+            }
+        }
+    }
 
     # --- PRE-FLIGHT DIAGNOSTICS ---
     Write-Host ""
@@ -648,7 +679,8 @@
     Write-Host "Done. Detonation logs saved to:" -ForegroundColor Green
     Write-Host "  $outDir" -ForegroundColor DarkCyan
     Write-Host ""
-    $summary | Format-Table -AutoSize
+    $summary | Format-Table -AutoSize | Out-Host
+    return $outDir
 }
 
 Export-ModuleMember -Function Get-ElasticDetonationLogs

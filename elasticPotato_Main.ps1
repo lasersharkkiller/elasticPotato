@@ -111,7 +111,7 @@ Write-Host ""
 Write-Host "  $([char]27)[4m+----------------------------------------------+$([char]27)[24m" -ForegroundColor DarkRed
 Write-Host "  $([char]27)[4m|  (Elastic env) Analyze Artifacts for An Alert |$([char]27)[24m" -ForegroundColor DarkRed
 Write-Host "  $([char]27)[4m+----------------------------------------------+$([char]27)[24m" -ForegroundColor DarkRed
-Write-Host "3a) [AI Agent] LIVE Elastic Alert Triage (Windows) - same logic as 3b but queries Elastic directly (no offline NDJSON needed)" -ForegroundColor DarkRed
+Write-Host "3a) [AI Agent] Pull + Triage - runs 3d to pull logs, then auto-dispatches to 3b (Windows) or 3c (Linux) based on what was pulled" -ForegroundColor DarkRed
 Write-Host "3b) [AI Agent] Elastic Alert Triage (Windows) - Offline Forensic Analysis" -ForegroundColor DarkRed
 Write-Host "3c) [AI Agent] Elastic Alert Triage (Linux)   - Offline Forensic Analysis" -ForegroundColor DarkRed
 Write-Host "3d) Pull Elastic Logs from Detonation Window" -ForegroundColor DarkRed
@@ -225,18 +225,59 @@ elseif ($functionChoice -eq "2c") {
 
 # -- GROUP 3: Elastic Alerts ---------------------------------------------------
 elseif ($functionChoice -eq "3a") {
-    # Same AI Agent analysis as 3b (kill-chain rollup, C2 framework attribution,
-    # 60+ finding categories, HTML report) but running in LIVE mode against
-    # Elasticsearch instead of pre-pulled NDJSON files. Called with no
-    # -DetonationLogsDir and no -AlertContext, which routes
-    # Invoke-ElasticAlertAgentAnalysis into its built-in 'Host forensic mode'
-    # branch: prompts internally for host name + start/end times, queries
-    # alerts + process + network + file + registry + DNS + PowerShell + shell
-    # categories via Invoke-AgentESQuery, runs the same fidelity / attribution /
-    # kill-chain pipeline as offline mode. Auth comes from the vault
-    # (Elastic_ApiKey > Elastic_User+Elastic_Pass). Against TORCH SO 3.0 this
-    # will 302-probe and tell the user to use the SSH path instead.
-    Invoke-ElasticAlertAgentAnalysis
+    # 3a is a thin orchestrator: pull, then analyze. No parallel live-mode
+    # codepath to maintain - every improvement to 3d / 3b / 3c lands in 3a
+    # automatically.
+    #   1. Call Get-ElasticDetonationLogs (3d) to pull a detonation window.
+    #      3d auto-routes to the SSH connector when SO 3.0 / Kratos is
+    #      detected (HTTP 302 on /_cluster/health), and returns the
+    #      output directory path either way.
+    #   2. Inspect the pulled NDJSON filenames to decide whether the host
+    #      was Windows (windows.* / system.security|application|system /
+    #      sysmon* files) or Linux (linux.* / auditd* / auth_events*).
+    #   3. Dispatch to 3b (Invoke-ElasticAlertAgentAnalysis) for Windows or
+    #      3c (Invoke-ElasticLinuxTriage) for Linux. If both signatures are
+    #      present (mixed window), prompt the user.
+    $outDir = Get-ElasticDetonationLogs
+    if (-not $outDir -or -not (Test-Path -LiteralPath $outDir)) {
+        Write-Host "[3a] Pull did not produce an output directory - nothing to analyze." -ForegroundColor Yellow
+        return
+    }
+
+    $allFiles = @(Get-ChildItem -Path $outDir -Filter '*.ndjson' -File -ErrorAction SilentlyContinue)
+    $winRegex = '^(windows\.|system\.(security|application|system)|sysmon|winlog\.)'
+    $linRegex = '^(linux\.|auditd|auth_events|authentication_events|filebeat-linux|system\.auth|system\.syslog)'
+    $winFiles = @($allFiles | Where-Object { $_.Name -match $winRegex -and $_.Length -gt 0 })
+    $linFiles = @($allFiles | Where-Object { $_.Name -match $linRegex -and $_.Length -gt 0 })
+
+    Write-Host ""
+    Write-Host "[3a] Pull complete: $outDir" -ForegroundColor DarkCyan
+    Write-Host "     Windows datasets w/ events : $($winFiles.Count) file(s)" -ForegroundColor DarkGray
+    Write-Host "     Linux   datasets w/ events : $($linFiles.Count) file(s)" -ForegroundColor DarkGray
+
+    if ($winFiles.Count -gt 0 -and $linFiles.Count -eq 0) {
+        Write-Host "[3a] -> Dispatching to 3b (Invoke-ElasticAlertAgentAnalysis, Windows)" -ForegroundColor DarkCyan
+        Invoke-ElasticAlertAgentAnalysis -DetonationLogsDir $outDir
+    } elseif ($linFiles.Count -gt 0 -and $winFiles.Count -eq 0) {
+        Write-Host "[3a] -> Dispatching to 3c (Invoke-ElasticLinuxTriage, Linux)" -ForegroundColor DarkCyan
+        Invoke-ElasticLinuxTriage -DetonationLogsDir $outDir
+    } elseif ($winFiles.Count -gt 0 -and $linFiles.Count -gt 0) {
+        Write-Host "[3a] Both Windows and Linux signatures present in pulled data." -ForegroundColor Yellow
+        $os = (Read-Host "     Run (W)indows analysis, (L)inux analysis, or (B)oth? [B]").Trim().ToUpper()
+        if ([string]::IsNullOrWhiteSpace($os)) { $os = 'B' }
+        if ($os -eq 'W' -or $os -eq 'B') {
+            Write-Host "[3a] -> Dispatching to 3b (Windows)" -ForegroundColor DarkCyan
+            Invoke-ElasticAlertAgentAnalysis -DetonationLogsDir $outDir
+        }
+        if ($os -eq 'L' -or $os -eq 'B') {
+            Write-Host "[3a] -> Dispatching to 3c (Linux)" -ForegroundColor DarkCyan
+            Invoke-ElasticLinuxTriage -DetonationLogsDir $outDir
+        }
+    } else {
+        Write-Host "[3a] No Windows or Linux dataset files (>0 bytes) were detected in the pulled directory." -ForegroundColor Yellow
+        Write-Host "     Inspect the contents and run 3b or 3c manually with -DetonationLogsDir against:" -ForegroundColor DarkGray
+        Write-Host "       $outDir" -ForegroundColor DarkGray
+    }
 }
 elseif ($functionChoice -eq "3b") {
     $detonationLogPath = Read-Host "[?] Path to detonation log directory (NDJSON files)"
