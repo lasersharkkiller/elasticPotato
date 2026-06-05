@@ -629,9 +629,20 @@
 
                 $pullOk = $false
                 try {
+                    # Always force-reimport the connector so edits made between
+                    # PowerShell session starts (e.g. user pulled a bugfix
+                    # while keeping their interactive session open) take effect
+                    # without requiring a session restart. The connector module
+                    # is small and cheap to reload.
+                    $connectorPath = Join-Path $PSScriptRoot '..\purpleTeaming\Invoke-TorchElasticQuery.psm1'
+                    if (Test-Path $connectorPath) {
+                        try { Import-Module $connectorPath -Force -DisableNameChecking -ErrorAction Stop | Out-Null } catch {
+                            Write-Host "[WARN] Failed to force-reimport connector ($($_.Exception.Message)) - falling back to whatever is cached." -ForegroundColor Yellow
+                        }
+                    }
                     if (-not (Get-Command Save-TorchElasticDetonationLogs -ErrorAction SilentlyContinue)) {
                         Write-Host "[ERROR] Save-TorchElasticDetonationLogs is not loaded. Import the connector first:" -ForegroundColor Red
-                        Write-Host "        Import-Module (Join-Path \$PSScriptRoot 'purpleTeaming\\Invoke-TorchElasticQuery.psm1') -Force" -ForegroundColor DarkGray
+                        Write-Host "        Import-Module (Join-Path `$PSScriptRoot '..\\purpleTeaming\\Invoke-TorchElasticQuery.psm1') -Force" -ForegroundColor DarkGray
                         return
                     }
                     Save-TorchElasticDetonationLogs `
