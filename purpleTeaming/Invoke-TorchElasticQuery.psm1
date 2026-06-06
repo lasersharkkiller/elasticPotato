@@ -644,59 +644,213 @@ function Invoke-TorchElasticDiagnose {
         # affect term queries.
         Write-Host ""
         Write-Host "[F] REPLAY pull body for windows.sysmon_operational + dump request/response ---" -ForegroundColor Yellow
-        if ([string]::IsNullOrWhiteSpace($HostFilter)) {
-            Write-Host "    (no HostFilter supplied - skipping probe F)" -ForegroundColor DarkGray
-        } else {
-            try {
-                # Reconstruct the EXACT shape Save-TorchElasticDetonationLogs builds.
-                $sysAliases = @('windows.sysmon_operational', 'windows.sysmon', 'sysmon', 'winlog.sysmon')
+        try {
+            # Reconstruct the EXACT shape Save-TorchElasticDetonationLogs builds.
+            # The pull only adds the host.name terms clause when HostFilter is set
+            # (see Save-TorchElasticDetonationLogs lines 891-913), so the replay
+            # must mirror that to be a true replay. Host-less replay is what we
+            # actually want when the user reports the pull failing without
+            # -HostFilter.
+            $sysAliases = @('windows.sysmon_operational', 'windows.sysmon', 'sysmon', 'winlog.sysmon')
+            $fFilters = @(
+                @{ terms = @{ 'event.dataset' = $sysAliases } },
+                @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } }
+            )
+            if (-not [string]::IsNullOrWhiteSpace($HostFilter)) {
                 $hostValues = @($HostFilter, $HostFilter.ToLowerInvariant(), $HostFilter.ToUpperInvariant()) | Select-Object -Unique
-                $fFilters = @(
-                    @{ terms = @{ 'event.dataset' = $sysAliases } },
-                    @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } },
-                    @{ terms = @{ 'host.name' = $hostValues } }
-                )
-                $fBody = @{
+                $fFilters += @{ terms = @{ 'host.name' = $hostValues } }
+            }
+            $fBody = @{
+                size              = 0
+                track_total_hits  = $true
+                query             = @{ bool = @{ filter = $fFilters } }
+            }
+
+            Write-Host "    --- REQUEST BODY (exact JSON sent to ES) ---" -ForegroundColor DarkGray
+            $reqJson = $fBody | ConvertTo-Json -Depth 20 -Compress
+            Write-Host "    $reqJson" -ForegroundColor DarkGray
+
+            $fRespRaw = Invoke-TorchElasticQuery -IndexPattern 'logs-*' `
+                                                -Query $fBody `
+                                                -Size 0 `
+                                                -Session $Session `
+                                                -Raw
+            Write-Host ""
+            Write-Host "    --- RAW ES RESPONSE (first 4000 chars) ---" -ForegroundColor DarkGray
+            $respPreview = if ($fRespRaw -and $fRespRaw.Length -gt 4000) { $fRespRaw.Substring(0, 4000) + "...[truncated]" } else { $fRespRaw }
+            Write-Host "    $respPreview" -ForegroundColor DarkGray
+
+            # Surface byte-level corruption (sudo PAM lecture, BOM, ANSI escapes
+            # leaking into stdout) that would silently break ConvertFrom-Json.
+            # Theory: base64-of-sudo-stdout corrupted by terminal control codes.
+            if ($fRespRaw -and $fRespRaw.Length -gt 0) {
+                $firstChar = [int][char]$fRespRaw[0]
+                $lastChar  = [int][char]$fRespRaw[$fRespRaw.Length - 1]
+                $startsClean = ($fRespRaw[0] -eq '{')
+                $endsClean   = ($fRespRaw.TrimEnd()[-1] -eq '}')
+                Write-Host "    --- RAW response sanity: len=$($fRespRaw.Length) firstByte=0x$('{0:X2}' -f $firstChar) lastByte=0x$('{0:X2}' -f $lastChar) startsWithBrace=$startsClean endsWithBrace=$endsClean" -ForegroundColor DarkGray
+                if (-not $startsClean) {
+                    Write-Warning "    Raw response does NOT start with '{' - sudo/PAM/BOM corruption likely. ConvertFrom-Json will fail silently in the pull."
+                }
+            }
+            Write-Host ""
+
+            # Variants 1-3 are host-agnostic and run unconditionally - these
+            # are the most diagnostic when the pull is failing without a
+            # -HostFilter.
+            $variants = @(
+                @{
+                    Label = 'range only (sanity, expect ~1276)'
+                    Body  = @{ size = 0; track_total_hits = $true; query = @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } } }
+                },
+                @{
+                    Label = 'range + terms event.dataset (expect ~99)'
+                    Body  = @{ size = 0; track_total_hits = $true; query = @{ bool = @{ filter = @(
+                        @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } },
+                        @{ terms = @{ 'event.dataset' = $sysAliases } }
+                    ) } } }
+                },
+                @{
+                    Label = 'range + term event.dataset SINGLE (expect ~99)'
+                    Body  = @{ size = 0; track_total_hits = $true; query = @{ bool = @{ filter = @(
+                        @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } },
+                        @{ term  = @{ 'event.dataset' = 'windows.sysmon_operational' } }
+                    ) } } }
+                }
+            )
+
+            # ----- Diagnostic variants for Input 2 theories (HIGH/MEDIUM only) -----
+            # Each variant isolates ONE difference between the pull body and the
+            # already-passing probes B/C/E. Whichever variant first goes to 0 is
+            # the killer.
+
+            # T1 (HIGH): sort on `_id` triggers shard-level failure that the SO
+            #            wrapper renders as empty hits, not an error envelope.
+            #            This variant is the EXACT pull body shape (sort +
+            #            size=PageSize-ish + track_total_hits + bool.filter) -
+            #            the pull body has never been replayed verbatim.
+            $variants += @{
+                Label = 'EXACT PULL BODY: sort[@timestamp,_id] + size=1000 + track_total_hits (HIGH theory: _id sort kills it)'
+                Body  = @{
+                    size              = 1000
+                    track_total_hits  = $true
+                    sort              = @( @{ '@timestamp' = 'asc' }, @{ '_id' = 'asc' } )
+                    query             = @{ bool = @{ filter = @(
+                        @{ terms = @{ 'event.dataset' = $sysAliases } },
+                        @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } }
+                    ) } }
+                }
+            }
+
+            # T1b (HIGH): same as above but DROP the _id secondary sort - if this
+            #             one returns ~99 while T1 returns 0, _id sort is the
+            #             killer.
+            $variants += @{
+                Label = 'sort[@timestamp ONLY] + size=1000 + track_total_hits (HIGH theory: _id sort is the killer)'
+                Body  = @{
+                    size              = 1000
+                    track_total_hits  = $true
+                    sort              = @( @{ '@timestamp' = 'asc' } )
+                    query             = @{ bool = @{ filter = @(
+                        @{ terms = @{ 'event.dataset' = $sysAliases } },
+                        @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } }
+                    ) } }
+                }
+            }
+
+            # T2 (MEDIUM): URL ?size=N vs body size conflict. The pull goes
+            #              through Invoke-TorchElasticQuery which appends
+            #              ?size=$Size to the URL AND sets body.size. This
+            #              variant tests body size only (-Size 0 on the URL).
+            $variants += @{
+                Label = 'body size=1000 but URL size=0 (MED theory: URL size collides with body size)'
+                Body  = @{
+                    size              = 1000
+                    track_total_hits  = $true
+                    query             = @{ bool = @{ filter = @(
+                        @{ terms = @{ 'event.dataset' = $sysAliases } },
+                        @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } }
+                    ) } }
+                }
+            }
+
+            # T3 (MEDIUM): ConvertTo-Json may merge the two-hashtable sort array
+            #              into a single object. We can verify by dumping it
+            #              right now and inspecting the JSON.
+            $sortDump = @( @{ '@timestamp' = 'asc' }, @{ '_id' = 'asc' } ) | ConvertTo-Json -Depth 5 -Compress
+            Write-Host "    --- sort-array JSON sanity (MED theory: array collapses to object) ---" -ForegroundColor DarkGray
+            Write-Host "    sort = $sortDump" -ForegroundColor DarkGray
+            if ($sortDump -notmatch '^\[' -or $sortDump -notmatch '\]$') {
+                Write-Warning "    sort array did NOT serialize as a JSON array - this matches the MEDIUM theory."
+            }
+
+            # T4 (MEDIUM): `+=` on a hashtable array produces object[] not
+            #              hashtable[]; ConvertTo-Json may treat the dotted key
+            #              `event.dataset` as a nested path. Variant uses a
+            #              single literal @(...) for $filters (no `+=`).
+            $literalFilters = @(
+                @{ terms = @{ 'event.dataset' = $sysAliases } },
+                @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } }
+            )
+            $variants += @{
+                Label = 'filters built as ONE literal @(...) no `+=` (MED theory: += corrupts dotted key)'
+                Body  = @{
                     size              = 0
                     track_total_hits  = $true
-                    query             = @{ bool = @{ filter = $fFilters } }
+                    query             = @{ bool = @{ filter = $literalFilters } }
                 }
+            }
 
-                Write-Host "    --- REQUEST BODY (exact JSON sent to ES) ---" -ForegroundColor DarkGray
-                $reqJson = $fBody | ConvertTo-Json -Depth 20 -Compress
-                Write-Host "    $reqJson" -ForegroundColor DarkGray
+            # T5 (MEDIUM): event.dataset is constant_keyword on Fleet backing
+            #              indices; a multi-value `terms` list can return 0 on
+            #              ES 8.0-8.4. This variant is a SINGLE-element terms
+            #              list against the one true canonical name.
+            $variants += @{
+                Label = 'range + terms event.dataset SINGLE-ELEMENT [windows.sysmon_operational] (MED theory: constant_keyword regression)'
+                Body  = @{
+                    size              = 0
+                    track_total_hits  = $true
+                    query             = @{ bool = @{ filter = @(
+                        @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } },
+                        @{ terms = @{ 'event.dataset' = @('windows.sysmon_operational') } }
+                    ) } }
+                }
+            }
 
-                $fRespRaw = Invoke-TorchElasticQuery -IndexPattern 'logs-*' `
-                                                    -Query $fBody `
-                                                    -Size 0 `
-                                                    -Session $Session `
-                                                    -Raw
-                Write-Host ""
-                Write-Host "    --- RAW ES RESPONSE (first 4000 chars) ---" -ForegroundColor DarkGray
-                $respPreview = if ($fRespRaw -and $fRespRaw.Length -gt 4000) { $fRespRaw.Substring(0, 4000) + "...[truncated]" } else { $fRespRaw }
-                Write-Host "    $respPreview" -ForegroundColor DarkGray
-                Write-Host ""
+            # T6 (MEDIUM): Posh-SSH buffer truncation on large responses. Same
+            #              pull body but tiny page size - if size=10 returns
+            #              non-zero and size=1000 returns 0, buffer truncation
+            #              is confirmed.
+            $variants += @{
+                Label = 'pull body but size=10 (MED theory: Posh-SSH buffer truncates >1MB responses)'
+                Body  = @{
+                    size              = 10
+                    track_total_hits  = $true
+                    sort              = @( @{ '@timestamp' = 'asc' }, @{ '_id' = 'asc' } )
+                    query             = @{ bool = @{ filter = @(
+                        @{ terms = @{ 'event.dataset' = $sysAliases } },
+                        @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } }
+                    ) } }
+                }
+            }
 
-                # Try a series of fallback variants to isolate which clause is the killer.
-                $variants = @(
-                    @{
-                        Label = 'range only (sanity, expect ~1276)'
-                        Body  = @{ size = 0; track_total_hits = $true; query = @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } } }
-                    },
-                    @{
-                        Label = 'range + terms event.dataset (expect ~99)'
-                        Body  = @{ size = 0; track_total_hits = $true; query = @{ bool = @{ filter = @(
-                            @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } },
-                            @{ terms = @{ 'event.dataset' = $sysAliases } }
-                        ) } } }
-                    },
-                    @{
-                        Label = 'range + term event.dataset SINGLE (expect ~99)'
-                        Body  = @{ size = 0; track_total_hits = $true; query = @{ bool = @{ filter = @(
-                            @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } },
-                            @{ term  = @{ 'event.dataset' = 'windows.sysmon_operational' } }
-                        ) } } }
-                    },
+            # T7 (LOW promoted to add coverage): track_total_hits = $false may
+            #     change ES code path away from the buggy preflight rewrite.
+            $variants += @{
+                Label = 'range + terms event.dataset + track_total_hits=$false (LOW theory: rewrite path)'
+                Body  = @{
+                    size              = 0
+                    track_total_hits  = $false
+                    query             = @{ bool = @{ filter = @(
+                        @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } },
+                        @{ terms = @{ 'event.dataset' = $sysAliases } }
+                    ) } }
+                }
+            }
+
+            # Variants 4-8 (host-specific) only meaningful when HostFilter is set.
+            if (-not [string]::IsNullOrWhiteSpace($HostFilter)) {
+                $variants += @(
                     @{
                         Label = 'range + term host.name (lowercase)  (expect ~221 if host.name is keyword)'
                         Body  = @{ size = 0; track_total_hits = $true; query = @{ bool = @{ filter = @(
@@ -733,27 +887,38 @@ function Invoke-TorchElasticDiagnose {
                         ) } } }
                     }
                 )
-                Write-Host "    --- FALLBACK VARIANT TESTS (each is range + ONE more filter) ---" -ForegroundColor DarkGray
-                foreach ($v in $variants) {
-                    try {
-                        $vr = Invoke-TorchElasticQuery -IndexPattern 'logs-*' -Query $v.Body -Size 0 -Session $Session
-                        $vt = $null
-                        if ($vr -and $vr.hits -and $vr.hits.total) {
-                            $vt = if ($vr.hits.total.PSObject.Properties.Name -contains 'value') { $vr.hits.total.value } else { $vr.hits.total }
-                        }
-                        if ($vr -is [pscustomobject] -and $vr.PSObject.Properties.Name -contains 'error' -and $vr.error) {
-                            Write-Host "      [ERR] $($v.Label): $($vr.error.type) - $($vr.error.reason)" -ForegroundColor Red
-                        } else {
-                            $color = if ($vt -gt 0) { 'Green' } else { 'Red' }
-                            Write-Host "      $($v.Label) = $vt" -ForegroundColor $color
-                        }
-                    } catch {
-                        Write-Host "      [EXC] $($v.Label): $($_.Exception.Message)" -ForegroundColor Red
-                    }
-                }
-            } catch {
-                Write-Warning "[F] probe failed: $($_.Exception.Message)"
+            } else {
+                Write-Host "    (no HostFilter supplied - skipping host-specific variants 4-8)" -ForegroundColor Yellow
             }
+
+            Write-Host "    --- FALLBACK VARIANT TESTS (each is range + ONE more filter) ---" -ForegroundColor DarkGray
+            foreach ($v in $variants) {
+                try {
+                    # For variants that exercise the pull body shape (size > 0)
+                    # use -Size matching body.size so URL ?size=N is consistent.
+                    $urlSize = if ($v.Body.ContainsKey('size')) { [int]$v.Body['size'] } else { 0 }
+                    $vr = Invoke-TorchElasticQuery -IndexPattern 'logs-*' -Query $v.Body -Size $urlSize -Session $Session
+                    $vt = $null
+                    if ($vr -and $vr.hits -and $vr.hits.total) {
+                        $vt = if ($vr.hits.total.PSObject.Properties.Name -contains 'value') { $vr.hits.total.value } else { $vr.hits.total }
+                    }
+                    if ($vr -is [pscustomobject] -and $vr.PSObject.Properties.Name -contains 'error' -and $vr.error) {
+                        Write-Host "      [ERR] $($v.Label): $($vr.error.type) - $($vr.error.reason)" -ForegroundColor Red
+                    } elseif ($vr -is [pscustomobject] -and $vr.PSObject.Properties.Name -contains '_shards' -and $vr._shards.failed -gt 0) {
+                        # Theory T1: partial shard failure surfaces in _shards.failures,
+                        # NOT in a top-level error envelope. Surface it loudly.
+                        $shardReason = if ($vr._shards.failures -and $vr._shards.failures[0].reason) { $vr._shards.failures[0].reason.reason } else { '(no reason)' }
+                        Write-Host "      [SHARD-FAIL] $($v.Label) = $vt (failed=$($vr._shards.failed)): $shardReason" -ForegroundColor Magenta
+                    } else {
+                        $color = if ($vt -gt 0) { 'Green' } else { 'Red' }
+                        Write-Host "      $($v.Label) = $vt" -ForegroundColor $color
+                    }
+                } catch {
+                    Write-Host "      [EXC] $($v.Label): $($_.Exception.Message)" -ForegroundColor Red
+                }
+            }
+        } catch {
+            Write-Warning "[F] probe failed: $($_.Exception.Message)"
         }
 
         Write-Host ""
@@ -888,6 +1053,12 @@ function Save-TorchElasticDetonationLogs {
 
             # `terms` (plural) lets event.dataset match any of the canonical
             # name or its known alternates (see $datasetAliases above).
+            # TODO: `$filters` is reassigned per dataset (so cross-dataset
+            # filter bleed is NOT possible despite the audit's concern), but
+            # the subsequent `$filters += @{...}` below promotes the array
+            # type from hashtable[] to object[]. If Probe F's "filters built
+            # as ONE literal @(...)" variant returns hits while the EXACT
+            # pull body variant returns 0, switch to a [List[hashtable]] here.
             $filters = @(
                 @{ terms = @{ 'event.dataset' = $datasetAliases[$ds] } },
                 @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } }
@@ -935,6 +1106,20 @@ function Save-TorchElasticDetonationLogs {
                                                      -Size $PageSize `
                                                      -Session $session
 
+                    # Pull-loop silent-failure audit finding #4 (HIGH): when
+                    # ConvertFrom-Json fails inside Invoke-TorchElasticQuery
+                    # the function returns the raw stdout STRING instead of a
+                    # PSCustomObject. Without this guard the existing $resp.hits
+                    # check silently sees $null and we break the page loop with
+                    # zero hits written, no warning. Surface it loudly so the
+                    # operator knows ES actually returned malformed JSON (BOM,
+                    # sudo PAM lecture, truncation by Posh-SSH buffer, etc.).
+                    if ($resp -is [string]) {
+                        $preview = if ($resp.Length -gt 400) { $resp.Substring(0, 400) + '...[truncated]' } else { $resp }
+                        Write-Warning "    Invoke-TorchElasticQuery returned a string instead of a parsed object on $ds (page $page) - ConvertFrom-Json upstream failed silently. Raw preview: $preview"
+                        break
+                    }
+
                     # ES error envelope detection - audit finding #4. Without this
                     # check a structurally-valid error response (400 mapper_parsing,
                     # 400 illegal_argument on bad query DSL, 503 shard failure, etc.)
@@ -945,6 +1130,16 @@ function Save-TorchElasticDetonationLogs {
                         $ereason = if ($resp.error.PSObject.Properties.Name -contains 'reason') { $resp.error.reason } else { '(no reason)' }
                         Write-Warning "    ES error envelope on $ds (page $page): $etype - $ereason"
                         break
+                    }
+
+                    # Input 2 theory T1 (HIGH): partial shard failures (e.g. sort
+                    # on _id rejected by Fleet backing indices) surface in
+                    # _shards.failures[], NOT in a top-level error envelope.
+                    # Probe F only sees the top-level error path; without this
+                    # the pull silently writes 0 docs when shards fail.
+                    if ($resp -is [pscustomobject] -and $resp.PSObject.Properties.Name -contains '_shards' -and $resp._shards.failed -gt 0) {
+                        $shardReason = if ($resp._shards.failures -and $resp._shards.failures[0].reason) { $resp._shards.failures[0].reason.reason } else { '(no reason)' }
+                        Write-Warning "    ES shard failure on $ds (page $page): failed=$($resp._shards.failed) reason=$shardReason"
                     }
 
                     if ($null -eq $esTotalReported -and $resp -and $resp.hits -and $resp.hits.total) {
