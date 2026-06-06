@@ -567,6 +567,72 @@ function Invoke-TorchElasticDiagnose {
             Write-Warning "[D] probe failed: $($_.Exception.Message)"
         }
 
+        # --------------------------------------------------------------
+        # Probe E - cross-tab event.dataset x host.name/.hostname/agent.name
+        # --------------------------------------------------------------
+        # Resolves the puzzle when probe C says 'event.dataset = X has Y
+        # docs' AND probe D says 'host.name = Z has W docs' but the pull's
+        # conjunction returns zero. Either (a) the X docs are from a host
+        # OTHER than Z, or (b) the X docs are missing host.name entirely.
+        # This nested agg shows the per-dataset host breakdown.
+        Write-Host ""
+        Write-Host "[E] logs-*  cross-tab: event.dataset -> host.name / host.hostname / agent.name ---" -ForegroundColor Yellow
+        try {
+            $eBody = @{
+                size  = 0
+                query = @{
+                    range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } }
+                }
+                aggs  = @{
+                    by_dataset = @{
+                        terms = @{ field = 'event.dataset'; size = 15 }
+                        aggs  = @{
+                            by_host_name     = @{ terms = @{ field = 'host.name';     size = 5 } }
+                            by_host_hostname = @{ terms = @{ field = 'host.hostname'; size = 5 } }
+                            by_agent_name    = @{ terms = @{ field = 'agent.name';    size = 5 } }
+                        }
+                    }
+                }
+            }
+            $eResp = Invoke-TorchElasticQuery -IndexPattern 'logs-*' `
+                                              -Query $eBody `
+                                              -Size 0 `
+                                              -Session $Session
+            if (-not (& $printEsError $eResp 'E')) {
+                $dsBuckets = @()
+                if ($eResp -and $eResp.aggregations -and $eResp.aggregations.by_dataset -and $eResp.aggregations.by_dataset.buckets) {
+                    $dsBuckets = $eResp.aggregations.by_dataset.buckets
+                }
+                if (-not $dsBuckets -or $dsBuckets.Count -eq 0) {
+                    Write-Host "    (no event.dataset buckets returned)" -ForegroundColor Red
+                } else {
+                    foreach ($db in $dsBuckets) {
+                        $dsKey   = $db.key
+                        $dsCount = $db.doc_count
+                        Write-Host ""
+                        Write-Host "    event.dataset = $dsKey  ($dsCount docs)" -ForegroundColor Cyan
+                        $subFieldMap = @(
+                            @{ Label = 'host.name    '; Path = 'by_host_name'     },
+                            @{ Label = 'host.hostname'; Path = 'by_host_hostname' },
+                            @{ Label = 'agent.name   '; Path = 'by_agent_name'    }
+                        )
+                        foreach ($sf in $subFieldMap) {
+                            $sub = @()
+                            if ($db.($sf.Path) -and $db.($sf.Path).buckets) { $sub = $db.($sf.Path).buckets }
+                            if (-not $sub -or $sub.Count -eq 0) {
+                                Write-Host "       $($sf.Label) : (none)" -ForegroundColor DarkGray
+                            } else {
+                                $pairs = ($sub | ForEach-Object { "$($_.key)=$($_.doc_count)" }) -join ', '
+                                Write-Host "       $($sf.Label) : $pairs" -ForegroundColor DarkGray
+                            }
+                        }
+                    }
+                }
+            }
+        } catch {
+            Write-Warning "[E] probe failed: $($_.Exception.Message)"
+        }
+
         Write-Host ""
         Write-Host "================================================================" -ForegroundColor Cyan
         Write-Host " End of diagnostic probe" -ForegroundColor Cyan
