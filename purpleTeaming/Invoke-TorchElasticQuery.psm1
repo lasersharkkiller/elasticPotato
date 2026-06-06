@@ -1164,7 +1164,18 @@ function Save-TorchElasticDetonationLogs {
                     if (-not $hits -or $hits.Count -eq 0) { break }
 
                     foreach ($h in $hits) {
-                        $writer.WriteLine(($h | ConvertTo-Json -Depth 20 -Compress))
+                        # Extract _source instead of writing the full search hit
+                        # wrapper. The offline parser (ElasticAlertAgent) expects
+                        # flat-_source shape - the same shape we already produce
+                        # for the canonical local detonation dumps (e.g.
+                        # DetonationLogs\C2Frameworks\Sliver_*). Writing the
+                        # wrapped hit ({_index, _id, _score, _source, sort})
+                        # left the offline partitioner looking for event.code at
+                        # the top level when it was actually nested under _source,
+                        # silently zeroing every Sysmon EID bucket. Fall back to
+                        # the whole hit if _source is unexpectedly absent.
+                        $src = if ($h.PSObject.Properties.Name -contains '_source' -and $h._source) { $h._source } else { $h }
+                        $writer.WriteLine(($src | ConvertTo-Json -Depth 20 -Compress))
                     }
                     $total += $hits.Count
 
