@@ -1,4 +1,614 @@
-﻿function Invoke-ElasticAlertAgentAnalysis {
+﻿# =========================================================================
+# MODULE-SCOPE FIDELITY INDEX LAYER (Option-B per-dimension orthogonal index)
+# -------------------------------------------------------------------------
+# Public:
+#   Import-FidelityIndices [-BaselineRoot]   - eager-load manifest, lazy dims
+#   Get-ArtifactRiskScore -Value -Dimension  - per-artifact 3-axis score
+#
+# Internal helpers:
+#   _Normalize-FidValue                       - per-dim key normalization
+#   _Load-DimensionLazy                       - read fidelity-<dim>.json on demand
+#   _Get-IPv6SafeIP                           - canonicalize IPv4+IPv6 from "ip:port"
+#
+# All state lives on $script: vars so the in-process module instance is
+# shared across the long-running analysis function below.
+# =========================================================================
+
+# Default trusted top-100 publishers used for cert impersonation heuristic
+# (T1036.001). The raw strings include trailing punctuation ('inc.', 'ltd.',
+# 'llc.') for readability. The actual lookup set is built AFTER per-dim
+# canonicalization (_Normalize-FidValue with Dimension='cert.publisher')
+# strips trailing , . ; <space>, lowercases, and collapses whitespace - so
+# 'apple inc.' canonicalizes to 'apple inc' and matches the builder's
+# canonical key. See $script:_trustedTop100PublishersCanonical below.
+$script:_trustedTop100PublishersRaw = @(
+    'microsoft corporation','microsoft windows','microsoft windows publisher',
+    'apple inc.','google llc','google inc.','adobe inc.','adobe systems incorporated',
+    'oracle america inc.','oracle corporation','intel corporation','nvidia corporation',
+    'amd inc.','advanced micro devices inc.','samsung electronics co. ltd.',
+    'huawei technologies co. ltd.','dell inc.','dell technologies inc.','hp inc.',
+    'hewlett-packard company','lenovo','cisco systems inc.','vmware inc.',
+    'red hat inc.','canonical ltd.','docker inc.','github inc.','gitlab b.v.',
+    'jetbrains s.r.o.','notion labs inc.','spotify ab','zoom video communications inc.',
+    'slack technologies llc.','dropbox inc.','box inc.',
+    'amazon.com services llc.','amazon web services inc.','meta platforms inc.',
+    'facebook inc.','twitter inc.','linkedin corporation','salesforce.com inc.',
+    'mozilla corporation','mozilla foundation','opera software as','vivaldi technologies',
+    'brave software inc.','duckduckgo inc.','python software foundation',
+    'node.js foundation','openjs foundation','the linux foundation','symantec corporation',
+    'broadcom inc.','mcafee llc','crowdstrike inc.','sentinelone inc.','sophos ltd.',
+    'kaspersky lab','bitdefender srl','eset spol. s r.o.','f-secure corporation',
+    'palo alto networks inc.','fortinet inc.','splunk inc.','elasticsearch b.v.',
+    'elastic n.v.','citrix systems inc.','autodesk inc.','intuit inc.','sap se',
+    'epic games inc.','valve corporation','blizzard entertainment inc.',
+    'logitech inc.','realtek semiconductor corp.','asustek computer inc.',
+    'msi technology gmbh','western digital technologies inc.','seagate technology llc'
+)
+# Pre-canonicalized lookup set populated below after _Normalize-FidValue is defined.
+$script:_trustedTop100Publishers = @()
+
+# State (populated by Import-FidelityIndices)
+$script:_fid              = @{}      # lazy-loaded per-dim hashtables ($dim -> @{ $value -> entry })
+$script:_fidManifest      = $null    # parsed manifest
+$script:_fidBaselineRoot  = $null
+$script:_fidUseNewScoring = $false   # gated by manifest.scoring.calibration_passed
+
+function _Normalize-FidValue {
+    <#
+    .SYNOPSIS Mirror the BUILDER per-dim key normalization in the consumer.
+    #>
+    param([string]$Value, [string]$Dimension)
+    if ([string]::IsNullOrWhiteSpace($Value)) { return $null }
+    $v = $Value
+    switch -Regex ($Dimension) {
+        '^cert\.status$' {
+            # Builder uses TitleCase set: SignedVerified, SelfSigned, Unsigned, ...
+            # Map common host variations.
+            $t = $v.Trim()
+            switch -Wildcard ($t.ToLowerInvariant()) {
+                'signedverified*'    { $v = 'SignedVerified'; break }
+                'selfsigned*'        { $v = 'SelfSigned'; break }
+                'unsigned*'          { $v = 'Unsigned'; break }
+                'signedexpired*'     { $v = 'SignedExpired'; break }
+                'signedrevoked*'     { $v = 'SignedRevoked'; break }
+                'invalidsignature*'  { $v = 'InvalidSignature'; break }
+                'catalogsigned*'     { $v = 'CatalogSigned'; break }
+                default              { $v = $t }
+            }
+            break
+        }
+        '^cert\.publisher$' {
+            # Lowercased, whitespace-collapsed, trailing punct stripped
+            $v = $v.ToLowerInvariant()
+            $v = ($v -replace '\s+', ' ').Trim()
+            $v = $v.TrimEnd(',', '.', ';', ' ')
+            break
+        }
+        '^mitre\.technique$' {
+            # Strip ".NNN" sub-technique suffix to match builder parent-only index
+            if ($v -match '^(T\d{4})(?:\.\d+)?') { $v = $Matches[1] }
+            break
+        }
+        '^ip(\.|$)' {
+            # Canonicalize via [System.Net.IPAddress] when possible
+            try {
+                $parsed = [System.Net.IPAddress]::Parse($v.Trim())
+                $v = $parsed.ToString()
+            } catch { $v = $v.Trim() }
+            break
+        }
+        '^(dns|domain)' {
+            $v = $v.ToLowerInvariant().Trim().TrimEnd('.')
+            break
+        }
+        default {
+            # Most dims are case-insensitive: builder lowercases simple keys
+            $v = $v.ToString().Trim()
+        }
+    }
+    return $v
+}
+
+# Now that _Normalize-FidValue exists, build the canonicalized trusted-publisher
+# lookup set used by the T1036.001 impersonation heuristic. Without this step
+# the raw list (with trailing 'inc.', 'ltd.' etc.) NEVER matched the canonical
+# host-side form (publisher canonicalization strips trailing punctuation).
+$script:_trustedTop100Publishers = @(
+    $script:_trustedTop100PublishersRaw | ForEach-Object {
+        _Normalize-FidValue -Value $_ -Dimension 'cert.publisher'
+    } | Where-Object { $_ } | Select-Object -Unique
+)
+
+function _Get-IPv6SafeIP {
+    <#
+    .SYNOPSIS Strip port suffix from a network connection string, preserving
+              full IPv6 representation. Replaces the broken ($conn -split ':')[0]
+              which mangled IPv6 addresses.
+
+    .NOTES Known limitation: a bare unbracketed IPv6 followed by ':port'
+           (e.g. '2001:db8::1:443') is indistinguishable from a valid IPv6
+           with 443 as the final hextet, because both parse successfully via
+           [System.Net.IPAddress]::Parse. Standard log formats use brackets
+           ([addr]:port) and Elastic normally surfaces ip / port as separate
+           fields, so this only matters for hand-formatted destination.address
+           strings. Caller should prefer source.ip / destination.ip when available.
+    #>
+    param([string]$Conn)
+    if ([string]::IsNullOrWhiteSpace($Conn)) { return $null }
+    $raw = $Conn.Trim()
+    # Bracketed IPv6: [::1]:443
+    if ($raw -match '^\[([0-9a-fA-F:]+)\](?::\d+)?$') {
+        try {
+            $ip = [System.Net.IPAddress]::Parse($Matches[1])
+            return $ip.ToString()
+        } catch { return $Matches[1] }
+    }
+    # Try parse as-is (covers bare IPv6 with no port)
+    try {
+        $ip = [System.Net.IPAddress]::Parse($raw)
+        return $ip.ToString()
+    } catch {}
+    # IPv4 with port: 1.2.3.4:443
+    if ($raw -match '^(\d{1,3}(?:\.\d{1,3}){3}):\d+$') {
+        try {
+            $ip = [System.Net.IPAddress]::Parse($Matches[1])
+            return $ip.ToString()
+        } catch { return $Matches[1] }
+    }
+    # IPv4 bare
+    if ($raw -match '^\d{1,3}(?:\.\d{1,3}){3}$') {
+        try { return ([System.Net.IPAddress]::Parse($raw)).ToString() } catch { return $raw }
+    }
+    # Fallback: split on last ":" only if the head still parses as IP
+    $idx = $raw.LastIndexOf(':')
+    if ($idx -gt 0) {
+        $head = $raw.Substring(0, $idx)
+        try { return ([System.Net.IPAddress]::Parse($head)).ToString() } catch { return $raw }
+    }
+    return $raw
+}
+
+function _Test-IPRoutable {
+    <#
+    .SYNOPSIS Mirror builder: drop loopback / link-local / RFC1918 / ULA / doc-prefix.
+    #>
+    param([string]$IP)
+    if ([string]::IsNullOrWhiteSpace($IP)) { return $false }
+    try {
+        $parsed = [System.Net.IPAddress]::Parse($IP)
+        if ([System.Net.IPAddress]::IsLoopback($parsed)) { return $false }
+        if ($parsed.AddressFamily -eq 'InterNetworkV6') {
+            if ($parsed.IsIPv6LinkLocal -or $parsed.IsIPv6SiteLocal) { return $false }
+            $b6 = $parsed.GetAddressBytes()
+            # RFC4193 Unique Local Address fc00::/7 (the IPv6 equivalent of RFC1918).
+            # .NET's IsIPv6SiteLocal checks the DEPRECATED fec0::/10 only; ULA is the
+            # modern private range and the builder strips it host-side too.
+            if ($b6[0] -eq 0xfc -or $b6[0] -eq 0xfd) { return $false }
+            # RFC3849 documentation prefix 2001:db8::/32 - never seen in real traffic;
+            # always a sign of misconfigured logging or a test fixture leaking in.
+            if ($b6[0] -eq 0x20 -and $b6[1] -eq 0x01 -and $b6[2] -eq 0x0d -and $b6[3] -eq 0xb8) { return $false }
+            return $true
+        }
+        # IPv4
+        $b = $parsed.GetAddressBytes()
+        if ($b[0] -eq 10) { return $false }
+        if ($b[0] -eq 172 -and $b[1] -ge 16 -and $b[1] -le 31) { return $false }
+        if ($b[0] -eq 192 -and $b[1] -eq 168) { return $false }
+        if ($b[0] -eq 169 -and $b[1] -eq 254) { return $false }
+        if ($b[0] -eq 127) { return $false }
+        return $true
+    } catch { return $false }
+}
+
+function _Load-DimensionLazy {
+    <#
+    .SYNOPSIS Read fidelity-<dim>.json on first access; cache in $script:_fid.
+    #>
+    param([string]$Dimension)
+    if ($script:_fid.ContainsKey($Dimension)) { return }
+    if (-not $script:_fidBaselineRoot) { return }
+    $safeDim = $Dimension -replace '[^a-zA-Z0-9._-]', '-'
+    $path    = Join-Path $script:_fidBaselineRoot "fidelity-$safeDim.json"
+    if (-not (Test-Path $path)) {
+        # Mark as loaded-but-empty so we don't retry
+        $script:_fid[$Dimension] = @{}
+        return
+    }
+    try {
+        $raw  = Get-Content $path -Raw
+        $obj  = $raw | ConvertFrom-Json
+        $h    = @{}
+        # JSON object -> hashtable (case-insensitive lookup via .ContainsKey)
+        foreach ($p in $obj.PSObject.Properties) { $h[$p.Name] = $p.Value }
+        $script:_fid[$Dimension] = $h
+    } catch {
+        Write-Warning "[Fidelity] Failed to load $path : $($_.Exception.Message)"
+        $script:_fid[$Dimension] = @{}
+    }
+}
+
+function Import-FidelityIndices {
+    <#
+    .SYNOPSIS
+        Eager-load fidelity-manifest.json; leave per-dimension indices lazy.
+    .DESCRIPTION
+        Reads <BaselineRoot>\fidelity-manifest.json (< 10 KB) and inspects
+        manifest.scoring.calibration_passed. If absent or false, refuses to
+        enable the new 3-axis scoring path (consumer falls back to legacy
+        fields). If the manifest itself is missing, loads the legacy flat
+        fidelity-index.json into $script:_fid['_legacy_flat'].
+    .PARAMETER BaselineRoot
+        Folder containing fidelity-manifest.json and fidelity-<dim>.json.
+        Defaults to <module-dir>\..\output-baseline.
+    #>
+    [CmdletBinding()]
+    param([string]$BaselineRoot)
+
+    if ([string]::IsNullOrWhiteSpace($BaselineRoot)) {
+        $BaselineRoot = Join-Path $PSScriptRoot "..\output-baseline"
+    }
+    $script:_fidBaselineRoot  = $BaselineRoot
+    $script:_fid              = @{}
+    $script:_fidManifest      = $null
+    $script:_fidUseNewScoring = $false
+
+    $manifestPath = Join-Path $BaselineRoot 'fidelity-manifest.json'
+    $legacyPath   = Join-Path $BaselineRoot 'fidelity-index.json'
+
+    if (Test-Path $manifestPath) {
+        try {
+            $script:_fidManifest = Get-Content $manifestPath -Raw | ConvertFrom-Json
+        } catch {
+            Write-Warning "[Fidelity] Failed to parse manifest at $manifestPath : $($_.Exception.Message)"
+            $script:_fidManifest = $null
+        }
+    }
+
+    # Helper: load the legacy flat fidelity-index.json into $script:_fid['_legacy_flat'].
+    # Used both for manifest-absent mode AND as the compat fallback when a manifest
+    # is present but calibration_passed=false (the design preserves the flat shim
+    # exactly so the consumer can fail-soft to legacy scoring when new scoring is gated off).
+    $loadLegacyFlat = {
+        if (Test-Path $legacyPath) {
+            try {
+                $flat = Get-Content $legacyPath -Raw | ConvertFrom-Json
+                $h = @{}
+                foreach ($p in $flat.PSObject.Properties) { $h[$p.Name] = $p.Value }
+                $script:_fid['_legacy_flat'] = $h
+                return $true
+            } catch {
+                Write-Warning "[Fidelity] Failed to load legacy fidelity-index.json: $($_.Exception.Message)"
+            }
+        }
+        return $false
+    }
+
+    if ($script:_fidManifest) {
+        $cal = $false
+        try { $cal = [bool]$script:_fidManifest.scoring.calibration_passed } catch {}
+        if (-not $cal) {
+            Write-Warning "[Fidelity] manifest.scoring.calibration_passed=false  -- new scoring path DISABLED (falling back to legacy flat shim)"
+            $script:_fidUseNewScoring = $false
+            # Critical: still load the flat shim so Get-ArtifactRiskScore can return
+            # legacy-mode results. Without this, lookups silently return $empty for
+            # every artifact and the consumer reports ZERO hits (worse than no manifest).
+            [void](& $loadLegacyFlat)
+        } else {
+            $script:_fidUseNewScoring = $true
+        }
+    } else {
+        # No manifest -- legacy mode
+        if (& $loadLegacyFlat) {
+            $script:_fidManifest = [pscustomobject]@{ schema_version = 1 }
+        } else {
+            Write-Warning "[Fidelity] No manifest or legacy index found at $BaselineRoot"
+        }
+        $script:_fidUseNewScoring = $false
+    }
+    return [pscustomobject]@{
+        BaselineRoot      = $BaselineRoot
+        ManifestPresent   = ($script:_fidManifest -ne $null -and $script:_fidManifest.schema_version -ne 1)
+        UseNewScoring     = $script:_fidUseNewScoring
+    }
+}
+
+function Get-ArtifactRiskScore {
+    <#
+    .SYNOPSIS
+        Look up one (Value, Dimension) pair and return 3-axis risk metrics.
+    .DESCRIPTION
+        Lazily loads the per-dimension index on first access. Mirrors the
+        builder's per-dim key normalization. Falls back to legacy flat index
+        when the new scoring path is gated off.
+    .OUTPUTS
+        Hashtable with keys: Dimension, M, G, L, RiskScore, Confidence, PMI,
+        Score100, U, R, LegitNames, VerdictPoints, FoundInIndex.
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)] [string]$Value,
+        [Parameter(Mandatory)] [string]$Dimension
+    )
+
+    $empty = @{
+        Dimension     = $Dimension
+        M             = 0
+        G             = 0
+        L             = 0
+        RiskScore     = 0.0
+        Confidence    = 0.0
+        PMI           = 0.0
+        Score100      = 0
+        U             = $false
+        R             = $false
+        LegitNames    = @()
+        VerdictPoints = 0
+        FoundInIndex  = $false
+    }
+    if ([string]::IsNullOrWhiteSpace($Value)) { return $empty }
+
+    $useNew = ($script:_fidUseNewScoring -and $script:_fidManifest -and $script:_fidManifest.schema_version -ne $null -and [int]$script:_fidManifest.schema_version -ge 2)
+
+    if (-not $useNew) {
+        # Legacy flat fallback
+        if (-not $script:_fid.ContainsKey('_legacy_flat')) { return $empty }
+        $flat = $script:_fid['_legacy_flat']
+        $key  = $Value.ToString().ToLower().Trim()
+        $e    = $null
+        if ($flat.ContainsKey($key))            { $e = $flat[$key] }
+        elseif ($flat.ContainsKey($Value))      { $e = $flat[$Value] }
+        if (-not $e) { return $empty }
+        $m   = [int]($e.M)
+        $g   = [int]($e.G)
+        $s   = [int]($e.S)
+        $u   = [bool]$e.U
+        $r   = [bool]$e.R
+        $rs  = if ($s -gt 0) { $s / 100.0 } else { 0.0 }
+        # Confidence is intentionally 0.0 in legacy fallback: the new-scoring
+        # disjunct ($maxArtifact_RiskScore >= 0.95 AND $maxArtifact_Confidence >= 0.4)
+        # must NOT fire on legacy-fallback data (a single Rare entry from the flat
+        # file would otherwise force COMPROMISED/HIGH every time).
+        return @{
+            Dimension     = $Dimension
+            M             = $m
+            G             = $g
+            L             = 0
+            RiskScore     = $rs
+            Confidence    = 0.0
+            PMI           = 0.0
+            Score100      = $s
+            U             = $u
+            R             = $r
+            LegitNames    = @($e.L)
+            VerdictPoints = 0
+            FoundInIndex  = $true
+        }
+    }
+
+    # New per-dim path
+    _Load-DimensionLazy -Dimension $Dimension
+    $dimHash = $script:_fid[$Dimension]
+    if (-not $dimHash) { return $empty }
+    $nv = _Normalize-FidValue -Value $Value -Dimension $Dimension
+    if ([string]::IsNullOrWhiteSpace($nv)) { return $empty }
+    $e = $null
+    if ($dimHash.ContainsKey($nv))                 { $e = $dimHash[$nv] }
+    elseif ($dimHash.ContainsKey($nv.ToLowerInvariant())) { $e = $dimHash[$nv.ToLowerInvariant()] }
+    if (-not $e) { return $empty }
+
+    $m      = [int]($e.M)
+    $g      = [int]($e.G)
+    $l      = if ($e.PSObject.Properties['L_count']) { [int]$e.L_count } elseif ($e.PSObject.Properties['L']) { [int]$e.L } else { 0 }
+    $rs     = if ($e.PSObject.Properties['RiskScore']) { [double]$e.RiskScore } else { 0.0 }
+    $conf   = if ($e.PSObject.Properties['Confidence']) { [double]$e.Confidence } else { 0.0 }
+    $pmi    = if ($e.PSObject.Properties['PMI']) { [double]$e.PMI } else { 0.0 }
+    $s100   = if ($e.PSObject.Properties['Score100']) { [int]$e.Score100 } else { [int][Math]::Round($rs * 100, [MidpointRounding]::AwayFromZero) }
+    $u      = if ($e.PSObject.Properties['U']) { [bool]$e.U } else { ($s100 -ge 95 -and $conf -ge 0.4) }
+    $r      = if ($e.PSObject.Properties['R']) { [bool]$e.R } else { ($s100 -ge 85 -and $s100 -lt 95 -and $conf -ge 0.4) }
+    $vp     = if ($e.PSObject.Properties['VerdictPoints']) { [int]$e.VerdictPoints } else { 0 }
+    $legit  = if ($e.PSObject.Properties['LegitNames'])    { @($e.LegitNames) } else { @() }
+
+    # Minimum-evidence gate mirror of builder
+    if (($m + $g) -lt 5) { $vp = 0 }
+
+    # Feature flag for win-api: OFF by default (EnableWinApiVerdictPoints=false
+    # per signoff). VerdictPoints flow only when the manifest EXPLICITLY enables
+    # the gate. A missing dimension_gates section means OFF, not ON.
+    if ($Dimension -eq 'behavior.win_api_call') {
+        $enabled = $false
+        try {
+            $g = $script:_fidManifest.scoring.dimension_gates.'behavior.win_api_call'
+            if ($g -and $g.verdict_points_enabled -eq $true) { $enabled = $true }
+        } catch {}
+        if (-not $enabled) { $vp = 0 }
+    }
+
+    return @{
+        Dimension     = $Dimension
+        M             = $m
+        G             = $g
+        L             = $l
+        RiskScore     = $rs
+        Confidence    = $conf
+        PMI           = $pmi
+        Score100      = $s100
+        U             = $u
+        R             = $r
+        LegitNames    = $legit
+        VerdictPoints = $vp
+        FoundInIndex  = $true
+    }
+}
+
+function Get-ArtifactCertStatusList {
+    <#
+    .SYNOPSIS
+        Extract cert.status detection-mode values from Sysmon EID 7 image-loads
+        and Elastic Defend file.code_signature events.
+    .DESCRIPTION
+        Decision tree (matches builder host-side extractor):
+          Signed==false OR code_signature.exists==false           -> Unsigned
+          self-signed indicator                                   -> SelfSigned
+          status='Expired'                                        -> SignedExpired
+          status='Revoked'                                        -> SignedRevoked
+          subject_name='Microsoft Windows' AND catalog            -> CatalogSigned
+          Signed==true AND status='Valid' AND trusted==true       -> SignedVerified
+          status='Invalid'                                        -> InvalidSignature
+    #>
+    param([object[]]$Events)
+    $out = [System.Collections.Generic.List[string]]::new()
+    foreach ($d in @($Events)) {
+        if (-not $d) { continue }
+
+        # Gate to Sysmon EID 7 (Image-Load with signature info) OR any event
+        # carrying Elastic Defend file.code_signature.* - other channels can emit
+        # event_data.Signed (e.g. CodeIntegrity 3033, Defender driver-load) and
+        # would otherwise be misclassified by the decision tree below.
+        $eid = $null
+        try { $eid = "$($d.winlog.event_id)" } catch {}
+        $hasCS = $false
+        try { $hasCS = ($null -ne $d.file.code_signature) } catch {}
+        if ($eid -ne '7' -and -not $hasCS) { continue }
+
+        $signedRaw = $null; $statusRaw = $null; $sigSubject = $null
+        $trusted   = $null; $exists    = $null; $valid     = $null
+
+        # Sysmon EID 7 winlog fields
+        $we = $null
+        try { $we = $d.winlog.event_data } catch {}
+        if ($we) {
+            # Test for null vs false explicitly: Winlogbeat normalizes Signed to
+            # [bool] $false in some ingest pipelines and string 'false' in others.
+            # `if ($we.Signed)` is false for BOTH absent AND boolean false, which
+            # silently skipped unsigned-image classification on bool-normalized streams.
+            try { if ($null -ne $we.Signed) { $signedRaw = "$($we.Signed)" } } catch {}
+            if ($we.SignatureStatus)  { $statusRaw = "$($we.SignatureStatus)" }
+            if ($we.Signature)        { $sigSubject = "$($we.Signature)" }
+        }
+        # Elastic Defend file.code_signature.*
+        try {
+            $cs = $d.file.code_signature
+            if ($cs) {
+                if ($null -ne $cs.exists)  { $exists  = [bool]$cs.exists }
+                if ($null -ne $cs.trusted) { $trusted = [bool]$cs.trusted }
+                if ($null -ne $cs.valid)   { $valid   = [bool]$cs.valid }
+                if ($cs.subject_name) { $sigSubject = "$($cs.subject_name)" }
+            }
+        } catch {}
+
+        $status = $null
+        if (($signedRaw -and $signedRaw -ieq 'false') -or ($exists -eq $false)) {
+            $status = 'Unsigned'
+        } elseif ($statusRaw) {
+            switch -Wildcard ($statusRaw.ToLowerInvariant()) {
+                'expired*'      { $status = 'SignedExpired'; break }
+                'revoked*'      { $status = 'SignedRevoked'; break }
+                # Sysmon SignatureStatus 'Distrusted' = cert root is in the OS
+                # Distrusted Certificates store (manual revocation by admin/EDR).
+                # For our purposes it behaves like a revocation.
+                'distrusted*'   { $status = 'SignedRevoked'; break }
+                'invalid*'      { $status = 'InvalidSignature'; break }
+                'unavailable*'  { $status = 'Unsigned'; break }
+                'unsupported*'  { $status = 'InvalidSignature'; break }
+                'valid*' {
+                    if ($trusted -eq $true) { $status = 'SignedVerified' }
+                    elseif ($sigSubject -and $sigSubject -match '(?i)self[- ]?sign') { $status = 'SelfSigned' }
+                    else { $status = 'SignedVerified' }
+                    break
+                }
+                default {
+                    if ($sigSubject -and $sigSubject -match '(?i)self[- ]?sign') { $status = 'SelfSigned' }
+                }
+            }
+        } elseif ($valid -eq $true -and $trusted -eq $true) {
+            $status = 'SignedVerified'
+        } elseif ($valid -eq $false) {
+            $status = 'InvalidSignature'
+        } elseif ($exists -eq $true -and $trusted -eq $false) {
+            $status = 'SelfSigned'
+        }
+        if ($status) { [void]$out.Add($status) }
+    }
+    return @($out | Where-Object { $_ } | Select-Object -Unique)
+}
+
+function Get-ArtifactCertPublisherList {
+    <#
+    .SYNOPSIS
+        Extract cert.publisher canonicalized strings from Sysmon EID 7 and
+        Elastic Defend file.code_signature.subject_name. Canonical form:
+        lowercased, trailing punct stripped (matches builder).
+    #>
+    param([object[]]$Events)
+    $out = [System.Collections.Generic.List[string]]::new()
+    foreach ($d in @($Events)) {
+        if (-not $d) { continue }
+        $subj = $null
+        try { if ($d.winlog.event_data.Signature) { $subj = "$($d.winlog.event_data.Signature)" } } catch {}
+        if (-not $subj) { try { if ($d.file.code_signature.subject_name) { $subj = "$($d.file.code_signature.subject_name)" } } catch {} }
+        if ($subj) {
+            # Extract CN= when present
+            if ($subj -match '(?i)CN=([^,]+)') { $subj = $Matches[1] }
+            $norm = _Normalize-FidValue -Value $subj -Dimension 'cert.publisher'
+            if ($norm) { [void]$out.Add($norm) }
+        }
+    }
+    return @($out | Where-Object { $_ } | Select-Object -Unique)
+}
+
+function Get-ArtifactServiceList {
+    <#
+    .SYNOPSIS
+        Service-name extractor from Win Security EID 4697 (ServiceName) plus
+        Sysmon EID 1 command lines that contain 'sc.exe create' or 'New-Service'.
+    #>
+    param([object[]]$SecurityEvents, [object[]]$SysmonProcEvents)
+    $out = [System.Collections.Generic.List[string]]::new()
+    foreach ($d in @($SecurityEvents)) {
+        if (-not $d) { continue }
+        $eid = $null
+        try { $eid = "$($d.winlog.event_id)" } catch {}
+        if ($eid -ne '4697') { continue }
+        $svc = $null
+        try { $svc = $d.winlog.event_data.ServiceName } catch {}
+        if (-not $svc) { try { $svc = $d.service.name } catch {} }
+        if ($svc) { [void]$out.Add("$svc".Trim()) }
+    }
+    foreach ($d in @($SysmonProcEvents)) {
+        if (-not $d) { continue }
+        $cl = $null
+        try { $cl = $d.process.command_line } catch {}
+        if (-not $cl) { try { $cl = $d.winlog.event_data.CommandLine } catch {} }
+        if (-not $cl) { continue }
+        if ($cl -match '(?i)sc(\.exe)?\s+create\s+("?)([A-Za-z0-9_\-\.]+)\2') {
+            [void]$out.Add($Matches[3].Trim())
+        } elseif ($cl -match '(?i)New-Service\s+(?:-Name\s+)?("?)([A-Za-z0-9_\-\.]+)\1') {
+            [void]$out.Add($Matches[2].Trim())
+        }
+    }
+    return @($out | Where-Object { $_ } | Select-Object -Unique)
+}
+
+function Get-ArtifactScheduledTaskList {
+    <#
+    .SYNOPSIS Scheduled-task names from Win Security EID 4698 ScheduledTaskName.
+    #>
+    param([object[]]$SecurityEvents)
+    $out = [System.Collections.Generic.List[string]]::new()
+    foreach ($d in @($SecurityEvents)) {
+        if (-not $d) { continue }
+        $eid = $null
+        try { $eid = "$($d.winlog.event_id)" } catch {}
+        if ($eid -ne '4698') { continue }
+        $tn = $null
+        try { $tn = $d.winlog.event_data.TaskName } catch {}
+        if (-not $tn) { try { $tn = $d.winlog.event_data.ScheduledTaskName } catch {} }
+        if ($tn) { [void]$out.Add("$tn".Trim()) }
+    }
+    return @($out | Where-Object { $_ } | Select-Object -Unique)
+}
+
+function Invoke-ElasticAlertAgentAnalysis {
     <#
     .SYNOPSIS
         Offline cybersecurity alert triage agent - no external AI or network callouts.
@@ -332,55 +942,130 @@
     # the user to build the index for full coverage.
     # -----------------------------------------------------------------------
     function Invoke-BatchFidelityScan {
-        param([string[]]$Indicators, [int]$SamplePerCategory = 1000)
+        # ---------------------------------------------------------------
+        # PHASE A MIGRATION: prefers manifest + per-dim indices via
+        # Import-FidelityIndices / Get-ArtifactRiskScore. Map is now
+        # double-keyed: $fidMap["$value|$dim"] AND $fidMap[$value] (last-
+        # write wins for the bare-value legacy callers in this file).
+        # The bare-value entry also gets a Dimension property so callers
+        # can detect a multi-dim collision and re-key if needed.
+        # ---------------------------------------------------------------
+        param(
+            [string[]]$Indicators,
+            [hashtable]$IndicatorsByDimension = $null,  # value -> dimension; takes precedence if supplied
+            [int]$SamplePerCategory = 1000
+        )
 
         $fidMap = @{}
-        $cleanInds = $Indicators | Where-Object { $_ -and $_.Length -ge 3 } | Select-Object -Unique
-        if (-not $cleanInds) { return $fidMap }
 
-        # ---- PRIMARY: use pre-built index (full database coverage) ----
-        $indexPath = Join-Path $PSScriptRoot "..\output-baseline\fidelity-index.json"
-        if (-not [System.IO.Path]::IsPathRooted($indexPath)) {
-            $indexPath = Join-Path $PSScriptRoot "..\output-baseline\fidelity-index.json"
+        # Build the value->dimension table.
+        $itemMap = @{}
+        if ($IndicatorsByDimension -and $IndicatorsByDimension.Count -gt 0) {
+            foreach ($k in $IndicatorsByDimension.Keys) {
+                if ($k -and $k.Length -ge 1) { $itemMap[$k] = $IndicatorsByDimension[$k] }
+            }
+        }
+        if ($Indicators) {
+            foreach ($ind in ($Indicators | Where-Object { $_ -and $_.Length -ge 3 } | Select-Object -Unique)) {
+                if (-not $itemMap.ContainsKey($ind)) { $itemMap[$ind] = 'unknown' }
+            }
+        }
+        if ($itemMap.Count -eq 0) { return $fidMap }
+
+        # ---- PRIMARY: manifest + per-dim indices ----
+        $baselineRoot = Join-Path $PSScriptRoot "..\output-baseline"
+        $manifestPath = Join-Path $baselineRoot 'fidelity-manifest.json'
+        $legacyPath   = Join-Path $baselineRoot 'fidelity-index.json'
+
+        if (Test-Path $manifestPath) {
+            Write-Host "    Loading fidelity manifest + per-dimension indices..." -ForegroundColor DarkGray
+            try {
+                [void](Import-FidelityIndices -BaselineRoot $baselineRoot)
+                $hits = 0
+                foreach ($ind in $itemMap.Keys) {
+                    $dim = $itemMap[$ind]
+                    $rs  = Get-ArtifactRiskScore -Value $ind -Dimension $dim
+                    $entry = @{
+                        MalCount      = $rs.M
+                        GoodCount     = $rs.G
+                        Score         = $rs.Score100
+                        Unique        = [bool]$rs.U
+                        Rare          = [bool]$rs.R
+                        LegitNames    = @($rs.LegitNames)
+                        RiskScore     = $rs.RiskScore
+                        Confidence    = $rs.Confidence
+                        PMI           = $rs.PMI
+                        VerdictPoints = $rs.VerdictPoints
+                        Dimension     = $dim
+                    }
+                    $fidMap["$ind|$dim"] = $entry
+                    $fidMap[$ind]        = $entry   # bare-value compat for legacy call sites
+                    if ($rs.M -gt 0) { $hits++ }
+                }
+                Write-Host "    Index lookup complete: $($itemMap.Count) artifacts, $hits with malware association" -ForegroundColor DarkGray
+                return $fidMap
+            } catch {
+                Write-Host "    [!] Manifest load failed: $($_.Exception.Message) -- falling back to legacy index" -ForegroundColor Yellow
+            }
         }
 
-        if (Test-Path $indexPath) {
-            Write-Host "    Loading pre-built fidelity index..." -ForegroundColor DarkGray
+        # ---- LEGACY: flat fidelity-index.json ----
+        if (Test-Path $legacyPath) {
+            Write-Host "    Loading legacy fidelity index..." -ForegroundColor DarkGray
             try {
-                $index = Get-Content $indexPath -Raw | ConvertFrom-Json
-                foreach ($ind in $cleanInds) {
+                $index = Get-Content $legacyPath -Raw | ConvertFrom-Json
+                foreach ($ind in $itemMap.Keys) {
+                    $dim = $itemMap[$ind]
                     $key = $ind.ToLower().Trim()
                     $entry = $index.$key
                     if (-not $entry) { $entry = $index.$ind }   # try original casing too
                     if ($entry) {
-                        $fidMap[$ind] = @{
-                            MalCount   = $entry.M
-                            GoodCount  = $entry.G
-                            Score      = $entry.S
-                            Unique     = [bool]$entry.U
-                            Rare       = [bool]$entry.R
-                            LegitNames = @($entry.L)
+                        $rec = @{
+                            MalCount      = $entry.M
+                            GoodCount     = $entry.G
+                            Score         = $entry.S
+                            Unique        = [bool]$entry.U
+                            Rare          = [bool]$entry.R
+                            LegitNames    = @($entry.L)
+                            RiskScore     = if ($entry.S -gt 0) { [double]$entry.S / 100.0 } else { 0.0 }
+                            # Confidence=0.0 so the new-scoring disjunct cannot fire on legacy data
+                            Confidence    = 0.0
+                            PMI           = 0.0
+                            VerdictPoints = 0
+                            Dimension     = $dim
                         }
                     } else {
-                        # Not in index = not seen in any malware in our entire database
-                        $fidMap[$ind] = @{ MalCount=0; GoodCount=0; Score=0; Unique=$false; Rare=$false; LegitNames=@() }
+                        $rec = @{ MalCount=0; GoodCount=0; Score=0; Unique=$false; Rare=$false; LegitNames=@();
+                                  RiskScore=0.0; Confidence=0.0; PMI=0.0; VerdictPoints=0; Dimension=$dim }
                     }
+                    $fidMap["$ind|$dim"] = $rec
+                    $fidMap[$ind]        = $rec
                 }
-                $hits = @($fidMap.Values | Where-Object { $_.MalCount -gt 0 }).Count
-                Write-Host "    Index lookup complete: $($cleanInds.Count) artifacts, $hits with malware association" -ForegroundColor DarkGray
+                # Count bare keys only - $fidMap.Values would double-count entries
+                # (each entry appears under both bare-value and "value|dim" keys).
+                $hits = @($fidMap.Keys | Where-Object { $_ -notmatch '\|' } |
+                          Where-Object { $fidMap[$_].MalCount -gt 0 }).Count
+                Write-Host "    Legacy index lookup complete: $($itemMap.Count) artifacts, $hits with malware association" -ForegroundColor DarkGray
                 return $fidMap
             } catch {
-                Write-Host "    [!] Index load failed: $($_.Exception.Message) -- falling back to live scan" -ForegroundColor Yellow
+                Write-Host "    [!] Legacy index load failed: $($_.Exception.Message) -- falling back to live scan" -ForegroundColor Yellow
             }
         } else {
-            Write-Host "    [!] No fidelity index found at: $indexPath" -ForegroundColor Yellow
+            Write-Host "    [!] No fidelity index found at: $baselineRoot" -ForegroundColor Yellow
             Write-Host "    [!] Run Build-VTFidelityIndex once for full database coverage." -ForegroundColor Yellow
             Write-Host "    [!] Falling back to partial live scan ($SamplePerCategory files/category)..." -ForegroundColor Yellow
         }
+        # rebuild cleanInds compat for live fallback below
+        $cleanInds = @($itemMap.Keys)
 
         # ---- FALLBACK: live partial scan (limited coverage, warns user) ----
+        # Iterate only $cleanInds (raw values), not $fidMap.Keys, because the
+        # latter now also contains composite "value|dim" keys.
         foreach ($ind in $cleanInds) {
-            $fidMap[$ind] = @{ MalCount=0; GoodCount=0; Score=0; Unique=$false; Rare=$false; LegitNames=[System.Collections.Generic.List[string]]::new() }
+            $fidMap[$ind] = @{ MalCount=0; GoodCount=0; Score=0; Unique=$false; Rare=$false;
+                               LegitNames=[System.Collections.Generic.List[string]]::new();
+                               RiskScore=0.0; Confidence=0.0; PMI=0.0; VerdictPoints=0;
+                               Dimension=$itemMap[$ind] }
         }
 
         $malPath = Join-Path $BaselineBehaviorsRoot "malicious"
@@ -388,7 +1073,7 @@
             foreach ($f in (Get-ChildItem $malPath -Filter "*.json" -ErrorAction SilentlyContinue | Select-Object -First $SamplePerCategory)) {
                 try {
                     $content = [System.IO.File]::ReadAllText($f.FullName)
-                    foreach ($ind in $fidMap.Keys) {
+                    foreach ($ind in $cleanInds) {
                         if ($content.IndexOf($ind, [System.StringComparison]::OrdinalIgnoreCase) -ge 0) { $fidMap[$ind].MalCount++ }
                     }
                 } catch {}
@@ -401,7 +1086,7 @@
                 try {
                     $content = [System.IO.File]::ReadAllText($f.FullName)
                     $nameLoaded = $false; $legitName = ""
-                    foreach ($ind in $fidMap.Keys) {
+                    foreach ($ind in $cleanInds) {
                         if ($content.IndexOf($ind, [System.StringComparison]::OrdinalIgnoreCase) -ge 0) {
                             $fidMap[$ind].GoodCount++
                             if ($fidMap[$ind].LegitNames.Count -lt 3) {
@@ -422,11 +1107,15 @@
                 } catch {}
             }
         }
-        foreach ($ind in $fidMap.Keys) {
+        foreach ($ind in $cleanInds) {
             $r = $fidMap[$ind]
             if ($r.MalCount -gt 0 -and $r.GoodCount -eq 0)    { $r.Score = 100; $r.Unique = $true }
             elseif ($r.MalCount -gt 0 -and $r.GoodCount -le 3) { $r.Score = 95;  $r.Rare   = $true }
             elseif ($r.MalCount -gt 0)                          { $r.Score = [Math]::Max(50, 95 - ($r.GoodCount * 5)) }
+            $r.RiskScore = if ($r.Score -gt 0) { [double]$r.Score / 100.0 } else { 0.0 }
+            # Also expose under composite key
+            $dim = $itemMap[$ind]
+            $fidMap["$ind|$dim"] = $r
         }
         return $fidMap
     }
@@ -3158,9 +3847,27 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         if ($lolDriversFound.Count -gt 0) { Write-Host "       -> $($lolDriversFound.Count) LOL Driver(s) loaded - BYOVD risk [T1068]" -ForegroundColor Red }
 
         # -----------------------------------------------------------------------
+        # FIDELITY MANIFEST LOAD (eager: manifest only, per-dim lazy)
+        # -----------------------------------------------------------------------
+        try {
+            $fidMeta = Import-FidelityIndices -BaselineRoot (Join-Path $PSScriptRoot "..\output-baseline")
+            if ($fidMeta) {
+                $whichIdx = if ($fidMeta.ManifestPresent) { "manifest+per-dim" } else { "legacy flat" }
+                Write-Host "    Fidelity index loaded: $whichIdx  (new scoring: $($fidMeta.UseNewScoring))" -ForegroundColor DarkGray
+            }
+        } catch {
+            Write-Host "    [!] Fidelity index load skipped: $($_.Exception.Message)" -ForegroundColor Yellow
+        }
+
+        # -----------------------------------------------------------------------
         # BATCH FIDELITY SCAN: all forensic artifacts against VT behavior files
         # -----------------------------------------------------------------------
-        $artifactIPList     = @($nR?.aggregations.by_ip.buckets     | ForEach-Object { $_.key })
+        # IPv6 fix: canonicalize via [System.Net.IPAddress], drop loopback /
+        # link-local / RFC1918 (mirrors builder's host-side normalization).
+        $artifactIPList     = @($nR?.aggregations.by_ip.buckets     | ForEach-Object { $_.key } |
+            ForEach-Object { _Get-IPv6SafeIP $_ } |
+            Where-Object { $_ -and (_Test-IPRoutable $_) } |
+            Select-Object -Unique)
         $artifactDomainList = @($dR?.aggregations.by_domain.buckets | ForEach-Object { $_.key })
         $artifactProcList   = @($pR?.aggregations.by_name.buckets   | ForEach-Object { $_.key })
         $artifactFileList   = @($fR?.aggregations.by_name.buckets   | ForEach-Object { $_.key })
@@ -3178,15 +3885,67 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             ForEach-Object { [System.IO.Path]::GetFileName($_).ToLower() } |
             Where-Object { $_ -and $_.Length -gt 3 } | Select-Object -Unique)
 
-        $allArtifacts = ($artifactIPList + $artifactDomainList + $artifactProcList + $artifactFileList + $artifactRegList + $artifactRuleList + $artifactDllList + $artifactInjList) |
-            Where-Object { $_ -and $_.Length -gt 3 } | Select-Object -Unique
+        # NEW host-side extractors (cert.status / cert.publisher / service /
+        # scheduled task). Source docs pulled from offline NDJSON when present;
+        # in live mode these will be empty until the corresponding queries are
+        # added. The dim'd map below is the authoritative store for scoring.
+        $certSrcEvents = @()
+        if ($offlineMode) {
+            try { if ($imgDocs)  { $certSrcEvents += @($imgDocs) } }  catch {}
+            try { if ($fileDocs) { $certSrcEvents += @($fileDocs) } } catch {}
+        }
+        $secEvents = @()
+        if ($offlineMode) {
+            try { $secEvents = @(Get-OfflineCategory 'win_security_events') } catch {}
+            if ($secEvents.Count -eq 0) { try { $secEvents = @(Get-OfflineCategory 'security_events') } catch {} }
+        }
+        $artifactCertStatusList    = @(Get-ArtifactCertStatusList    -Events $certSrcEvents)
+        $artifactCertPublisherList = @(Get-ArtifactCertPublisherList -Events $certSrcEvents)
+        $artifactServiceList       = @(Get-ArtifactServiceList       -SecurityEvents $secEvents -SysmonProcEvents $procDocs)
+        $artifactSchedTaskList     = @(Get-ArtifactScheduledTaskList -SecurityEvents $secEvents)
 
-        Write-Host "`n[+] Batch fidelity scan: $($allArtifacts.Count) unique artifacts across VT offline baseline..." -ForegroundColor DarkCyan
-        $fidMap = Invoke-BatchFidelityScan -Indicators $allArtifacts
+        # Build dim-aware indicator map. Last-write wins for collisions (e.g.
+        # svchost.exe appearing both as process and file -> defaults to file).
+        $indByDim = @{}
+        foreach ($v in $artifactIPList)            { if ($v) { $indByDim[$v] = 'ip' } }
+        foreach ($v in $artifactDomainList)        { if ($v) { $indByDim[$v] = 'dns' } }
+        foreach ($v in $artifactProcList)          { if ($v) { $indByDim[$v] = 'process' } }
+        foreach ($v in $artifactFileList)          { if ($v) { $indByDim[$v] = 'file' } }
+        foreach ($v in $artifactRegList)           { if ($v) { $indByDim[$v] = 'registry' } }
+        foreach ($v in $artifactRuleList)          { if ($v) { $indByDim[$v] = 'sigma-rule' } }
+        foreach ($v in $artifactDllList)           { if ($v) { $indByDim[$v] = 'module-load' } }
+        foreach ($v in $artifactInjList)           { if ($v) { $indByDim[$v] = 'process' } }
+        foreach ($v in $artifactCertStatusList)    { if ($v) { $indByDim[$v] = 'cert.status' } }
+        foreach ($v in $artifactCertPublisherList) { if ($v) { $indByDim[$v] = 'cert.publisher' } }
+        foreach ($v in $artifactServiceList)       { if ($v) { $indByDim[$v] = 'service' } }
+        foreach ($v in $artifactSchedTaskList)     { if ($v) { $indByDim[$v] = 'scheduled-task' } }
 
-        # Summarize direct artifact fidelity hits
-        $directUnique = @($fidMap.Keys | Where-Object { $fidMap[$_].Unique })
-        $directRare   = @($fidMap.Keys | Where-Object { $fidMap[$_].Rare })
+        $allArtifacts = @($indByDim.Keys) | Where-Object { $_ -and $_.Length -gt 0 } | Select-Object -Unique
+
+        Write-Host "`n[+] Batch fidelity scan: $($allArtifacts.Count) unique artifacts (across $($indByDim.Count) dim-aware entries)..." -ForegroundColor DarkCyan
+        $fidMap = Invoke-BatchFidelityScan -Indicators $allArtifacts -IndicatorsByDimension $indByDim
+
+        # -------- Cert impersonation joint heuristic (T1036.001) --------
+        # If observed (publisher, status) shows a trusted-publisher claim that
+        # is self-signed, that is a high-confidence impersonation. Recorded
+        # here so the Add-FidelityHit loop below uses the elevated weight.
+        $script:_impersonationHits = [System.Collections.Generic.List[string]]::new()
+        if ($artifactCertStatusList -contains 'SelfSigned') {
+            foreach ($pub in $artifactCertPublisherList) {
+                if ($script:_trustedTop100Publishers -contains $pub) {
+                    [void]$script:_impersonationHits.Add($pub)
+                }
+            }
+        }
+
+        # Summarize direct artifact fidelity hits.
+        # $fidMap is double-keyed (bare-value AND "value|dim") so the same entry
+        # appears twice in .Keys. Filter to BARE-VALUE keys only (no pipe) before
+        # counting / rendering, otherwise directUnique.Count, finding text,
+        # rareDirectBonus cap, and HTML rows are all doubled.
+        $bareKeys     = @($fidMap.Keys | Where-Object { $_ -notmatch '\|' })
+        $directUnique = @($bareKeys | Where-Object { $fidMap[$_].Unique })
+        $directRare   = @($bareKeys | Where-Object { $fidMap[$_].Rare })
         Write-Host "    Direct artifact fidelity: UNIQUE=$($directUnique.Count)  RARE=$($directRare.Count)" -ForegroundColor $(if ($directUnique.Count -gt 0) { "Red" } elseif ($directRare.Count -gt 0) { "Yellow" } else { "Cyan" })
 
         # Per-process artifact summary: file / network / registry / alert counts
@@ -3592,6 +4351,11 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         # Fidelity band counters  - parallel to the API matrix rarity bands
         $uniqueMatches = [System.Collections.Generic.List[string]]::new()  # Score 100: zero legit presence
         $rareMatches   = [System.Collections.Generic.List[string]]::new()  # Score 95:  1-3 legit appearances
+        # 3-axis trackers consumed by the verdict disjunct + HTML report.
+        $script:maxArtifact_RiskScore  = 0.0
+        $script:maxArtifact_Confidence = 0.0
+        $script:_dimVerdictPoints      = @{}    # dim -> summed VerdictPoints
+        $script:_dimRiskStats          = @{}    # dim -> @{ MaxRiskScore, MaxConfidence, MaxPMI, Hits }
 
         $vtUnknownHashes = [System.Collections.Generic.List[string]]::new()
         $vtCache = @{}
@@ -3632,67 +4396,147 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             }
 
             # Helper: annotate one indicator hit with its fidelity band
-            # Uses pre-computed $fidMap from batch scan; falls back to per-indicator scan
+            # Uses pre-computed $fidMap from batch scan; falls back to per-indicator scan.
+            # PHASE A MIGRATION:
+            #   - Accepts -Dimension explicitly (preferred), with -TypeKey kept
+            #     as alias for one release. Both map 1:1 to dimension name.
+            #   - fidMap is now double-keyed (Value, "Value|Dim"). We prefer
+            #     composite-key lookup to disambiguate svchost.exe across dims.
+            #   - Tracks $maxArtifact_RiskScore / $maxArtifact_Confidence on
+            #     the parent scope so the verdict block can read them.
             function Add-FidelityHit {
-                param([string]$Label, [string]$Value, [string]$TypeKey)
-                $fid = if ($fidMap.ContainsKey($Value)) { $fidMap[$Value] }
+                [CmdletBinding()]
+                param(
+                    [string]$Label,
+                    [string]$Value,
+                    [Parameter()][Alias('TypeKey')] [string]$Dimension,
+                    [int]$ExtraPoints = 0
+                )
+                # Map legacy TypeKey labels (IP/Domain/Process/...) to canonical dims
+                $dimCanon = switch -Regex ($Dimension) {
+                    '^(IP|ip)$'              { 'ip'; break }
+                    '^(Domain|DNS|dns)$'     { 'dns'; break }
+                    '^(Process|process)$'    { 'process'; break }
+                    '^(File|file)$'          { 'file'; break }
+                    '^(Registry|registry)$'  { 'registry'; break }
+                    '^(MITRE|mitre.*)$'      { 'mitre.technique'; break }
+                    '^(Name|NameMatch)$'     { 'file'; break }
+                    default                  { $Dimension }
+                }
+                $composite = "$Value|$dimCanon"
+                $fid = if ($fidMap.ContainsKey($composite)) { $fidMap[$composite] }
+                       elseif ($fidMap.ContainsKey($Value)) { $fidMap[$Value] }
                        else { Get-IndicatorFidelity -Indicator $Value }
+
+                # Track max risk score / confidence across all artifact hits.
+                # Used by the verdict disjunct (RiskScore>=0.95 AND Conf>=0.4 -> COMPROMISED).
+                $rs   = if ($fid.PSObject.Properties['RiskScore'])  { [double]$fid.RiskScore }  elseif ($fid.RiskScore  -ne $null) { [double]$fid.RiskScore }  else { 0.0 }
+                $conf = if ($fid.PSObject.Properties['Confidence']) { [double]$fid.Confidence } elseif ($fid.Confidence -ne $null) { [double]$fid.Confidence } else { 0.0 }
+                if ($rs   -gt $script:maxArtifact_RiskScore)  { $script:maxArtifact_RiskScore  = $rs }
+                if ($conf -gt $script:maxArtifact_Confidence) { $script:maxArtifact_Confidence = $conf }
+
+                # Accumulate verdict points (manifest-driven cap) for this dim.
+                $vp = 0
+                if ($fid.PSObject.Properties['VerdictPoints']) { $vp = [int]$fid.VerdictPoints }
+                elseif ($fid.VerdictPoints -ne $null)          { $vp = [int]$fid.VerdictPoints }
+                $vp += $ExtraPoints
+                if ($vp -gt 0) {
+                    if (-not $script:_dimVerdictPoints.ContainsKey($dimCanon)) { $script:_dimVerdictPoints[$dimCanon] = 0 }
+                    $script:_dimVerdictPoints[$dimCanon] += $vp
+                }
+
                 if ($fid.Unique) {
                     $tag = "[UNIQUE] $Label $Value -- UNIQUE TO MALWARE (0 legit appearances in known-good baseline)"
                     [void]$uniqueMatches.Add("$Label $Value")
                 } elseif ($fid.Rare) {
-                    $legit = if ($fid.LegitUses.Count -gt 0) { " | Legitimate uses: $($fid.LegitUses -join ', ')" } else { "" }
-                    $tag = "[RARE-95] $Label $Value -- RARE ($($fid.Found) legit appearance(s))$legit"
+                    $lu  = if ($fid.PSObject.Properties['LegitUses']) { $fid.LegitUses } elseif ($fid.LegitNames) { $fid.LegitNames } else { @() }
+                    $legit = if ($lu.Count -gt 0) { " | Legitimate uses: $($lu -join ', ')" } else { "" }
+                    $fnd = if ($fid.PSObject.Properties['Found']) { $fid.Found } else { [int]$fid.GoodCount }
+                    $tag = "[RARE-95] $Label $Value -- RARE ($fnd legit appearance(s))$legit"
                     [void]$rareMatches.Add("$Label $Value")
                 } else {
-                    $legit = if ($fid.LegitUses.Count -gt 0) { " | Common in: $($fid.LegitUses -join ', ')" } else { "" }
-                    $tag = "[COMMON] $Label $Value (score $($fid.Score))$legit"
+                    $lu  = if ($fid.PSObject.Properties['LegitUses']) { $fid.LegitUses } elseif ($fid.LegitNames) { $fid.LegitNames } else { @() }
+                    $legit = if ($lu.Count -gt 0) { " | Common in: $($lu -join ', ')" } else { "" }
+                    $sc  = if ($fid.PSObject.Properties['Score']) { $fid.Score } else { 0 }
+                    $tag = "[COMMON] $Label $Value (score $sc)$legit"
                 }
                 [void]$hits.Add($tag)
-                $oc[$TypeKey]++
+
+                # Update the OC counter using legacy key shape (IP/Domain/...).
+                $ocKey = switch ($dimCanon) {
+                    'ip'              { 'IP' }
+                    'dns'             { 'Domain' }
+                    'process'         { 'Process' }
+                    'file'            { 'File' }
+                    'registry'        { 'Registry' }
+                    'mitre.technique' { 'MITRE' }
+                    default           { $Dimension }
+                }
+                if ($oc.ContainsKey($ocKey)) { $oc[$ocKey]++ }
+                # Risk-axis stats per dim (for HTML report)
+                if (-not $script:_dimRiskStats.ContainsKey($dimCanon)) {
+                    $script:_dimRiskStats[$dimCanon] = @{ MaxRiskScore = 0.0; MaxConfidence = 0.0; MaxPMI = 0.0; Hits = 0 }
+                }
+                $st = $script:_dimRiskStats[$dimCanon]
+                if ($rs   -gt $st.MaxRiskScore)  { $st.MaxRiskScore  = $rs }
+                if ($conf -gt $st.MaxConfidence) { $st.MaxConfidence = $conf }
+                $pmi = if ($fid.PSObject.Properties['PMI']) { [double]$fid.PMI } elseif ($fid.PMI -ne $null) { [double]$fid.PMI } else { 0.0 }
+                if ([Math]::Abs($pmi) -gt [Math]::Abs($st.MaxPMI)) { $st.MaxPMI = $pmi }
+                $st.Hits++
             }
 
             if ($beh) {
-                # 2. Network C2 IP overlaps
+                # 2. Network C2 IP overlaps  --  IPv6-safe split via _Get-IPv6SafeIP
                 foreach ($conn in $beh.NetworkConns) {
-                    $ip = ($conn -split ':')[0]
-                    if ($ip -and $hostIPSet -contains $ip) { Add-FidelityHit -Label "C2-IP:" -Value $ip -TypeKey "IP" }
+                    $ip = _Get-IPv6SafeIP $conn
+                    if ($ip -and $hostIPSet -contains $ip) {
+                        Add-FidelityHit -Label "C2-IP:" -Value $ip -Dimension "ip"
+                    }
                 }
                 # 3. DNS domain overlaps
                 foreach ($domain in $beh.DNSLookups) {
                     if ($domain -and ($hostDomainSet | Where-Object { $_ -like "*$domain*" -or $domain -like "*$_*" })) {
-                        Add-FidelityHit -Label "DNS:" -Value $domain -TypeKey "Domain"
+                        Add-FidelityHit -Label "DNS:" -Value $domain -Dimension "dns"
                     }
                 }
                 # 4. Spawned process name overlaps
+                # Builder lowercases process-dim keys; lowercase here too for parity.
                 foreach ($proc in $beh.ProcessesCreated) {
                     $pn = if ($proc -match '[/\\]([^/\\]+)$') { $Matches[1] } else { $proc }
+                    if ($pn) { $pn = "$pn".ToLowerInvariant() }
                     if ($pn -and ($hostProcSet | Where-Object { $_ -ieq $pn })) {
-                        Add-FidelityHit -Label "Process:" -Value $pn -TypeKey "Process"
+                        Add-FidelityHit -Label "Process:" -Value $pn -Dimension "process"
                     }
                 }
-                # 5. Written file name overlaps
+                # 5. Written file name overlaps (builder lowercases file-dim keys)
                 foreach ($f2 in $beh.FilesWritten) {
                     $fn = if ($f2 -match '[/\\]([^/\\]+)$') { $Matches[1] } else { $f2 }
+                    if ($fn) { $fn = "$fn".ToLowerInvariant() }
                     if ($fn -and ($hostFileSet | Where-Object { $_ -ieq $fn })) {
-                        Add-FidelityHit -Label "File:" -Value $fn -TypeKey "File"
+                        Add-FidelityHit -Label "File:" -Value $fn -Dimension "file"
                     }
                 }
                 # 6. Registry key overlaps (last key component match)
                 foreach ($reg in $beh.RegistryKeys) {
                     $leaf = ($reg -split '\\')[-1]
                     if ($leaf -and ($hostRegSet | Where-Object { $_ -like "*$leaf*" })) {
-                        Add-FidelityHit -Label "Registry:" -Value $leaf -TypeKey "Registry"
+                        Add-FidelityHit -Label "Registry:" -Value $leaf -Dimension "registry"
                     }
                 }
-                # 7. MITRE technique overlaps
+                # 7. MITRE technique overlaps  (parent .NNN stripped to match builder)
                 foreach ($tech in $beh.MitreAttack) {
                     $tid = ($tech -split '[\. ]')[0]
                     if ($tid -and $hostMitreSet -contains $tid) {
-                        Add-FidelityHit -Label "MITRE:" -Value $tech -TypeKey "MITRE"
+                        Add-FidelityHit -Label "MITRE:" -Value $tid -Dimension "mitre.technique"
                     }
                 }
             }
+
+            # NOTE: cert impersonation joint heuristic was previously fired here
+            # inside the per-hash loop, which meant alerts surfacing only cert
+            # evidence (no associated hashes) skipped the finding entirely.
+            # The block has been hoisted OUT of this loop (see below, after the
+            # foreach exits) so it runs unconditionally per analysis pass.
 
             if ($hits.Count -gt 0) {
                 $hasUnique   = @($hits | Where-Object { $_ -match '^\[UNIQUE\]' })
@@ -3705,6 +4549,21 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                     Write-Host "    $_" -ForegroundColor $lineColor
                 }
             }
+        }
+
+        # Cert impersonation joint heuristic: trusted publisher AND SelfSigned
+        # status -> +50 verdict points, T1036.001 finding.
+        # Hoisted OUT of the per-hash loop above so it fires even when an alert
+        # has zero associated hashes (cert-only alerts, hash-enrichment failures).
+        if ($script:_impersonationHits -and $script:_impersonationHits.Count -gt 0) {
+            foreach ($pub in $script:_impersonationHits) {
+                Add-FidelityHit -Label "IMPERSONATION:" -Value $pub `
+                                -Dimension "cert.publisher" -ExtraPoints 50
+                [void]$behaviorOverlap.AppendLine("  IMPERSONATION: self-signed cert claiming to be $pub [T1036.001]")
+                Write-Host "    IMPERSONATION: self-signed cert claiming to be $pub [T1036.001]" -ForegroundColor Red
+            }
+            # Clear so we don't double-fire on a subsequent analysis pass.
+            $script:_impersonationHits.Clear()
         }
 
         # Threat attribution from IPs, domains, alert rule names
@@ -4024,16 +4883,41 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             $nextSteps.Add("Review RARE indicators  - check if the listed legitimate processes justify this activity")
         }
 
-        # Common indicators: proportional per-type scoring (only if score not already forced to 100)
-        if ($totalOverlaps -gt 0 -and $score -lt 100) {
-            $ipScore   = [Math]::Min(40, $oc.IP       * 10)
-            $dnsScore  = [Math]::Min(30, $oc.Domain   * 8)
-            $procScore = [Math]::Min(25, $oc.Process  * 6)
-            $fileScore = [Math]::Min(20, $oc.File      * 5)
-            $regScore  = [Math]::Min(20, $oc.Registry  * 5)
-            $mitScore  = [Math]::Min(25, $oc.MITRE    * 8)
-            $namScore  = [Math]::Min(30, $oc.Name     * 12)
-            $bScore    = $ipScore + $dnsScore + $procScore + $fileScore + $regScore + $mitScore + $namScore
+        # Common indicators: manifest-driven per-dim scoring.
+        # Replaces the hardcoded multiplier table. Per-hit points come from
+        # the builder (sum cached in $script:_dimVerdictPoints); per-dim
+        # max cap comes from manifest.dimension_meta[$dim].max_verdict_points.
+        # Falls back to legacy hardcoded weights when no manifest is loaded.
+        # Widen the gate: new dimensions (cert.status, cert.publisher, service,
+        # scheduled-task, module-load, sigma-rule) feed $_dimVerdictPoints but
+        # never touch $oc, so a host with ONLY new-dim hits (e.g. a lone cert
+        # impersonation) would previously skip the bScore block entirely.
+        $newDimHits = 0
+        try { if ($script:_dimVerdictPoints) { $newDimHits = $script:_dimVerdictPoints.Count } } catch {}
+        if (($totalOverlaps -gt 0 -or $newDimHits -gt 0) -and $score -lt 100) {
+            $bScore = 0
+            $useNewWeights = $false
+            try {
+                if ($script:_fidManifest -and $script:_fidManifest.dimension_meta) { $useNewWeights = $true }
+            } catch {}
+            if ($useNewWeights) {
+                foreach ($dim in $script:_dimVerdictPoints.Keys) {
+                    $pts = [int]$script:_dimVerdictPoints[$dim]
+                    $cap = $null
+                    try { $cap = $script:_fidManifest.dimension_meta.$dim.max_verdict_points } catch {}
+                    if ($null -eq $cap) { $cap = 40 }   # safety default
+                    $bScore += [Math]::Min([int]$cap, $pts)
+                }
+            } else {
+                $ipScore   = [Math]::Min(40, $oc.IP       * 10)
+                $dnsScore  = [Math]::Min(30, $oc.Domain   * 8)
+                $procScore = [Math]::Min(25, $oc.Process  * 6)
+                $fileScore = [Math]::Min(20, $oc.File      * 5)
+                $regScore  = [Math]::Min(20, $oc.Registry  * 5)
+                $mitScore  = [Math]::Min(25, $oc.MITRE    * 8)
+                $namScore  = [Math]::Min(30, $oc.Name     * 12)
+                $bScore    = $ipScore + $dnsScore + $procScore + $fileScore + $regScore + $mitScore + $namScore
+            }
             $score    += $bScore
             if ($bScore -gt 0) {
                 $findings.Add("$totalOverlaps behavioral indicator overlap(s) with VT sandbox data (+$bScore pts): IP:$($oc.IP) DNS:$($oc.Domain) Process:$($oc.Process) File:$($oc.File) Registry:$($oc.Registry) MITRE:$($oc.MITRE) NameMatch:$($oc.Name)")
@@ -5158,11 +6042,19 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         # Verdict thresholds:
         #   score=100 OR unique-to-malware indicator OR confirmed malicious hash → COMPROMISED HIGH
         #   score ≥ 60 or malicious hash → COMPROMISED
+        #   (NEW) maxArtifact_RiskScore >= 0.95 AND maxArtifact_Confidence >= 0.4 → COMPROMISED
+        #         GATED: only fires when manifest.scoring.calibration_passed=$true
+        #         (i.e. $script:_fidUseNewScoring). Legacy-fallback emits
+        #         Confidence=0.0 so this expression cannot fire there, but we
+        #         also explicitly require the gate to avoid future regressions.
         #   score ≥ 25 → SUSPICIOUS
-        $verdict      = if ($uniqueMatches.Count -gt 0 -or $directUnique.Count -gt 0 -or $malHashes.Count -gt 0 -or $suspParentChild.Count -gt 0 -or $score -ge 60) { "COMPROMISED" }
+        $newScoringHigh = ($script:_fidUseNewScoring `
+                            -and $script:maxArtifact_RiskScore -ge 0.95 `
+                            -and $script:maxArtifact_Confidence -ge 0.4)
+        $verdict      = if ($uniqueMatches.Count -gt 0 -or $directUnique.Count -gt 0 -or $malHashes.Count -gt 0 -or $suspParentChild.Count -gt 0 -or $score -ge 60 -or $newScoringHigh) { "COMPROMISED" }
                         elseif ($score -ge 25) { "SUSPICIOUS" }
                         else { "CLEAN" }
-        $confidence   = if ($uniqueMatches.Count -gt 0 -or $directUnique.Count -gt 0 -or $score -ge 100 -or $malHashes.Count -gt 0 -or $suspParentChild.Count -gt 0) { "HIGH" }
+        $confidence   = if ($uniqueMatches.Count -gt 0 -or $directUnique.Count -gt 0 -or $score -ge 100 -or $malHashes.Count -gt 0 -or $suspParentChild.Count -gt 0 -or $newScoringHigh) { "HIGH" }
                         elseif ($rareMatches.Count -gt 0 -or $directRare.Count -gt 0 -or $score -ge 40 -or $alertHitList.Count -gt 2) { "MEDIUM" }
                         else { "LOW" }
         $verdictColor = switch ($verdict) { "COMPROMISED" { "Red" } "SUSPICIOUS" { "Yellow" } default { "Green" } }
@@ -5570,8 +6462,21 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                 $mitreHtml = $extraMitreHtml  # replace with the full augmented set
             }
 
-            $fidHtml  = ($directUnique | ForEach-Object { "<div class='art unique'>[UNIQUE] $(_He $_)</div>" }) -join "`n"
-            $fidHtml += ($directRare   | ForEach-Object { $leg=if($fidMap-and $fidMap[$_]-and $fidMap[$_].LegitNames.Count-gt 0){" | Legit: $($fidMap[$_].LegitNames -join ', ')"}else{""}; "<div class='art rare'>[RARE] $(_He "$_$leg")</div>" }) -join "`n"
+            # Render artifact rows with Risk-axes column (RiskScore / Confidence / PMI)
+            # alongside the legacy M/G/U/R band, when fidMap entry has axis fields.
+            function _RiskAxes {
+                param($v)
+                if (-not $fidMap -or -not $fidMap[$v]) { return "" }
+                $e   = $fidMap[$v]
+                $rs  = if ($e.RiskScore -ne $null)  { [Math]::Round([double]$e.RiskScore, 3) }  else { 0 }
+                $cf  = if ($e.Confidence -ne $null) { [Math]::Round([double]$e.Confidence, 3) } else { 0 }
+                $pmi = if ($e.PMI -ne $null)        { [Math]::Round([double]$e.PMI, 3) }        else { 0 }
+                $m   = if ($e.MalCount -ne $null)   { [int]$e.MalCount } else { 0 }
+                $g   = if ($e.GoodCount -ne $null)  { [int]$e.GoodCount } else { 0 }
+                return " <span class='axes' title='3-axis: Bayesian risk + corpus-normalized confidence + PMI'>[RS=$rs Conf=$cf PMI=$pmi M=$m G=$g]</span>"
+            }
+            $fidHtml  = ($directUnique | ForEach-Object { "<div class='art unique'>[UNIQUE] $(_He $_)$(_RiskAxes $_)</div>" }) -join "`n"
+            $fidHtml += ($directRare   | ForEach-Object { $leg=if($fidMap-and $fidMap[$_]-and $fidMap[$_].LegitNames.Count-gt 0){" | Legit: $($fidMap[$_].LegitNames -join ', ')"}else{""}; "<div class='art rare'>[RARE] $(_He "$_$leg")$(_RiskAxes $_)</div>" }) -join "`n"
 
             $vtHtml = ""; $curBlk = $false
             foreach ($ln in ($vtEnrichment.ToString() -split "`n")) {
@@ -6376,4 +7281,10 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closePanel()
     }
 }
 
-Export-ModuleMember -Function Invoke-ElasticAlertAgentAnalysis
+Export-ModuleMember -Function Invoke-ElasticAlertAgentAnalysis,
+                              Import-FidelityIndices,
+                              Get-ArtifactRiskScore,
+                              Get-ArtifactCertStatusList,
+                              Get-ArtifactCertPublisherList,
+                              Get-ArtifactServiceList,
+                              Get-ArtifactScheduledTaskList
