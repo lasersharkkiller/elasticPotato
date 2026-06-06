@@ -737,12 +737,14 @@ function Save-TorchElasticDetonationLogs {
             $total    = 0
             $searchAfter = $null
 
+            $esTotalReported = $null   # what ES says hits.total.value is on page 0
             try {
                 for ($page = 0; $page -lt $MaxPages; $page++) {
                     $body = @{
-                        size  = $PageSize
-                        sort  = @( @{ '@timestamp' = 'asc' }, @{ '_id' = 'asc' } )
-                        query = @{ bool = @{ filter = $filters } }
+                        size              = $PageSize
+                        track_total_hits  = $true
+                        sort              = @( @{ '@timestamp' = 'asc' }, @{ '_id' = 'asc' } )
+                        query             = @{ bool = @{ filter = $filters } }
                     }
                     if ($searchAfter) { $body['search_after'] = $searchAfter }
 
@@ -750,6 +752,24 @@ function Save-TorchElasticDetonationLogs {
                                                      -Query $body `
                                                      -Size $PageSize `
                                                      -Session $session
+
+                    # ES error envelope detection - audit finding #4. Without this
+                    # check a structurally-valid error response (400 mapper_parsing,
+                    # 400 illegal_argument on bad query DSL, 503 shard failure, etc.)
+                    # collapses identically to "no hits in window" because $resp.hits
+                    # is null on error envelopes.
+                    if ($resp -is [pscustomobject] -and $resp.PSObject.Properties.Name -contains 'error' -and $resp.error) {
+                        $etype   = if ($resp.error.PSObject.Properties.Name -contains 'type')   { $resp.error.type }   else { '(no type)' }
+                        $ereason = if ($resp.error.PSObject.Properties.Name -contains 'reason') { $resp.error.reason } else { '(no reason)' }
+                        Write-Warning "    ES error envelope on $ds (page $page): $etype - $ereason"
+                        break
+                    }
+
+                    if ($null -eq $esTotalReported -and $resp -and $resp.hits -and $resp.hits.total) {
+                        $esTotalReported = if ($resp.hits.total.PSObject.Properties.Name -contains 'value') {
+                            $resp.hits.total.value
+                        } else { $resp.hits.total }
+                    }
 
                     $hits = @()
                     if ($resp -and $resp.hits -and $resp.hits.hits) { $hits = $resp.hits.hits }
@@ -768,8 +788,16 @@ function Save-TorchElasticDetonationLogs {
             }
             finally { $writer.Close() }
 
-            Write-Host "    -> $total events ($outFile)" -ForegroundColor Green
-            $summary += [PSCustomObject]@{ Dataset = $ds; Count = $total; File = "$ds.ndjson" }
+            # Surface ES-reported total alongside written count. When these
+            # disagree (ES total > 0 but we wrote 0, or vice versa), the
+            # discrepancy is itself the diagnostic clue.
+            $totalLabel = if ($null -ne $esTotalReported) { " (ES total: $esTotalReported)" } else { "" }
+            $color = if ($total -eq 0 -and $esTotalReported -and $esTotalReported -gt 0) { 'Red' } else { 'Green' }
+            Write-Host "    -> $total events written$totalLabel" -ForegroundColor $color
+            if ($total -eq 0 -and $esTotalReported -and $esTotalReported -gt 0) {
+                Write-Warning "    Pagination bug: ES matched $esTotalReported docs but we wrote 0. Likely sort/search_after issue."
+            }
+            $summary += [PSCustomObject]@{ Dataset = $ds; Count = $total; File = "$ds.ndjson"; ESTotal = $esTotalReported }
         }
 
         # --- auto-diagnostic when every dataset returned 0 events ---------
