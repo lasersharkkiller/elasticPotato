@@ -1431,7 +1431,12 @@ function Invoke-ElasticAlertAgentAnalysis {
             }
 
             # Helper: build a minimal mock ES aggregation result that satisfies the
-            # null-safe  $var?.aggregations.by_xxx.buckets  pattern used throughout
+            # `$var?.aggregations?.by_xxx?.buckets` pattern used throughout.
+            # IMPORTANT: in PS 7.x the `?.` operator does NOT chain through
+            # subsequent `.` accesses on a PSCustomObject - the chain collapses
+            # to $null even when the LHS is non-null. Always chain `?.` at every
+            # step (e.g. `$x?.aggregations?.by_name?.buckets`) or drop the `?.`
+            # entirely; do NOT mix `?.` with bare `.` walks on PSCustomObjects.
             function New-MockAgg {
                 param([hashtable]$Fields)
                 $aggHash = [ordered]@{}
@@ -1884,7 +1889,7 @@ Significance: Legitimate system binary names executed from AppData/Temp/Roaming/
 
                 # 4f. Full network traffic classification (Confirmed C2 / DDNS / Benign / Unknown)
                 # Benign domains include: OS vendors, CDNs, certificate authorities, OCSP responders, package repositories
-                $benignClassRx  = "(?i)microsoft\.com|windows\.com|office365|azure\.|akamai|google|apple\.com|amazon\.com|cloudflare|github|githubusercontent|windowsupdate|digicert|symantec|live\.com|bing\.com|msftncsi|skype|msecnd|msn\.com|hotmail|msauth|msoidentity|abuse\.ch|malwarebazaar|threatfox|urlhaus|ocsp\.|sectigo\.com|verisign\.com|godaddy\.com|comodo\.com|globalsign\.com|letsencrypt\.org|isrg\.x3\.letsencrypt|crt\.sh|crl\.|pki\.|ntp\.org|time\.nist\.gov|pool\.ntp\.org|chromeupdate|gvt1\.com|gstatic\.com|googleapis\.com|packages\.ubuntu\.com|archive\.ubuntu\.com|deb\.debian\.org|security\.debian\.org|fedoraproject\.org|dl\.fedoraproject\.org|mirror\.centos\.org|yum\.baseurl"
+                $benignClassRx  = "(?i)microsoft\.com|windows\.com|office365|azure\.|akamai|google|apple\.com|amazon\.com|cloudflare|github|githubusercontent|windowsupdate|digicert|symantec|live\.com|bing\.com|msftncsi|skype|msecnd|msn\.com|hotmail|msauth|msoidentity|abuse\.ch|malwarebazaar|threatfox|urlhaus|ocsp\.|sectigo\.com|verisign\.com|godaddy\.com|comodo\.com|globalsign\.com|crt\.sh|crl\.|pki\.|ntp\.org|time\.nist\.gov|pool\.ntp\.org|chromeupdate|gvt1\.com|gstatic\.com|googleapis\.com|packages\.ubuntu\.com|archive\.ubuntu\.com|deb\.debian\.org|security\.debian\.org|fedoraproject\.org|dl\.fedoraproject\.org|mirror\.centos\.org|yum\.baseurl"
                 $allObsDomains  = @($NetDocs | Where-Object { $_.dns.question.name } | ForEach-Object { $_.dns.question.name } | Select-Object -Unique | Sort-Object)
                 if ($allObsDomains.Count -gt 0) {
                     $netCatC2      = [System.Collections.Generic.List[string]]::new()
@@ -2961,8 +2966,14 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             $campaign = ($siLines | Where-Object { $_ -match '^\s*Campaign\s*:' } |
                          ForEach-Object { ($_ -split ':\s*',2)[1].Trim() } | Select-Object -First 1)
             # Fallback: if session_info.txt did not declare a Campaign:, use the detonation-dir
-            # leaf (e.g. 'AndySliver_2026-06-06_17-30_to_20-30UTC' -> 'AndySliver') so framework
-            # attribution in module 6o still has a label to match against.
+            # leaf (e.g. 'AndySliver_2026-06-06_17-30_to_20-30UTC' -> 'AndySliver') as a
+            # display-only label for the session banner.
+            # WARNING: $campaign is OPERATOR-SUPPLIED. It MUST NOT be used as evidence
+            # for C2 framework attribution or any other heuristic that produces findings.
+            # The detonation-dir leaf is likewise operator-supplied (analyst-chosen folder
+            # name) and must not be matched against framework token maps - doing so
+            # produces self-fulfilling attribution. See module 6o for the behavioral-only
+            # attribution implementation.
             if ([string]::IsNullOrWhiteSpace($campaign) -and $DetonationLogsDir) {
                 $leaf = Split-Path $DetonationLogsDir -Leaf
                 $campaign = ($leaf -replace '_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}_to_\d{2}-\d{2}UTC$','').Trim()
@@ -3258,15 +3269,15 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             # Surface suspicious non-Microsoft DNS  -  potential C2 beaconing
             # Whitelisted benign domains: OS vendors, CDNs, CAs, OCSP, package repos, time services
             # Whitelist additions (audit 3.B):
-            #   lencr\.org        - Let's Encrypt OCSP / intermediate domain (x1.c.lencr.org,
-            #                       r3.o.lencr.org, e6.o.lencr.org, e1.o.lencr.org). Every Let's
-            #                       Encrypt-signed TLS handshake hits this; without it every
-            #                       detonation produced a +24 pt false-positive C2 finding.
             #   crls\.            - covers crls.digicert.com (plural 's'); old 'crl\.' missed it
             #   entrust\.net      - covers ocsp.entrust.net / crl.entrust.net broader Entrust PKI
             #   ctldl\.windowsupdate / go\.microsoft - explicit (already covered, but documented)
+            # NOTE: lencr.org (Let's Encrypt OCSP / x1.c.lencr.org) is intentionally NOT
+            # whitelisted. Cheap, anonymously-issued LE certs are common for short-lived
+            # C2 infra; suspicious LE-CA traffic should remain visible to downstream
+            # behavioral signals (e.g. low-rep TLD + unsigned image-load combinations).
             $c2DNS = @($dnsGroups | Where-Object {
-                $_.Name -notmatch "microsoft|windows|office365|azure|akamai|google|apple|amazon|cloudflare|github|githubusercontent|wns\.windows|windowsupdate|ctldl\.windowsupdate|go\.microsoft|digicert|symantec|live\.com|bing\.com|msftncsi|skype|msecnd|msn\.com|hotmail|msauth|msoidentity|ocsp\.|sectigo\.com|verisign\.com|godaddy\.com|comodo\.com|globalsign\.com|entrust\.net|letsencrypt\.org|isrg\.x3\.letsencrypt|lencr\.org|crt\.sh|crl\.|crls\.|pki\.|ntp\.org|time\.nist\.gov|pool\.ntp\.org|chromeupdate|gvt1\.com|gstatic\.com|googleapis\.com|packages\.ubuntu\.com|archive\.ubuntu\.com|deb\.debian\.org|security\.debian\.org|fedoraproject\.org|dl\.fedoraproject\.org|mirror\.centos\.org|yum\.baseurl"
+                $_.Name -notmatch "microsoft|windows|office365|azure|akamai|google|apple|amazon|cloudflare|github|githubusercontent|wns\.windows|windowsupdate|ctldl\.windowsupdate|go\.microsoft|digicert|symantec|live\.com|bing\.com|msftncsi|skype|msecnd|msn\.com|hotmail|msauth|msoidentity|ocsp\.|sectigo\.com|verisign\.com|godaddy\.com|comodo\.com|globalsign\.com|entrust\.net|crt\.sh|crl\.|crls\.|pki\.|ntp\.org|time\.nist\.gov|pool\.ntp\.org|chromeupdate|gvt1\.com|gstatic\.com|googleapis\.com|packages\.ubuntu\.com|archive\.ubuntu\.com|deb\.debian\.org|security\.debian\.org|fedoraproject\.org|dl\.fedoraproject\.org|mirror\.centos\.org|yum\.baseurl"
             } | ForEach-Object { $_.Name })
             # Sub-category: tunneling / dynamic-DNS providers (ngrok, localtunnel, serveo) are
             # near-pathognomonic for C2 in an enterprise environment.
@@ -4000,14 +4011,19 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         # -----------------------------------------------------------------------
         # IPv6 fix: canonicalize via [System.Net.IPAddress], drop loopback /
         # link-local / RFC1918 (mirrors builder's host-side normalization).
-        $artifactIPList     = @($nR?.aggregations.by_ip.buckets     | ForEach-Object { $_.key } |
+        # NOTE: Do NOT use `$var?.X.Y.Z` here - in PS 7.x the `?.` operator does
+        # not chain through subsequent `.` accesses on a PSCustomObject and the
+        # chain collapses to $null. Either chain `?.` at every step or drop it
+        # entirely. $nR/$dR/$pR/$fR/$rR are non-null in both live and offline
+        # branches (offline uses New-MockAgg), so a plain `.` walk is safe.
+        $artifactIPList     = @($nR?.aggregations?.by_ip?.buckets     | ForEach-Object { $_.key } |
             ForEach-Object { _Get-IPv6SafeIP $_ } |
             Where-Object { $_ -and (_Test-IPRoutable $_) } |
             Select-Object -Unique)
-        $artifactDomainList = @($dR?.aggregations.by_domain.buckets | ForEach-Object { $_.key })
-        $artifactProcList   = @($pR?.aggregations.by_name.buckets   | ForEach-Object { $_.key })
-        $artifactFileList   = @($fR?.aggregations.by_name.buckets   | ForEach-Object { $_.key })
-        $artifactRegList    = @($rR?.aggregations.by_key.buckets    | ForEach-Object { ($_.key -split '\\')[-1] })  # leaf key only
+        $artifactDomainList = @($dR?.aggregations?.by_domain?.buckets | ForEach-Object { $_.key })
+        $artifactProcList   = @($pR?.aggregations?.by_name?.buckets   | ForEach-Object { $_.key })
+        $artifactFileList   = @($fR?.aggregations?.by_name?.buckets   | ForEach-Object { $_.key })
+        $artifactRegList    = @($rR?.aggregations?.by_key?.buckets    | ForEach-Object { ($_.key -split '\\')[-1] })  # leaf key only
         # Alert rule names (Sigma/YARA) - checked against fidelity index built from VT sigma_analysis_results
         # and APT TargetedSigma/YaraDifferentialAnalysis.json files
         $artifactRuleList   = $alertRuleNames
@@ -4058,7 +4074,8 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
 
         $allArtifacts = @($indByDim.Keys) | Where-Object { $_ -and $_.Length -gt 0 } | Select-Object -Unique
 
-        Write-Host "`n[+] Batch fidelity scan: $($allArtifacts.Count) unique artifacts (across $($indByDim.Count) dim-aware entries)..." -ForegroundColor DarkCyan
+        $_fidMode = if ($script:_fidUseNewScoring) { 'dim-aware index' } else { 'legacy index' }
+        Write-Host "`n[+] Batch fidelity scan: $($allArtifacts.Count) unique artifacts ($($indByDim.Count) dim-tagged, mode: $_fidMode)..." -ForegroundColor DarkCyan
         $fidMap = Invoke-BatchFidelityScan -Indicators $allArtifacts -IndicatorsByDimension $indByDim
 
         # ---------------------------------------------------------------
@@ -4522,12 +4539,13 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
 
         $alertHashSet = ($alertSourceHashes + $procHashes + $fileHashes) | Select-Object -Unique | Where-Object { $_ -match '^[a-fA-F0-9]{64}$' }
 
-        # Build host indicator sets for cross-reference (raw values, no count prefix)
-        $hostIPSet     = @($nR?.aggregations.by_ip.buckets     | ForEach-Object { $_.key })
-        $hostDomainSet = @($dR?.aggregations.by_domain.buckets | ForEach-Object { $_.key })
-        $hostProcSet   = @($pR?.aggregations.by_name.buckets   | ForEach-Object { $_.key })
-        $hostFileSet   = @($fR?.aggregations.by_name.buckets   | ForEach-Object { $_.key })
-        $hostRegSet    = @($rR?.aggregations.by_key.buckets    | ForEach-Object { $_.key })
+        # Build host indicator sets for cross-reference (raw values, no count prefix).
+        # See note above re: `?.` chaining quirk in PS 7.x - chain at every step.
+        $hostIPSet     = @($nR?.aggregations?.by_ip?.buckets     | ForEach-Object { $_.key })
+        $hostDomainSet = @($dR?.aggregations?.by_domain?.buckets | ForEach-Object { $_.key })
+        $hostProcSet   = @($pR?.aggregations?.by_name?.buckets   | ForEach-Object { $_.key })
+        $hostFileSet   = @($fR?.aggregations?.by_name?.buckets   | ForEach-Object { $_.key })
+        $hostRegSet    = @($rR?.aggregations?.by_key?.buckets    | ForEach-Object { $_.key })
         $hostMitreSet  = @($alertTechStr -split ',\s*' | Where-Object { $_ -match '^T\d' } | ForEach-Object { ($_ -split '\.')[0] })  # T1055 not sub-technique
 
         # Single-pass VT enrichment + behavioral cross-reference
@@ -4767,9 +4785,9 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         # Tier 2 - Tools/artifacts: alert rule names, intrusion detection actions
         foreach ($x in $alertRules)   { [void]$attrObs.Add(($x -replace '^\(\d+x\) ','')) }
         foreach ($x in $idActions)    { [void]$attrObs.Add(($x -replace '^\(\d+x\) ','')) }
-        # Tier 3 - Network indicators
-        foreach ($x in ($nR?.aggregations.by_ip.buckets     | ForEach-Object { $_.key })) { [void]$attrObs.Add($x) }
-        foreach ($x in ($dR?.aggregations.by_domain.buckets | ForEach-Object { $_.key })) { [void]$attrObs.Add($x) }
+        # Tier 3 - Network indicators (see note above re: `?.` chaining in PS 7.x)
+        foreach ($x in ($nR?.aggregations?.by_ip?.buckets     | ForEach-Object { $_.key })) { [void]$attrObs.Add($x) }
+        foreach ($x in ($dR?.aggregations?.by_domain?.buckets | ForEach-Object { $_.key })) { [void]$attrObs.Add($x) }
         # Tier 4 - Process hashes only (file hashes excluded from attribution  -  too numerous, bottom of pyramid)
         foreach ($x in $procHashes)  { [void]$attrObs.Add($x) }
 
@@ -5294,11 +5312,12 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         # -----------------------------------------------------------------------
         # C2 FRAMEWORK ATTRIBUTION (Sliver / Merlin / Havoc / Mythic / Cobalt)
         # -----------------------------------------------------------------------
-        # Combine path tokens, hash-named binaries, DNS patterns and process-tree signals
-        # to attribute observed activity to a specific open-source C2 framework. Generic
-        # "framework not found" Cobalt Strike beacon detection stays in module 4.
-        # Canonical framework names: with spaces ('Cobalt Strike', 'Brute Ratel') so they
-        # match campaign labels like 'Cobalt Strike'. Empire is included (was missing).
+        # BEHAVIORAL EVIDENCE ONLY. Operator-supplied labels (the detonation-dir leaf,
+        # the session_info.txt "Campaign:" field, $campaign) MUST NOT be matched against
+        # framework token maps - those produce self-fulfilling attribution (analyst types
+        # "AndySliver" into the folder name, engine reads it back as Sliver evidence).
+        # All signals below derive from process trees, network traffic, file artefacts,
+        # image loads, and DNS observations only.
         $frameworkSignals = @{
             'Sliver'        = 0
             'Merlin'        = 0
@@ -5319,44 +5338,9 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             'Brute Ratel'   = [System.Collections.Generic.List[string]]::new()
             'PoshC2'        = [System.Collections.Generic.List[string]]::new()
         }
-        # Alias-token map: canonical name -> list of lower-case substrings that count as
-        # evidence of that framework when found in exe path, command line, parent cmd, or
-        # detonation-dir leaf. Handles spaces, dashes, underscores, and concatenated forms.
-        $fwTokens = @{
-            'Sliver'        = @('sliver')
-            'Merlin'        = @('merlin')
-            'Havoc'         = @('havoc')
-            'Mythic'        = @('mythic')
-            'Cobalt Strike' = @('cobaltstrike','cobalt strike','cobalt-strike','cobalt_strike','beacon')
-            'Empire'        = @('empire','powershell empire','ps-empire')
-            'Brute Ratel'   = @('bruteratel','brute ratel','brute-ratel','brute_ratel','badger')
-            'PoshC2'        = @('poshc2','posh-c2','posh_c2')
-        }
-        # Path-token attribution: substring match against exe / cmd / parent cmd / detonation-dir leaf.
-        # The old regex required \FreeSamples\Sliver\ - too narrow. A binary at
-        # C:\detonate\AndySliver_2026-...UTC\implant.exe must still attribute to Sliver.
-        $dirLeafLow = if ($DetonationLogsDir) { (Split-Path $DetonationLogsDir -Leaf).ToLowerInvariant() } else { '' }
-        if ($procDetails) {
-            foreach ($pd in $procDetails) {
-                $exeLow = if ($pd.process -and $pd.process.executable) { "$($pd.process.executable)".ToLowerInvariant() } else { '' }
-                $cmdLow = if ($pd.process -and $pd.process.command_line) { "$($pd.process.command_line)".ToLowerInvariant() } else { '' }
-                $parLow = if ($pd.process -and $pd.process.parent -and $pd.process.parent.command_line) { "$($pd.process.parent.command_line)".ToLowerInvariant() } else { '' }
-                $hayLow = "$exeLow $cmdLow $parLow $dirLeafLow"
-                foreach ($fw in $fwTokens.Keys) {
-                    $matched = $false
-                    foreach ($tok in $fwTokens[$fw]) {
-                        if ($hayLow -match [regex]::Escape($tok)) {
-                            $frameworkSignals[$fw] += 30
-                            [void]$frameworkEvidence[$fw].Add("staging path/dir contains [$tok]")
-                            $matched = $true
-                            break
-                        }
-                    }
-                    if ($matched) { break }
-                }
-            }
-        }
-        # Merlin: rundll32 spawned from PowerShell (Go-binary DLL loading pattern)
+
+        # Signal A (behavioral): Merlin - rundll32 spawned from PowerShell (Go-binary
+        # DLL loading pattern). +15 pts when 2+ rundll32 observations.
         if ($procCmdRecords) {
             $rdll = @($procCmdRecords | Where-Object { $_.ProcessName -eq 'rundll32.exe' -and $_.CommandLine })
             if ($rdll.Count -ge 2) {
@@ -5364,42 +5348,125 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                 [void]$frameworkEvidence['Merlin'].Add("$($rdll.Count)x rundll32.exe (Go-binary DLL load pattern)")
             }
         }
-        # Havoc: ngrok / dynamic-DNS tunneling is heavily favoured by Havoc red-team setups
+
+        # Signal B (behavioral): Havoc - dynamic-DNS C2 tunneling (ngrok/loca.lt/serveo).
+        # +20 pts. $dynC2DNS is populated upstream from DNS observations.
         if ($dynC2DNS.Count -gt 0) {
             $frameworkSignals['Havoc'] += 20
             [void]$frameworkEvidence['Havoc'].Add("dynamic-DNS C2 tunnel: $($dynC2DNS -join ',')")
         }
-        # Hash-named binaries push a generic +10 to all open-source frameworks (signature of
-        # MalwareBazaar staged samples, which span Sliver/Merlin/Havoc/Empire roughly equally).
+
+        # Signal C (behavioral): hash-named PE binaries. Per MalwareBazaar convention,
+        # these are typical of Sliver / Cobalt Strike staged samples. Merlin/Empire ship
+        # as plain-named .ps1/.dll, so they are excluded from this signal.
+        # +25 pts per framework when 1+ hash-named binary observed (capped).
         if ($hashNamedProcs.Count -gt 0) {
-            foreach ($fw in @('Sliver','Merlin','Havoc','Empire')) {
-                $frameworkSignals[$fw] += [Math]::Min(20, $hashNamedProcs.Count * 5)
+            $hnPts = [Math]::Min(25, 15 + ($hashNamedProcs.Count * 5))
+            foreach ($fw in @('Sliver','Cobalt Strike')) {
+                $frameworkSignals[$fw] += $hnPts
                 [void]$frameworkEvidence[$fw].Add("$($hashNamedProcs.Count) hash-named EXE(s) staged")
             }
         }
-        # Campaign hint from session_info.txt - strong prior when present.
-        # Uses the same alias-token map so 'Cobalt Strike' / 'AndySliver' / 'PS-Empire'
-        # all attribute to the right canonical framework. -match is unanchored regex so
-        # 'andysliver' -match 'sliver' returns True.
-        if ($campaign) {
-            $cLow = "$campaign".ToLowerInvariant()
-            foreach ($fw in $fwTokens.Keys) {
-                foreach ($tok in $fwTokens[$fw]) {
-                    if ($cLow -match [regex]::Escape($tok)) {
-                        $frameworkSignals[$fw] += 30
-                        [void]$frameworkEvidence[$fw].Add("Campaign field declares [$tok]")
-                        break
+
+        # Signal D (behavioral): csc.exe spawned by PowerShell - the canonical
+        # Sliver execute-assembly TTP (Add-Type in-memory .NET compilation).
+        # +20 pts each to Sliver and Cobalt Strike.
+        $cscFromPSAttr = @($procDetails | Where-Object {
+            ($_.process -and $_.process.name -eq 'csc.exe' -and $_.process.parent -and "$($_.process.parent.name)" -match '(?i)powershell')
+        })
+        if ($cscFromPSAttr.Count -gt 0) {
+            foreach ($fw in @('Sliver','Cobalt Strike')) {
+                $frameworkSignals[$fw] += 20
+                [void]$frameworkEvidence[$fw].Add("$($cscFromPSAttr.Count)x csc.exe spawned by PowerShell (execute-assembly / Add-Type TTP) [T1620]")
+            }
+        }
+
+        # Signal E (behavioral): Sliver default HTTP/HTTPS listener ports 8001-8010
+        # observed as destination ports in network traffic.
+        # +15 pts for 1-2 distinct ports in range, +30 pts for 3+.
+        $sliverPorts = @()
+        if ($netDocs) {
+            $sliverPorts = @($netDocs | ForEach-Object {
+                $p = $null
+                try { if ($_.destination -and $_.destination.port) { $p = [int]"$($_.destination.port)" } } catch {}
+                if ($p -ge 8001 -and $p -le 8010) { $p }
+            } | Where-Object { $_ } | Select-Object -Unique)
+        }
+        if ($sliverPorts.Count -ge 3) {
+            $frameworkSignals['Sliver'] += 30
+            [void]$frameworkEvidence['Sliver'].Add("$($sliverPorts.Count) distinct destination ports in Sliver default-listener range 8001-8010: $($sliverPorts -join ',')")
+        } elseif ($sliverPorts.Count -ge 1) {
+            $frameworkSignals['Sliver'] += 15
+            [void]$frameworkEvidence['Sliver'].Add("destination port(s) in Sliver default range 8001-8010: $($sliverPorts -join ',')")
+        }
+
+        # Signal F (behavioral): Add-Type compile artefacts in %TEMP%
+        # (.cmdline / .0.cs / .pdb scratch files left by csc.exe).
+        # +15 pts to Sliver when any observed.
+        if ($fileDocs) {
+            $addTypeArtefacts = @($fileDocs | Where-Object {
+                $fp = $null
+                try { if ($_.file -and $_.file.path) { $fp = "$($_.file.path)" } } catch {}
+                $fp -and ($fp -match '(?i)\\Temp\\[a-z0-9]+\.(cmdline|0\.cs|pdb)$')
+            })
+            if ($addTypeArtefacts.Count -ge 1) {
+                $frameworkSignals['Sliver'] += 15
+                [void]$frameworkEvidence['Sliver'].Add("$($addTypeArtefacts.Count) Add-Type compile artefact(s) in TEMP (csc.exe scratch files)")
+            }
+        }
+
+        # Signal G (behavioral): suspicious low-reputation TLD DNS queries.
+        # Cheap-TLDs (.top/.online/.icu/.xyz/.click/.gq/.tk/.ml) and 'csN.org' patterns
+        # are common throwaway C2 infra across Sliver/Havoc/Cobalt Strike.
+        # +15 pts when domain has a subdomain (i.e. not bare apex like example.top).
+        $badTLD = @()
+        if ($c2DNS) {
+            $badTLD = @($c2DNS | Where-Object {
+                $d = "$_"
+                ($d -match '(?i)\.(top|online|icu|xyz|click|gq|tk|ml)$' -and $d -match '\..+\.') -or
+                ($d -match '(?i)\.cs\d+\.org$')
+            } | Select-Object -Unique)
+        }
+        if ($badTLD.Count -gt 0) {
+            foreach ($fw in @('Sliver','Havoc','Cobalt Strike')) {
+                $frameworkSignals[$fw] += 15
+                [void]$frameworkEvidence[$fw].Add("low-reputation TLD C2 domain(s) with subdomain: $($badTLD -join ',')")
+            }
+        }
+
+        # Signal H (behavioral): unsigned / self-signed DLL image-loads from
+        # user-writeable paths (%TEMP% / %APPDATA% / ProgramData). Classic
+        # Sliver / Havoc / Cobalt Strike reflective loader artefact.
+        # +10 pts to each when observed.
+        try {
+            $imgLoadSrc = $null
+            if (Test-Path Variable:imgLoadDocs) { $imgLoadSrc = $imgLoadDocs }
+            elseif (Test-Path Variable:imgDocs) { $imgLoadSrc = $imgDocs }
+            if ($imgLoadSrc) {
+                $susImg = @($imgLoadSrc | Where-Object {
+                    $fp = $null; $sig = ''
+                    try { if ($_.file -and $_.file.path) { $fp = "$($_.file.path)" } } catch {}
+                    try { if ($_.winlog -and $_.winlog.event_data -and $_.winlog.event_data.SignatureStatus) { $sig = "$($_.winlog.event_data.SignatureStatus)" } } catch {}
+                    $fp -and ($fp -match '(?i)\\(Temp|AppData|ProgramData)\\') -and ($sig -notin @('Valid','Trusted'))
+                })
+                if ($susImg.Count -ge 1) {
+                    foreach ($fw in @('Sliver','Cobalt Strike','Havoc')) {
+                        $frameworkSignals[$fw] += 10
+                        [void]$frameworkEvidence[$fw].Add("$($susImg.Count) unsigned/self-signed DLL image-load(s) from user-writeable path")
                     }
                 }
             }
-        }
-        # Top-ranked framework gets its own finding when confidence >= 30
+        } catch {}
+
+        # Top-ranked framework gets its own finding when confidence >= 30.
+        # Re-pinned threshold (operator labels removed): HIGH >= 60, MEDIUM >= 40, else LOW.
+        # Calibration: csc(+20) + ports(+30) + hash-named(+25) = 75 -> HIGH for Sliver.
         $topFramework = ($frameworkSignals.GetEnumerator() | Where-Object { $_.Value -ge 30 } | Sort-Object -Property Value -Descending | Select-Object -First 1)
         if ($topFramework) {
             $fwName     = $topFramework.Key
             $fwScore    = $topFramework.Value
             $fwEvidence = ($frameworkEvidence[$fwName] | Select-Object -Unique) -join '; '
-            $confLabel = if ($fwScore -ge 70) { 'HIGH' } elseif ($fwScore -ge 45) { 'MEDIUM' } else { 'LOW' }
+            $confLabel = if ($fwScore -ge 60) { 'HIGH' } elseif ($fwScore -ge 40) { 'MEDIUM' } else { 'LOW' }
             $addPts = [Math]::Min(30, [int]($fwScore / 3))
             $score += $addPts
             $findings.Add("C2 framework attribution: $fwName ($confLabel confidence, $fwScore/100, +$addPts pts) - evidence: $fwEvidence")
