@@ -101,6 +101,42 @@ function _Normalize-FidValue {
             $v = $v.ToLowerInvariant().Trim().TrimEnd('.')
             break
         }
+        '^process(\.|$)' {
+            # Builder writes process-dim keys lowercased (basename only). Mirror or
+            # the consumer's raw Sysmon Image string ('PowerShell.exe') will MISS
+            # a key indexed as 'powershell.exe'. Calibration findEntry lowercases
+            # both sides which papered over this bug.
+            $v = $v.ToString().Trim().ToLowerInvariant()
+            break
+        }
+        '^file(\.|$)' {
+            # Builder lowercases file basenames - mirror.
+            $v = $v.ToString().Trim().ToLowerInvariant()
+            break
+        }
+        '^registry(\.|$)' {
+            # Builder lowercases the registry-key leaf - mirror.
+            $v = $v.ToString().Trim().ToLowerInvariant()
+            break
+        }
+        '^(dll|module|module-load|module\.load|moduleload)(\.|$)' {
+            # Builder lowercases loaded-module basenames - mirror.
+            $v = $v.ToString().Trim().ToLowerInvariant()
+            break
+        }
+        '^mutex(\.|$)' {
+            # Windows mutex names are CASE-SENSITIVE in the kernel - DO NOT
+            # lowercase. Builder preserves case (only strips Global\ / Local\
+            # prefix, which is done elsewhere). Just trim.
+            $v = $v.ToString().Trim()
+            break
+        }
+        '^(sigma-rule|sigma\.rule|yara-rule|yara\.rule)(\.|$)' {
+            # Sigma/Yara rule names are case-preserved by the builder - DO NOT
+            # lowercase. Just trim.
+            $v = $v.ToString().Trim()
+            break
+        }
         default {
             # Most dims are case-insensitive: builder lowercases simple keys
             $v = $v.ToString().Trim()
