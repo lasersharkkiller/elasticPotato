@@ -633,6 +633,129 @@ function Invoke-TorchElasticDiagnose {
             Write-Warning "[E] probe failed: $($_.Exception.Message)"
         }
 
+        # --------------------------------------------------------------
+        # Probe F - replay the EXACT pull body for sysmon and dump both
+        # request JSON and ES response. Used when the pull keeps returning
+        # 0 even though probes B/C/D/E prove the data is there - the only
+        # remaining culprits are (1) something about how the pull body
+        # serializes, (2) something in the SO so-elasticsearch-query
+        # wrapper that we cannot see from here, (3) a field-mapping quirk
+        # (text vs keyword) that does not affect aggregations but does
+        # affect term queries.
+        Write-Host ""
+        Write-Host "[F] REPLAY pull body for windows.sysmon_operational + dump request/response ---" -ForegroundColor Yellow
+        if ([string]::IsNullOrWhiteSpace($HostFilter)) {
+            Write-Host "    (no HostFilter supplied - skipping probe F)" -ForegroundColor DarkGray
+        } else {
+            try {
+                # Reconstruct the EXACT shape Save-TorchElasticDetonationLogs builds.
+                $sysAliases = @('windows.sysmon_operational', 'windows.sysmon', 'sysmon', 'winlog.sysmon')
+                $hostValues = @($HostFilter, $HostFilter.ToLowerInvariant(), $HostFilter.ToUpperInvariant()) | Select-Object -Unique
+                $fFilters = @(
+                    @{ terms = @{ 'event.dataset' = $sysAliases } },
+                    @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } },
+                    @{ terms = @{ 'host.name' = $hostValues } }
+                )
+                $fBody = @{
+                    size              = 0
+                    track_total_hits  = $true
+                    query             = @{ bool = @{ filter = $fFilters } }
+                }
+
+                Write-Host "    --- REQUEST BODY (exact JSON sent to ES) ---" -ForegroundColor DarkGray
+                $reqJson = $fBody | ConvertTo-Json -Depth 20 -Compress
+                Write-Host "    $reqJson" -ForegroundColor DarkGray
+
+                $fRespRaw = Invoke-TorchElasticQuery -IndexPattern 'logs-*' `
+                                                    -Query $fBody `
+                                                    -Size 0 `
+                                                    -Session $Session `
+                                                    -Raw
+                Write-Host ""
+                Write-Host "    --- RAW ES RESPONSE (first 4000 chars) ---" -ForegroundColor DarkGray
+                $respPreview = if ($fRespRaw -and $fRespRaw.Length -gt 4000) { $fRespRaw.Substring(0, 4000) + "...[truncated]" } else { $fRespRaw }
+                Write-Host "    $respPreview" -ForegroundColor DarkGray
+                Write-Host ""
+
+                # Try a series of fallback variants to isolate which clause is the killer.
+                $variants = @(
+                    @{
+                        Label = 'range only (sanity, expect ~1276)'
+                        Body  = @{ size = 0; track_total_hits = $true; query = @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } } }
+                    },
+                    @{
+                        Label = 'range + terms event.dataset (expect ~99)'
+                        Body  = @{ size = 0; track_total_hits = $true; query = @{ bool = @{ filter = @(
+                            @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } },
+                            @{ terms = @{ 'event.dataset' = $sysAliases } }
+                        ) } } }
+                    },
+                    @{
+                        Label = 'range + term event.dataset SINGLE (expect ~99)'
+                        Body  = @{ size = 0; track_total_hits = $true; query = @{ bool = @{ filter = @(
+                            @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } },
+                            @{ term  = @{ 'event.dataset' = 'windows.sysmon_operational' } }
+                        ) } } }
+                    },
+                    @{
+                        Label = 'range + term host.name (lowercase)  (expect ~221 if host.name is keyword)'
+                        Body  = @{ size = 0; track_total_hits = $true; query = @{ bool = @{ filter = @(
+                            @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } },
+                            @{ term  = @{ 'host.name' = $HostFilter.ToLowerInvariant() } }
+                        ) } } }
+                    },
+                    @{
+                        Label = 'range + term host.name.keyword (lowercase)'
+                        Body  = @{ size = 0; track_total_hits = $true; query = @{ bool = @{ filter = @(
+                            @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } },
+                            @{ term  = @{ 'host.name.keyword' = $HostFilter.ToLowerInvariant() } }
+                        ) } } }
+                    },
+                    @{
+                        Label = 'range + match host.name (lowercase)'
+                        Body  = @{ size = 0; track_total_hits = $true; query = @{ bool = @{ filter = @(
+                            @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } },
+                            @{ match = @{ 'host.name' = $HostFilter.ToLowerInvariant() } }
+                        ) } } }
+                    },
+                    @{
+                        Label = 'range + match agent.name (preserved case)'
+                        Body  = @{ size = 0; track_total_hits = $true; query = @{ bool = @{ filter = @(
+                            @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } },
+                            @{ match = @{ 'agent.name' = $HostFilter } }
+                        ) } } }
+                    },
+                    @{
+                        Label = 'range + term agent.name (preserved case, keyword test)'
+                        Body  = @{ size = 0; track_total_hits = $true; query = @{ bool = @{ filter = @(
+                            @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } },
+                            @{ term  = @{ 'agent.name' = $HostFilter } }
+                        ) } } }
+                    }
+                )
+                Write-Host "    --- FALLBACK VARIANT TESTS (each is range + ONE more filter) ---" -ForegroundColor DarkGray
+                foreach ($v in $variants) {
+                    try {
+                        $vr = Invoke-TorchElasticQuery -IndexPattern 'logs-*' -Query $v.Body -Size 0 -Session $Session
+                        $vt = $null
+                        if ($vr -and $vr.hits -and $vr.hits.total) {
+                            $vt = if ($vr.hits.total.PSObject.Properties.Name -contains 'value') { $vr.hits.total.value } else { $vr.hits.total }
+                        }
+                        if ($vr -is [pscustomobject] -and $vr.PSObject.Properties.Name -contains 'error' -and $vr.error) {
+                            Write-Host "      [ERR] $($v.Label): $($vr.error.type) - $($vr.error.reason)" -ForegroundColor Red
+                        } else {
+                            $color = if ($vt -gt 0) { 'Green' } else { 'Red' }
+                            Write-Host "      $($v.Label) = $vt" -ForegroundColor $color
+                        }
+                    } catch {
+                        Write-Host "      [EXC] $($v.Label): $($_.Exception.Message)" -ForegroundColor Red
+                    }
+                }
+            } catch {
+                Write-Warning "[F] probe failed: $($_.Exception.Message)"
+            }
+        }
+
         Write-Host ""
         Write-Host "================================================================" -ForegroundColor Cyan
         Write-Host " End of diagnostic probe" -ForegroundColor Cyan
