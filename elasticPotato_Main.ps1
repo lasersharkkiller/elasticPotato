@@ -49,8 +49,12 @@ Import-Module -Name ".\baseline\NsrlEnrichment.psm1" -ErrorAction SilentlyContin
 Import-Module -Name ".\baseline\NsrlTools.psm1" -ErrorAction SilentlyContinue
 
 # Agentic Elastic triage (Group 3)
-Import-Module -Name ".\agentic\ElasticAlertAgent.psm1"
-Import-Module -Name ".\agentic\Invoke-ElasticLinuxTriage.psm1"
+# -Force on the Group 3 modules so hot fixes to the actively-iterated
+# triage / pull / orchestrator code take effect on every script run
+# without requiring a fresh PowerShell session. The cost is a one-time
+# re-parse per .\elasticPotato_Main.ps1 invocation - negligible.
+Import-Module -Name ".\agentic\ElasticAlertAgent.psm1"          -Force
+Import-Module -Name ".\agentic\Invoke-ElasticLinuxTriage.psm1"  -Force
 
 # Forensic triage (Groups 1d, 2)
 Import-Module -Name ".\forensics\Invoke-UACTriage.psm1"
@@ -63,9 +67,11 @@ Import-Module -Name ".\NewProcsModules\CheckSuspiciousASNs.psm1"
 Import-Module -Name ".\NewProcsModules\DomainCleanup.psm1"
 Import-Module -Name ".\NewProcsModules\elasticProcessBaseline.psm1"
 
-# Elastic detonation logs used by Group 3
-Import-Module -Name ".\purpleTeaming\GetElasticDetonationLogs.psm1" -ErrorAction SilentlyContinue
-Import-Module -Name ".\purpleTeaming\Invoke-TorchElasticQuery.psm1" -ErrorAction SilentlyContinue
+# Elastic detonation logs used by Group 3 (3d pull + SO 3.0 SSH connector)
+# -Force here matches the Group 3 triage modules above so cache-stale
+# hot fixes never silently regress against a long-lived session.
+Import-Module -Name ".\purpleTeaming\GetElasticDetonationLogs.psm1" -Force -ErrorAction SilentlyContinue
+Import-Module -Name ".\purpleTeaming\Invoke-TorchElasticQuery.psm1" -Force -ErrorAction SilentlyContinue
 
 # Detection cache refreshers (called by 3f and as standalone 3g/3h)
 Import-Module -Name ".\detections\Update-LolDriversCache.psm1"
