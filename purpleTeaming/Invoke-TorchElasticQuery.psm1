@@ -1033,6 +1033,23 @@ function Save-TorchElasticDetonationLogs {
     $session = Get-TorchSSHSession
     $summary = @()
 
+    # When no -HostFilter was supplied, we still want session_info.txt to
+    # carry a 'Detonation host' line so the downstream Elastic Alert Agent
+    # display shows the real hostname instead of falling back to the output
+    # directory name. We sniff this from the first written doc - see the
+    # candidate-field probe inside the foreach below. The probe tries fields
+    # in priority order to be robust across Fleet / Winlogbeat / Auditbeat /
+    # legacy beats deployments.
+    $detectedHost = $null
+    $hostCandidateFields = @(
+        'host.hostname',          # OS-reported, preserves case (Win11_Sandbox)
+        'agent.name',             # Fleet enrollment name; often matches hostname
+        'host.name',              # ECS, may be lowercased/FQDN by policy
+        'agent.hostname',          # Some older Elastic Agent ships
+        'winlog.computer_name',   # Winlogbeat classic Windows event log
+        'beat.hostname'           # very old beats; legacy fallback
+    )
+
     # --- -Diagnose: probe only, no pull, no NDJSON, no summary files ---------
     if ($Diagnose) {
         try {
@@ -1176,6 +1193,28 @@ function Save-TorchElasticDetonationLogs {
                         # the whole hit if _source is unexpectedly absent.
                         $src = if ($h.PSObject.Properties.Name -contains '_source' -and $h._source) { $h._source } else { $h }
                         $writer.WriteLine(($src | ConvertTo-Json -Depth 20 -Compress))
+
+                        # When the operator did not supply -HostFilter, sniff
+                        # the first written doc for any of the canonical host-
+                        # identifier fields so session_info.txt can carry a
+                        # 'Detonation host' line. This makes the downstream
+                        # ElasticAlertAgent display show the real hostname
+                        # (Win11_Sandbox, fleet01.lab.local, etc.) instead of
+                        # the output-directory name fallback.
+                        if ($null -eq $detectedHost -and [string]::IsNullOrWhiteSpace($HostFilter)) {
+                            foreach ($cf in $hostCandidateFields) {
+                                $parts = $cf -split '\.'
+                                $cur = $src
+                                foreach ($p in $parts) {
+                                    if ($null -eq $cur) { break }
+                                    $cur = $cur.$p
+                                }
+                                if (-not [string]::IsNullOrWhiteSpace([string]$cur)) {
+                                    $detectedHost = [string]$cur
+                                    break
+                                }
+                            }
+                        }
                     }
                     $total += $hits.Count
 
@@ -1226,8 +1265,15 @@ function Save-TorchElasticDetonationLogs {
     if (-not [string]::IsNullOrWhiteSpace($SessionInfoCampaign)) {
         $metaLines += "Campaign         : $SessionInfoCampaign"
     }
-    if (-not [string]::IsNullOrWhiteSpace($HostFilter)) {
-        $metaLines += "Detonation host  : $HostFilter"
+    # Prefer the explicit -HostFilter when supplied; otherwise use whatever
+    # was sniffed from the first written doc during the pull loop. Either
+    # way the downstream ElasticAlertAgent display gets a real hostname
+    # instead of the OutputDir-name fallback.
+    $effectiveHost = if (-not [string]::IsNullOrWhiteSpace($HostFilter))     { $HostFilter }
+                     elseif (-not [string]::IsNullOrWhiteSpace($detectedHost)) { $detectedHost }
+                     else                                                      { $null }
+    if (-not [string]::IsNullOrWhiteSpace($effectiveHost)) {
+        $metaLines += "Detonation host  : $effectiveHost"
     }
     $metaLines += "Detonation start : $startIso"
     $metaLines += "Detonation end   : $endIso"
