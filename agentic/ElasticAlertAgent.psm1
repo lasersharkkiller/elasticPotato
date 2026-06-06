@@ -1585,6 +1585,27 @@ function Invoke-ElasticAlertAgentAnalysis {
                     }
                 }
 
+                # Null-safe DateTime parse: returns $null when value is missing/blank or
+                # unparseable instead of raising "Cannot convert null to type System.DateTime".
+                # Elastic Defend / winlogbeat occasionally omit event.created / file.created on
+                # certain doc shapes; an unguarded [datetime] cast crashes the whole analysis
+                # pass. Use this helper at every cast site.
+                function _SafeUtc {
+                    param($Value)
+                    if ($null -eq $Value) { return $null }
+                    if ($Value -is [datetime]) { return $Value }
+                    $s = "$Value"
+                    if ([string]::IsNullOrWhiteSpace($s)) { return $null }
+                    $dt = [datetime]::MinValue
+                    if ([datetime]::TryParse($s,
+                                              [System.Globalization.CultureInfo]::InvariantCulture,
+                                              [System.Globalization.DateTimeStyles]::AssumeUniversal -bor [System.Globalization.DateTimeStyles]::AdjustToUniversal,
+                                              [ref]$dt)) {
+                        return $dt
+                    }
+                    return $null
+                }
+
                 # ==== MODULE 1: API / Behavioral Analysis ====
 
                 # 1a. NTDLL Userland Unhooking
@@ -1910,8 +1931,8 @@ Significance: Legitimate system binary names executed from AppData/Temp/Roaming/
                             Domain = $_.Name
                             SourceProcesses = @($_.Group | ForEach-Object { $_.process.name } | Select-Object -Unique)
                             QueryCount = $_.Group.Count
-                            FirstSeen = [datetime]($_.Group | Sort-Object -Property @{Expression={$_.event.created}} | Select-Object -First 1).event.created
-                            LastSeen = [datetime]($_.Group | Sort-Object -Property @{Expression={$_.event.created}} -Descending | Select-Object -First 1).event.created
+                            FirstSeen = _SafeUtc (($_.Group | Sort-Object -Property @{Expression={$_.event.created}} | Select-Object -First 1).event.created)
+                            LastSeen = _SafeUtc (($_.Group | Sort-Object -Property @{Expression={$_.event.created}} -Descending | Select-Object -First 1).event.created)
                         }
                     } | Sort-Object -Property QueryCount -Descending)
 
@@ -1920,14 +1941,18 @@ Significance: Legitimate system binary names executed from AppData/Temp/Roaming/
                             $domain = $infra.Domain
                             $procs = $infra.SourceProcesses -join ', '
                             $qcount = $infra.QueryCount
-                            $timespan = ($infra.LastSeen - $infra.FirstSeen).TotalSeconds
+                            # FirstSeen/LastSeen may be $null if event.created was missing on
+                            # the underlying docs (see _SafeUtc above); fall back gracefully.
+                            $timespan = if ($infra.LastSeen -and $infra.FirstSeen) { ($infra.LastSeen - $infra.FirstSeen).TotalSeconds } else { 0 }
+                            $firstStr = if ($infra.FirstSeen) { $infra.FirstSeen.ToString('HH:mm:ss') } else { 'unknown' }
+                            $lastStr  = if ($infra.LastSeen)  { $infra.LastSeen.ToString('HH:mm:ss')  } else { 'unknown' }
 
                             $c2InfraDetails = @"
 Persistent C2 infrastructure detected (queried by multiple processes):
   Domain: $domain
   Source Processes: $procs
   Total Queries: $qcount
-  Time Window: $timespan seconds ($(($infra.FirstSeen).ToString('HH:mm:ss')) - $(($infra.LastSeen).ToString('HH:mm:ss')) UTC)
+  Time Window: $timespan seconds ($firstStr - $lastStr UTC)
 
 Significance: Domains queried by multiple malware processes indicate shared C2 infrastructure. This pattern suggests attacker's central command-and-control server accessed by different implants/tools.
 "@
@@ -1940,15 +1965,22 @@ Significance: Domains queried by multiple malware processes indicate shared C2 i
                 # Detects mass file timestamp modifications (anti-forensics indicator)
                 if ($FileDocs.Count -gt 0) {
                     $timestompActivity = @($FileDocs | Where-Object {
-                        # Look for files where creation time was modified (forensic evasion)
-                        $_.file.created -and $_.file.mtime_modified -and
-                        ([datetime]$_.file.created -lt [datetime]$_.file.mtime_modified) -and
-                        $_.event.action -match 'modification|metadata'
+                        # Look for files where creation time was modified (forensic evasion).
+                        # Guard each cast: docs may have one or both timestamps missing.
+                        if (-not ($_.file.created -and $_.file.mtime_modified)) { return $false }
+                        $fc = _SafeUtc $_.file.created
+                        $fm = _SafeUtc $_.file.mtime_modified
+                        if (-not $fc -or -not $fm) { return $false }
+                        ($fc -lt $fm) -and ($_.event.action -match 'modification|metadata')
                     })
 
                     if ($timestompActivity.Count -gt 10) {
-                        # Group by process and time window
-                        $timestompByProc = @($timestompActivity | Group-Object { "$($_.process.name)|$(([datetime]$_.event.created).ToString('yyyy-MM-dd HH:mm'))" })
+                        # Group by process and time window (skip docs with missing event.created)
+                        $timestompByProc = @($timestompActivity | Group-Object {
+                            $ec = _SafeUtc $_.event.created
+                            $bucket = if ($ec) { $ec.ToString('yyyy-MM-dd HH:mm') } else { '0000-00-00 00:00' }
+                            "$($_.process.name)|$bucket"
+                        })
 
                         foreach ($group in $timestompByProc) {
                             $parts = $group.Name -split '\|'
@@ -2109,21 +2141,29 @@ Significance: Installation of rogue root certificates enables MITM attacks and T
                 } | Sort-Object -Property @{Expression={$_.event.created}} )
 
                 foreach ($psEvent in $psDisables) {
-                    $psTime = [datetime]$psEvent.event.created
+                    $psTime = _SafeUtc $psEvent.event.created
+                    if (-not $psTime) { continue }   # missing event.created -> can't anchor timeline
                     $psUser = $psEvent.user.id
                     $psProc = $psEvent.process.name
 
                     # Step 2: Within 5 minutes, look for bulk timestomping by same/related process
                     $timestompEvents = @($FileDocs | Where-Object {
-                        $eTime = [datetime]$_.event.created
-                        ($eTime -gt $psTime) -and ($eTime -lt $psTime.AddMinutes(5)) -and
-                        ($_.event.action -match 'metadata.*change|SetFileTime' -or
-                         ($_.file.created -and [datetime]$_.file.created -lt [datetime]$_.file.modified))
+                        $eTime = _SafeUtc $_.event.created
+                        if (-not $eTime) { return $false }
+                        if (-not (($eTime -gt $psTime) -and ($eTime -lt $psTime.AddMinutes(5)))) { return $false }
+                        if ($_.event.action -match 'metadata.*change|SetFileTime') { return $true }
+                        if ($_.file.created -and $_.file.modified) {
+                            $fc = _SafeUtc $_.file.created
+                            $fm = _SafeUtc $_.file.modified
+                            if ($fc -and $fm -and $fc -lt $fm) { return $true }
+                        }
+                        return $false
                     })
 
                     # Step 3: Within 5 minutes, look for root cert installation by same user
                     $certEvents = @($RegDocs | Where-Object {
-                        $eTime = [datetime]$_.event.created
+                        $eTime = _SafeUtc $_.event.created
+                        if (-not $eTime) { return $false }
                         ($eTime -gt $psTime) -and ($eTime -lt $psTime.AddMinutes(5)) -and
                         ($_.registry.key -match 'SystemCertificates\\Root' -or $_.registry.key -match 'ROOT.*Certificates') -and
                         ($_.user.id -eq $psUser -or $_.user.id -match 'SYSTEM|TrustedInstaller' -eq $false)
@@ -2920,6 +2960,14 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             } | Select-Object -First 1)
             $campaign = ($siLines | Where-Object { $_ -match '^\s*Campaign\s*:' } |
                          ForEach-Object { ($_ -split ':\s*',2)[1].Trim() } | Select-Object -First 1)
+            # Fallback: if session_info.txt did not declare a Campaign:, use the detonation-dir
+            # leaf (e.g. 'AndySliver_2026-06-06_17-30_to_20-30UTC' -> 'AndySliver') so framework
+            # attribution in module 6o still has a label to match against.
+            if ([string]::IsNullOrWhiteSpace($campaign) -and $DetonationLogsDir) {
+                $leaf = Split-Path $DetonationLogsDir -Leaf
+                $campaign = ($leaf -replace '_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}_to_\d{2}-\d{2}UTC$','').Trim()
+                if ($campaign) { Write-Host "  Campaign (backfilled from dir): $campaign" -ForegroundColor DarkCyan }
+            }
             if ($campaign) {
                 Write-Host "  Campaign: $campaign  |  Host: $agentHost  |  $fromTs --> $toTs" -ForegroundColor DarkCyan
             } else {
@@ -3209,8 +3257,16 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             $dnsNames   = @($dnsGroups | ForEach-Object { "($($_.Count)x) $($_.Name)" })
             # Surface suspicious non-Microsoft DNS  -  potential C2 beaconing
             # Whitelisted benign domains: OS vendors, CDNs, CAs, OCSP, package repos, time services
+            # Whitelist additions (audit 3.B):
+            #   lencr\.org        - Let's Encrypt OCSP / intermediate domain (x1.c.lencr.org,
+            #                       r3.o.lencr.org, e6.o.lencr.org, e1.o.lencr.org). Every Let's
+            #                       Encrypt-signed TLS handshake hits this; without it every
+            #                       detonation produced a +24 pt false-positive C2 finding.
+            #   crls\.            - covers crls.digicert.com (plural 's'); old 'crl\.' missed it
+            #   entrust\.net      - covers ocsp.entrust.net / crl.entrust.net broader Entrust PKI
+            #   ctldl\.windowsupdate / go\.microsoft - explicit (already covered, but documented)
             $c2DNS = @($dnsGroups | Where-Object {
-                $_.Name -notmatch "microsoft|windows|office365|azure|akamai|google|apple|amazon|cloudflare|github|githubusercontent|wns\.windows|windowsupdate|digicert|symantec|live\.com|bing\.com|msftncsi|skype|msecnd|msn\.com|hotmail|msauth|msoidentity|ocsp\.|sectigo\.com|verisign\.com|godaddy\.com|comodo\.com|globalsign\.com|letsencrypt\.org|isrg\.x3\.letsencrypt|crt\.sh|crl\.|pki\.|ntp\.org|time\.nist\.gov|pool\.ntp\.org|chromeupdate|gvt1\.com|gstatic\.com|googleapis\.com|packages\.ubuntu\.com|archive\.ubuntu\.com|deb\.debian\.org|security\.debian\.org|fedoraproject\.org|dl\.fedoraproject\.org|mirror\.centos\.org|yum\.baseurl"
+                $_.Name -notmatch "microsoft|windows|office365|azure|akamai|google|apple|amazon|cloudflare|github|githubusercontent|wns\.windows|windowsupdate|ctldl\.windowsupdate|go\.microsoft|digicert|symantec|live\.com|bing\.com|msftncsi|skype|msecnd|msn\.com|hotmail|msauth|msoidentity|ocsp\.|sectigo\.com|verisign\.com|godaddy\.com|comodo\.com|globalsign\.com|entrust\.net|letsencrypt\.org|isrg\.x3\.letsencrypt|lencr\.org|crt\.sh|crl\.|crls\.|pki\.|ntp\.org|time\.nist\.gov|pool\.ntp\.org|chromeupdate|gvt1\.com|gstatic\.com|googleapis\.com|packages\.ubuntu\.com|archive\.ubuntu\.com|deb\.debian\.org|security\.debian\.org|fedoraproject\.org|dl\.fedoraproject\.org|mirror\.centos\.org|yum\.baseurl"
             } | ForEach-Object { $_.Name })
             # Sub-category: tunneling / dynamic-DNS providers (ngrok, localtunnel, serveo) are
             # near-pathognomonic for C2 in an enterprise environment.
@@ -3712,13 +3768,16 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
 
         # Hardcoded parent table for critical Windows processes (SANS 508 Hunt Evil poster)
         # Covers parent checks only - signer/path validation is fully data-driven via process-baseline.json
+        # NOTE: smss.exe legitimately spawns child smss.exe instances during session creation
+        # (Session Manager creates per-session smss.exe that exits after starting csrss/winlogon).
+        # See SANS 508 Hunt Evil poster + Microsoft "Windows Internals" - this is normal.
         $criticalParents = @{
             "lsass.exe"    = @("wininit.exe")
             "services.exe" = @("wininit.exe")
-            "wininit.exe"  = @("smss.exe","")
+            "wininit.exe"  = @("smss.exe")
             "winlogon.exe" = @("smss.exe")
             "csrss.exe"    = @("smss.exe")
-            "smss.exe"     = @("System","")
+            "smss.exe"     = @("System","smss.exe")
             "svchost.exe"  = @("services.exe")
             "spoolsv.exe"  = @("services.exe")
             "userinit.exe" = @("winlogon.exe")
@@ -3783,7 +3842,26 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                     # Fix: regex-extract every drive-letter-rooted substring as an independent path.
                     if ($exe -and $procEntry.D -and $procEntry.D.Count -gt 0) {
                         $exeDir = [System.IO.Path]::GetDirectoryName($exe).ToLower().TrimEnd('\')
-                        $sandboxOnlyTokens = @('%samplepath%', 'c:\users\user\desktop', 'c:\users\user\appdata\local\temp')
+                        # Sandbox-VM staging tokens that pollute VT behavior baselines.
+                        # Detonation VMs use generic usernames (user/admin/analyst/sandbox/malware)
+                        # and stage samples under Desktop or AppData\Local\Temp - these paths
+                        # are sandbox artifacts, NOT real-world install locations and MUST be
+                        # filtered out before deciding masquerading.
+                        $sandboxOnlyTokens = @(
+                            '%samplepath%',
+                            'c:\users\user\desktop',
+                            'c:\users\user\appdata\local\temp',
+                            'c:\users\admin\desktop',
+                            'c:\users\admin\appdata\local\temp',
+                            'c:\users\administrator\desktop',
+                            'c:\users\administrator\appdata\local\temp',
+                            'c:\users\analyst\desktop',
+                            'c:\users\sandbox\desktop',
+                            'c:\users\malware\desktop'
+                        )
+                        # Treat any path under c:\users\<single-token>\desktop or
+                        # c:\users\<single-token>\appdata\local\temp as a sandbox artifact.
+                        $sandboxRx = '^c:\\users\\[^\\]+\\desktop($|\\)|^c:\\users\\[^\\]+\\appdata\\local\\temp($|\\)'
                         $realBaseDirs = [System.Collections.Generic.List[string]]::new()
                         $allCandidates = [System.Collections.Generic.List[string]]::new()
                         # Match every drive-letter-prefixed substring; lazy-match up to the next
@@ -3798,25 +3876,47 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                                 [void]$allCandidates.Add($p)
                                 $isSandbox = $false
                                 foreach ($tok in $sandboxOnlyTokens) { if ($p -eq $tok) { $isSandbox = $true; break } }
+                                if (-not $isSandbox -and $p -match $sandboxRx) { $isSandbox = $true }
                                 if (-not $isSandbox) { [void]$realBaseDirs.Add($p) }
                             }
                         }
                         $realBaseDirs = @($realBaseDirs | Select-Object -Unique)
                         $allCandidates = @($allCandidates | Select-Object -Unique)
-                        # If only sandbox-path evidence exists and the exe lives under Program Files,
-                        # the VT baseline simply has no real-world install data - suppress the alert.
-                        $inProgramFiles = $exeDir -like 'c:\program files*'
-                        if ($realBaseDirs.Count -eq 0 -and $inProgramFiles) {
-                            # Baseline only knows sandbox paths; legitimate install - skip
+                        # FAIL-CLOSED policy: if the baseline gave us no real-world drive-letter
+                        # directory at all (only %samplepath% sandbox tokens, or only sandbox-
+                        # host artifacts like c:\users\user\desktop), we CANNOT decide
+                        # masquerading. SKIP the check entirely and emit a one-time warning
+                        # per process name so the operator knows coverage is degraded. Let
+                        # signer / parent / path-prefix detectors carry the load instead of
+                        # falling back to a polluted $allCandidates list that would produce
+                        # false positives like "MASQUERADE: lsass.exe from ... (baseline dirs: )".
+                        if ($realBaseDirs.Count -eq 0) {
+                            if (-not $script:procBaselineSkippedWarned) {
+                                $script:procBaselineSkippedWarned = @{}
+                            }
+                            if (-not $script:procBaselineSkippedWarned.ContainsKey($pn)) {
+                                Write-Host "       -> baseline lacks drive-letter dirs for '$pn' (only sandbox tokens) - masquerade check skipped" -ForegroundColor DarkYellow
+                                $script:procBaselineSkippedWarned[$pn] = $true
+                            }
                         } else {
                             $pathOk = $false
-                            $checkDirs = if ($realBaseDirs.Count -gt 0) { $realBaseDirs } else { $allCandidates }
-                            foreach ($kd in $checkDirs) {
+                            foreach ($kd in $realBaseDirs) {
                                 if ($exeDir -eq $kd -or $exeDir -like "$kd\*" -or $kd -like "$exeDir\*") { $pathOk = $true; break }
                             }
                             if (-not $pathOk) {
-                                $sample = ($checkDirs | Select-Object -First 3) -join '; '
-                                [void]$pathAnomalies.Add("MASQUERADE: $pn from '$exe' (baseline dirs: $sample)")
+                                $sample = ($realBaseDirs | Select-Object -First 3) -join '; '
+                                # Confidence tagging: HIGH if signer also mismatches for the
+                                # same process name (corroborated), LOW otherwise (path-only).
+                                $signerMismatchSeen = $false
+                                if ($procEntry.S -and $procEntry.S.Count -gt 0 -and $signer) {
+                                    $sigOk = $false
+                                    foreach ($ks in $procEntry.S) {
+                                        if ($signer -like "*$ks*" -or $ks -like "*$signer*") { $sigOk = $true; break }
+                                    }
+                                    if (-not $sigOk) { $signerMismatchSeen = $true }
+                                }
+                                $tag = if ($signerMismatchSeen) { 'HI' } else { 'LO' }
+                                [void]$pathAnomalies.Add("[$tag] MASQUERADE: $pn from '$exe' (baseline dirs: $sample)")
                             }
                         }
                     }
@@ -4904,11 +5004,30 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         # PROCESS METADATA SCORING (SANS 508 methodology)
         # -----------------------------------------------------------------------
         # Path masquerading: system process from wrong directory (e.g. lsass.exe from %TEMP%)
+        # Confidence-aware scoring: HI items (corroborated by signer mismatch) score at the
+        # historical weight; LO items (path-only) score 10/each capped at 30 so a single
+        # bad baseline entry cannot single-handedly tip the verdict to "isolate".
         if ($pathAnomalies.Count -gt 0) {
-            $paScore = [Math]::Min(100, $pathAnomalies.Count * 40)
-            $score   = [Math]::Min(100, $score + $paScore)
-            $findings.Add("CRITICAL: $($pathAnomalies.Count) process masquerading anomaly(ies) (+$paScore pts): $($pathAnomalies -join ' | ')")
-            $nextSteps.Add("Process masquerading confirmed  - system binary running from unexpected path is a primary IoC; isolate host")
+            $pathAnomaliesHi = @($pathAnomalies | Where-Object { $_ -match '^\[HI\]' })
+            $pathAnomaliesLo = @($pathAnomalies | Where-Object { $_ -match '^\[LO\]' })
+            $pathAnomaliesUntagged = @($pathAnomalies | Where-Object { $_ -notmatch '^\[(HI|LO)\]' })
+            if ($pathAnomaliesHi.Count -gt 0) {
+                $paScore = [Math]::Min(100, $pathAnomaliesHi.Count * 40)
+                $score   = [Math]::Min(100, $score + $paScore)
+                $findings.Add("CRITICAL: $($pathAnomaliesHi.Count) high-confidence masquerading anomaly(ies) (+$paScore pts): $($pathAnomaliesHi -join ' | ')")
+                $nextSteps.Add("Process masquerading confirmed  - system binary running from unexpected path is a primary IoC; isolate host")
+            }
+            if ($pathAnomaliesLo.Count -gt 0) {
+                $paScoreLo = [Math]::Min(30, $pathAnomaliesLo.Count * 10)
+                $score    += $paScoreLo
+                $findings.Add("INFO: $($pathAnomaliesLo.Count) path-only masquerading anomaly(ies) (low confidence, +$paScoreLo pts): $($pathAnomaliesLo -join ' | ')")
+            }
+            if ($pathAnomaliesUntagged.Count -gt 0) {
+                # Legacy entries (should not occur post-fix) - treat as HI for backward compat
+                $paScoreU = [Math]::Min(100, $pathAnomaliesUntagged.Count * 40)
+                $score    = [Math]::Min(100, $score + $paScoreU)
+                $findings.Add("CRITICAL: $($pathAnomaliesUntagged.Count) process masquerading anomaly(ies) (+$paScoreU pts): $($pathAnomaliesUntagged -join ' | ')")
+            }
         }
         # Wrong or missing signer on a critical Windows process
         if ($signerAnomalies.Count -gt 0) {
@@ -5178,39 +5297,62 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         # Combine path tokens, hash-named binaries, DNS patterns and process-tree signals
         # to attribute observed activity to a specific open-source C2 framework. Generic
         # "framework not found" Cobalt Strike beacon detection stays in module 4.
+        # Canonical framework names: with spaces ('Cobalt Strike', 'Brute Ratel') so they
+        # match campaign labels like 'Cobalt Strike'. Empire is included (was missing).
         $frameworkSignals = @{
-            'Sliver'      = 0
-            'Merlin'      = 0
-            'Havoc'       = 0
-            'Mythic'      = 0
-            'CobaltStrike'= 0
-            'BruteRatel'  = 0
-            'PoshC2'      = 0
+            'Sliver'        = 0
+            'Merlin'        = 0
+            'Havoc'         = 0
+            'Mythic'        = 0
+            'Cobalt Strike' = 0
+            'Empire'        = 0
+            'Brute Ratel'   = 0
+            'PoshC2'        = 0
         }
         $frameworkEvidence = @{
-            'Sliver'      = [System.Collections.Generic.List[string]]::new()
-            'Merlin'      = [System.Collections.Generic.List[string]]::new()
-            'Havoc'       = [System.Collections.Generic.List[string]]::new()
-            'Mythic'      = [System.Collections.Generic.List[string]]::new()
-            'CobaltStrike'= [System.Collections.Generic.List[string]]::new()
-            'BruteRatel'  = [System.Collections.Generic.List[string]]::new()
-            'PoshC2'      = [System.Collections.Generic.List[string]]::new()
+            'Sliver'        = [System.Collections.Generic.List[string]]::new()
+            'Merlin'        = [System.Collections.Generic.List[string]]::new()
+            'Havoc'         = [System.Collections.Generic.List[string]]::new()
+            'Mythic'        = [System.Collections.Generic.List[string]]::new()
+            'Cobalt Strike' = [System.Collections.Generic.List[string]]::new()
+            'Empire'        = [System.Collections.Generic.List[string]]::new()
+            'Brute Ratel'   = [System.Collections.Generic.List[string]]::new()
+            'PoshC2'        = [System.Collections.Generic.List[string]]::new()
         }
-        # Path-token attribution: \FreeSamples\Sliver\, \FreeSamples\Merlin\, etc.
+        # Alias-token map: canonical name -> list of lower-case substrings that count as
+        # evidence of that framework when found in exe path, command line, parent cmd, or
+        # detonation-dir leaf. Handles spaces, dashes, underscores, and concatenated forms.
+        $fwTokens = @{
+            'Sliver'        = @('sliver')
+            'Merlin'        = @('merlin')
+            'Havoc'         = @('havoc')
+            'Mythic'        = @('mythic')
+            'Cobalt Strike' = @('cobaltstrike','cobalt strike','cobalt-strike','cobalt_strike','beacon')
+            'Empire'        = @('empire','powershell empire','ps-empire')
+            'Brute Ratel'   = @('bruteratel','brute ratel','brute-ratel','brute_ratel','badger')
+            'PoshC2'        = @('poshc2','posh-c2','posh_c2')
+        }
+        # Path-token attribution: substring match against exe / cmd / parent cmd / detonation-dir leaf.
+        # The old regex required \FreeSamples\Sliver\ - too narrow. A binary at
+        # C:\detonate\AndySliver_2026-...UTC\implant.exe must still attribute to Sliver.
+        $dirLeafLow = if ($DetonationLogsDir) { (Split-Path $DetonationLogsDir -Leaf).ToLowerInvariant() } else { '' }
         if ($procDetails) {
             foreach ($pd in $procDetails) {
                 $exeLow = if ($pd.process -and $pd.process.executable) { "$($pd.process.executable)".ToLowerInvariant() } else { '' }
                 $cmdLow = if ($pd.process -and $pd.process.command_line) { "$($pd.process.command_line)".ToLowerInvariant() } else { '' }
                 $parLow = if ($pd.process -and $pd.process.parent -and $pd.process.parent.command_line) { "$($pd.process.parent.command_line)".ToLowerInvariant() } else { '' }
-                foreach ($fw in @('Sliver','Merlin','Havoc','Mythic','CobaltStrike','BruteRatel','PoshC2')) {
-                    $tag = $fw.ToLowerInvariant()
-                    if ($exeLow -match "[\\/](freesamples|samples|kit|payloads?|c2|implants?)[\\/]$tag[\\/]" -or
-                        $cmdLow -match "[\\/](freesamples|samples|kit|payloads?|c2|implants?)[\\/]$tag[\\/]" -or
-                        $parLow -match "[\\/](freesamples|samples|kit|payloads?|c2|implants?)[\\/]$tag[\\/]") {
-                        $frameworkSignals[$fw] += 40
-                        [void]$frameworkEvidence[$fw].Add("staging path contains [$fw]")
-                        break
+                $hayLow = "$exeLow $cmdLow $parLow $dirLeafLow"
+                foreach ($fw in $fwTokens.Keys) {
+                    $matched = $false
+                    foreach ($tok in $fwTokens[$fw]) {
+                        if ($hayLow -match [regex]::Escape($tok)) {
+                            $frameworkSignals[$fw] += 30
+                            [void]$frameworkEvidence[$fw].Add("staging path/dir contains [$tok]")
+                            $matched = $true
+                            break
+                        }
                     }
+                    if ($matched) { break }
                 }
             }
         }
@@ -5228,20 +5370,26 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             [void]$frameworkEvidence['Havoc'].Add("dynamic-DNS C2 tunnel: $($dynC2DNS -join ',')")
         }
         # Hash-named binaries push a generic +10 to all open-source frameworks (signature of
-        # MalwareBazaar staged samples, which span Sliver/Merlin/Havoc roughly equally).
+        # MalwareBazaar staged samples, which span Sliver/Merlin/Havoc/Empire roughly equally).
         if ($hashNamedProcs.Count -gt 0) {
-            foreach ($fw in @('Sliver','Merlin','Havoc')) {
+            foreach ($fw in @('Sliver','Merlin','Havoc','Empire')) {
                 $frameworkSignals[$fw] += [Math]::Min(20, $hashNamedProcs.Count * 5)
                 [void]$frameworkEvidence[$fw].Add("$($hashNamedProcs.Count) hash-named EXE(s) staged")
             }
         }
-        # Campaign hint from session_info.txt - strong prior when present
+        # Campaign hint from session_info.txt - strong prior when present.
+        # Uses the same alias-token map so 'Cobalt Strike' / 'AndySliver' / 'PS-Empire'
+        # all attribute to the right canonical framework. -match is unanchored regex so
+        # 'andysliver' -match 'sliver' returns True.
         if ($campaign) {
             $cLow = "$campaign".ToLowerInvariant()
-            foreach ($fw in @('Sliver','Merlin','Havoc','Mythic','CobaltStrike','BruteRatel','PoshC2')) {
-                if ($cLow -eq $fw.ToLowerInvariant() -or $cLow -match $fw.ToLowerInvariant()) {
-                    $frameworkSignals[$fw] += 30
-                    [void]$frameworkEvidence[$fw].Add("Campaign field declares [$fw]")
+            foreach ($fw in $fwTokens.Keys) {
+                foreach ($tok in $fwTokens[$fw]) {
+                    if ($cLow -match [regex]::Escape($tok)) {
+                        $frameworkSignals[$fw] += 30
+                        [void]$frameworkEvidence[$fw].Add("Campaign field declares [$tok]")
+                        break
+                    }
                 }
             }
         }
@@ -5360,10 +5508,71 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             $nextSteps.Add("Registry hive / NTDS dump detected  -  isolate immediately, rotate all domain credentials, force password resets")
         }
         # .dmp file creates  -  process minidump signature (especially lsass-related)
-        $dmpHits = @($fileDocs | Where-Object {
+        # NOTE: must discriminate by BOTH path AND source process. Windows Error
+        # Reporting (WerFault.exe) legitimately writes .dmp/.tmp.dmp files under
+        # C:\ProgramData\Microsoft\Windows\WER\Temp\ when a service crashes,
+        # C:\Windows\Minidump\ on BSOD, and C:\Users\*\AppData\Local\CrashDumps\
+        # per-user. These are benign system error handling, NOT T1003.001.
+        # Real-world FP: MpDefenderCoreService crashes during a Sliver detonation
+        # produced 3 WER .tmp.dmp files and triggered a spurious +140 T1003.001.
+        $dmpBenignPathPatterns = @(
+            '(?i)^[A-Z]:\\ProgramData\\Microsoft\\Windows\\WER\\Temp\\WER\.[0-9a-f\-]+\.tmp\.dmp$',
+            '(?i)^[A-Z]:\\ProgramData\\Microsoft\\Windows\\WER\\(ReportArchive|ReportQueue|ERC)\\.+\.dmp$',
+            '(?i)^[A-Z]:\\Windows\\Minidump\\.+\.dmp$',
+            '(?i)^[A-Z]:\\Windows\\Memory\.dmp$',
+            '(?i)^[A-Z]:\\Windows\\LiveKernelReports\\.+\.dmp$',
+            '(?i)^[A-Z]:\\Users\\[^\\]+\\AppData\\Local\\CrashDumps\\.+\.dmp$',
+            '(?i)^[A-Z]:\\Users\\[^\\]+\\AppData\\Local\\Microsoft\\Windows\\WER\\.+\.dmp$'
+        )
+        $dmpBenignWriters = @('werfault.exe','wermgr.exe','dwwin.exe','werfaultsecure.exe')
+        # OVERRIDE filter: any dump whose target filename looks like LSASS/NTDS/SAM/
+        # SECURITY/SYSTEM/WINLOGON/LSAISO is malicious even if it lands in a normally
+        # benign directory (e.g. attacker writes lsass.dmp into WER\Temp to blend in).
+        $dmpHighRiskTargetRegex = '(?i)^(lsass|ntds|sam|system|security|winlogon|lsaiso)[\.\-_]'
+
+        $dmpCandidates = @($fileDocs | Where-Object {
             "$($_.file.path)" -match '(?i)\.dmp$' -or
             "$($_.file.name)" -match '(?i)^(lsass|svchost|comsvcs)[\.\-_]'
         })
+
+        $dmpHits        = [System.Collections.Generic.List[object]]::new()
+        $dmpSuppressed  = [System.Collections.Generic.List[string]]::new()
+        foreach ($d in $dmpCandidates) {
+            $p     = "$($d.file.path)"
+            $fname = "$($d.file.name)"
+            # Pull writer process from .name OR fallback to basename of .executable
+            $procName = "$($d.process.name)".ToLower()
+            $procExeBase = ''
+            try { if ($d.process.executable) { $procExeBase = (Split-Path -Leaf "$($d.process.executable)").ToLower() } } catch {}
+            $procAll  = "$procName $procExeBase".Trim()
+
+            # OVERRIDE: high-risk LSASS/NTDS/SAM target filename forces malicious
+            # classification regardless of path/writer allowlist.
+            if ($fname -match $dmpHighRiskTargetRegex) {
+                [void]$dmpHits.Add($d); continue
+            }
+
+            $pathAllow   = ($dmpBenignPathPatterns | Where-Object { $p -match $_ }).Count -gt 0
+            $writerAllow = $false
+            foreach ($w in $dmpBenignWriters) {
+                if ($procAll -match [regex]::Escape($w)) { $writerAllow = $true; break }
+            }
+
+            if ($pathAllow -or $writerAllow) {
+                $reason = if ($pathAllow -and $writerAllow) { 'benign WER path + WerFault writer' }
+                          elseif ($pathAllow) { 'benign system crash-dump path' }
+                          else { 'benign WER writer process' }
+                [void]$dmpSuppressed.Add("$p  (writer=$procAll, reason=$reason)")
+                continue
+            }
+            [void]$dmpHits.Add($d)
+        }
+
+        if ($dmpSuppressed.Count -gt 0) {
+            Write-Verbose ("[.dmp allowlist] Suppressed $($dmpSuppressed.Count) benign system crash-dump file create(s) from T1003.001 scoring (contribution: 0 pts):")
+            foreach ($s in $dmpSuppressed) { Write-Verbose "  - $s" }
+        }
+
         if ($dmpHits.Count -gt 0) {
             $dmpScore = 70 * [Math]::Min(2, $dmpHits.Count)
             $credScore += $dmpScore
@@ -6386,8 +6595,9 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                 }
             }
         } else {
-            Write-Host "  No SHA-256 hashes collected from Elastic for this host/window." -ForegroundColor DarkGray
-            Write-Host "  (Elastic index may not have process.hash.sha256 populated  - check your agent config)" -ForegroundColor DarkGray
+            Write-Host "  Note: process.hash.sha256 field not populated by your Elastic Agent config." -ForegroundColor DarkGray
+            Write-Host "  Hashes below were collected from process.executable.code_signature, file.hash.sha256, and similar fields." -ForegroundColor DarkGray
+            Write-Host "  To improve coverage, enable hashes in your Elastic Agent integration (Sysmon -> EventID 1 hash output)." -ForegroundColor DarkGray
         }
         if ($vtUnknownHashes -and $vtUnknownHashes.Count -gt 0) {
             Write-Host "  NOT IN OFFLINE BASELINE ($($vtUnknownHashes.Count) hash(es) - never seen or not yet pulled from VT):" -ForegroundColor DarkGray
