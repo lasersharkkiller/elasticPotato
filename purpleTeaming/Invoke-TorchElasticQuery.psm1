@@ -345,8 +345,21 @@ function Invoke-TorchElasticDiagnose {
         $ownSession = $true
     }
 
-    $startIso = $StartTime.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
-    $endIso   = $EndTime.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+    # DateTime.ToUniversalTime() treats Kind=Unspecified as Local and shifts
+    # by the local-to-UTC offset, which silently produces a wrong-window query
+    # if a caller passes a parser-output DateTime that was already in UTC but
+    # not tagged. Handle each Kind explicitly so we trust Utc, convert Local,
+    # and assume Utc for Unspecified.
+    $toUtc = {
+        param([datetime]$t)
+        if     ($t.Kind -eq [DateTimeKind]::Utc)   { return $t }
+        elseif ($t.Kind -eq [DateTimeKind]::Local) { return $t.ToUniversalTime() }
+        else                                       { return [DateTime]::SpecifyKind($t, [DateTimeKind]::Utc) }
+    }
+    $startUtc = & $toUtc $StartTime
+    $endUtc   = & $toUtc $EndTime
+    $startIso = $startUtc.ToString("yyyy-MM-ddTHH:mm:ssZ")
+    $endIso   = $endUtc.ToString("yyyy-MM-ddTHH:mm:ssZ")
 
     try {
         Write-Host ""
@@ -630,8 +643,21 @@ function Save-TorchElasticDetonationLogs {
         New-Item -ItemType Directory -Path $OutputDir -Force | Out-Null
     }
 
-    $startIso = $StartTime.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
-    $endIso   = $EndTime.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+    # DateTime.ToUniversalTime() treats Kind=Unspecified as Local and shifts
+    # by the local-to-UTC offset, which silently produces a wrong-window query
+    # if a caller passes a parser-output DateTime that was already in UTC but
+    # not tagged. Handle each Kind explicitly so we trust Utc, convert Local,
+    # and assume Utc for Unspecified.
+    $toUtc = {
+        param([datetime]$t)
+        if     ($t.Kind -eq [DateTimeKind]::Utc)   { return $t }
+        elseif ($t.Kind -eq [DateTimeKind]::Local) { return $t.ToUniversalTime() }
+        else                                       { return [DateTime]::SpecifyKind($t, [DateTimeKind]::Utc) }
+    }
+    $startUtc = & $toUtc $StartTime
+    $endUtc   = & $toUtc $EndTime
+    $startIso = $startUtc.ToString("yyyy-MM-ddTHH:mm:ssZ")
+    $endIso   = $endUtc.ToString("yyyy-MM-ddTHH:mm:ssZ")
 
     # Canonical Fleet dataset name -> acceptable alternates we'll OR against.
     # SO 3.0 Fleet ships windows.* via the Windows integration today, but

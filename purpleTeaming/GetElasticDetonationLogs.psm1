@@ -179,9 +179,14 @@
                                       $parsed.Hour, $parsed.Minute, $parsed.Second)
         }
 
-        # Apply explicit tz offset -> UTC; otherwise treat as local -> UTC
+        # Apply explicit tz offset -> UTC; otherwise treat as local -> UTC.
+        # CRITICAL: always tag the result with Kind=Utc so that downstream
+        # consumers calling .ToUniversalTime() do NOT re-interpret an
+        # Unspecified-Kind value as Local time and shift it by the local
+        # offset a second time (the bug that caused 16:12 UTC input to be
+        # queried as 20:12 UTC on EDT machines).
         if ($null -ne $tzOffset) {
-            $parsed = $parsed.AddHours(-$tzOffset)   # to UTC
+            $parsed = [DateTime]::SpecifyKind($parsed.AddHours(-$tzOffset), [DateTimeKind]::Utc)
         } else {
             $parsed = $parsed.ToUniversalTime()
         }
