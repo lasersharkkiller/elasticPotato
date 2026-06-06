@@ -251,6 +251,15 @@
             Write-Host "[ERROR] Save-TorchElasticDetonationLogs is not available. Falling back to HTTP path (likely to fail)." -ForegroundColor Red
         } else {
             try {
+                # TODO (index-pattern escape hatch): the orchestrator hardcodes
+                # the SO 3.0 Fleet 'logs-*' default baked into
+                # Save-TorchElasticDetonationLogs because that is the 95% case
+                # 3a is designed for. Operators on non-Fleet clusters
+                # (Winlogbeat-only, Filebeat-only, hybrid 'logs-*,winlogbeat-*')
+                # can invoke Save-TorchElasticDetonationLogs directly with
+                # -IndexPattern 'winlogbeat-*' (or whatever CSV combination
+                # they need). A 3a-level interactive prompt can land here when
+                # the first operator reports needing it - YAGNI today.
                 Save-TorchElasticDetonationLogs `
                     -StartTime  $startUtc `
                     -EndTime    $endUtc `

@@ -321,6 +321,14 @@ function Invoke-TorchElasticDiagnose {
     Informational only. Printed in the banner so the operator can see what
     filter the failing pull was using; probes B/C/D do not apply it.
 
+.PARAMETER IndexPattern
+    Elasticsearch index pattern targeted by probes B/C/D/E/F. Default is
+    'logs-*' which is the SO 3.0 Fleet datastream pattern (matches the
+    95% case). Operators on non-Fleet clusters should override with
+    'winlogbeat-*', 'filebeat-*', 'auditbeat-*', or a CSV combining
+    patterns such as 'logs-*,winlogbeat-*'. Probe A is pattern-independent
+    (it lists all indices on the cluster regardless of this value).
+
 .PARAMETER Session
     Optional reused session object from Get-TorchSSHSession.
 
@@ -334,6 +342,7 @@ function Invoke-TorchElasticDiagnose {
         [datetime]$StartTime    = (Get-Date).ToUniversalTime().AddHours(-24),
         [datetime]$EndTime      = (Get-Date).ToUniversalTime(),
         [string]$HostFilter,
+        [string]$IndexPattern   = 'logs-*',
         [PSCustomObject]$Session
     )
 
@@ -443,7 +452,7 @@ function Invoke-TorchElasticDiagnose {
         # Probe B - unfiltered count on logs-* over the window
         # --------------------------------------------------------------
         Write-Host ""
-        Write-Host "[B] logs-*  unfiltered count in window ----------------------" -ForegroundColor Yellow
+        Write-Host "[B] $IndexPattern  unfiltered count in window ----------------------" -ForegroundColor Yellow
         try {
             $bBody = @{
                 size              = 0
@@ -452,7 +461,7 @@ function Invoke-TorchElasticDiagnose {
                     range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } }
                 }
             }
-            $bResp = Invoke-TorchElasticQuery -IndexPattern 'logs-*' `
+            $bResp = Invoke-TorchElasticQuery -IndexPattern $IndexPattern `
                                               -Query $bBody `
                                               -Size 0 `
                                               -Session $Session
@@ -469,7 +478,7 @@ function Invoke-TorchElasticDiagnose {
                     Write-Warning "[B] response had no hits.total - response may be malformed."
                 } elseif ($total -eq 0) {
                     Write-Host "    hits.total.value = 0" -ForegroundColor Red
-                    Write-Host "    -> Fleet is NOT shipping any events into logs-* in this window." -ForegroundColor Red
+                    Write-Host "    -> Fleet is NOT shipping any events into $IndexPattern in this window." -ForegroundColor Red
                     Write-Host "    -> Check Fleet agent health on the detonation host, integration policies, and clock skew." -ForegroundColor Red
                 } else {
                     Write-Host "    hits.total.value = $total" -ForegroundColor Green
@@ -484,7 +493,7 @@ function Invoke-TorchElasticDiagnose {
         # Probe C - terms agg on event.dataset
         # --------------------------------------------------------------
         Write-Host ""
-        Write-Host "[C] logs-*  terms agg on event.dataset (top 25) -------------" -ForegroundColor Yellow
+        Write-Host "[C] $IndexPattern  terms agg on event.dataset (top 25) -------------" -ForegroundColor Yellow
         try {
             $cBody = @{
                 size  = 0
@@ -495,7 +504,7 @@ function Invoke-TorchElasticDiagnose {
                     ds = @{ terms = @{ field = 'event.dataset'; size = 25 } }
                 }
             }
-            $cResp = Invoke-TorchElasticQuery -IndexPattern 'logs-*' `
+            $cResp = Invoke-TorchElasticQuery -IndexPattern $IndexPattern `
                                               -Query $cBody `
                                               -Size 0 `
                                               -Session $Session
@@ -521,7 +530,7 @@ function Invoke-TorchElasticDiagnose {
         # Probe D - terms aggs on host.name, host.hostname, agent.name
         # --------------------------------------------------------------
         Write-Host ""
-        Write-Host "[D] logs-*  terms aggs on host.name / host.hostname / agent.name (top 25 each) ---" -ForegroundColor Yellow
+        Write-Host "[D] $IndexPattern  terms aggs on host.name / host.hostname / agent.name (top 25 each) ---" -ForegroundColor Yellow
         try {
             $dBody = @{
                 size  = 0
@@ -534,7 +543,7 @@ function Invoke-TorchElasticDiagnose {
                     by_agent_name    = @{ terms = @{ field = 'agent.name';    size = 25 } }
                 }
             }
-            $dResp = Invoke-TorchElasticQuery -IndexPattern 'logs-*' `
+            $dResp = Invoke-TorchElasticQuery -IndexPattern $IndexPattern `
                                               -Query $dBody `
                                               -Size 0 `
                                               -Session $Session
@@ -576,7 +585,7 @@ function Invoke-TorchElasticDiagnose {
         # OTHER than Z, or (b) the X docs are missing host.name entirely.
         # This nested agg shows the per-dataset host breakdown.
         Write-Host ""
-        Write-Host "[E] logs-*  cross-tab: event.dataset -> host.name / host.hostname / agent.name ---" -ForegroundColor Yellow
+        Write-Host "[E] $IndexPattern  cross-tab: event.dataset -> host.name / host.hostname / agent.name ---" -ForegroundColor Yellow
         try {
             $eBody = @{
                 size  = 0
@@ -594,7 +603,7 @@ function Invoke-TorchElasticDiagnose {
                     }
                 }
             }
-            $eResp = Invoke-TorchElasticQuery -IndexPattern 'logs-*' `
+            $eResp = Invoke-TorchElasticQuery -IndexPattern $IndexPattern `
                                               -Query $eBody `
                                               -Size 0 `
                                               -Session $Session
@@ -670,7 +679,7 @@ function Invoke-TorchElasticDiagnose {
             $reqJson = $fBody | ConvertTo-Json -Depth 20 -Compress
             Write-Host "    $reqJson" -ForegroundColor DarkGray
 
-            $fRespRaw = Invoke-TorchElasticQuery -IndexPattern 'logs-*' `
+            $fRespRaw = Invoke-TorchElasticQuery -IndexPattern $IndexPattern `
                                                 -Query $fBody `
                                                 -Size 0 `
                                                 -Session $Session `
@@ -897,7 +906,7 @@ function Invoke-TorchElasticDiagnose {
                     # For variants that exercise the pull body shape (size > 0)
                     # use -Size matching body.size so URL ?size=N is consistent.
                     $urlSize = if ($v.Body.ContainsKey('size')) { [int]$v.Body['size'] } else { 0 }
-                    $vr = Invoke-TorchElasticQuery -IndexPattern 'logs-*' -Query $v.Body -Size $urlSize -Session $Session
+                    $vr = Invoke-TorchElasticQuery -IndexPattern $IndexPattern -Query $v.Body -Size $urlSize -Session $Session
                     $vt = $null
                     if ($vr -and $vr.hits -and $vr.hits.total) {
                         $vt = if ($vr.hits.total.PSObject.Properties.Name -contains 'value') { $vr.hits.total.value } else { $vr.hits.total }
@@ -961,6 +970,16 @@ function Save-TorchElasticDetonationLogs {
         Detonation end   : <iso8601 Z>
         Window end       : <iso8601 Z>
 
+.PARAMETER IndexPattern
+    Elasticsearch index pattern queried for every dataset. Default is
+    'logs-*' which is the SO 3.0 Fleet datastream pattern (matches the
+    95% case - this is what the 3a orchestrator currently expects).
+    Operators on non-Fleet clusters should override with 'winlogbeat-*',
+    'filebeat-*', 'auditbeat-*', or a CSV combining patterns such as
+    'logs-*,winlogbeat-*' (the SO so-elasticsearch-query wrapper passes
+    the CSV through to the URL transparently). When -Diagnose is used,
+    this same pattern is forwarded to Invoke-TorchElasticDiagnose.
+
 .PARAMETER Diagnose
     Skip the dataset pull and run only Invoke-TorchElasticDiagnose (lists
     indices, runs unfiltered count, terms-agg on event.dataset and
@@ -985,6 +1004,7 @@ function Save-TorchElasticDetonationLogs {
         [Parameter(Mandatory)][datetime]$EndTime,
         [Parameter(Mandatory)][string]$OutputDir,
         [string]$HostFilter,
+        [string]$IndexPattern = 'logs-*',
         [string]$SessionInfoCampaign,
         [int]$PageSize = 1000,
         [int]$MaxPages = 200,
@@ -1028,6 +1048,36 @@ function Save-TorchElasticDetonationLogs {
         'system.application'              = @('system.application', 'windows.application', 'application', 'winlog.application')
         'system.system'                   = @('system.system', 'windows.system', 'system', 'winlog.system')
     }
+
+    # Linux Fleet / Elastic Agent dataset coverage. Concatenated unconditionally
+    # so a single pull works against mixed Windows/Linux clusters. On a
+    # Windows-only SO 3.0 lab these entries simply write empty NDJSON files
+    # (0 hits) and add zero rows to summary.csv - they cannot reduce the
+    # Windows result count. On a Linux Fleet-enrolled host, the 3a orchestrator's
+    # Linux-detection regex at elasticPotato_Main.ps1 (matches `linux.`,
+    # `auth_events`, `system.auth`, `system.syslog` filenames) auto-routes the
+    # output directory to 3c (Invoke-ElasticLinuxTriage). The auditd ->
+    # category-file shim (process_events.ndjson, file_events.ndjson,
+    # network_events.ndjson, auth_events.ndjson) is deferred to a follow-up
+    # commit; until it lands, the Linux triage module sees raw per-dataset
+    # files but reports 0 events (its input contract is preserved unchanged).
+    $linuxDatasetAliases = [ordered]@{
+        'linux.auditd'              = @('linux.auditd', 'auditd.log', 'auditd', 'auditbeat.auditd')
+        'system.auth'               = @('system.auth', 'linux.auth', 'auth', 'system.syslog')
+        'system.syslog'             = @('system.syslog', 'linux.syslog', 'syslog', 'system.system')
+        'system.journal'            = @('system.journal', 'journald', 'linux.journald')
+        'endpoint.events.process'   = @('endpoint.events.process')
+        'endpoint.events.network'   = @('endpoint.events.network')
+        'endpoint.events.file'      = @('endpoint.events.file')
+        'endpoint.events.library'   = @('endpoint.events.library')
+        'endpoint.events.session'   = @('endpoint.events.session')
+        'endpoint.events.api'       = @('endpoint.events.api')
+        'file_integrity'            = @('file_integrity', 'auditbeat.file_integrity', 'fim')
+    }
+    foreach ($k in $linuxDatasetAliases.Keys) {
+        $datasetAliases[$k] = $linuxDatasetAliases[$k]
+    }
+
     $datasets = @($datasetAliases.Keys)
 
     $session = Get-TorchSSHSession
@@ -1053,10 +1103,11 @@ function Save-TorchElasticDetonationLogs {
     # --- -Diagnose: probe only, no pull, no NDJSON, no summary files ---------
     if ($Diagnose) {
         try {
-            Invoke-TorchElasticDiagnose -StartTime $StartTime `
-                                        -EndTime   $EndTime `
-                                        -HostFilter $HostFilter `
-                                        -Session   $session
+            Invoke-TorchElasticDiagnose -StartTime    $StartTime `
+                                        -EndTime      $EndTime `
+                                        -HostFilter   $HostFilter `
+                                        -IndexPattern $IndexPattern `
+                                        -Session      $session
         }
         finally {
             try { Remove-SSHSession -SessionId $session.SessionId -ErrorAction SilentlyContinue | Out-Null } catch { }
@@ -1081,23 +1132,35 @@ function Save-TorchElasticDetonationLogs {
                 @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } }
             )
             if (-not [string]::IsNullOrWhiteSpace($HostFilter)) {
-                # Probe E confirmed: every Windows dataset on SO 3.0 Fleet
-                # populates host.name (lowercase) AND host.hostname (preserved
-                # case) AND agent.name (preserved case) with the same logical
-                # host - so we only need host.name with case variants. The
-                # previous bool.should-wrapping-of-multiple-fields-plus-
-                # wildcards approach empirically returned 0 hits against ES
-                # even though the underlying data matched (likely a nested-
-                # bool-inside-filter quirk on this ES version). Flat `terms`
-                # is simpler, demonstrably works, and adds no wildcards or
-                # FQDN guesses. If a future deployment populates ONLY
-                # host.hostname or ONLY agent.name (no host.name), revisit.
+                # Multi-field host filter: bool.should disjunction across the
+                # five canonical host-identifier fields ECS exposes, each
+                # carrying the three case variants of -HostFilter (literal,
+                # lower, upper). minimum_should_match=1 means a doc qualifies
+                # if ANY field matches ANY case - so non-Fleet deployments
+                # that only populate host.hostname or agent.hostname (or
+                # Winlogbeat which only writes winlog.computer_name) are now
+                # covered without needing -HostFilter to be re-tuned.
+                #
+                # The inner bool runs in filter context (no scoring, cacheable)
+                # which is the documented ES idiom. Probe F variant T1b proved
+                # this multi-field shape works once the `_id` -> `_doc`
+                # tiebreaker fix at the sort line below removed the previous
+                # shard-rejection killer that masked the multi-field approach.
+                #
+                # Wildcard / FQDN expansion (e.g. host.name = 'WIN11*' or
+                # 'win11.lab.local') is deferred to a follow-up iteration -
+                # operators with FQDN deployments can still pass the exact
+                # FQDN as -HostFilter today.
                 $hostValues = @(
                     $HostFilter,
                     $HostFilter.ToLowerInvariant(),
                     $HostFilter.ToUpperInvariant()
                 ) | Select-Object -Unique
-                $filters += @{ terms = @{ 'host.name' = $hostValues } }
+                $hostFields = @('host.name', 'host.hostname', 'agent.name', 'agent.hostname', 'winlog.computer_name')
+                $hostShould = foreach ($hf in $hostFields) {
+                    @{ terms = @{ $hf = $hostValues } }
+                }
+                $filters += @{ bool = @{ should = @($hostShould); minimum_should_match = 1 } }
             }
 
             $outFile = Join-Path $OutputDir "$ds.ndjson"
@@ -1129,7 +1192,7 @@ function Save-TorchElasticDetonationLogs {
                     }
                     if ($searchAfter) { $body['search_after'] = $searchAfter }
 
-                    $resp = Invoke-TorchElasticQuery -IndexPattern 'logs-*' `
+                    $resp = Invoke-TorchElasticQuery -IndexPattern $IndexPattern `
                                                      -Query $body `
                                                      -Size $PageSize `
                                                      -Session $session
@@ -1247,10 +1310,11 @@ function Save-TorchElasticDetonationLogs {
             Write-Host ""
             Write-Host "[!] All datasets returned 0 - running auto-diagnostic probe..." -ForegroundColor Yellow
             try {
-                Invoke-TorchElasticDiagnose -StartTime $StartTime `
-                                            -EndTime   $EndTime `
-                                            -HostFilter $HostFilter `
-                                            -Session   $session
+                Invoke-TorchElasticDiagnose -StartTime    $StartTime `
+                                            -EndTime      $EndTime `
+                                            -HostFilter   $HostFilter `
+                                            -IndexPattern $IndexPattern `
+                                            -Session      $session
             } catch {
                 Write-Warning "Auto-diagnostic probe failed: $($_.Exception.Message)"
             }
