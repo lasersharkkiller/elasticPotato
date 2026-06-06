@@ -250,16 +250,78 @@ elseif ($functionChoice -eq "3a") {
         return
     }
 
-    $allFiles = @(Get-ChildItem -Path $outDir -Filter '*.ndjson' -File -ErrorAction SilentlyContinue)
+    # Two pull paths produce two different filename schemes:
+    #   - SSH/TORCH pull writes DATASET-named files (windows.sysmon_operational.ndjson,
+    #     linux.auditd.ndjson, etc.) matching the source event.dataset.
+    #   - Vanilla HTTP pull via Get-ElasticDetonationLogs writes CATEGORY-named files
+    #     (process_events.ndjson, network_events.ndjson, registry_events.ndjson, etc.)
+    #     - the topical buckets 3b/3c consume natively.
+    # Detection cascades: dataset-name regex first, then category-name signal, then a
+    # doc-shape probe (host.os.type) on the first non-empty file to break ties.
+    $allFiles = @(Get-ChildItem -Path $outDir -Filter '*.ndjson' -File -ErrorAction SilentlyContinue |
+                  Where-Object { $_.Length -gt 0 })
+
     $winRegex = '^(windows\.|system\.(security|application|system)|sysmon|winlog\.)'
     $linRegex = '^(linux\.|auditd|auth_events|authentication_events|filebeat-linux|system\.auth|system\.syslog)'
-    $winFiles = @($allFiles | Where-Object { $_.Name -match $winRegex -and $_.Length -gt 0 })
-    $linFiles = @($allFiles | Where-Object { $_.Name -match $linRegex -and $_.Length -gt 0 })
+    $winFiles = @($allFiles | Where-Object { $_.Name -match $winRegex })
+    $linFiles = @($allFiles | Where-Object { $_.Name -match $linRegex })
+
+    # Category-named files (Elastic Defend / Get-ElasticDetonationLogs output).
+    # Some categories are OS-specific signal; others are ambiguous.
+    $winCategoryNames = @('registry_events.ndjson','driver_and_pipe.ndjson',
+                          'image_load.ndjson','injection_events.ndjson','api_events.ndjson')
+    $linCategoryNames = @('auth_events.ndjson','authentication_events.ndjson')
+    $ambiguousCategoryNames = @('process_events.ndjson','network_events.ndjson',
+                                'file_events.ndjson','dns_events.ndjson','alerts.ndjson')
+
+    $winCategoryFiles  = @($allFiles | Where-Object { $winCategoryNames -contains $_.Name })
+    $linCategoryFiles  = @($allFiles | Where-Object { $linCategoryNames -contains $_.Name })
+    $ambigCategoryFiles = @($allFiles | Where-Object { $ambiguousCategoryNames -contains $_.Name })
+
+    # Doc-shape probe for the ambiguous case: read host.os.type from the first
+    # non-empty file. host.os.type values from Elastic Defend: 'windows' / 'linux'.
+    # Cheap (one Get-Content + one ConvertFrom-Json call) and definitive.
+    $probedOs = $null
+    $probeFile = $allFiles | Select-Object -First 1
+    if ($probeFile) {
+        try {
+            $firstLine = (Get-Content -LiteralPath $probeFile.FullName -TotalCount 1 -ErrorAction Stop)
+            if ($firstLine) {
+                $doc = $firstLine | ConvertFrom-Json -ErrorAction Stop
+                $osType = $null
+                if ($doc.host -and $doc.host.os -and $doc.host.os.type) { $osType = "$($doc.host.os.type)".ToLowerInvariant() }
+                elseif ($doc.host -and $doc.host.os -and $doc.host.os.family) { $osType = "$($doc.host.os.family)".ToLowerInvariant() }
+                elseif ($doc._source -and $doc._source.host -and $doc._source.host.os -and $doc._source.host.os.type) { $osType = "$($doc._source.host.os.type)".ToLowerInvariant() }
+                if ($osType -in 'windows','win','linux','lin','macos','darwin') { $probedOs = $osType }
+            }
+        } catch {}
+    }
 
     Write-Host ""
     Write-Host "[3a] Pull complete: $outDir" -ForegroundColor DarkCyan
     Write-Host "     Windows datasets w/ events : $($winFiles.Count) file(s)" -ForegroundColor DarkGray
     Write-Host "     Linux   datasets w/ events : $($linFiles.Count) file(s)" -ForegroundColor DarkGray
+    Write-Host "     Windows-specific categories : $($winCategoryFiles.Count) file(s)  (registry, driver+pipe, image_load, injection, api)" -ForegroundColor DarkGray
+    Write-Host "     Linux-specific categories   : $($linCategoryFiles.Count) file(s)  (auth_events, authentication_events)" -ForegroundColor DarkGray
+    Write-Host "     Ambiguous categories        : $($ambigCategoryFiles.Count) file(s)  (process, network, file, dns, alerts)" -ForegroundColor DarkGray
+    if ($probedOs) {
+        Write-Host "     Doc-shape probe (host.os)   : $probedOs" -ForegroundColor DarkGray
+    }
+
+    # Aggregate signals: any of (a) dataset-named match, (b) OS-specific category,
+    # (c) ambiguous-category presence broken by doc-shape probe.
+    $winFiles = @($winFiles) + @($winCategoryFiles)
+    $linFiles = @($linFiles) + @($linCategoryFiles)
+    if ($ambigCategoryFiles.Count -gt 0 -and $winFiles.Count -eq 0 -and $linFiles.Count -eq 0) {
+        # Pure-ambiguous-category case (e.g. only process_events.ndjson). Let the probe decide.
+        if ($probedOs -in 'windows','win')  { $winFiles = $ambigCategoryFiles }
+        elseif ($probedOs -in 'linux','lin') { $linFiles = $ambigCategoryFiles }
+    } elseif ($ambigCategoryFiles.Count -gt 0) {
+        # Ambiguous files plus OS-specific signal - attribute the ambiguous bucket to the
+        # OS the specific signal indicates. If both OSes specific-signal, attribute to both.
+        if ($winFiles.Count -gt 0) { $winFiles = @($winFiles) + @($ambigCategoryFiles) }
+        if ($linFiles.Count -gt 0) { $linFiles = @($linFiles) + @($ambigCategoryFiles) }
+    }
 
     if ($winFiles.Count -gt 0 -and $linFiles.Count -eq 0) {
         Write-Host "[3a] -> Dispatching to 3b (Invoke-ElasticAlertAgentAnalysis, Windows)" -ForegroundColor DarkCyan
