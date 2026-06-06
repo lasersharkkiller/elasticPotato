@@ -1,0 +1,15 @@
+{
+  "label": "COMPROMISED",
+  "framework": "Havoc",
+  "absolute_path": "C:\\githubProjects\\DetonationLogs\\C2Frameworks\\Havoc_2026-05-28_16-50_to_16-54UTC",
+  "expected_verdict": "COMPROMISED",
+  "datasets": [
+    "windows.sysmon_operational.ndjson",
+    "windows.powershell.ndjson",
+    "windows.powershell_operational.ndjson",
+    "system.security.ndjson",
+    "system.application.ndjson",
+    "system.system.ndjson"
+  ],
+  "notes": "C2 framework detonation. Pointer to external corpus to avoid bloating elasticPotato repo with NDJSON binaries."
+}

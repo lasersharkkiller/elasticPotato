@@ -3961,6 +3961,50 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         Write-Host "`n[+] Batch fidelity scan: $($allArtifacts.Count) unique artifacts (across $($indByDim.Count) dim-aware entries)..." -ForegroundColor DarkCyan
         $fidMap = Invoke-BatchFidelityScan -Indicators $allArtifacts -IndicatorsByDimension $indByDim
 
+        # ---------------------------------------------------------------
+        # PHASE B MIGRATION (read sites):
+        #   _FidGet returns the per-(Value, Dimension) fidelity record
+        #   preferring the composite "value|dim" cache key over the bare
+        #   value (the bare key is last-write-wins across dims, so for
+        #   values that appear in multiple dimensions -- e.g. svchost.exe
+        #   in both 'process' and 'file' -- the composite key is the
+        #   only collision-free lookup).
+        #
+        #   When -Dimension is omitted, we use the Dimension field stored
+        #   on the entry itself (set by Invoke-BatchFidelityScan), then
+        #   fall back to $indByDim, then fall back to the bare entry.
+        #
+        #   Returns $null when the value is not in the cache (callers
+        #   already guard on $null / .ContainsKey).
+        # ---------------------------------------------------------------
+        $script:_indByDimCache = $indByDim
+        function _FidGet {
+            [CmdletBinding()]
+            param(
+                [Parameter(Mandatory)] [string]$Value,
+                [string]$Dimension = $null
+            )
+            if ([string]::IsNullOrEmpty($Value)) { return $null }
+            if (-not $fidMap) { return $null }
+            if ($Dimension) {
+                $ck = "$Value|$Dimension"
+                if ($fidMap.ContainsKey($ck)) { return $fidMap[$ck] }
+            }
+            $bare = if ($fidMap.ContainsKey($Value)) { $fidMap[$Value] } else { $null }
+            if (-not $bare) { return $null }
+            # Re-key via composite using the entry's own Dimension when caller didn't pass one.
+            if (-not $Dimension) {
+                $dimOnEntry = if ($bare.Dimension) { $bare.Dimension } `
+                              elseif ($script:_indByDimCache -and $script:_indByDimCache.ContainsKey($Value)) { $script:_indByDimCache[$Value] } `
+                              else { $null }
+                if ($dimOnEntry) {
+                    $ck2 = "$Value|$dimOnEntry"
+                    if ($fidMap.ContainsKey($ck2)) { return $fidMap[$ck2] }
+                }
+            }
+            return $bare
+        }
+
         # -------- Cert impersonation joint heuristic (T1036.001) --------
         # If observed (publisher, status) shows a trusted-publisher claim that
         # is self-signed, that is a high-confidence impersonation. Recorded
@@ -4231,8 +4275,10 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             foreach ($b in $ptR.aggregations.by_name.buckets) {
                 $pn = $b.key; $pnl = $pn.ToLower()
                 $prisk = "clean"
-                if ($fidMap -and $fidMap.ContainsKey($pnl)) {
-                    $pfe = $fidMap[$pnl]
+                # PHASE B: dim-aware lookup for process names (dim='process').
+                # Mirrors what Invoke-BatchFidelityScan recorded for $artifactProcList.
+                $pfe = _FidGet -Value $pnl -Dimension 'process'
+                if ($pfe) {
                     if ($pfe.Unique) { $prisk = "unique" } elseif ($pfe.Rare) { $prisk = "rare" }
                 }
                 if ($prisk -eq "clean" -and ($unsignedProcs | Where-Object { $_ -match [regex]::Escape($pn) })) { $prisk = "suspicious" }
@@ -4276,8 +4322,9 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         }
 
         # Sigma / YARA rule fidelity: which fired alert rules are malware-unique or rare in the baseline
-        $ruleUnique = @($artifactRuleList | Where-Object { $fidMap.ContainsKey($_) -and $fidMap[$_].Unique })
-        $ruleRare   = @($artifactRuleList | Where-Object { $fidMap.ContainsKey($_) -and $fidMap[$_].Rare })
+        # PHASE B: dim-aware lookup (sigma-rule).
+        $ruleUnique = @($artifactRuleList | Where-Object { $e = _FidGet -Value $_ -Dimension 'sigma-rule'; $e -and $e.Unique })
+        $ruleRare   = @($artifactRuleList | Where-Object { $e = _FidGet -Value $_ -Dimension 'sigma-rule'; $e -and $e.Rare })
         if ($ruleUnique.Count -gt 0) {
             Write-Host "    [!!] SIGMA/YARA rules UNIQUE to malware fired: $($ruleUnique -join ' | ')" -ForegroundColor Red
         }
@@ -4286,8 +4333,9 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         }
 
         # Sysmon EID 7: DLLs loaded that score high in VT malware baseline
-        $dllUnique = @($artifactDllList | Where-Object { $fidMap.ContainsKey($_) -and $fidMap[$_].Unique })
-        $dllRare   = @($artifactDllList | Where-Object { $fidMap.ContainsKey($_) -and $fidMap[$_].Rare })
+        # PHASE B: dim-aware lookup (module-load).
+        $dllUnique = @($artifactDllList | Where-Object { $e = _FidGet -Value $_ -Dimension 'module-load'; $e -and $e.Unique })
+        $dllRare   = @($artifactDllList | Where-Object { $e = _FidGet -Value $_ -Dimension 'module-load'; $e -and $e.Rare })
         if ($dllUnique.Count -gt 0) {
             Write-Host "    [!!] DLLs loaded UNIQUE to malware (EID 7): $($dllUnique -join ' | ')" -ForegroundColor Red
         }
@@ -4296,8 +4344,9 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         }
 
         # Sysmon EID 8/10: injection targets that score high
-        $injUnique = @($artifactInjList | Where-Object { $fidMap.ContainsKey($_) -and $fidMap[$_].Unique })
-        $injRare   = @($artifactInjList | Where-Object { $fidMap.ContainsKey($_) -and $fidMap[$_].Rare })
+        # PHASE B: dim-aware (injection targets indexed under dim='process')
+        $injUnique = @($artifactInjList | Where-Object { $e = _FidGet -Value $_ -Dimension 'process'; $e -and $e.Unique })
+        $injRare   = @($artifactInjList | Where-Object { $e = _FidGet -Value $_ -Dimension 'process'; $e -and $e.Rare })
         # Build src/tgt name sets for role annotation
         $sysmonSrcNames = @($sysmonSrcProcs | ForEach-Object { [System.IO.Path]::GetFileName($_).ToLower() } | Select-Object -Unique)
         $sysmonTgtNames = @($sysmonTgtProcs | ForEach-Object { [System.IO.Path]::GetFileName($_).ToLower() } | Select-Object -Unique)
@@ -4307,7 +4356,9 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                 $isSrc = $sysmonSrcNames -contains $inj
                 $isTgt = $sysmonTgtNames -contains $inj
                 $role  = if ($isSrc -and $isTgt) { "INJECTOR + VICTIM" } elseif ($isSrc) { "INJECTOR (source)" } else { "VICTIM (target)" }
-                $malC  = if ($fidMap[$inj]) { "$($fidMap[$inj].MalCount) malware samples" } else { "" }
+                # PHASE B: dim-aware (injection targets are 'process')
+                $injE  = _FidGet -Value $inj -Dimension 'process'
+                $malC  = if ($injE) { "$($injE.MalCount) malware samples (RS=$([Math]::Round([double]$injE.RiskScore,2)) Conf=$([Math]::Round([double]$injE.Confidence,2)))" } else { "" }
                 $detail = (@($role, $malC) | Where-Object { $_ }) -join ' | '
                 Write-Host "          $inj  -- $detail" -ForegroundColor Red
             }
@@ -4318,7 +4369,9 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                 $isSrc = $sysmonSrcNames -contains $inj
                 $isTgt = $sysmonTgtNames -contains $inj
                 $role  = if ($isSrc -and $isTgt) { "INJECTOR + VICTIM" } elseif ($isSrc) { "INJECTOR (source)" } else { "VICTIM (target)" }
-                $malC  = if ($fidMap[$inj]) { "$($fidMap[$inj].MalCount) malware samples | $($fidMap[$inj].Found) legit" } else { "" }
+                # PHASE B: dim-aware (injection targets are 'process')
+                $injE  = _FidGet -Value $inj -Dimension 'process'
+                $malC  = if ($injE) { "$($injE.MalCount) malware samples | $($injE.GoodCount) legit (RS=$([Math]::Round([double]$injE.RiskScore,2)) Conf=$([Math]::Round([double]$injE.Confidence,2)))" } else { "" }
                 $detail = (@($role, $malC) | Where-Object { $_ }) -join ' | '
                 Write-Host "          $inj  -- $detail" -ForegroundColor Yellow
             }
@@ -4823,7 +4876,9 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             $rareDirectBonus = [Math]::Min(50, $directRare.Count * 15)
             $score += $rareDirectBonus
             $rareList = $directRare | Select-Object -First 3 | ForEach-Object {
-                $legit = if ($fidMap[$_].LegitNames.Count -gt 0) { " (legit: $($fidMap[$_].LegitNames -join ','))" } else { "" }
+                # PHASE B: dim-aware (Dimension resolved via $indByDim / entry).
+                $e = _FidGet -Value $_
+                $legit = if ($e -and $e.LegitNames.Count -gt 0) { " (legit: $($e.LegitNames -join ','))" } else { "" }
                 "$_$legit"
             }
             $findings.Add("$($directRare.Count) RARE artifact(s) observed on host (fidelity ~95): $($rareList -join '; ')")
@@ -4837,7 +4892,9 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         }
         if ($ruleRare.Count -gt 0) {
             $ruleRareStr = $ruleRare | Select-Object -First 5 | ForEach-Object {
-                $malC = if ($fidMap[$_]) { $fidMap[$_].MalCount } else { "?" }
+                # PHASE B: dim-aware (sigma-rule)
+                $e    = _FidGet -Value $_ -Dimension 'sigma-rule'
+                $malC = if ($e) { $e.MalCount } else { "?" }
                 "$_ ($malC malware samples)"
             }
             $findings.Add("SIGMA/YARA: $($ruleRare.Count) alert rule(s) RARE in good baseline fired: $($ruleRareStr -join ' | ')")
@@ -6083,15 +6140,31 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         #         (i.e. $script:_fidUseNewScoring). Legacy-fallback emits
         #         Confidence=0.0 so this expression cannot fire there, but we
         #         also explicitly require the gate to avoid future regressions.
+        #   (PHASE B) Total dim-summed VerdictPoints >= 60 -> COMPROMISED (gated).
+        #             Manifest-driven: each dim is already capped at its
+        #             dimension_meta.max_verdict_points (see line ~4945), so
+        #             totalVP is bounded by the sum of per-dim caps and cannot
+        #             be made hot by spamming a single artifact in one dim.
+        #             Legacy-fallback path emits VP=0 so this disjunct cannot
+        #             fire there.
         #   score ≥ 25 → SUSPICIOUS
         $newScoringHigh = ($script:_fidUseNewScoring `
                             -and $script:maxArtifact_RiskScore -ge 0.95 `
                             -and $script:maxArtifact_Confidence -ge 0.4)
-        $verdict      = if ($uniqueMatches.Count -gt 0 -or $directUnique.Count -gt 0 -or $malHashes.Count -gt 0 -or $suspParentChild.Count -gt 0 -or $score -ge 60 -or $newScoringHigh) { "COMPROMISED" }
+        # Sum verdict points across all dims (manifest-capped per dim).
+        $totalVerdictPoints = 0
+        try {
+            if ($script:_dimVerdictPoints) {
+                foreach ($vpVal in $script:_dimVerdictPoints.Values) { $totalVerdictPoints += [int]$vpVal }
+            }
+        } catch {}
+        $verdictPointsHigh = ($script:_fidUseNewScoring -and $totalVerdictPoints -ge 60)
+        $verdict      = if ($uniqueMatches.Count -gt 0 -or $directUnique.Count -gt 0 -or $malHashes.Count -gt 0 -or $suspParentChild.Count -gt 0 -or $score -ge 60 -or $newScoringHigh -or $verdictPointsHigh) { "COMPROMISED" }
+                        elseif ($script:_fidUseNewScoring -and $totalVerdictPoints -ge 30) { "SUSPICIOUS" }
                         elseif ($score -ge 25) { "SUSPICIOUS" }
                         else { "CLEAN" }
-        $confidence   = if ($uniqueMatches.Count -gt 0 -or $directUnique.Count -gt 0 -or $score -ge 100 -or $malHashes.Count -gt 0 -or $suspParentChild.Count -gt 0 -or $newScoringHigh) { "HIGH" }
-                        elseif ($rareMatches.Count -gt 0 -or $directRare.Count -gt 0 -or $score -ge 40 -or $alertHitList.Count -gt 2) { "MEDIUM" }
+        $confidence   = if ($uniqueMatches.Count -gt 0 -or $directUnique.Count -gt 0 -or $score -ge 100 -or $malHashes.Count -gt 0 -or $suspParentChild.Count -gt 0 -or $newScoringHigh -or $verdictPointsHigh) { "HIGH" }
+                        elseif ($rareMatches.Count -gt 0 -or $directRare.Count -gt 0 -or $score -ge 40 -or $alertHitList.Count -gt 2 -or ($script:_fidUseNewScoring -and $totalVerdictPoints -ge 30)) { "MEDIUM" }
                         else { "LOW" }
         $verdictColor = switch ($verdict) { "COMPROMISED" { "Red" } "SUSPICIOUS" { "Yellow" } default { "Green" } }
 
@@ -6223,14 +6296,17 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             $alertTechs = $alertTechStr -split ',\s*' | Where-Object { $_ }
             foreach ($tech in $alertTechs) {
                 $tid = ($tech -split '[\. ]')[0].Trim()
-                if ($fidMap -and $fidMap.ContainsKey($tid)) {
-                    $fidEntry = $fidMap[$tid]
-                    if ($fidEntry.Unique) {
+                # PHASE B: MITRE T-codes are NOT in the batch $fidMap (only IP/DNS/Process/File/Registry/Rule/DLL/Cert/Service/Task make it
+                # into $indByDim). Query the manifest+per-dim index directly via Get-ArtifactRiskScore (dim='mitre.technique').
+                # This makes the MITRE display non-dead for the first time.
+                $fidEntry = if ($tid) { Get-ArtifactRiskScore -Value $tid -Dimension 'mitre.technique' } else { $null }
+                if ($fidEntry -and $fidEntry.FoundInIndex) {
+                    if ($fidEntry.U) {
                         Write-Host " [$tech UNIQUE]" -ForegroundColor Red -NoNewline
-                    } elseif ($fidEntry.Rare) {
+                    } elseif ($fidEntry.R) {
                         Write-Host " [$tech RARE]" -ForegroundColor Yellow -NoNewline
                     } else {
-                        $sc = [Math]::Round($fidEntry.Score, 0)
+                        $sc = [Math]::Round($fidEntry.Score100, 0)
                         Write-Host " [$tech fid:$sc]" -ForegroundColor DarkYellow -NoNewline
                     }
                 } else {
@@ -6263,7 +6339,9 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         if ($directRare.Count -gt 0) {
             Write-Host "`nDIRECT ARTIFACT FIDELITY - RARE (score 95):" -ForegroundColor Yellow
             $directRare | Select-Object -First 10 | ForEach-Object {
-                $legit = if ($fidMap[$_].LegitNames.Count -gt 0) { " | Legit: $($fidMap[$_].LegitNames -join ', ')" } else { "" }
+                # PHASE B: dim-aware (Dimension resolved from entry/$indByDim).
+                $e = _FidGet -Value $_
+                $legit = if ($e -and $e.LegitNames.Count -gt 0) { " | Legit: $($e.LegitNames -join ', ')" } else { "" }
                 Write-Host "  [RARE] $_$legit" -ForegroundColor Yellow
             }
         }
@@ -6385,9 +6463,11 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             $jsAlerts   = _JsArr @($alertRules)  # "(Nx) RuleName" format from deduped rule groups
             $jsProcs    = _JsArr @($procNames | ForEach-Object {
                 $raw = ($_ -replace '^\(\d+x\)\s+','').ToLower()
-                if ($fidMap -and $fidMap.ContainsKey($raw)) {
-                    if ($fidMap[$raw].Unique) { "[UNIQUE] $_" }
-                    elseif ($fidMap[$raw].Rare) { "[RARE] $_" }
+                # PHASE B: dim-aware (process names)
+                $pe  = _FidGet -Value $raw -Dimension 'process'
+                if ($pe) {
+                    if ($pe.Unique) { "[UNIQUE] $_" }
+                    elseif ($pe.Rare) { "[RARE] $_" }
                     else { $_ }
                 } else { $_ }
             })
@@ -6411,7 +6491,12 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             $jsRules    = _JsArr @($sysmonRules)
             $jsAccess   = _JsArr @($sysmonAccess)
             $jsUnique   = _JsArr @($directUnique | ForEach-Object { "[UNIQUE] $_" })
-            $jsRareArt  = _JsArr @($directRare | ForEach-Object { $leg=if($fidMap-and $fidMap[$_]-and $fidMap[$_].LegitNames.Count-gt 0){" | Legit: $($fidMap[$_].LegitNames -join ', ')"}else{""}; "[RARE] $_$leg" })
+            # PHASE B: dim-aware (resolves dim via entry / $indByDim)
+            $jsRareArt  = _JsArr @($directRare | ForEach-Object {
+                $e2  = _FidGet -Value $_
+                $leg = if ($e2 -and $e2.LegitNames -and $e2.LegitNames.Count -gt 0) { " | Legit: $($e2.LegitNames -join ', ')" } else { "" }
+                "[RARE] $_$leg"
+            })
             $jsUnknown  = _JsArr @($vtUnknownHashes)
 
             # Behavioral TTP panel data
@@ -6475,7 +6560,11 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             if ($alertTechStr) {
                 foreach ($tech in ($alertTechStr -split ',\s*' | Where-Object { $_ })) {
                     $tid2 = ($tech -split '[\. ]')[0].Trim()
-                    $cls2 = if ($fidMap -and $fidMap.ContainsKey($tid2)) { $fe2=$fidMap[$tid2]; if($fe2.Unique){"unique"}elseif($fe2.Rare){"rare"}else{"low"} } else { "plain" }
+                    # PHASE B: MITRE T-codes aren't in batch $fidMap. Query the per-dim index directly.
+                    $fe2  = if ($tid2) { Get-ArtifactRiskScore -Value $tid2 -Dimension 'mitre.technique' } else { $null }
+                    $cls2 = if ($fe2 -and $fe2.FoundInIndex) {
+                        if ($fe2.U) { "unique" } elseif ($fe2.R) { "rare" } else { "low" }
+                    } else { "plain" }
                     $mitreHtml += "<span class='mt $cls2'>$(_He $tech)</span>"
                 }
             }
@@ -6499,20 +6588,27 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             }
 
             # Render artifact rows with Risk-axes column (RiskScore / Confidence / PMI)
-            # alongside the legacy M/G/U/R band, when fidMap entry has axis fields.
+            # alongside the legacy M/G/U/R band, when entry has axis fields.
+            # PHASE B: dim-aware (via _FidGet -> composite key -> falls back to bare).
             function _RiskAxes {
                 param($v)
-                if (-not $fidMap -or -not $fidMap[$v]) { return "" }
-                $e   = $fidMap[$v]
-                $rs  = if ($e.RiskScore -ne $null)  { [Math]::Round([double]$e.RiskScore, 3) }  else { 0 }
-                $cf  = if ($e.Confidence -ne $null) { [Math]::Round([double]$e.Confidence, 3) } else { 0 }
-                $pmi = if ($e.PMI -ne $null)        { [Math]::Round([double]$e.PMI, 3) }        else { 0 }
-                $m   = if ($e.MalCount -ne $null)   { [int]$e.MalCount } else { 0 }
-                $g   = if ($e.GoodCount -ne $null)  { [int]$e.GoodCount } else { 0 }
-                return " <span class='axes' title='3-axis: Bayesian risk + corpus-normalized confidence + PMI'>[RS=$rs Conf=$cf PMI=$pmi M=$m G=$g]</span>"
+                $e = _FidGet -Value $v
+                if (-not $e) { return "" }
+                $rs  = if ($null -ne $e.RiskScore)  { [Math]::Round([double]$e.RiskScore, 3) }  else { 0 }
+                $cf  = if ($null -ne $e.Confidence) { [Math]::Round([double]$e.Confidence, 3) } else { 0 }
+                $pmi = if ($null -ne $e.PMI)        { [Math]::Round([double]$e.PMI, 3) }        else { 0 }
+                $m   = if ($null -ne $e.MalCount)   { [int]$e.MalCount } else { 0 }
+                $g   = if ($null -ne $e.GoodCount)  { [int]$e.GoodCount } else { 0 }
+                $vp  = if ($null -ne $e.VerdictPoints) { [int]$e.VerdictPoints } else { 0 }
+                $dim = if ($e.Dimension) { $e.Dimension } else { "?" }
+                return " <span class='axes' title='3-axis: Bayesian risk + corpus-normalized confidence + PMI ($dim)'>[RS=$rs Conf=$cf PMI=$pmi M=$m G=$g VP=$vp]</span>"
             }
             $fidHtml  = ($directUnique | ForEach-Object { "<div class='art unique'>[UNIQUE] $(_He $_)$(_RiskAxes $_)</div>" }) -join "`n"
-            $fidHtml += ($directRare   | ForEach-Object { $leg=if($fidMap-and $fidMap[$_]-and $fidMap[$_].LegitNames.Count-gt 0){" | Legit: $($fidMap[$_].LegitNames -join ', ')"}else{""}; "<div class='art rare'>[RARE] $(_He "$_$leg")$(_RiskAxes $_)</div>" }) -join "`n"
+            $fidHtml += ($directRare   | ForEach-Object {
+                $rEnt = _FidGet -Value $_
+                $leg  = if ($rEnt -and $rEnt.LegitNames -and $rEnt.LegitNames.Count -gt 0) { " | Legit: $($rEnt.LegitNames -join ', ')" } else { "" }
+                "<div class='art rare'>[RARE] $(_He "$_$leg")$(_RiskAxes $_)</div>"
+            }) -join "`n"
 
             $vtHtml = ""; $curBlk = $false
             foreach ($ln in ($vtEnrichment.ToString() -split "`n")) {
@@ -6596,7 +6692,9 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                     $isSrc  = $sysmonSrcNames -contains $inj
                     $isTgt  = $sysmonTgtNames -contains $inj
                     $role   = if ($isSrc -and $isTgt) { "INJECTOR + VICTIM" } elseif ($isSrc) { "INJECTOR (source)" } else { "VICTIM (target)" }
-                    $malC   = if ($fidMap[$inj]) { "$($fidMap[$inj].MalCount) malware samples" } else { "" }
+                    # PHASE B: dim-aware (process)
+                    $injE   = _FidGet -Value $inj -Dimension 'process'
+                    $malC   = if ($injE) { "$($injE.MalCount) malware samples (RS=$([Math]::Round([double]$injE.RiskScore,2)) Conf=$([Math]::Round([double]$injE.Confidence,2)))" } else { "" }
                     $detail = (@($role, $malC) | Where-Object { $_ }) -join " | "
                     $sysmonHtml += "<div class='finding critical'>[UNIQUE] $(_He $inj) -- $(_He $detail)</div>"
                 }
@@ -6604,7 +6702,11 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                     $isSrc  = $sysmonSrcNames -contains $inj
                     $isTgt  = $sysmonTgtNames -contains $inj
                     $role   = if ($isSrc -and $isTgt) { "INJECTOR + VICTIM" } elseif ($isSrc) { "INJECTOR (source)" } else { "VICTIM (target)" }
-                    $malC   = if ($fidMap[$inj]) { "$($fidMap[$inj].MalCount) malware samples | $($fidMap[$inj].Found) legit" } else { "" }
+                    # PHASE B: dim-aware (process). Note: legacy code accessed
+                    # .Found which doesn't exist on the entry; the correct
+                    # corpus-good-count field is .GoodCount.
+                    $injE   = _FidGet -Value $inj -Dimension 'process'
+                    $malC   = if ($injE) { "$($injE.MalCount) malware samples | $($injE.GoodCount) legit (RS=$([Math]::Round([double]$injE.RiskScore,2)) Conf=$([Math]::Round([double]$injE.Confidence,2)))" } else { "" }
                     $detail = (@($role, $malC) | Where-Object { $_ }) -join " | "
                     $sysmonHtml += "<div class='finding warning'>[RARE] $(_He $inj) -- $(_He $detail)</div>"
                 }
