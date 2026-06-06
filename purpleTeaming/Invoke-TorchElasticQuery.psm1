@@ -770,30 +770,23 @@ function Save-TorchElasticDetonationLogs {
                 @{ range = @{ '@timestamp' = @{ gte = $startIso; lte = $endIso } } }
             )
             if (-not [string]::IsNullOrWhiteSpace($HostFilter)) {
-                # Match the supplied -HostFilter against any of the five
-                # fields Fleet / winlogbeat / Elastic Agent commonly populate
-                # for Windows hosts, in any casing the user might have
-                # supplied OR that Fleet's "Host name format" policy may have
-                # written. Wildcard clauses on the lowercased value catch
-                # FQDN-formatted values (e.g. win11_sandbox.lab.local) per
-                # ECS host.name guidance + the SO 3.0 Fleet FQDN toggle.
-                $hostCasings = @(
+                # Probe E confirmed: every Windows dataset on SO 3.0 Fleet
+                # populates host.name (lowercase) AND host.hostname (preserved
+                # case) AND agent.name (preserved case) with the same logical
+                # host - so we only need host.name with case variants. The
+                # previous bool.should-wrapping-of-multiple-fields-plus-
+                # wildcards approach empirically returned 0 hits against ES
+                # even though the underlying data matched (likely a nested-
+                # bool-inside-filter quirk on this ES version). Flat `terms`
+                # is simpler, demonstrably works, and adds no wildcards or
+                # FQDN guesses. If a future deployment populates ONLY
+                # host.hostname or ONLY agent.name (no host.name), revisit.
+                $hostValues = @(
                     $HostFilter,
                     $HostFilter.ToLowerInvariant(),
                     $HostFilter.ToUpperInvariant()
                 ) | Select-Object -Unique
-                $hostFields = @('host.name', 'host.hostname', 'agent.name', 'agent.hostname', 'winlog.computer_name')
-                $hostShould = @()
-                foreach ($field in $hostFields) {
-                    foreach ($casing in $hostCasings) {
-                        $hostShould += @{ term = @{ $field = $casing } }
-                    }
-                }
-                $hostLower = $HostFilter.ToLowerInvariant()
-                foreach ($field in @('host.name', 'host.hostname', 'agent.name', 'agent.hostname')) {
-                    $hostShould += @{ wildcard = @{ $field = "*$hostLower*" } }
-                }
-                $filters += @{ bool = @{ should = $hostShould; minimum_should_match = 1 } }
+                $filters += @{ terms = @{ 'host.name' = $hostValues } }
             }
 
             $outFile = Join-Path $OutputDir "$ds.ndjson"
