@@ -1096,7 +1096,18 @@ function Save-TorchElasticDetonationLogs {
                     $body = @{
                         size              = $PageSize
                         track_total_hits  = $true
-                        sort              = @( @{ '@timestamp' = 'asc' }, @{ '_id' = 'asc' } )
+                        # Tiebreaker = `_doc` (NOT `_id`). Probe F variant test
+                        # confirmed: ES 8.x rejects sort on `_id` because Fleet
+                        # data streams ship with fielddata disabled on `_id`
+                        # (the documented default since 7.10). The rejection
+                        # surfaces as `_shards.failed > 0` with `hits.total=0`
+                        # and empty `hits.hits` - NOT a top-level error envelope -
+                        # which is why this looked like "no data matched" for
+                        # many iterations. `_doc` is the official ES tiebreaker
+                        # recommendation for `search_after` pagination without
+                        # PIT (per https://elastic.co/docs/reference/elasticsearch
+                        # /rest-apis/paginate-search-results#search-after).
+                        sort              = @( @{ '@timestamp' = 'asc' }, '_doc' )
                         query             = @{ bool = @{ filter = $filters } }
                     }
                     if ($searchAfter) { $body['search_after'] = $searchAfter }
