@@ -1,13 +1,19 @@
 <#
 .SYNOPSIS
-    One-shot orchestrator that pushes all four known detonation corpora into
-    per-session Elastic replay indices via Push-DetonationLogsToElastic.
+    One-shot orchestrator that pushes the three SO 3.0 detonation corpora
+    from 2026-05-28 into per-session Elastic replay indices via
+    Push-DetonationLogsToElastic.
 
 .DESCRIPTION
-    Walks four hard-coded corpora paths (Havoc, Merlin, Sliver SO 3.0 pulls
-    plus the AndySliver vanilla ES HTTP pull) and replays each into its own
-    deterministically-named index on the scratch Elastic cluster. Missing or
-    empty corpora are skipped with a warning.
+    Walks three hard-coded corpora paths (Havoc, Merlin, Sliver - all SO 3.0
+    SSH-connector pulls from the old 192.168.71.10 stack on 2026-05-28) and
+    replays each into its own deterministically-named index on the new vanilla
+    Elastic stack at 192.168.72.5. Missing or empty corpora are skipped with
+    a warning.
+
+    AndySliver is INTENTIONALLY EXCLUDED - it was originally captured FROM the
+    new stack, so pushing it back would be circular (those docs already live
+    in the production logs-* data streams).
 
 .PARAMETER DryRun
     Parse + count + tag everything but skip the POST.
@@ -40,18 +46,20 @@ if (-not (Test-Path -LiteralPath $modulePath)) {
 Import-Module $modulePath -Force
 
 # --- Corpora ---
+# Three SO 3.0 SSH-connector pulls from 2026-05-28 (old 192.168.71.10 stack,
+# now powered off). Each replayed into its own detonation-replay-* index on
+# the new vanilla ES stack at 192.168.72.5 so Kibana can query them.
 $corpora = @(
     'C:/githubProjects/DetonationLogs/C2Frameworks/Havoc_2026-05-28_16-50_to_16-54UTC'
     'C:/githubProjects/DetonationLogs/C2Frameworks/Merlin_2026-05-28_16-33_to_16-36UTC'
     'C:/githubProjects/DetonationLogs/C2Frameworks/Sliver_2026-05-28_16-12_to_16-17UTC'
-    'C:/githubProjects/elasticPotato/detonation_logs/AndySliver_2026-06-06_17-30_to_20-30UTC'
 )
 
 # --- Banner ---
 Write-Host ""
 Write-Host "##################################################################" -ForegroundColor Cyan
 Write-Host "#  import-existing-detonations.ps1                               #" -ForegroundColor Cyan
-Write-Host "#  Push 4 detonation corpora into the scratch Elastic stack      #" -ForegroundColor Cyan
+Write-Host "#  Push 3 SO 3.0 detonation corpora (2026-05-28) to new ES stack #" -ForegroundColor Cyan
 Write-Host "##################################################################" -ForegroundColor Cyan
 Write-Host ""
 
