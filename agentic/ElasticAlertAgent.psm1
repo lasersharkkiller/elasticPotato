@@ -4007,6 +4007,23 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                         # and stage samples under Desktop or AppData\Local\Temp - these paths
                         # are sandbox artifacts, NOT real-world install locations and MUST be
                         # filtered out before deciding masquerading.
+                        # PAIRED WITH BUILDER-SIDE FILTER: statisticalDifferentialPotato\agentic\Build-VTFidelityIndex.psm1
+                        #   -> Test-IsSandboxArtifactPath (uses $script:_vtfi_sandboxArtifactRx)
+                        # As of the process-baseline scrub fix, newly-built baselines have these
+                        # sandbox tokens already stripped from every D entry at build time, so this
+                        # runtime filter should not fire on them. It remains here as DEFENSE IN DEPTH
+                        # for stale baselines built BEFORE the source-side fix shipped (users won't
+                        # rebuild the ~10-minute baseline just because they upgraded the consumer).
+                        # ANY change to the token/regex list below MUST be mirrored in the builder's
+                        # $script:_vtfi_sandboxArtifactRx and vice versa - the two lists exist as one
+                        # logical filter split across two modules.
+                        # NOTE: for stale baselines built before the scrub fix, prefer running the
+                        # one-shot Invoke-ProcessBaselineScrub helper (in Build-VTFidelityIndex.psm1)
+                        # to rewrite process-baseline.json in-place - a few seconds vs. ~10-minute
+                        # rebuild. This runtime filter is the fallback if the scrub is skipped.
+                        # $sandboxOnlyTokens is a fast-path exact-match list for a few common strings.
+                        # The real coverage comes from $sandboxRx below, which mirrors the builder's
+                        # regex (env-macro tokens + sandbox usernames + generic Desktop/Temp).
                         $sandboxOnlyTokens = @(
                             '%samplepath%',
                             'c:\users\user\desktop',
@@ -4019,9 +4036,13 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                             'c:\users\sandbox\desktop',
                             'c:\users\malware\desktop'
                         )
-                        # Treat any path under c:\users\<single-token>\desktop or
-                        # c:\users\<single-token>\appdata\local\temp as a sandbox artifact.
-                        $sandboxRx = '^c:\\users\\[^\\]+\\desktop($|\\)|^c:\\users\\[^\\]+\\appdata\\local\\temp($|\\)'
+                        # MIRRORS builder's $script:_vtfi_sandboxArtifactRx. Four arms:
+                        #   ^%[a-z]+%                                                     - ANY VT/sandbox env-macro token
+                        #   ^c:\users\(user|admin|administrator|analyst|sandbox|malware)\ - sandbox VM usernames, ANY subpath
+                        #   ^c:\users\[^\]+\desktop($|\)                                  - ANY user's Desktop
+                        #   ^c:\users\[^\]+\appdata\local\temp($|\)                       - ANY user's local Temp
+                        # See builder regex for the administrator-on-Server false-positive caveat.
+                        $sandboxRx = '^%[a-z]+%|^c:\\users\\(user|admin|administrator|analyst|sandbox|malware)\\|^c:\\users\\[^\\]+\\desktop($|\\)|^c:\\users\\[^\\]+\\appdata\\local\\temp($|\\)'
                         $realBaseDirs = [System.Collections.Generic.List[string]]::new()
                         $allCandidates = [System.Collections.Generic.List[string]]::new()
                         # Match every drive-letter-prefixed substring; lazy-match up to the next
