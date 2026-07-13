@@ -45,12 +45,12 @@ function Invoke-ElasticLinuxTriage {
     # =========================================================================
     # VALIDATION
     # =========================================================================
-    if (-not $DetonationLogsDir -or -not (Test-Path $DetonationLogsDir)) {
+    if (-not $DetonationLogsDir -or -not (Test-Path -LiteralPath $DetonationLogsDir)) {
         Write-Host "[LP-ELX] ERROR: DetonationLogsDir not found: $DetonationLogsDir" -ForegroundColor Red
         return $null
     }
     if (-not $IntelBasePath) { $IntelBasePath = Join-Path $PSScriptRoot "..\apt" }
-    if (-not (Test-Path $OutputPath)) { New-Item -ItemType Directory -Path $OutputPath -Force | Out-Null }
+    if (-not (Test-Path -LiteralPath $OutputPath)) { New-Item -ItemType Directory -Path $OutputPath -Force | Out-Null }
 
     # =========================================================================
     # HELPERS
@@ -88,6 +88,545 @@ function Invoke-ElasticLinuxTriage {
             try { [void]$results.Add(($t | ConvertFrom-Json -ErrorAction Stop)) } catch {}
         }
         return @($results)
+    }
+
+    function Convert-LinuxDatasetsToCategoryFiles {
+        # Auditd/system partition shim.
+        # Reads Linux dataset NDJSONs (linux.auditd, system.auth, system.syslog, system.journal)
+        # dropped into $DetonationLogsDir and partitions each raw doc into the four category files
+        # that the downstream modules already expect (process_events, file_events, network_events,
+        # auth_events). Idempotent via a marker file.
+        #
+        # Conflict policy: when an HTTP-path category file (e.g. process_events.ndjson) is already
+        # present, the shim writes its auditd-derived output to a sidecar file named
+        # process_events.auditd.ndjson so BOTH sources contribute to downstream analysis. The main
+        # loader below globs *_events*.ndjson variants to pick these up (mirrors auth_events /
+        # authentication_events pattern). Does NOT touch alerts.ndjson.
+        [CmdletBinding()]
+        param([string]$DetonationLogsDir)
+
+        # Version constant - bump on any routing/synth logic change so stale markers invalidate.
+        $shimVersion = 'v2'
+
+        # ---- Source files (dataset NDJSONs from linux_auditd_manager / system integrations) ----
+        $srcSpec = [ordered]@{
+            'A' = @{ Name = 'linux.auditd.ndjson';  Path = Join-Path $DetonationLogsDir 'linux.auditd.ndjson' }
+            'B' = @{ Name = 'system.auth.ndjson';   Path = Join-Path $DetonationLogsDir 'system.auth.ndjson' }
+            'C' = @{ Name = 'system.syslog.ndjson'; Path = Join-Path $DetonationLogsDir 'system.syslog.ndjson' }
+            'D' = @{ Name = 'system.journal.ndjson';Path = Join-Path $DetonationLogsDir 'system.journal.ndjson' }
+        }
+
+        # No-op if none of the four dataset files exist (matches "preserve existing behavior")
+        $anySrc = $false
+        foreach ($k in $srcSpec.Keys) {
+            if (Test-Path -LiteralPath $srcSpec[$k].Path) { $anySrc = $true; break }
+        }
+        if (-not $anySrc) { return }
+
+        # ---- Source signature (version + size+mtime, fixed A/B/C/D order) ----
+        # Version prefix ensures a shim bugfix invalidates all existing markers even when inputs
+        # are byte-identical (fixes the "shim upgrade races an unchanged corpus" case).
+        $sigParts = foreach ($k in $srcSpec.Keys) {
+            $p = $srcSpec[$k].Path
+            if (Test-Path -LiteralPath $p) {
+                $fi = Get-Item -LiteralPath $p -ErrorAction SilentlyContinue
+                if ($fi) {
+                    $mt = [int64]([DateTimeOffset]$fi.LastWriteTimeUtc).ToUnixTimeSeconds()
+                    "{0}:{1}:{2}" -f $k, $fi.Length, $mt
+                } else { "{0}:0:0" -f $k }
+            } else { "{0}:0:0" -f $k }
+        }
+        $currentSig = "sig=$shimVersion " + ($sigParts -join ' ')
+
+        # ---- Output category files - resolve target paths NOW (needed for marker validation) ----
+        # If an HTTP-path output is already populated we write to a .auditd.ndjson sidecar so both
+        # sources contribute; else we write to the canonical category file.
+        $outSpec = [ordered]@{
+            'proc' = @{ Name = 'process_events.ndjson'; Path = Join-Path $DetonationLogsDir 'process_events.ndjson' }
+            'file' = @{ Name = 'file_events.ndjson';    Path = Join-Path $DetonationLogsDir 'file_events.ndjson' }
+            'net'  = @{ Name = 'network_events.ndjson'; Path = Join-Path $DetonationLogsDir 'network_events.ndjson' }
+            'auth' = @{ Name = 'auth_events.ndjson';    Path = Join-Path $DetonationLogsDir 'auth_events.ndjson' }
+        }
+        $preExisting  = @{}   # HTTP-path output already populated?
+        $targetPath   = @{}   # actual file this run will write to (main or sidecar)
+        $targetName   = @{}
+        foreach ($k in $outSpec.Keys) {
+            $mainPath = $outSpec[$k].Path
+            $preExisting[$k] = ((Test-Path -LiteralPath $mainPath) -and ((Get-Item -LiteralPath $mainPath).Length -gt 0))
+            if ($preExisting[$k]) {
+                $sideName = $outSpec[$k].Name -replace '\.ndjson$','.auditd.ndjson'
+                $targetPath[$k] = Join-Path $DetonationLogsDir $sideName
+                $targetName[$k] = $sideName
+            } else {
+                $targetPath[$k] = $mainPath
+                $targetName[$k] = $outSpec[$k].Name
+            }
+        }
+
+        # ---- Marker gate: skip only if signature matches AND every target still on disk ----
+        $markerPath = Join-Path $DetonationLogsDir '.linux-shim-ran'
+        if (Test-Path -LiteralPath $markerPath) {
+            try {
+                $markerLines = [System.IO.File]::ReadAllLines($markerPath, [System.Text.Encoding]::UTF8)
+                $prevSig = ($markerLines | Where-Object { $_ -like 'sig=*' } | Select-Object -First 1)
+                if ($prevSig -eq $currentSig) {
+                    # Also require that every target file we would have written is still present
+                    # (protects against operator manually deleting an output to force a re-partition).
+                    $allTargetsPresent = $true
+                    foreach ($k in $outSpec.Keys) {
+                        if (-not (Test-Path -LiteralPath $targetPath[$k])) { $allTargetsPresent = $false; break }
+                    }
+                    if ($allTargetsPresent) {
+                        Write-Host "[Linux shim] already converted (marker present, skipping)" -ForegroundColor DarkGray
+                        return
+                    }
+                }
+            } catch {}
+        }
+
+        # ---- Bucket collections ----
+        $bucketProc = [System.Collections.Generic.List[object]]::new()
+        $bucketFile = [System.Collections.Generic.List[object]]::new()
+        $bucketNet  = [System.Collections.Generic.List[object]]::new()
+        $bucketAuth = [System.Collections.Generic.List[object]]::new()
+
+        # ---- Inline helpers ----
+        function Get-ShimField {
+            param($Obj, [string]$Path)
+            if ($null -eq $Obj) { return $null }
+            try {
+                $flat = $Obj.PSObject.Properties[$Path]
+                if ($null -ne $flat) { return $flat.Value }
+            } catch {}
+            $parts = $Path -split '\.'
+            $cur   = $Obj
+            foreach ($p in $parts) {
+                if ($null -eq $cur) { return $null }
+                try { $cur = $cur.$p } catch { return $null }
+            }
+            return $cur
+        }
+        function Get-ShimRecordType {
+            param($Doc)
+            $rt = Get-ShimField $Doc 'auditd.message.type'
+            if (-not $rt) { $rt = Get-ShimField $Doc 'auditd.log.record_type' }
+            if ($null -eq $rt) { return '' }
+            return "$rt".ToUpperInvariant()
+        }
+        function Get-ShimCategoryList {
+            param($Doc)
+            $c = Get-ShimField $Doc 'event.category'
+            if ($null -eq $c) { return @() }
+            if ($c -is [System.Array]) { return @($c | ForEach-Object { "$_".ToLowerInvariant() }) }
+            return @(,"$c".ToLowerInvariant())
+        }
+        function Add-ShimIfEmpty {
+            param($Doc, [string]$Name, $Value)
+            if ($null -eq $Doc -or $null -eq $Value) { return }
+            if ($Value -is [string] -and -not $Value) { return }
+            try {
+                $existing = $Doc.PSObject.Properties[$Name]
+                if ($null -ne $existing -and $null -ne $existing.Value -and "$($existing.Value)" -ne '') { return }
+                if ($null -ne $existing) {
+                    $existing.Value = $Value
+                } else {
+                    Add-Member -InputObject $Doc -NotePropertyName $Name -NotePropertyValue $Value -Force
+                }
+            } catch {}
+        }
+        function ConvertFrom-ShimSaddr {
+            # Parses AF_INET (family=0x0200 little-endian) or AF_INET6 (family=0x0a00 little-endian)
+            # sockaddr blobs from auditd.data.saddr. Returns @{ IP=..; Port=..; Family='ipv4'|'ipv6' }
+            # or $null when the hex doesn't decode. Port bytes 4-7 big-endian, common to both families.
+            param([string]$Hex)
+            if (-not $Hex) { return $null }
+            $h = $Hex.Trim()
+            if ($h.Length -lt 8) { return $null }
+            $fam = $h.Substring(0,4).ToLowerInvariant()
+            try {
+                $port = [Convert]::ToInt32($h.Substring(4,4),16)
+            } catch { $port = 0 }
+            if ($fam -eq '0200') {
+                # IPv4: 4-byte address at offset 8
+                if ($h.Length -lt 16) { return $null }
+                try {
+                    $b0 = [Convert]::ToInt32($h.Substring(8,2),16)
+                    $b1 = [Convert]::ToInt32($h.Substring(10,2),16)
+                    $b2 = [Convert]::ToInt32($h.Substring(12,2),16)
+                    $b3 = [Convert]::ToInt32($h.Substring(14,2),16)
+                    return @{ IP = ("{0}.{1}.{2}.{3}" -f $b0,$b1,$b2,$b3); Port = $port; Family = 'ipv4' }
+                } catch { return $null }
+            }
+            if ($fam -eq '0a00') {
+                # IPv6: sin6_family(2) + sin6_port(2) + sin6_flowinfo(4) + sin6_addr(16) = 24 bytes = 48 hex
+                if ($h.Length -lt 48) { return $null }
+                try {
+                    $addrHex = $h.Substring(16,32).ToLowerInvariant()
+                    # Format as 8 colon-separated 16-bit groups, then compress zero runs later if desired
+                    $groups = @()
+                    for ($i = 0; $i -lt 32; $i += 4) { $groups += $addrHex.Substring($i,4) }
+                    $ipStr = ($groups -join ':')
+                    # Best-effort ::-compress the longest zero run
+                    try {
+                        $ipObj = [System.Net.IPAddress]::Parse($ipStr)
+                        $ipStr = $ipObj.ToString()
+                    } catch {}
+                    return @{ IP = $ipStr; Port = $port; Family = 'ipv6' }
+                } catch { return $null }
+            }
+            return $null
+        }
+        function ConvertFrom-ShimHexBlob {
+            # Decodes an auditd hex-encoded blob (e.g. proctitle) to a UTF-8 string with NULs
+            # replaced by spaces (matches how ausearch renders proctitle).
+            param([string]$Hex)
+            if (-not $Hex) { return '' }
+            $h = $Hex.Trim()
+            if ($h.Length -lt 2 -or ($h.Length % 2) -ne 0) { return '' }
+            if ($h -notmatch '^[0-9a-fA-F]+$') { return '' }
+            try {
+                $bytes = New-Object byte[] ($h.Length / 2)
+                for ($i = 0; $i -lt $bytes.Length; $i++) {
+                    $bytes[$i] = [Convert]::ToByte($h.Substring($i*2,2),16)
+                }
+                for ($j = 0; $j -lt $bytes.Length; $j++) {
+                    if ($bytes[$j] -eq 0) { $bytes[$j] = [byte]0x20 }
+                }
+                return [System.Text.Encoding]::UTF8.GetString($bytes).Trim()
+            } catch { return '' }
+        }
+        function Add-ShimSynthFields {
+            param($Doc)
+            try {
+                # 1. process.executable <- auditd.data.exe (Fleet variably drops this into ECS)
+                $pex = Get-ShimField $Doc 'process.executable'
+                if (-not $pex) {
+                    $aex = Get-ShimField $Doc 'auditd.data.exe'
+                    if ($aex) { Add-ShimIfEmpty $Doc 'process.executable' "$aex"; $pex = "$aex" }
+                }
+                # 2. process.name <- auditd.data.comm, then basename(process.executable)
+                $pn = Get-ShimField $Doc 'process.name'
+                if (-not $pn) {
+                    $acomm = Get-ShimField $Doc 'auditd.data.comm'
+                    if ($acomm) {
+                        Add-ShimIfEmpty $Doc 'process.name' "$acomm"
+                    } elseif ($pex) {
+                        try {
+                            $leaf = [System.IO.Path]::GetFileName(("$pex" -replace '\\','/'))
+                            if ($leaf) { Add-ShimIfEmpty $Doc 'process.name' $leaf }
+                        } catch {}
+                    }
+                }
+                # 3. process.command_line <- process.args OR hex-decoded auditd.data.proctitle
+                $cl = Get-ShimField $Doc 'process.command_line'
+                if (-not $cl) {
+                    $procArgs = Get-ShimField $Doc 'process.args'
+                    if ($procArgs -is [System.Array] -and $procArgs.Count -gt 0) {
+                        Add-ShimIfEmpty $Doc 'process.command_line' (($procArgs | ForEach-Object { "$_" }) -join ' ')
+                    } else {
+                        $pt = Get-ShimField $Doc 'auditd.data.proctitle'
+                        if ($pt) {
+                            $decoded = ConvertFrom-ShimHexBlob "$pt"
+                            if ($decoded) { Add-ShimIfEmpty $Doc 'process.command_line' $decoded }
+                        }
+                    }
+                }
+                # 4. file.path <- auditd.summary.object.primary (when object.type='file')
+                $fp = Get-ShimField $Doc 'file.path'
+                if (-not $fp) {
+                    $ot = Get-ShimField $Doc 'auditd.summary.object.type'
+                    $op = Get-ShimField $Doc 'auditd.summary.object.primary'
+                    if ($ot -and "$ot".ToLowerInvariant() -eq 'file' -and $op) {
+                        Add-ShimIfEmpty $Doc 'file.path' "$op"
+                    }
+                }
+                # 5. event.type <- normalised from auditd.summary.action
+                $et = Get-ShimField $Doc 'event.type'
+                if (-not $et) {
+                    $act = Get-ShimField $Doc 'auditd.summary.action'
+                    if ($act) {
+                        $mapped = switch ("$act".ToLowerInvariant()) {
+                            'created-file'   { 'creation'; break }
+                            'opened-file'    { 'change';   break }
+                            'deleted-file'   { 'deletion'; break }
+                            'connected-to'   { 'connection'; break }
+                            default          { $null }
+                        }
+                        if ($mapped) { Add-ShimIfEmpty $Doc 'event.type' $mapped }
+                    }
+                }
+                # 6. destination.ip + destination.port <- parsed from auditd.data.saddr (SOCKADDR only)
+                #    Now supports AF_INET and AF_INET6, both with port extraction.
+                $di = Get-ShimField $Doc 'destination.ip'
+                $dp = Get-ShimField $Doc 'destination.port'
+                if (-not $di -or -not $dp) {
+                    $rt = Get-ShimRecordType $Doc
+                    if ($rt -eq 'SOCKADDR') {
+                        $sa = Get-ShimField $Doc 'auditd.data.saddr'
+                        if ($sa) {
+                            $parsed = ConvertFrom-ShimSaddr "$sa"
+                            if ($parsed) {
+                                if (-not $di -and $parsed.IP)   { Add-ShimIfEmpty $Doc 'destination.ip'   $parsed.IP }
+                                if (-not $dp -and $parsed.Port) { Add-ShimIfEmpty $Doc 'destination.port' ([int]$parsed.Port) }
+                            }
+                        }
+                    }
+                }
+                # 7. event.outcome from auditd.result (auth-family records)
+                $eo = Get-ShimField $Doc 'event.outcome'
+                if (-not $eo) {
+                    $rt2 = Get-ShimRecordType $Doc
+                    $isAuth = ($rt2 -match '^(USER_LOGIN|USER_AUTH|USER_ACCT|CRED_ACQ|CRED_DISP|CRED_REFR|USER_CMD|USER_START|USER_END|LOGIN|ADD_USER|DEL_USER|ADD_GROUP|DEL_GROUP|GRP_AUTH)$')
+                    if ($isAuth) {
+                        $ar = Get-ShimField $Doc 'auditd.result'
+                        if ($ar) {
+                            $oc = if ("$ar".ToLowerInvariant() -eq 'success') { 'success' } else { 'failure' }
+                            Add-ShimIfEmpty $Doc 'event.outcome' $oc
+                        }
+                    }
+                }
+            } catch {}
+        }
+
+        # ---- Routing predicates ----
+        # Record-type fallback used ONLY when Fleet has not populated event.category. When ECS
+        # category IS populated we trust it (per "prefer ECS-normalized fields" design).
+        $auditRecordSets = @{
+            Proc = @('EXECVE','PROCTITLE')          # SYSCALL is dispatched via syscall-name lookup
+            File = @('PATH')
+            Net  = @('SOCKADDR','NETFILTER_CFG')
+            Auth = @('USER_LOGIN','USER_AUTH','USER_ACCT','CRED_ACQ','CRED_DISP','CRED_REFR',
+                     'USER_CMD','USER_START','USER_END','LOGIN','ADD_USER','DEL_USER',
+                     'ADD_GROUP','DEL_GROUP','GRP_AUTH')
+        }
+        $authCategories = @('authentication','session','iam')
+
+        # SYSCALL disambiguation: raw SYSCALL is the parent for EVERY audited syscall (execve,
+        # open, connect, chmod, ptrace, ...). Without this table, every SYSCALL landed in bucketProc
+        # regardless of what the process actually did - Module 2 then treated file/network syscalls
+        # as process spawns and false-positive'd on reverse-shell patterns. Map the top ~30 syscall
+        # names to their primary category so process/file/network buckets stay clean.
+        $syscallCategory = @{
+            'execve'=       'proc'; 'execveat'=     'proc'; 'clone'=        'proc'
+            'clone3'=       'proc'; 'fork'=         'proc'; 'vfork'=        'proc'
+            'open'=         'file'; 'openat'=       'file'; 'openat2'=      'file'
+            'creat'=        'file'; 'read'=         'file'; 'write'=        'file'
+            'readv'=        'file'; 'writev'=       'file'; 'unlink'=       'file'
+            'unlinkat'=     'file'; 'rename'=       'file'; 'renameat'=     'file'
+            'renameat2'=    'file'; 'chmod'=        'file'; 'fchmod'=       'file'
+            'fchmodat'=     'file'; 'chown'=        'file'; 'fchown'=       'file'
+            'lchown'=       'file'; 'fchownat'=     'file'; 'truncate'=     'file'
+            'ftruncate'=    'file'; 'link'=         'file'; 'linkat'=       'file'
+            'symlink'=      'file'; 'symlinkat'=    'file'; 'mkdir'=        'file'
+            'mkdirat'=      'file'; 'rmdir'=        'file'; 'mount'=        'file'
+            'umount'=       'file'; 'umount2'=      'file'
+            'socket'=       'net';  'connect'=      'net';  'accept'=       'net'
+            'accept4'=      'net';  'bind'=         'net';  'listen'=       'net'
+            'sendto'=       'net';  'sendmsg'=      'net';  'sendmmsg'=     'net'
+            'recvfrom'=     'net';  'recvmsg'=      'net';  'recvmmsg'=     'net'
+            'socketpair'=   'net'
+        }
+
+        $counts = @{ auditd = 0; auth = 0; syslog = 0; journal = 0 }
+
+        # ---- Process linux.auditd + system.journal (recordType+category routing) ----
+        foreach ($srcKey in @('A','D')) {
+            $srcPath = $srcSpec[$srcKey].Path
+            $srcName = $srcSpec[$srcKey].Name
+            if (-not (Test-Path -LiteralPath $srcPath)) { continue }
+            $docs = @()
+            try { $docs = Read-NdjsonFile $srcPath } catch {
+                Write-Host "[Linux shim] WARNING: failed to read $srcName - $($_.Exception.Message)" -ForegroundColor Yellow
+                continue
+            }
+            $tagKey = if ($srcKey -eq 'A') { 'auditd' } else { 'journal' }
+            $counts[$tagKey] = $docs.Count
+            foreach ($doc in $docs) {
+                try {
+                    $rt   = Get-ShimRecordType $doc
+                    $cats = Get-ShimCategoryList $doc
+
+                    # system.journal without ECS category info -> skip (plain journald text)
+                    if ($srcKey -eq 'D' -and -not $rt -and $cats.Count -eq 0) { continue }
+
+                    Add-ShimSynthFields $doc
+
+                    # Semantic completeness check (per Review 1 #7): bare PROCTITLE with no
+                    # synthesised process fields, or bare PATH with no path, is a fragment of a
+                    # multi-record event whose parent SYSCALL didn't arrive - drop to avoid
+                    # partial findings downstream.
+                    if ($rt -eq 'PROCTITLE') {
+                        $pnHas  = Get-ShimField $doc 'process.name'
+                        $pexHas = Get-ShimField $doc 'process.executable'
+                        $pclHas = Get-ShimField $doc 'process.command_line'
+                        if (-not $pnHas -and -not $pexHas -and -not $pclHas) { continue }
+                    }
+                    if ($rt -eq 'PATH') {
+                        $fpHas = Get-ShimField $doc 'file.path'
+                        $opHas = Get-ShimField $doc 'auditd.summary.object.primary'
+                        if (-not $fpHas -and -not $opHas) { continue }
+                    }
+
+                    $actionRaw = Get-ShimField $doc 'auditd.summary.action'
+                    $objType   = Get-ShimField $doc 'auditd.summary.object.type'
+                    $actionLow = if ($actionRaw) { "$actionRaw".ToLowerInvariant() } else { '' }
+                    $objLow    = if ($objType)   { "$objType".ToLowerInvariant() }   else { '' }
+
+                    # Per-doc dedupe: even when a doc semantically belongs in multiple categories,
+                    # only write it to each bucket once (prevents inflated counts + accidental
+                    # double-analysis in Module 2/3/4). HashSet is per-doc, not global.
+                    $routedTo = New-Object System.Collections.Generic.HashSet[string]
+
+                    # Route decision - prefer ECS event.category when populated (Review 1 #6):
+                    # if Fleet has already normalised the doc, trust its category list and skip
+                    # the raw record-type + object-type heuristics.
+                    if ($cats.Count -gt 0) {
+                        if ($cats -contains 'process') { [void]$routedTo.Add('proc') }
+                        if ($cats -contains 'file')    { [void]$routedTo.Add('file') }
+                        if ($cats -contains 'network') { [void]$routedTo.Add('net')  }
+                        foreach ($ac in $authCategories) { if ($cats -contains $ac) { [void]$routedTo.Add('auth'); break } }
+                    } else {
+                        # No ECS category -> fall back to record-type map + SYSCALL disambiguation.
+                        if ($rt -eq 'SYSCALL') {
+                            $scName = Get-ShimField $doc 'auditd.data.syscall'
+                            $scLow  = if ($scName) { "$scName".ToLowerInvariant() } else { '' }
+                            if ($scLow -and $syscallCategory.ContainsKey($scLow)) {
+                                [void]$routedTo.Add($syscallCategory[$scLow])
+                            } elseif ($actionLow -eq 'executed') {
+                                [void]$routedTo.Add('proc')
+                            } elseif ($objLow -eq 'file')  {
+                                [void]$routedTo.Add('file')
+                            } elseif ($objLow -eq 'socket') {
+                                [void]$routedTo.Add('net')
+                            } else {
+                                # Unknown syscall + no summary hints -> conservative default: proc
+                                [void]$routedTo.Add('proc')
+                            }
+                        } else {
+                            if ($auditRecordSets.Proc -contains $rt) { [void]$routedTo.Add('proc') }
+                            if ($auditRecordSets.File -contains $rt) { [void]$routedTo.Add('file') }
+                            if ($auditRecordSets.Net  -contains $rt) { [void]$routedTo.Add('net')  }
+                            if ($auditRecordSets.Auth -contains $rt) { [void]$routedTo.Add('auth') }
+                            # Object-type heuristic only when record-type didn't match anything
+                            if ($routedTo.Count -eq 0) {
+                                if ($actionLow -eq 'executed') { [void]$routedTo.Add('proc') }
+                                elseif ($objLow -eq 'file')    { [void]$routedTo.Add('file') }
+                                elseif ($objLow -eq 'socket')  { [void]$routedTo.Add('net')  }
+                            }
+                        }
+                    }
+
+                    if ($routedTo.Contains('proc')) { $bucketProc.Add($doc) }
+                    if ($routedTo.Contains('file')) { $bucketFile.Add($doc) }
+                    if ($routedTo.Contains('net'))  { $bucketNet.Add($doc)  }
+                    if ($routedTo.Contains('auth')) { $bucketAuth.Add($doc) }
+                    # Unrouted docs are dropped by design.
+                } catch {}
+            }
+        }
+
+        # ---- Process system.auth (blanket to auth_events) ----
+        $authPath = $srcSpec['B'].Path
+        if (Test-Path -LiteralPath $authPath) {
+            $authDocs = @()
+            try { $authDocs = Read-NdjsonFile $authPath } catch {
+                Write-Host "[Linux shim] WARNING: failed to read system.auth.ndjson - $($_.Exception.Message)" -ForegroundColor Yellow
+            }
+            $counts['auth'] = $authDocs.Count
+            foreach ($d in $authDocs) {
+                try { Add-ShimSynthFields $d; $bucketAuth.Add($d) } catch {}
+            }
+        }
+
+        # ---- Process system.syslog (route only if event.category present) ----
+        $sysPath = $srcSpec['C'].Path
+        if (Test-Path -LiteralPath $sysPath) {
+            $sysDocs = @()
+            try { $sysDocs = Read-NdjsonFile $sysPath } catch {
+                Write-Host "[Linux shim] WARNING: failed to read system.syslog.ndjson - $($_.Exception.Message)" -ForegroundColor Yellow
+            }
+            $counts['syslog'] = $sysDocs.Count
+            foreach ($d in $sysDocs) {
+                try {
+                    $cats = Get-ShimCategoryList $d
+                    if ($cats.Count -eq 0) { continue }
+                    Add-ShimSynthFields $d
+                    $sysRouted = New-Object System.Collections.Generic.HashSet[string]
+                    if ($cats -contains 'process') { [void]$sysRouted.Add('proc') }
+                    if ($cats -contains 'file')    { [void]$sysRouted.Add('file') }
+                    if ($cats -contains 'network') { [void]$sysRouted.Add('net')  }
+                    foreach ($ac in $authCategories) { if ($cats -contains $ac) { [void]$sysRouted.Add('auth'); break } }
+                    if ($sysRouted.Contains('proc')) { $bucketProc.Add($d) }
+                    if ($sysRouted.Contains('file')) { $bucketFile.Add($d) }
+                    if ($sysRouted.Contains('net'))  { $bucketNet.Add($d)  }
+                    if ($sysRouted.Contains('auth')) { $bucketAuth.Add($d) }
+                } catch {}
+            }
+        }
+
+        # ---- Write pass (route pre-existing HTTP-path collisions to .auditd.ndjson sidecar) ----
+        # Depth 64 (max supported by ConvertTo-Json) prevents silent truncation of deeply nested
+        # enriched Fleet docs. Any per-doc serialisation failure is caught so one bad doc doesn't
+        # abort the bucket.
+        $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+        $bucketMap = @{
+            'proc' = $bucketProc
+            'file' = $bucketFile
+            'net'  = $bucketNet
+            'auth' = $bucketAuth
+        }
+        $writeCounts   = @{}
+        $writeToSide   = @{}   # per-key: did we route to sidecar?
+        $allWritesOk   = $true
+        foreach ($k in $outSpec.Keys) {
+            $bucket    = $bucketMap[$k]
+            $outPath   = $targetPath[$k]
+            $outName   = $targetName[$k]
+            $writeToSide[$k] = $preExisting[$k]
+            try {
+                $lines = New-Object System.Collections.Generic.List[string]
+                foreach ($d in $bucket) {
+                    try { $lines.Add((ConvertTo-Json -InputObject $d -Compress -Depth 64)) } catch {}
+                }
+                [System.IO.File]::WriteAllLines($outPath, $lines, $utf8NoBom)
+                $writeCounts[$k] = $lines.Count
+                if ($preExisting[$k] -and $lines.Count -gt 0) {
+                    Write-Host "[Linux shim] $($outSpec[$k].Name) already present - wrote $($lines.Count) auditd docs to sidecar $outName" -ForegroundColor DarkGray
+                }
+            } catch {
+                Write-Host "[Linux shim] WARNING: failed to write $outName - $($_.Exception.Message)" -ForegroundColor Yellow
+                $writeCounts[$k] = 0
+                $allWritesOk = $false
+            }
+        }
+
+        # ---- Marker file (ONLY on full-success - lets a partial-fail run self-heal on re-run) ----
+        if ($allWritesOk) {
+            try {
+                $ts = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
+                $markerContent = "$ts`n$currentSig`n"
+                [System.IO.File]::WriteAllText($markerPath, $markerContent, $utf8NoBom)
+            } catch {
+                Write-Host "[Linux shim] WARNING: failed to write marker file - $($_.Exception.Message)" -ForegroundColor Yellow
+            }
+        } else {
+            Write-Host "[Linux shim] partial failure detected - marker NOT written (re-run will retry)" -ForegroundColor Yellow
+        }
+
+        # ---- Summary (per-source lines; suppress absent sources; Windows-shim-style formatting) ----
+        $srcLines = @()
+        if (Test-Path -LiteralPath $srcSpec['A'].Path) { $srcLines += ("  Auditd : {0} doc(s)" -f $counts['auditd']) }
+        if (Test-Path -LiteralPath $srcSpec['B'].Path) { $srcLines += ("  Auth   : {0} doc(s)" -f $counts['auth'])   }
+        if (Test-Path -LiteralPath $srcSpec['C'].Path) { $srcLines += ("  Syslog : {0} doc(s)" -f $counts['syslog']) }
+        if (Test-Path -LiteralPath $srcSpec['D'].Path) { $srcLines += ("  Journal: {0} doc(s)" -f $counts['journal']) }
+        foreach ($ln in $srcLines) { Write-Host $ln -ForegroundColor Cyan }
+        $routeTail = "  -> Route dist: process={0}, file={1}, network={2}, auth={3}" -f `
+            $writeCounts['proc'], $writeCounts['file'], $writeCounts['net'], $writeCounts['auth']
+        $sideKeys = @($writeToSide.Keys | Where-Object { $writeToSide[$_] -and $writeCounts[$_] -gt 0 })
+        if ($sideKeys.Count -gt 0) {
+            $routeTail += ("  (sidecar: {0})" -f (($sideKeys | Sort-Object) -join ','))
+        }
+        Write-Host $routeTail -ForegroundColor Cyan
     }
 
     function Get-Field {
@@ -177,7 +716,7 @@ function Invoke-ElasticLinuxTriage {
 
     $regionFolders = @('Russia','China','NorthKorea','Iran','eCrime','Vietnam','SouthAmerica','Picus','APTs','Malware Families')
 
-    if ($IntelBasePath -and (Test-Path $IntelBasePath)) {
+    if ($IntelBasePath -and (Test-Path -LiteralPath $IntelBasePath)) {
 
         # -- PASS 1: *_Master_Intel.csv  (Date,Source,Actor,IOCType,IOCValue,Context,Link) ------
         $masterCsvs = @(Get-ChildItem $IntelBasePath -Recurse -Filter '*_Master_Intel.csv' -ErrorAction SilentlyContinue)
@@ -295,11 +834,22 @@ function Invoke-ElasticLinuxTriage {
     # =========================================================================
     Write-Host "[LP-ELX] Loading event files from: $DetonationLogsDir" -ForegroundColor DarkCyan
 
-    $procEvents = Read-NdjsonFile (Join-Path $DetonationLogsDir 'process_events.ndjson')
-    $netEvents  = Read-NdjsonFile (Join-Path $DetonationLogsDir 'network_events.ndjson')
-    $fileEvts   = Read-NdjsonFile (Join-Path $DetonationLogsDir 'file_events.ndjson')
+    # Partition Linux dataset NDJSONs (linux.auditd / system.auth / system.syslog / system.journal)
+    # into the four category files below. Idempotent + writes to .auditd.ndjson sidecar files when
+    # an HTTP-path category output already exists (so both sources contribute to downstream).
+    Convert-LinuxDatasetsToCategoryFiles -DetonationLogsDir $DetonationLogsDir
+
+    # Loader picks up both main HTTP-path files AND the .auditd.ndjson sidecars from the shim.
+    # Mirrors the existing auth_events + authentication_events dual-load pattern.
+    $procEvents = @(Read-NdjsonFile (Join-Path $DetonationLogsDir 'process_events.ndjson')) +
+                  @(Read-NdjsonFile (Join-Path $DetonationLogsDir 'process_events.auditd.ndjson'))
+    $netEvents  = @(Read-NdjsonFile (Join-Path $DetonationLogsDir 'network_events.ndjson')) +
+                  @(Read-NdjsonFile (Join-Path $DetonationLogsDir 'network_events.auditd.ndjson'))
+    $fileEvts   = @(Read-NdjsonFile (Join-Path $DetonationLogsDir 'file_events.ndjson')) +
+                  @(Read-NdjsonFile (Join-Path $DetonationLogsDir 'file_events.auditd.ndjson'))
     $alertEvts  = Read-NdjsonFile (Join-Path $DetonationLogsDir 'alerts.ndjson')
     $authEvts   = @(Read-NdjsonFile (Join-Path $DetonationLogsDir 'auth_events.ndjson')) +
+                  @(Read-NdjsonFile (Join-Path $DetonationLogsDir 'auth_events.auditd.ndjson')) +
                   @(Read-NdjsonFile (Join-Path $DetonationLogsDir 'authentication_events.ndjson'))
 
     $hostname = To-Str (Get-Field ($procEvents | Select-Object -First 1) 'host.name')
@@ -900,7 +1450,7 @@ footer{color:#484f58;font-size:10px;margin-top:24px;border-top:1px solid #21262d
     }
 
     # Footer
-    $totalCsvCount = if ($IntelBasePath -and (Test-Path $IntelBasePath)) {
+    $totalCsvCount = if ($IntelBasePath -and (Test-Path -LiteralPath $IntelBasePath)) {
         (Get-ChildItem $IntelBasePath -Recurse -Include '*.csv' -ErrorAction SilentlyContinue).Count
     } else { 0 }
     [void]$html.AppendLine("<footer>Loaded Potato Linux Elastic Triage v1.0 &nbsp;|&nbsp; OFFLINE - No Internet Required &nbsp;|&nbsp; Intel: $intelCount entries from $totalCsvCount CSVs (3-pass: Master/IOC/TAM) &nbsp;|&nbsp; $reportDate</footer>")
