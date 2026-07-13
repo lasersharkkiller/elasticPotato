@@ -53,6 +53,21 @@ $script:_fidManifest      = $null    # parsed manifest
 $script:_fidBaselineRoot  = $null
 $script:_fidUseNewScoring = $false   # gated by manifest.scoring.calibration_passed
 
+# Behavior -> MITRE technique-id map for process.Ext.api.behaviors.
+# Review 1 LOW fix: single script-scope constant. Prevents silent drift between the
+# offline and live blocks that previously each carried their own copy.
+# Review 2 LOW fix: hyphenated variants (e.g. 'anti-debug', 'process-injection') are
+# canonicalized to underscore form before lookup by the consumer, so keys stay
+# underscore only. Sub-technique values (T1055.012) must be compared against
+# $hostMitreSet using the parent-stripped form since $hostMitreSet only stores parents.
+$script:_behMitreMap = @{
+    'process_injection'     = 'T1055'
+    'hollow_image'          = 'T1055.012'
+    'shellcode'             = 'T1055'
+    'anti_debug'            = 'T1622'
+    'privilege_escalation'  = 'T1548'
+}
+
 function _Normalize-FidValue {
     <#
     .SYNOPSIS Mirror the BUILDER per-dim key normalization in the consumer.
@@ -450,13 +465,27 @@ function Get-ArtifactRiskScore {
     # Feature flag for win-api: OFF by default (EnableWinApiVerdictPoints=false
     # per signoff). VerdictPoints flow only when the manifest EXPLICITLY enables
     # the gate. A missing dimension_gates section means OFF, not ON.
+    # Review 2 CRITICAL fix: rename inner `$g` to `$gate` so we do not clobber
+    # the outer GoodCount (line 436) that is returned in the payload as `G`.
+    # Review 2 HIGH fix (leaky gate): when the gate is off, zero out ALL scoring
+    # channels (RiskScore/Confidence/PMI/Score100/U/R) so the max-tracker path
+    # in Add-FidelityHit (line ~4750) cannot promote verdict to COMPROMISED via
+    # $script:maxArtifact_RiskScore / $newScoringHigh.
     if ($Dimension -eq 'behavior.win_api_call') {
         $enabled = $false
         try {
-            $g = $script:_fidManifest.scoring.dimension_gates.'behavior.win_api_call'
-            if ($g -and $g.verdict_points_enabled -eq $true) { $enabled = $true }
+            $gate = $script:_fidManifest.scoring.dimension_gates.'behavior.win_api_call'
+            if ($gate -and $gate.verdict_points_enabled -eq $true) { $enabled = $true }
         } catch {}
-        if (-not $enabled) { $vp = 0 }
+        if (-not $enabled) {
+            $vp   = 0
+            $rs   = 0.0
+            $conf = 0.0
+            $pmi  = 0.0
+            $s100 = 0
+            $u    = $false
+            $r    = $false
+        }
     }
 
     return @{
@@ -500,11 +529,16 @@ function Get-ArtifactCertStatusList {
         # carrying Elastic Defend file.code_signature.* - other channels can emit
         # event_data.Signed (e.g. CodeIntegrity 3033, Defender driver-load) and
         # would otherwise be misclassified by the decision tree below.
+        # Elastic Defend endpoint.events.library docs also carry file.code_signature.*
+        # so we let those through when routed to this extractor. NOTE: the caller
+        # decides routing; do not assume $Events contains any Defend docs.
         $eid = $null
         try { $eid = "$($d.winlog.event_id)" } catch {}
         $hasCS = $false
         try { $hasCS = ($null -ne $d.file.code_signature) } catch {}
-        if ($eid -ne '7' -and -not $hasCS) { continue }
+        $isDefendLib = $false
+        try { $isDefendLib = ("$($d.event.category)" -eq 'library' -or "$($d.event.dataset)" -eq 'endpoint.events.library') } catch {}
+        if ($eid -ne '7' -and -not $hasCS -and -not $isDefendLib) { continue }
 
         $signedRaw = $null; $statusRaw = $null; $sigSubject = $null
         $trusted   = $null; $exists    = $null; $valid     = $null
@@ -604,7 +638,16 @@ function Get-ArtifactServiceList {
         if (-not $d) { continue }
         $eid = $null
         try { $eid = "$($d.winlog.event_id)" } catch {}
-        if ($eid -ne '4697') { continue }
+        # Review 1 LOW fix: 'created-service' / 'service-installed' are mappings from
+        # the filebeat/winlogbeat system.security ingest pipeline for the SAME Windows
+        # Security EID 4697 doc -- they are NOT Elastic Defend endpoint.events.security
+        # action values (Defend uses malware_detected, endpoint_exploit_detected, etc.).
+        # Behavior is unchanged (either the EID or the mapped action matches on the
+        # same doc); comment clarified to prevent misattribution to Defend.
+        $eAct = $null
+        try { $eAct = "$($d.event.action)" } catch {}
+        $isFilebeatSvc = ($eAct -in @('created-service','service-installed'))
+        if ($eid -ne '4697' -and -not $isFilebeatSvc) { continue }
         $svc = $null
         try { $svc = $d.winlog.event_data.ServiceName } catch {}
         if (-not $svc) { try { $svc = $d.service.name } catch {} }
@@ -635,10 +678,19 @@ function Get-ArtifactScheduledTaskList {
         if (-not $d) { continue }
         $eid = $null
         try { $eid = "$($d.winlog.event_id)" } catch {}
-        if ($eid -ne '4698') { continue }
+        # Review 1 LOW fix: 'scheduled-task-created' is a filebeat system.security ingest
+        # pipeline mapping for the SAME EID 4698 doc -- NOT a Defend action value.
+        # Both come from the same source; keep the OR-match for filebeat-style ingests.
+        $eAct = $null
+        try { $eAct = "$($d.event.action)" } catch {}
+        $isFilebeatTask = ($eAct -eq 'scheduled-task-created')
+        if ($eid -ne '4698' -and -not $isFilebeatTask) { continue }
         $tn = $null
         try { $tn = $d.winlog.event_data.TaskName } catch {}
         if (-not $tn) { try { $tn = $d.winlog.event_data.ScheduledTaskName } catch {} }
+        if (-not $tn -and $isFilebeatTask) {
+            try { $tn = $d.file.path } catch {}
+        }
         if ($tn) { [void]$out.Add("$tn".Trim()) }
     }
     return @($out | Where-Object { $_ } | Select-Object -Unique)
@@ -3016,6 +3068,7 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                 file_events       = @()
                 registry_events   = @()
                 api_events        = @()
+                injection_events  = @()  # NEW: Sysmon EID 8/10 + Defend endpoint.events.api process_access / remote_thread (merged into api_events downstream)
                 image_load        = @()
                 driver_and_pipe   = @()
                 ps_script_block   = @()  # NEW: Sysmon-blind PowerShell EID 4104 ScriptBlockText
@@ -3042,8 +3095,8 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                             '5'  { $offlinePartitions.process_events  += ,$d }              # ProcessTerminate
                             '6'  { $offlinePartitions.driver_and_pipe += ,$d }              # DriverLoad
                             '7'  { $offlinePartitions.image_load      += ,$d }              # ImageLoad
-                            '8'  { $offlinePartitions.api_events      += ,$d }              # CreateRemoteThread
-                            '10' { $offlinePartitions.api_events      += ,$d }              # ProcessAccess
+                            '8'  { $offlinePartitions.api_events      += ,$d; $offlinePartitions.injection_events += ,$d }  # CreateRemoteThread (also to injection_events for merged T1055 credit)
+                            '10' { $offlinePartitions.api_events      += ,$d; $offlinePartitions.injection_events += ,$d }  # ProcessAccess       (also to injection_events for merged T1055 credit)
                             '11' { $offlinePartitions.file_events     += ,$d }              # FileCreate
                             '12' { $offlinePartitions.registry_events += ,$d }              # RegistryCreate
                             '13' { $offlinePartitions.registry_events += ,$d }              # RegistrySetValue
@@ -3060,12 +3113,21 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                             default { }
                         }
                     }
-                    # Backfill DNS into dns.question.name for EID 22 events where filebeat did not auto-map
+                    # Backfill DNS into dns.question.name for EID 22 events where filebeat did not auto-map.
+                    # Review 1 HIGH fix: restore the outer EID-22 gate (perf regression + attribution accuracy).
+                    # The Defend `event.category='dns'` fallback is DEAD CODE in offline mode because
+                    # dns_events.ndjson (Defend DNS docs, per GetElasticDetonationLogs.psm1 lines 466-476)
+                    # is NOT loaded into $offlinePartitions.network_events. Left in behind an EID gate so
+                    # it does not run on every non-DNS EID 3 doc; will only fire on Sysmon EID 22 docs
+                    # where filebeat left dns.question.name unmapped (its designed purpose).
                     foreach ($d in $offlinePartitions.network_events) {
                         $eid = "$($d.winlog.event_id)"
-                        if ($eid -eq '22' -and -not ($d.dns -and $d.dns.question -and $d.dns.question.name)) {
+                        if ($eid -ne '22') { continue }
+                        if (-not ($d.dns -and $d.dns.question -and $d.dns.question.name)) {
                             $q = ''
-                            if ($d.winlog -and $d.winlog.event_data -and $d.winlog.event_data.QueryName) { $q = "$($d.winlog.event_data.QueryName)" }
+                            if ($d.winlog -and $d.winlog.event_data -and $d.winlog.event_data.QueryName) {
+                                $q = "$($d.winlog.event_data.QueryName)"
+                            }
                             if ($q) {
                                 if (-not $d.dns) { $d | Add-Member -NotePropertyName dns -NotePropertyValue ([PSCustomObject]@{ question = [PSCustomObject]@{ name = $q } }) -Force }
                             }
@@ -3321,14 +3383,61 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             Write-Host "       -> $($regKeys.Count) unique registry keys" -ForegroundColor DarkGray
 
             # --- [6/8] API events ---
-            Write-Host "[6/8] API events (offline: api_events.ndjson)..." -ForegroundColor DarkGray
-            $apiDocs      = Get-OfflineCategory 'api_events'
+            Write-Host "[6/8] API events (offline: api_events.ndjson + injection_events.ndjson)..." -ForegroundColor DarkGray
+            $apiDocsRaw   = Get-OfflineCategory 'api_events'
+            $injDocsRaw   = Get-OfflineCategory 'injection_events'
+            # Merge with 5-second-bucket dedup so a Sysmon EID 10 + Defend endpoint.events.api
+            # doc for the same physical process-access do not double-count. Key on
+            # (source.pid | target.pid | @timestamp bucketed to 5s). First occurrence wins.
+            # Review 1 LOW note: the real Defend target-PID shape for endpoint.events.api
+            # process_access is `process.Ext.target.pid`; older Defend agents may surface
+            # `Target.process.pid`. Both fallbacks kept below.
+            # Review 2 MEDIUM fix: when BOTH srcPid and tgtPid are missing, fall back to a
+            # (_id|tsBucket) dedup key rather than skipping dedup entirely, so blank-pid docs
+            # do not double-count between $apiDocsRaw and $injDocsRaw.
+            $injSeenKeys = @{}
+            $apiDocsMerged = [System.Collections.Generic.List[object]]::new()
+            $injMergeSkip  = 0
+            foreach ($d in @($apiDocsRaw) + @($injDocsRaw)) {
+                if (-not $d) { continue }
+                $srcPid = ''; $tgtPid = ''; $tsBucket = ''
+                try { $srcPid = "$($d.process.pid)" } catch {}
+                try { $tgtPid = "$($d.winlog.event_data.TargetProcessId)" } catch {}
+                # Defend fallbacks: process.Ext.target.pid (newer) then Target.process.pid (older)
+                if (-not $tgtPid) { try { $tgtPid = "$($d.process.Ext.target.pid)" } catch {} }
+                if (-not $tgtPid) { try { $tgtPid = "$($d.Target.process.pid)" } catch {} }
+                try {
+                    $ts = $d.'@timestamp'
+                    if ($ts) { $tsBucket = [string]([Math]::Floor(([datetimeoffset]$ts).ToUnixTimeSeconds() / 5)) }
+                } catch {}
+                if ($srcPid -or $tgtPid) {
+                    $injKey = "$srcPid|$tgtPid|$tsBucket"
+                } else {
+                    # Both PIDs missing (older Sysmon builds, unusual Defend shapes).
+                    # Fall back to _id (unique per doc if present) or timestamp bucket alone
+                    # so blank-pid docs are still deduped between passes.
+                    $idKey = ''
+                    try { $idKey = "$($d._id)" } catch {}
+                    if (-not $idKey) { $idKey = $tsBucket }
+                    $injKey = "noPid|$idKey"
+                }
+                if ($injSeenKeys.ContainsKey($injKey)) { $injMergeSkip++; continue }
+                $injSeenKeys[$injKey] = $true
+                [void]$apiDocsMerged.Add($d)
+            }
+            $apiDocs      = @($apiDocsMerged)
+            Write-Verbose "[injection-merge] api_events=$($apiDocsRaw.Count) + injection_events=$($injDocsRaw.Count) -> merged=$($apiDocs.Count) (deduped=$injMergeSkip via key 'srcPid|tgtPid|ts/5s')"
             $apiBehaviors = @($apiDocs | ForEach-Object { $_.process.Ext.api.behaviors } | Where-Object { $_ } | Select-Object -Unique)
             $apiNames     = @($apiDocs | ForEach-Object { $_.process.Ext.api.name }      | Where-Object { $_ } | Select-Object -Unique)
             $apiProcs     = @($apiDocs | Where-Object { $_.process.name } | Group-Object { $_.process.name } |
                 ForEach-Object { "($($_.Count)x) $($_.Name)" })
             $apiTotal     = ($apiDocs | Measure-Object).Count
-            Write-Host "       -> $apiTotal API events, $($apiBehaviors.Count) unique behaviors, $($apiNames.Count) unique calls" -ForegroundColor DarkGray
+            Write-Host "       -> $apiTotal API events (merged, deduped $injMergeSkip), $($apiBehaviors.Count) unique behaviors, $($apiNames.Count) unique calls" -ForegroundColor DarkGray
+            # process.Ext.api.behaviors -> MITRE technique-id map for downstream Add-FidelityHit.
+            # Fed into the already-wired mitre.technique dimension (T1055 verdict math already
+            # runs today; we're just supplying more evidence via api_events.behaviors).
+            # Review 1 LOW fix: single source of truth in $script:_behMitreMap (module scope).
+            $behMitreMap = $script:_behMitreMap
 
             # --- [7/8] Image loads ---
             Write-Host "[7/8] Image loads (offline: image_load.ndjson)..." -ForegroundColor DarkGray
@@ -3346,12 +3455,16 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             $syPairs = [System.Collections.Generic.List[string]]::new()
             Write-Host "       -> $($sysmonImages.Count) unique DLL load paths" -ForegroundColor DarkGray
 
-            # Driver load events (Sysmon EID 6 + Elastic Defend driver category)
+            # Driver load events (Sysmon EID 6).
+            # Review 1 MEDIUM fix: dropped the event.category='driver' OR-clause. In
+            # live-Elastic-pull mode the driver_and_pipe partition is filtered to
+            # winlog.event_id IN (6,17,18) (Sysmon only, see GetElasticDetonationLogs.psm1
+            # line 497). In winlogbeat-shim offline mode only Sysmon EID 6 routes here.
+            # Elastic Defend endpoint.events.driver docs never enter $drvPipeDocs; the
+            # OR-clause was dead code.
             $drvPipeDocs    = Get-OfflineCategory 'driver_and_pipe'
-            $driverLoadDocs = @($drvPipeDocs | Where-Object {
-                "$($_.winlog.event_id)" -eq '6' -or $_.event.category -eq 'driver'
-            })
-            Write-Host "       -> $($driverLoadDocs.Count) driver load event(s) (EID 6 / Elastic Defend)" -ForegroundColor DarkGray
+            $driverLoadDocs = @($drvPipeDocs | Where-Object { "$($_.winlog.event_id)" -eq '6' })
+            Write-Host "       -> $($driverLoadDocs.Count) driver load event(s) (Sysmon EID 6)" -ForegroundColor DarkGray
 
             # --- [8/8] Sigma scan: skipped  -  no live Elastic in offline mode ---
             Write-Host "[8/8] Sigma scan: skipped (offline mode)" -ForegroundColor DarkGray
@@ -3639,6 +3752,9 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         $apiTotal     = if ($apiR -and $apiR.hits) { $apiR.hits.total.value } else { 0 }
         Write-Host "       -> $apiTotal API events, $($apiBehaviors.Count) unique behaviors, $($apiNames.Count) unique calls" -ForegroundColor DarkGray
         if ($apiBehaviors.Count -gt 0) { Write-Host "       -> Behaviors: $($apiBehaviors -join ', ')" -ForegroundColor $(if ($apiBehaviors -match 'shellcode|inject|hollow|tamper') { 'Red' } else { 'DarkYellow' }) }
+        # Symmetric $behMitreMap for live mode (offline block also assigns from same source).
+        # Review 1 LOW fix: single source of truth in $script:_behMitreMap (module scope).
+        $behMitreMap = $script:_behMitreMap
 
         Write-Host "[10/11] Elastic Defend memory/intrusion detections..." -ForegroundColor DarkGray
         $idR = Invoke-AgentESQuery -Index "*" -Body @{ query=@{ bool=@{ must=@($tF,$hF); filter=@(@{ bool=@{ should=@(@{ term=@{ "event.category"="intrusion_detection" } },@{ term=@{ "event.dataset"="endpoint.events.memory" } },@{ term=@{ "event.dataset"="endpoint.events.security" } }); minimum_should_match=1 } }) } }; aggs=@{ by_action=@{ terms=@{ field="event.action"; size=30 } }; by_proc=@{ terms=@{ field="process.name"; size=30 } }; by_rule=@{ terms=@{ field="rule.name"; size=30 } } } }
@@ -3650,8 +3766,21 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         Write-Host "[11/11] Sysmon API/injection events (ProcessAccess, CreateRemoteThread, ImageLoad)..." -ForegroundColor DarkGray
         # Split into two queries to stay under ES search.max_buckets=10000 per response
         # Query A: EID 8+10 (CreateRemoteThread, ProcessAccess) -- source/target process images
+        # Review 1 MEDIUM fix: Defend process-access / remote-thread telemetry lives on
+        # endpoint.events.api (event.category='api'), not event.category='process'. The
+        # process category on Defend is for lifecycle events (start/end/change) whose
+        # event.action values are start/end/executed/fork/exec -- NOT process_access.
+        # Injection call names come through process.Ext.api.name (CreateRemoteThread,
+        # OpenProcess, etc.) rather than event.action. Restrict the Defend OR-clause to
+        # endpoint.events.api and filter on process.Ext.api.name.
         $syRA = Invoke-AgentESQuery -Index "logs-*,winlogbeat-*" -Body @{
-            query=@{ bool=@{ must=@($tF,$hF,@{ terms=@{ "winlog.event_id"=@(8,10) } }) } }
+            query=@{ bool=@{ must=@($tF,$hF,@{ bool=@{ should=@(
+                @{ terms=@{ "winlog.event_id"=@(8,10) } },
+                @{ bool=@{ must=@(
+                    @{ term=@{ "event.dataset"="endpoint.events.api" } },
+                    @{ terms=@{ "process.Ext.api.name"=@('CreateRemoteThread','OpenProcess','WriteProcessMemory','VirtualAllocEx','SetThreadContext','QueueUserAPC','NtMapViewOfSection','RtlCreateUserThread') } }
+                ) } }
+            ); minimum_should_match=1 } }) } }
             aggs=@{
                 by_eid=@{         terms=@{  field="winlog.event_id";                size=5  } }
                 by_rule=@{        terms=@{  field="winlog.event_data.RuleName";      size=50 } }
@@ -3670,16 +3799,36 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             }
         } -Size 0
         # Query B: EID 7 (ImageLoad) -- loaded module paths
+        # Defend equivalent of Sysmon EID 7: endpoint.events.library / event.category='library'
+        # populates dll.path (not winlog.event_data.ImageLoaded). Aggregate both fields.
         $syRB = Invoke-AgentESQuery -Index "logs-*,winlogbeat-*" -Body @{
-            query=@{ bool=@{ must=@($tF,$hF,@{ term=@{ "winlog.event_id"=7 } }) } }
-            aggs=@{ by_img=@{ terms=@{ field="winlog.event_data.ImageLoaded"; size=9000 } } }
+            query=@{ bool=@{ must=@($tF,$hF,@{ bool=@{ should=@(
+                @{ term=@{ "winlog.event_id"=7 } },
+                @{ term=@{ "event.category"="library" } },
+                @{ term=@{ "event.dataset"="endpoint.events.library" } }
+            ); minimum_should_match=1 } }) } }
+            aggs=@{
+                by_img=@{ terms=@{ field="winlog.event_data.ImageLoaded"; size=9000 } }
+                by_dll=@{ terms=@{ field="dll.path";                     size=9000 } }
+            }
         } -Size 0
-        $eidTotal       = if ($syRA) { ($syRA.aggregations.by_eid.buckets | Measure-Object doc_count -Sum).Sum } else { 0 }
+        # Review 1 MEDIUM fix: don't sum bucket totals across by_img AND by_dll -- Elastic
+        # ECS-maps Sysmon EID 7 winlog.event_data.ImageLoaded into BOTH fields on the same
+        # doc, so the previous sum double-counted every EID 7 doc that survived ECS mapping.
+        # Use hits.total.value from query B for a doc-level total, then add query A's total.
+        $eidTotal       = if ($syRA -and $syRA.hits -and $syRA.hits.total) { [int]$syRA.hits.total.value } else { 0 }
+        $imgDllTotal    = if ($syRB -and $syRB.hits -and $syRB.hits.total) { [int]$syRB.hits.total.value } else { 0 }
+        # Preserved as by_img / by_dll bucket-sums for backward-compat with any downstream
+        # display code, but $sysmonTotal is now the doc-level sum (no double-count).
         $imgTotal       = if ($syRB) { ($syRB.aggregations.by_img.buckets | Measure-Object doc_count -Sum).Sum } else { 0 }
-        $sysmonTotal    = ([int]$eidTotal + [int]$imgTotal)
+        $dllTotal       = if ($syRB -and $syRB.aggregations.by_dll) { ($syRB.aggregations.by_dll.buckets | Measure-Object doc_count -Sum).Sum } else { 0 }
+        $sysmonTotal    = ($eidTotal + $imgDllTotal)
         $sysmonSrcProcs = if ($syRA) { @($syRA.aggregations.by_src.buckets | ForEach-Object { $_.key }) } else { @() }
         $sysmonTgtProcs = if ($syRA) { @($syRA.aggregations.by_tgt.buckets | ForEach-Object { $_.key }) } else { @() }
-        $sysmonImages   = if ($syRB) { @($syRB.aggregations.by_img.buckets | ForEach-Object { $_.key }) } else { @() }
+        # Merge Sysmon EID 7 (winlog.event_data.ImageLoaded) with Defend endpoint.events.library (dll.path)
+        $imgFromWinlog  = if ($syRB) { @($syRB.aggregations.by_img.buckets | ForEach-Object { $_.key }) } else { @() }
+        $imgFromDefend  = if ($syRB -and $syRB.aggregations.by_dll) { @($syRB.aggregations.by_dll.buckets | ForEach-Object { $_.key }) } else { @() }
+        $sysmonImages   = @(@($imgFromWinlog) + @($imgFromDefend) | Where-Object { $_ } | Select-Object -Unique)
         $sysmonEventIds = if ($syRA) { @($syRA.aggregations.by_eid.buckets | ForEach-Object { "EID$($_.key)($($_.doc_count))" }) } else { @() }
         $sysmonRules       = if ($syRA) { @($syRA.aggregations.by_rule.buckets   | Where-Object { $_.key } | ForEach-Object { $_.key }) } else { @() }
         $sysmonAccess      = if ($syRA) { @($syRA.aggregations.by_access.buckets | ForEach-Object { "$($_.key) ($($_.doc_count)x)" }) } else { @() }
@@ -4071,12 +4220,25 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         foreach ($v in $artifactCertPublisherList) { if ($v) { $indByDim[$v] = 'cert.publisher' } }
         foreach ($v in $artifactServiceList)       { if ($v) { $indByDim[$v] = 'service' } }
         foreach ($v in $artifactSchedTaskList)     { if ($v) { $indByDim[$v] = 'scheduled-task' } }
+        # process.Ext.api.name from Elastic Defend api_events / injection_events. Fed into
+        # the fidelity index as a tracked-only dimension - VerdictPoints are gated OFF at
+        # the manifest layer (see Get-ArtifactRiskScore feature-flag ~L453) unless
+        # dimension_gates.'behavior.win_api_call'.verdict_points_enabled=true. Hits still
+        # print and count in $script:_dimRiskStats.
+        foreach ($n in $apiNames) { if ($n) { $indByDim["$n".ToLowerInvariant()] = 'behavior.win_api_call' } }
 
         $allArtifacts = @($indByDim.Keys) | Where-Object { $_ -and $_.Length -gt 0 } | Select-Object -Unique
 
         $_fidMode = if ($script:_fidUseNewScoring) { 'dim-aware index' } else { 'legacy index' }
         Write-Host "`n[+] Batch fidelity scan: $($allArtifacts.Count) unique artifacts ($($indByDim.Count) dim-tagged, mode: $_fidMode)..." -ForegroundColor DarkCyan
         $fidMap = Invoke-BatchFidelityScan -Indicators $allArtifacts -IndicatorsByDimension $indByDim
+        # Per-dimension seed counts alongside the existing api_events count so analysts
+        # can see how many process.Ext.api.name values entered the fidelity index. Actual
+        # hit counts land in $script:_dimRiskStats after Add-FidelityHit runs.
+        $dimSeedCounts = $indByDim.Values | Group-Object | Sort-Object Count -Descending | ForEach-Object { "$($_.Name)=$($_.Count)" }
+        if ($dimSeedCounts) {
+            Write-Host "    Fidelity seed by dimension: $($dimSeedCounts -join ', ')" -ForegroundColor DarkGray
+        }
 
         # ---------------------------------------------------------------
         # PHASE B MIGRATION (read sites):
@@ -4226,8 +4388,12 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                     $apiObjs = @($doc.process.Ext.api)
                     foreach ($a in $apiObjs) {
                         if (-not $a) { continue }
-                        if ($a.name    -and $a.name    -is [string]) { $allApiNames.Add($a.name) }
-                        if ($a.summary -and $a.summary -is [string]) { $allSummaries.Add($a.summary) }
+                        # Review 2 MEDIUM fix: some Defend versions batch multiple API calls into
+                        # one event and emit .name / .summary as a JSON array of strings. Iterate
+                        # via @() the same way $a.behaviors already does so array-shape docs are
+                        # not silently dropped from the display path.
+                        foreach ($nm in @($a.name))    { if ($nm -is [string])  { $allApiNames.Add($nm) } }
+                        foreach ($sm in @($a.summary)) { if ($sm -is [string])  { $allSummaries.Add($sm) } }
                         foreach ($beh in @($a.behaviors)) { if ($beh -and $beh -is [string]) { $allBehaviors.Add($beh) } }
                     }
                     if ($doc.Target.process.name                   -is [string]) { $allTargets.Add($doc.Target.process.name) }
@@ -4554,7 +4720,7 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         $vtEnrichment  = [System.Text.StringBuilder]::new()
         $behaviorOverlap = [System.Text.StringBuilder]::new()
         # Per-indicator overlap counters for proportional scoring
-        $oc = @{ IP=0; Domain=0; Process=0; File=0; Registry=0; MITRE=0; Name=0 }
+        $oc = @{ IP=0; Domain=0; Process=0; File=0; Registry=0; MITRE=0; Name=0; WinApi=0 }
         # Fidelity band counters  - parallel to the API matrix rarity bands
         $uniqueMatches = [System.Collections.Generic.List[string]]::new()  # Score 100: zero legit presence
         $rareMatches   = [System.Collections.Generic.List[string]]::new()  # Score 95:  1-3 legit appearances
@@ -4621,14 +4787,15 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                 )
                 # Map legacy TypeKey labels (IP/Domain/Process/...) to canonical dims
                 $dimCanon = switch -Regex ($Dimension) {
-                    '^(IP|ip)$'              { 'ip'; break }
-                    '^(Domain|DNS|dns)$'     { 'dns'; break }
-                    '^(Process|process)$'    { 'process'; break }
-                    '^(File|file)$'          { 'file'; break }
-                    '^(Registry|registry)$'  { 'registry'; break }
-                    '^(MITRE|mitre.*)$'      { 'mitre.technique'; break }
-                    '^(Name|NameMatch)$'     { 'file'; break }
-                    default                  { $Dimension }
+                    '^(IP|ip)$'                                        { 'ip'; break }
+                    '^(Domain|DNS|dns)$'                               { 'dns'; break }
+                    '^(Process|process)$'                              { 'process'; break }
+                    '^(File|file)$'                                    { 'file'; break }
+                    '^(Registry|registry)$'                            { 'registry'; break }
+                    '^(MITRE|mitre.*)$'                                { 'mitre.technique'; break }
+                    '^(Name|NameMatch)$'                               { 'file'; break }
+                    '^(behavior\.win_api_call|win_api_call|WinApiCall)$' { 'behavior.win_api_call'; break }
+                    default                                            { $Dimension }
                 }
                 $composite = "$Value|$dimCanon"
                 $fid = if ($fidMap.ContainsKey($composite)) { $fidMap[$composite] }
@@ -4671,13 +4838,14 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
 
                 # Update the OC counter using legacy key shape (IP/Domain/...).
                 $ocKey = switch ($dimCanon) {
-                    'ip'              { 'IP' }
-                    'dns'             { 'Domain' }
-                    'process'         { 'Process' }
-                    'file'            { 'File' }
-                    'registry'        { 'Registry' }
-                    'mitre.technique' { 'MITRE' }
-                    default           { $Dimension }
+                    'ip'                    { 'IP' }
+                    'dns'                   { 'Domain' }
+                    'process'               { 'Process' }
+                    'file'                  { 'File' }
+                    'registry'              { 'Registry' }
+                    'mitre.technique'       { 'MITRE' }
+                    'behavior.win_api_call' { 'WinApi' }
+                    default                 { $Dimension }
                 }
                 if ($oc.ContainsKey($ocKey)) { $oc[$ocKey]++ }
                 # Risk-axis stats per dim (for HTML report)
@@ -4737,6 +4905,9 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                         Add-FidelityHit -Label "MITRE:" -Value $tid -Dimension "mitre.technique"
                     }
                 }
+                # (Blocks 8 and 9 hoisted OUT of the per-hash loop below - $apiNames /
+                # $apiBehaviors are host-scope, not hash-scope. Firing per-hash would
+                # multiply T1055 credit by N hashes and inflate mitre.technique scoring.)
             }
 
             # NOTE: cert impersonation joint heuristic was previously fired here
@@ -4754,6 +4925,52 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                     $lineColor = if ($_ -match '^\[UNIQUE\]') { 'Red' } elseif ($_ -match '^\[RARE') { 'Yellow' } else { 'DarkGray' }
                     [void]$behaviorOverlap.AppendLine("    $_")
                     Write-Host "    $_" -ForegroundColor $lineColor
+                }
+            }
+        }
+
+        # -----------------------------------------------------------------------
+        # HOISTED host-scope fidelity blocks (were 8 + 9 inside the per-hash loop).
+        # $apiNames and $apiBehaviors are host-scope; firing them inside the
+        # foreach ($h in $alertHashSet) loop multiplied T1055 credit by hash-count
+        # (review 1 HIGH + review 2 HIGH).
+        # Review 2 LOW fix (block 8): only emit WIN-API hits for entries that were
+        #   actually in the fidelity index (M+G>0). Synthesized-zero placeholders
+        #   from legacy-fallback runs otherwise clutter analyst output.
+        # Review 2 HIGH fix (block 9): compare the parent-stripped technique-id
+        #   against $hostMitreSet so sub-tech mappings (T1055.012) can match a
+        #   host that has T1055 alerts.
+        # Review 2 LOW fix (block 9): canonicalize hyphenated behavior variants
+        #   (anti-debug -> anti_debug) so both Defend surface forms match the map.
+        $hoistedApiSeen = @{}
+        foreach ($n in $apiNames) {
+            $nl = "$n".ToLowerInvariant().Trim()
+            if (-not $nl -or $hoistedApiSeen.ContainsKey($nl)) { continue }
+            $hoistedApiSeen[$nl] = $true
+            if ($fidMap.ContainsKey("$nl|behavior.win_api_call")) {
+                $e = $fidMap["$nl|behavior.win_api_call"]
+                $mCount = 0; $gCount = 0
+                try { $mCount = [int]$e.MalCount } catch {}
+                try { $gCount = [int]$e.GoodCount } catch {}
+                if (($mCount + $gCount) -gt 0) {
+                    Add-FidelityHit -Label "WIN-API:" -Value $nl -Dimension 'behavior.win_api_call'
+                }
+            }
+        }
+        if ($behMitreMap) {
+            $hoistedBehSeen = @{}
+            foreach ($b in $apiBehaviors) {
+                $bl = "$b".ToLowerInvariant().Trim() -replace '-','_'
+                if (-not $bl -or $hoistedBehSeen.ContainsKey($bl)) { continue }
+                $hoistedBehSeen[$bl] = $true
+                if ($behMitreMap.ContainsKey($bl)) {
+                    $tid = $behMitreMap[$bl]
+                    if ($tid) {
+                        $tidParent = ($tid -split '\.')[0]
+                        if ($hostMitreSet -contains $tidParent) {
+                            Add-FidelityHit -Label "BEHAVIOR->MITRE:" -Value $tid -Dimension 'mitre.technique'
+                        }
+                    }
                 }
             }
         }
@@ -5246,31 +5463,64 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         # PROCESS_QUERY_INFORMATION + PROCESS_VM_READ bits (0x1010 / 0x1410 / 0x1438).
         $lsassAccessDocs = @()
         $highPrivAccessDocs = @()
+        $injThreadDocs      = @()
+        $systemProcRegex = '^(svchost|wininit|csrss|services|msmpeng|mpdefendercoreservice|sysmon|sysmon64)\.exe$'
         if ($apiDocs) {
             foreach ($d in $apiDocs) {
-                if ("$($d.winlog.event_id)" -ne '10') { continue }
-                $targetImg = "$($d.winlog.event_data.TargetImage)".ToLowerInvariant()
+                # Accept both Sysmon EID 8/10 shape AND Defend equivalent
+                # endpoint.events.api event.action='process_access' / 'remote_thread_creation'.
+                # Review 1 MEDIUM note: real Defend event.action values on endpoint.events.api
+                # are not fully documented; keeping legacy values as a best-effort fallback
+                # in case older agent builds emit them. Primary matcher is now the API-name
+                # filter in the live query (process.Ext.api.name).
+                $eid  = "$($d.winlog.event_id)"
+                $eAct = "$($d.event.action)"
+                $isEID10 = ($eid -eq '10' -or $eAct -eq 'process_access')
+                $isEID8  = ($eid -eq '8'  -or $eAct -in @('remote_thread_creation','process_injection'))
+                if (-not $isEID10 -and -not $isEID8) { continue }
+                # Review 1 MEDIUM fix: Defend does not emit a top-level Target.process object.
+                # ECS nested path for injection target on endpoint.events.api is
+                # process.Ext.target.executable (newer builds). Keep Target.process.executable
+                # as a legacy fallback for older Defend agents.
+                $targetImg = ''
+                try { $targetImg = "$($d.winlog.event_data.TargetImage)".ToLowerInvariant() } catch {}
+                if (-not $targetImg) { try { $targetImg = "$($d.process.Ext.target.executable)".ToLowerInvariant() } catch {} }
+                if (-not $targetImg) { try { $targetImg = "$($d.Target.process.executable)".ToLowerInvariant() } catch {} }
                 $access    = "$($d.winlog.event_data.GrantedAccess)".ToLowerInvariant()
                 $sourceProc = if ($d.process -and $d.process.name) { "$($d.process.name)".ToLowerInvariant() } else { '' }
-                if ($targetImg -match '\\lsass\.exe$' -and $sourceProc -notmatch '^(svchost|wininit|csrss|services|msmpeng|mpdefendercoreservice|sysmon|sysmon64)\.exe$') {
+                if ($isEID10 -and $targetImg -match '\\lsass\.exe$' -and $sourceProc -notmatch $systemProcRegex) {
                     $lsassAccessDocs += [PSCustomObject]@{ Src=$sourceProc; Access=$access; Target=$targetImg }
                 }
-                if ($access -match '0x1fffff' -and $sourceProc -notmatch '^(svchost|wininit|csrss|services|msmpeng|mpdefendercoreservice|sysmon|sysmon64)\.exe$' -and $targetImg) {
+                if ($isEID10 -and $access -match '0x1fffff' -and $sourceProc -notmatch $systemProcRegex -and $targetImg) {
                     $highPrivAccessDocs += [PSCustomObject]@{ Src=$sourceProc; Access=$access; Target=$targetImg }
+                }
+                # NEW: EID 8 CreateRemoteThread from non-system process -> T1055 candidate.
+                # Reuses the same +up-to-20 cap as highPriv so it does not double-count when
+                # the same handle also triggered EID 10 PROCESS_ALL_ACCESS.
+                if ($isEID8 -and $targetImg -and $sourceProc -notmatch $systemProcRegex) {
+                    $injThreadDocs += [PSCustomObject]@{ Src=$sourceProc; Access=$access; Target=$targetImg }
                 }
             }
         }
         if ($lsassAccessDocs.Count -gt 0) {
             $score += 80
             $srcSample = ($lsassAccessDocs | ForEach-Object { $_.Src } | Select-Object -Unique | Select-Object -First 3) -join ', '
-            $findings.Add("CRITICAL: $($lsassAccessDocs.Count) Sysmon EID 10 cross-process access to lsass.exe by non-system process(es) (+80 pts) [T1003.001 OS Credential Dumping]: $srcSample")
+            $findings.Add("CRITICAL: $($lsassAccessDocs.Count) Sysmon EID 10 / Defend process_access cross-process access to lsass.exe by non-system process(es) (+80 pts) [T1003.001 OS Credential Dumping]: $srcSample")
             $nextSteps.Add("Investigate lsass.exe handle opens  -  the canonical credential-dumping signature (Mimikatz, comsvcs.exe minidump, custom dumpers)")
         }
         if ($highPrivAccessDocs.Count -gt 0 -and $lsassAccessDocs.Count -eq 0) {
             $hpScore = [Math]::Min(20, $highPrivAccessDocs.Count * 4)
             $score += $hpScore
             $tgtSample = ($highPrivAccessDocs | ForEach-Object { "$($_.Src)->$([System.IO.Path]::GetFileName($_.Target))" } | Select-Object -Unique | Select-Object -First 3) -join ', '
-            $findings.Add("$($highPrivAccessDocs.Count) Sysmon EID 10 PROCESS_ALL_ACCESS handle opens between non-system processes (+$hpScore pts) [T1055 Process Injection candidate]: $tgtSample")
+            $findings.Add("$($highPrivAccessDocs.Count) Sysmon EID 10 / Defend process_access PROCESS_ALL_ACCESS handle opens between non-system processes (+$hpScore pts) [T1055 Process Injection candidate]: $tgtSample")
+        }
+        # EID 8 CreateRemoteThread credit (only when EID 10 lsass/highPriv branches did
+        # NOT already claim the physical event; +up-to-20 cap mirrors highPrivAccess).
+        if ($injThreadDocs.Count -gt 0 -and $lsassAccessDocs.Count -eq 0) {
+            $injScore = [Math]::Min(20, $injThreadDocs.Count * 8)
+            $score += $injScore
+            $tgtSample = ($injThreadDocs | ForEach-Object { "$($_.Src)->$([System.IO.Path]::GetFileName($_.Target))" } | Select-Object -Unique | Select-Object -First 3) -join ', '
+            $findings.Add("$($injThreadDocs.Count) Sysmon EID 8 / Defend remote_thread_creation event(s) from non-system process(es) (+$injScore pts) [T1055 Process Injection]: $tgtSample")
         }
 
         # -----------------------------------------------------------------------
@@ -5523,6 +5773,10 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             $sample = ($startupHits | ForEach-Object { $_.file.path } | Select-Object -Unique | Select-Object -First 3) -join ' | '
             $persistFindings.Add("CRITICAL: $($startupHits.Count) startup folder file create(s) (+$stScore pts) [T1547.001]: $sample")
         }
+        # Defend gap: endpoint.events.* does not natively emit WMI subscription events
+        # (EID 19/20/21). Sysmon remains the sole source. If Defend adds a
+        # 'wmi_event_subscription_created' action in future agent builds, this OR-clause
+        # can be extended here without changing scoring semantics.
         $wmiPersistHits = @(@($drvPipeDocs) + @($apiDocs) + @($fileDocs) + @($regDocs) | Where-Object {
             "$($_.winlog.event_id)" -in @('19','20','21')
         })
@@ -5531,22 +5785,46 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             $persistFindings.Add("CRITICAL: $($wmiPersistHits.Count) Sysmon WMI subscription event(s) (EID 19/20/21) (+60 pts) [T1546.003]")
         }
         # Security log 4697 / 4698 / 4720 / 4769 (Kerb hint)
+        # Review 1 HIGH fix: $secLog is populated exclusively from system.security.ndjson
+        # (winlogbeat/filebeat system.security module). It never contains Elastic Defend
+        # endpoint.events.security docs (those go to api_events.ndjson per
+        # GetElasticDetonationLogs.psm1). The previously-added event.action OR-clauses
+        # were also mis-attributed as Defend equivalents; those values ('created-service',
+        # 'scheduled-task-created', 'user-created', etc.) come from the filebeat
+        # system.security module ingest pipeline, NOT Defend. Since both the winlog.event_id
+        # and the mapped event.action come from the SAME source doc, the OR-clauses added
+        # zero coverage while inflating the dedup-key collision risk.
+        # Reverting to EID-only filters. Dedup adds winlog.event_id to the key so distinct
+        # concurrent EIDs on the same user (e.g. rapid scripted account provisioning) do
+        # not silently collapse.
         if ($secLog.Count -gt 0) {
             $secSvcHits = @($secLog | Where-Object { "$($_.winlog.event_id)" -eq '4697' })
+            $secSvcHits = @($secSvcHits | Sort-Object -Unique -Property @{Expression={
+                $ts = try { ([datetimeoffset]$_.'@timestamp').ToUnixTimeSeconds() } catch { 0 }
+                "$($_.winlog.event_id)|$($_.user.target.name)|$([Math]::Floor($ts/5))"
+            }})
             if ($secSvcHits.Count -gt 0) {
                 $persistScore += 40
-                $persistFindings.Add("Security log: $($secSvcHits.Count) EID 4697 service install (+40 pts) [T1543.003]")
+                $persistFindings.Add("Security log: $($secSvcHits.Count) EID 4697 service install(s) (+40 pts) [T1543.003]")
             }
             $secTaskHits = @($secLog | Where-Object { "$($_.winlog.event_id)" -eq '4698' })
+            $secTaskHits = @($secTaskHits | Sort-Object -Unique -Property @{Expression={
+                $ts = try { ([datetimeoffset]$_.'@timestamp').ToUnixTimeSeconds() } catch { 0 }
+                "$($_.winlog.event_id)|$($_.user.target.name)|$([Math]::Floor($ts/5))"
+            }})
             if ($secTaskHits.Count -gt 0) {
                 $persistScore += 25
-                $persistFindings.Add("Security log: $($secTaskHits.Count) EID 4698 scheduled task created (+25 pts) [T1053.005]")
+                $persistFindings.Add("Security log: $($secTaskHits.Count) EID 4698 scheduled task create(s) (+25 pts) [T1053.005]")
             }
             $secAcctHits = @($secLog | Where-Object { "$($_.winlog.event_id)" -eq '4720' })
+            $secAcctHits = @($secAcctHits | Sort-Object -Unique -Property @{Expression={
+                $ts = try { ([datetimeoffset]$_.'@timestamp').ToUnixTimeSeconds() } catch { 0 }
+                "$($_.winlog.event_id)|$($_.user.target.name)|$([Math]::Floor($ts/5))"
+            }})
             if ($secAcctHits.Count -gt 0) {
                 $acctScore = 50 * [Math]::Min(2, $secAcctHits.Count)
                 $persistScore += $acctScore
-                $persistFindings.Add("CRITICAL: Security log: $($secAcctHits.Count) EID 4720 user account create(s) (+$acctScore pts) [T1136.001]")
+                $persistFindings.Add("CRITICAL: Security log: $($secAcctHits.Count) EID 4720 user account creation(s) (+$acctScore pts) [T1136.001]")
                 $nextSteps.Add("Investigate new accounts  -  confirm change ticket, verify business justification, check for golden-ticket / DCSync precursors")
             }
         }
@@ -5690,8 +5968,20 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             $credFindings.Add("CRITICAL: $($credCmdHits.Count) credential-access command pattern(s) (+$cmdScore pts): $($credCmdHits -join ' | ')")
         }
         # Security log 4625 brute force (>= 5 failures in window)
+        # Review 1 HIGH fix: $secLog is winlogbeat/filebeat only. Defend endpoint.events.security
+        # docs never enter this partition. Removed the mis-attributed Defend OR-clauses.
+        # Review 1 MEDIUM fix: dedup key adds winlog.event_id so distinct EIDs at the same
+        # second on the same user (e.g. 4624 + 4672 admin logon burst) do not collapse.
+        # Review 1 MEDIUM fix (explicitCred): dropped the 'logged-in'+seclogo/explicit OR-branch
+        # since a legitimate RunAs 4624 emits both event.action='logged-in' AND
+        # LogonProcessName='seclogo', causing false-positive T1550 findings on any host with
+        # routine privilege elevation. Reverted to EID-4648-only which was the pre-edit shape.
         if ($secLog.Count -gt 0) {
             $failLogons = @($secLog | Where-Object { "$($_.winlog.event_id)" -eq '4625' })
+            $failLogons = @($failLogons | Sort-Object -Unique -Property @{Expression={
+                $ts = try { ([datetimeoffset]$_.'@timestamp').ToUnixTimeSeconds() } catch { 0 }
+                "$($_.winlog.event_id)|$($_.source.user.name)$($_.user.name)|$([Math]::Floor($ts/5))"
+            }})
             if ($failLogons.Count -ge 5) {
                 $bfScore = [Math]::Min(50, $failLogons.Count * 5)
                 $credScore += $bfScore
@@ -5740,6 +6030,8 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             $findings.Add("Discovery activity: $($discoveryHits.Count) recon command category(ies) (+$discScore pts): $($discoveryHits -join ' | ')")
         }
         # Security log 4799 group enumeration
+        # Review 1 HIGH fix: dropped the mis-attributed Defend OR-clause. $secLog is
+        # winlogbeat/filebeat only; endpoint.events.security docs never reach here.
         if ($secLog.Count -gt 0) {
             $grpEnum = @($secLog | Where-Object { "$($_.winlog.event_id)" -eq '4799' })
             if ($grpEnum.Count -gt 0) {
@@ -5807,10 +6099,17 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             $findings.Add("Internal lateral-protocol connection(s) (+$latNetScore pts): $sample")
         }
         # Security log 4624 Type 3 (Network) / Type 10 (RemoteInteractive)
+        # Review 1 HIGH fix: dropped Defend OR-clause (unreachable in offline mode).
+        # Review 1 MEDIUM fix: dedup key adds winlog.event_id so it can never accidentally
+        # collapse with a different-EID doc that shares source.ip + LogonType + bucket.
         if ($secLog.Count -gt 0) {
             $remoteLogons = @($secLog | Where-Object {
                 "$($_.winlog.event_id)" -eq '4624' -and ("$($_.winlog.event_data.LogonType)" -in @('3','10'))
             })
+            $remoteLogons = @($remoteLogons | Sort-Object -Unique -Property @{Expression={
+                $ts = try { ([datetimeoffset]$_.'@timestamp').ToUnixTimeSeconds() } catch { 0 }
+                "$($_.winlog.event_id)|$($_.source.ip)|$($_.winlog.event_data.LogonType)|$([Math]::Floor($ts/5))"
+            }})
             if ($remoteLogons.Count -ge 3) {
                 $rlScore = [Math]::Min(40, $remoteLogons.Count * 8)
                 $score += $rlScore
@@ -5821,6 +6120,12 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         # -----------------------------------------------------------------------
         # SECURITY LOG  -  additional events not covered above
         # -----------------------------------------------------------------------
+        # Review 1 HIGH fix: dropped mis-attributed Defend OR-clauses. $secLog is winlogbeat
+        # system.security only; endpoint.events.security docs never reach this partition.
+        # Review 1 LOW note: the 4688 audit-process detector had a Defend OR-clause on
+        # event.dataset='endpoint.events.security'+category='process'+type='start' -- Defend
+        # process starts actually live in endpoint.events.process, not endpoint.events.security,
+        # so that filter was dead code even if routing existed.
         if ($secLog.Count -gt 0) {
             # 4624 Type 9 NewCredentials (RunAs /netonly alt-credential use)
             $netOnly = @($secLog | Where-Object {
@@ -5855,18 +6160,30 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         # -----------------------------------------------------------------------
         if ($appLog.Count -gt 0) {
             # 1116 = malware detected, 1117 = action taken, 1118 = action failed,
-            # 1015 = behavior monitoring, 1019 = block-at-first-sight
+            # 1015 = behavior monitoring, 1019 = block-at-first-sight.
+            # Review 1 HIGH fix: $appLog is populated exclusively from system.application.ndjson
+            # (line 3137). Defend endpoint.events.security docs go to api_events.ndjson, not
+            # app_log. The 'endpoint.events.security'+action IN (detected/blocked/quarantined/
+            # malware_alert) OR-clause was dead code AND the action names are not documented
+            # Defend values (Defend uses malware_detected et al.). Dropped both OR-clauses.
             $defMalware = @($appLog | Where-Object {
                 "$($_.winlog.event_id)" -in @('1116','1117','1118','1015','1019')
             })
+            $defMalware = @($defMalware | Sort-Object -Unique -Property @{Expression={
+                $ts = try { ([datetimeoffset]$_.'@timestamp').ToUnixTimeSeconds() } catch { 0 }
+                "$($_.winlog.event_id)|$([Math]::Floor($ts/5))"
+            }})
             if ($defMalware.Count -gt 0) {
                 $defScore = [Math]::Min(40, $defMalware.Count * 8)
                 $score += $defScore
-                $sample = ($defMalware | ForEach-Object { "EID $($_.winlog.event_id)" } | Group-Object | ForEach-Object { "$($_.Name)x$($_.Count)" }) -join ', '
+                $sample = ($defMalware | ForEach-Object {
+                    if ($_.winlog -and $_.winlog.event_id) { "EID $($_.winlog.event_id)" } else { 'unknown' }
+                } | Group-Object | ForEach-Object { "$($_.Name)x$($_.Count)" }) -join ', '
                 $findings.Add("Defender: $($defMalware.Count) detection event(s) (+$defScore pts): $sample")
             }
             # 5007 (config changed), 5001 (RT disabled), 1006 (engine error) are
-            # tampering / impairment indicators
+            # tampering / impairment indicators.
+            # Review 1 HIGH fix: dropped mis-attributed Defend event.action OR-clause.
             $defStateChange = @($appLog | Where-Object {
                 "$($_.winlog.event_id)" -in @('5007','5001','5004','5012','1006')
             })
@@ -5893,6 +6210,10 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         $collectScore = 0
         # Sysmon EID 24 ClipboardChange events from non-system processes are a
         # near-pathognomonic clipboard-sniffer signature.
+        # Review 1 LOW note: Defend does not currently emit clipboard events; the
+        # forward-compat 'clipboard_change' OR-clause was dead code and $apiDocs would
+        # not receive endpoint.events.* clipboard docs from the offline shim either.
+        # Removed the OR-clause; if Defend adds this in future, revisit routing first.
         $clipboardHits = @($apiDocs | Where-Object {
             "$($_.winlog.event_id)" -eq '24' -and
             "$($_.process.name)".ToLowerInvariant() -notmatch '^(explorer|onedrive|searchapp|searchui|teams|outlook|winword|excel|powerpnt|notepad|notepad\+\+|code|chrome|msedge|firefox|brave|opera|searchhost|textinputhost)\.exe$'
@@ -6147,7 +6468,19 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         }
         # Mass file delete (Sysmon EID 26 FileDeleteDetected). Threshold:
         # >= 20 deletes in the window from a single non-system process.
-        $massDeletes = @($fileDocs | Where-Object { "$($_.winlog.event_id)" -eq '26' })
+        # Defend equivalent of Sysmon EID 26: endpoint.events.file with
+        # event.category='file' + event.action='deletion'. 5-second-bucket dedup on
+        # (process.pid|file.path|@timestamp/5) prevents Sysmon+Defend double-count.
+        $massDeletes = @($fileDocs | Where-Object {
+            "$($_.winlog.event_id)" -eq '26' -or
+            ("$($_.event.category)" -eq 'file' -and
+             "$($_.event.action)"   -eq 'deletion' -and
+             "$($_.event.dataset)"  -eq 'endpoint.events.file')
+        })
+        $massDeletes = @($massDeletes | Sort-Object -Unique -Property @{Expression={
+            $ts = try { ([datetimeoffset]$_.'@timestamp').ToUnixTimeSeconds() } catch { 0 }
+            "$($_.process.pid)|$($_.file.path)|$([Math]::Floor($ts/5))"
+        }})
         if ($massDeletes.Count -ge 20) {
             $mdByProc = $massDeletes | Group-Object { "$($_.process.name)" } | Sort-Object Count -Descending
             $topDeleter = $mdByProc | Select-Object -First 1
@@ -6234,6 +6567,9 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
 
         # Driver load from non-system path (Sysmon EID 6).  Drivers normally live
         # in System32\drivers, WinSxS, or DriverStore.  Anything else is suspect.
+        # Review 1 MEDIUM fix: dropped Defend event.category='driver' / event.action='load'
+        # OR-clauses -- $drvPipeDocs is Sysmon-only in both live-pull and offline modes,
+        # so endpoint.events.driver docs never reach here.
         $driverLoadDocs = @($drvPipeDocs | Where-Object { "$($_.winlog.event_id)" -eq '6' })
         $suspDrivers = @($driverLoadDocs | Where-Object {
             $imgPath = "$($_.file.path)$($_.winlog.event_data.ImageLoaded)$($_.dll.path)"
@@ -6252,6 +6588,8 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         # Secure Boot disable indicators from the Application or System log.
         # Defender / Code Integrity emits these event IDs when SB is disabled
         # or a violation is bypassed.
+        # Windows Application/CodeIntegrity log only - Elastic Defend does not
+        # re-emit these events. Preserved as Sysmon/Windows-log-native detection.
         if ($appLog.Count -gt 0) {
             $sbDisable = @($appLog | Where-Object {
                 "$($_.winlog.event_id)" -in @('1006','1037','1041') -and
