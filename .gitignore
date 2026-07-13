@@ -1,5 +1,6 @@
-.claude/settings.local.json
-.claude/worktrees/
+# Claude Code local state - session data, worktrees, task locks, scheduled runs.
+# Whole directory excluded; nothing under .claude/ should ever be pushed.
+.claude/
 tools/**/*.lic
 *.lic
 ComplianceScan_Output/
