@@ -52,6 +52,13 @@ $script:_fid              = @{}      # lazy-loaded per-dim hashtables ($dim -> @
 $script:_fidManifest      = $null    # parsed manifest
 $script:_fidBaselineRoot  = $null
 $script:_fidUseNewScoring = $false   # gated by manifest.scoring.calibration_passed
+# NOTE (Review LOW): Import-FidelityIndices RESETS $_fidUseNewScoring on every call
+# (line ~304), so back-to-back Invoke-ElasticAlertAgentAnalysis invocations always
+# re-derive the flag from the manifest. However, an external consumer calling
+# Get-ArtifactRiskScore directly BETWEEN an A/B calibration lane and a fresh
+# analysis would read the stale legacy-mode flag. If a public consumer is ever
+# added to Export-ModuleMember beyond Get-ArtifactRiskScore, restore-on-exit
+# semantics (finally block wrapping the switch flip) should be considered.
 
 # Behavior -> MITRE technique-id map for process.Ext.api.behaviors.
 # Review 1 LOW fix: single script-scope constant. Prevents silent drift between the
@@ -291,9 +298,19 @@ function Import-FidelityIndices {
     .PARAMETER BaselineRoot
         Folder containing fidelity-manifest.json and fidelity-<dim>.json.
         Defaults to <module-dir>\..\output-baseline.
+    .PARAMETER ForceLegacy
+        Force legacy-flat mode regardless of manifest.scoring.calibration_passed.
+        Guarantees $script:_fid['_legacy_flat'] is populated so subsequent
+        Get-ArtifactRiskScore calls hit real data (not the empty sentinel).
+        Required for calibration A/B lanes: without this, a calibrated manifest
+        (calibration_passed=true) skips the flat-shim load, and a downstream
+        `$script:_fidUseNewScoring=$false` flip zeros out every lookup.
     #>
     [CmdletBinding()]
-    param([string]$BaselineRoot)
+    param(
+        [string]$BaselineRoot,
+        [switch]$ForceLegacy
+    )
 
     if ([string]::IsNullOrWhiteSpace($BaselineRoot)) {
         $BaselineRoot = Join-Path $PSScriptRoot "..\output-baseline"
@@ -346,6 +363,14 @@ function Import-FidelityIndices {
             [void](& $loadLegacyFlat)
         } else {
             $script:_fidUseNewScoring = $true
+            # CRITICAL fix (Review consumer): even on calibration_passed=true, load the
+            # flat shim when -ForceLegacy is set. Otherwise a downstream caller that
+            # flips $_fidUseNewScoring=$false (calibration A/B lane) will get $empty
+            # from EVERY Get-ArtifactRiskScore lookup because _legacy_flat is missing.
+            if ($ForceLegacy) {
+                $script:_fidUseNewScoring = $false
+                [void](& $loadLegacyFlat)
+            }
         }
     } else {
         # No manifest -- legacy mode
@@ -755,8 +780,54 @@ function Invoke-ElasticAlertAgentAnalysis {
         [hashtable]$AlertContext              = $null,
         [string]$DetonationLogsDir           = "",
         [string]$BaselineMainRoot             = "output-baseline\VirusTotal-main",
-        [string]$BaselineBehaviorsRoot        = "output-baseline\VirusTotal-behaviors"
+        [string]$BaselineBehaviorsRoot        = "output-baseline\VirusTotal-behaviors",
+        # -----------------------------------------------------------------
+        # CALIBRATION / DUAL-LANE TOGGLES (Phase 4 verdict regression)
+        # Both default $false. When neither is supplied, callers see identical
+        # behavior to the pre-toggle contract - existing menu 3a/3b paths
+        # pass no new switches and remain unchanged.
+        # -----------------------------------------------------------------
+        # -UseLegacyFidelity: force $script:_fidUseNewScoring=$false after
+        # Import-FidelityIndices, overriding manifest.scoring.calibration_passed,
+        # AND force-load the legacy flat shim so lookups return real data (not
+        # $empty). Enables A/B lane comparison in Test-FidelityIndexCalibration
+        # Phase 4. Only supported in the DetonationLogsDir (offline) branch --
+        # combining with -AlertContext throws below.
+        [Parameter(Mandatory=$false)]
+        [switch]$UseLegacyFidelity,
+        # -SuppressVerdictBanner: gate the 'OVERALL VERDICT' interactive banner
+        # so a calibration/CI runner can key on the structured return object
+        # without the ANSI-coloured banner appearing on its stdout. NOTE: this
+        # does NOT suppress the ~270 other Write-Host diagnostics (phase headers,
+        # per-finding rows, kill-chain rollup, HTML report path) -- a truly
+        # silent invocation still requires stream redirection at the call site.
+        # $WarningPreference is force-set to SilentlyContinue inside this
+        # function when the switch is passed so Fidelity warnings are also
+        # suppressed without the caller having to pass -WarningAction.
+        # Alias -ReturnVerdict preserves the previous switch name for callers.
+        [Parameter(Mandatory=$false)]
+        [Alias('ReturnVerdict')]
+        [switch]$SuppressVerdictBanner
     )
+
+    # Guard: the two new switches only take effect in the DetonationLogsDir
+    # (offline) branch. AlertContext mode has a different return schema
+    # ({Verdict in FP/TP/SUSPICIOUS, FullResponse, AlertContext, TokensUsed})
+    # vs. offline ({Verdict in COMPROMISED/SUSPICIOUS/CLEAN, RiskScore, ...}),
+    # so silently allowing the switches in AlertContext mode would cause a
+    # calibration runner to compare mismatched shapes/verdicts.
+    if ($PSBoundParameters.ContainsKey('AlertContext') -and $AlertContext) {
+        if ($UseLegacyFidelity) {
+            throw "-UseLegacyFidelity is only supported with -DetonationLogsDir (offline mode). AlertContext mode does not run the fidelity-index path."
+        }
+        if ($SuppressVerdictBanner) {
+            throw "-SuppressVerdictBanner is only supported with -DetonationLogsDir (offline mode). AlertContext mode returns a different verdict schema (FP/TP/SUSPICIOUS)."
+        }
+    }
+
+    # Suppress WARNING stream when running non-interactively so Import-FidelityIndices
+    # warnings do not flood the calibration runner (Review consumer MEDIUM fix).
+    if ($SuppressVerdictBanner) { $WarningPreference = 'SilentlyContinue' }
 
     # Resolve baseline paths to absolute (relative defaults only work from repo root)
     if (-not [System.IO.Path]::IsPathRooted($BaselineMainRoot)) {
@@ -1068,7 +1139,10 @@ function Invoke-ElasticAlertAgentAnalysis {
         if (Test-Path $manifestPath) {
             Write-Host "    Loading fidelity manifest + per-dimension indices..." -ForegroundColor DarkGray
             try {
-                [void](Import-FidelityIndices -BaselineRoot $baselineRoot)
+                # -ForceLegacy guarantees $script:_fid['_legacy_flat'] is populated so
+                # legacy-mode Get-ArtifactRiskScore returns real data, not the empty
+                # sentinel (Review consumer CRITICAL fix).
+                [void](Import-FidelityIndices -BaselineRoot $baselineRoot -ForceLegacy:$UseLegacyFidelity)
                 $hits = 0
                 foreach ($ind in $itemMap.Keys) {
                     $dim = $itemMap[$ind]
@@ -4167,10 +4241,17 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         # FIDELITY MANIFEST LOAD (eager: manifest only, per-dim lazy)
         # -----------------------------------------------------------------------
         try {
-            $fidMeta = Import-FidelityIndices -BaselineRoot (Join-Path $PSScriptRoot "..\output-baseline")
+            # -ForceLegacy is duplicated here because Invoke-BatchFidelityScan (called
+            # earlier in this analysis pass) also runs Import-FidelityIndices; without
+            # re-applying at both call sites, the second call would re-derive the
+            # scoring flag from the manifest and clobber the legacy override.
+            # -ForceLegacy guarantees $script:_fid['_legacy_flat'] is populated so
+            # legacy-mode Get-ArtifactRiskScore returns real data (Review CRITICAL fix).
+            $fidMeta = Import-FidelityIndices -BaselineRoot (Join-Path $PSScriptRoot "..\output-baseline") -ForceLegacy:$UseLegacyFidelity
             if ($fidMeta) {
                 $whichIdx = if ($fidMeta.ManifestPresent) { "manifest+per-dim" } else { "legacy flat" }
-                Write-Host "    Fidelity index loaded: $whichIdx  (new scoring: $($fidMeta.UseNewScoring))" -ForegroundColor DarkGray
+                $effectiveUseNew = $script:_fidUseNewScoring
+                Write-Host "    Fidelity index loaded: $whichIdx  (new scoring: $effectiveUseNew)" -ForegroundColor DarkGray
             }
         } catch {
             Write-Host "    [!] Fidelity index load skipped: $($_.Exception.Message)" -ForegroundColor Yellow
@@ -6804,13 +6885,24 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         $verdictColor = switch ($verdict) { "COMPROMISED" { "Red" } "SUSPICIOUS" { "Yellow" } default { "Green" } }
 
         # --- Display ---
-        Write-Host "`n`n======================================================" -ForegroundColor DarkCyan
-        Write-Host "  ELASTIC ALERT AGENT  - FORENSIC VERDICT (OFFLINE)" -ForegroundColor DarkCyan
-        Write-Host "  Host: $agentHost  |  Window: $fromTs --> $toTs" -ForegroundColor DarkCyan
-        Write-Host "======================================================`n" -ForegroundColor DarkCyan
+        # -SuppressVerdictBanner gates ONLY the interactive OVERALL VERDICT banner;
+        # verdict / confidence / risk-score computation above and the structured
+        # return object below are unaffected. Downstream rich-detail blocks
+        # (behavior overlaps, kill-chain rollup, findings, HTML report) remain
+        # outside this guard by design so that existing menu 3a/3b callers with
+        # the switch absent see identical output. A truly silent calibration
+        # invocation must additionally redirect streams at the call site since
+        # the ~270 other Write-Host diagnostics are not gated here.
+        # (Alias -ReturnVerdict resolves to $SuppressVerdictBanner via the alias.)
+        if (-not $SuppressVerdictBanner) {
+            Write-Host "`n`n======================================================" -ForegroundColor DarkCyan
+            Write-Host "  ELASTIC ALERT AGENT  - FORENSIC VERDICT (OFFLINE)" -ForegroundColor DarkCyan
+            Write-Host "  Host: $agentHost  |  Window: $fromTs --> $toTs" -ForegroundColor DarkCyan
+            Write-Host "======================================================`n" -ForegroundColor DarkCyan
 
-        Write-Host "OVERALL VERDICT  : $verdict" -ForegroundColor $verdictColor
-        Write-Host "CONFIDENCE       : $confidence  (Risk Score: $score  |  Unique-to-Malware: $($uniqueMatches.Count)  Rare: $($rareMatches.Count)  Common: $($totalOverlaps - $uniqueMatches.Count - $rareMatches.Count))" -ForegroundColor $verdictColor
+            Write-Host "OVERALL VERDICT  : $verdict" -ForegroundColor $verdictColor
+            Write-Host "CONFIDENCE       : $confidence  (Risk Score: $score  |  Unique-to-Malware: $($uniqueMatches.Count)  Rare: $($rareMatches.Count)  Common: $($totalOverlaps - $uniqueMatches.Count - $rareMatches.Count))" -ForegroundColor $verdictColor
+        }
 
         if ($behaviorOverlap.Length -gt 0) {
             Write-Host "`nBEHAVIORAL INDICATOR OVERLAPS (host activity vs VT sandbox behavior):" -ForegroundColor Yellow
@@ -7805,14 +7897,30 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closePanel()
             Write-Host "  [warn] HTML report failed: $_" -ForegroundColor DarkGray
         }
 
+        # Return object is emitted unconditionally - the -ReturnVerdict switch
+        # only gates the interactive banner block above, not this return. All
+        # pre-existing properties (Verdict/Confidence/RiskScore/Host/Window/
+        # Findings/NextSteps) are preserved for existing callers; the four new
+        # dim-count diagnostics are additive and safe. Counts are sourced from
+        # in-scope match arrays (dedicated $script:_dim* accumulators do not
+        # exist for these buckets; adding them would be a separate change).
+        # NOTE (Review LOW): `HostName` is used here (not `Host`) to avoid
+        # collision with PowerShell's automatic $Host variable when downstream
+        # code destructures via `foreach ($r in $results) { $Host = $r.Host }`
+        # or `Select-Object -Property Host`. Matches AlertContext.HostName
+        # naming so both return schemas expose the same field name.
         return [PSCustomObject]@{
-            Verdict    = $verdict
-            Confidence = $confidence
-            RiskScore  = $score
-            Host       = $agentHost
-            Window     = "$fromTs --> $toTs"
-            Findings   = $findings.ToArray()
-            NextSteps  = $nextSteps.ToArray()
+            Verdict      = $verdict
+            Confidence   = $confidence
+            RiskScore    = $score
+            UniqueCount  = $uniqueMatches.Count
+            RareCount    = $rareMatches.Count
+            DirectUnique = $directUnique.Count
+            DirectRare   = $directRare.Count
+            HostName     = $agentHost
+            Window       = "$fromTs --> $toTs"
+            Findings     = $findings.ToArray()
+            NextSteps    = $nextSteps.ToArray()
         }
 
     } else {
