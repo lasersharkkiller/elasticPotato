@@ -1102,22 +1102,31 @@ function Invoke-ElasticAlertAgentAnalysis {
     # -----------------------------------------------------------------------
     function Invoke-BatchFidelityScan {
         # ---------------------------------------------------------------
-        # PHASE A MIGRATION: prefers manifest + per-dim indices via
-        # Import-FidelityIndices / Get-ArtifactRiskScore. Map is now
-        # double-keyed: $fidMap["$value|$dim"] AND $fidMap[$value] (last-
-        # write wins for the bare-value legacy callers in this file).
-        # The bare-value entry also gets a Dimension property so callers
-        # can detect a multi-dim collision and re-key if needed.
+        # PHASE B PART 2 CLEANUP: the batch scan no longer builds a local
+        # $fidMap. Its ONE job now: prefetch/warm $script:_fid[<dim>] for
+        # every seeded artifact so downstream _FidGet -> Get-ArtifactRiskScore
+        # calls hit an in-memory cache, and return statistics for logging.
+        #
+        # Import-FidelityIndices handles all three availability states:
+        #   - manifest present                 -> new v2 scoring path
+        #   - manifest absent + flat present   -> legacy schema=1 fallback
+        #   - both absent                      -> empty sentinel; consumers
+        #                                         fall through to per-indicator
+        #                                         live scan via Get-IndicatorFidelity
+        # The old ~60-line live-partial-scan fallback (walked malicious/
+        # goodware directories to derive ad-hoc counts) was removed: its
+        # output only lived in the deleted $fidMap and was never surfaced
+        # to $script:_fid, so consumers never saw those counts post-Phase-B-
+        # Part-2. -ForceLegacy is threaded so calibrated manifests still
+        # populate the flat shim for the -UseLegacyFidelity A/B lane.
         # ---------------------------------------------------------------
         param(
             [string[]]$Indicators,
             [hashtable]$IndicatorsByDimension = $null,  # value -> dimension; takes precedence if supplied
-            [int]$SamplePerCategory = 1000
+            [int]$SamplePerCategory = 1000              # kept for signature compat; unused post-cleanup
         )
 
-        $fidMap = @{}
-
-        # Build the value->dimension table.
+        # Build the value->dimension seed table.
         $itemMap = @{}
         if ($IndicatorsByDimension -and $IndicatorsByDimension.Count -gt 0) {
             foreach ($k in $IndicatorsByDimension.Keys) {
@@ -1129,164 +1138,44 @@ function Invoke-ElasticAlertAgentAnalysis {
                 if (-not $itemMap.ContainsKey($ind)) { $itemMap[$ind] = 'unknown' }
             }
         }
-        if ($itemMap.Count -eq 0) { return $fidMap }
+        if ($itemMap.Count -eq 0) {
+            return @{ ArtifactCount = 0; HitsCount = 0; Mode = 'no-artifacts' }
+        }
 
-        # PHASE B PART 2: warm $script:_fid unconditionally via a single
-        # Import-FidelityIndices call BEFORE the primary/legacy branch below.
-        # This is what makes downstream _FidGet calls (which route to
-        # Get-ArtifactRiskScore + read from $script:_fid) work even in the
-        # legacy-only path where the branch below reads the flat file
-        # directly into a local variable. Import-FidelityIndices handles all
-        # three states uniformly: manifest present, manifest absent + flat
-        # present (schema_version=1 legacy mode), or both absent (warning +
-        # empty sentinel). -ForceLegacy guarantees the flat shim also loads
-        # even on a calibrated manifest so the A/B calibration lane works.
+        # Warm the per-dim caches ($script:_fid[<dim>] and/or $script:_fid['_legacy_flat']).
         $baselineRoot = Join-Path $PSScriptRoot "..\output-baseline"
         $manifestPath = Join-Path $baselineRoot 'fidelity-manifest.json'
         $legacyPath   = Join-Path $baselineRoot 'fidelity-index.json'
         [void](Import-FidelityIndices -BaselineRoot $baselineRoot -ForceLegacy:$UseLegacyFidelity)
 
-        # ---- PRIMARY: manifest + per-dim indices ----
-        if (Test-Path $manifestPath) {
-            Write-Host "    Loading fidelity manifest + per-dimension indices..." -ForegroundColor DarkGray
-            try {
-                $hits = 0
-                foreach ($ind in $itemMap.Keys) {
-                    $dim = $itemMap[$ind]
-                    $rs  = Get-ArtifactRiskScore -Value $ind -Dimension $dim
-                    $entry = @{
-                        MalCount      = $rs.M
-                        GoodCount     = $rs.G
-                        Score         = $rs.Score100
-                        Unique        = [bool]$rs.U
-                        Rare          = [bool]$rs.R
-                        LegitNames    = @($rs.LegitNames)
-                        RiskScore     = $rs.RiskScore
-                        Confidence    = $rs.Confidence
-                        PMI           = $rs.PMI
-                        VerdictPoints = $rs.VerdictPoints
-                        Dimension     = $dim
-                    }
-                    $fidMap["$ind|$dim"] = $entry
-                    $fidMap[$ind]        = $entry   # bare-value compat for legacy call sites
-                    if ($rs.M -gt 0) { $hits++ }
-                }
-                Write-Host "    Index lookup complete: $($itemMap.Count) artifacts, $hits with malware association" -ForegroundColor DarkGray
-                return $fidMap
-            } catch {
-                Write-Host "    [!] Manifest load failed: $($_.Exception.Message) -- falling back to legacy index" -ForegroundColor Yellow
-            }
-        }
+        $mode = if     (Test-Path $manifestPath) { 'manifest+per-dim' }
+                elseif (Test-Path $legacyPath)   { 'legacy-flat' }
+                else                             { 'no-index' }
 
-        # ---- LEGACY: flat fidelity-index.json ----
-        if (Test-Path $legacyPath) {
-            Write-Host "    Loading legacy fidelity index..." -ForegroundColor DarkGray
-            try {
-                $index = Get-Content $legacyPath -Raw | ConvertFrom-Json
-                foreach ($ind in $itemMap.Keys) {
-                    $dim = $itemMap[$ind]
-                    $key = $ind.ToLower().Trim()
-                    $entry = $index.$key
-                    if (-not $entry) { $entry = $index.$ind }   # try original casing too
-                    if ($entry) {
-                        $rec = @{
-                            MalCount      = $entry.M
-                            GoodCount     = $entry.G
-                            Score         = $entry.S
-                            Unique        = [bool]$entry.U
-                            Rare          = [bool]$entry.R
-                            LegitNames    = @($entry.L)
-                            RiskScore     = if ($entry.S -gt 0) { [double]$entry.S / 100.0 } else { 0.0 }
-                            # Confidence=0.0 so the new-scoring disjunct cannot fire on legacy data
-                            Confidence    = 0.0
-                            PMI           = 0.0
-                            VerdictPoints = 0
-                            Dimension     = $dim
-                        }
-                    } else {
-                        $rec = @{ MalCount=0; GoodCount=0; Score=0; Unique=$false; Rare=$false; LegitNames=@();
-                                  RiskScore=0.0; Confidence=0.0; PMI=0.0; VerdictPoints=0; Dimension=$dim }
-                    }
-                    $fidMap["$ind|$dim"] = $rec
-                    $fidMap[$ind]        = $rec
-                }
-                # Count bare keys only - $fidMap.Values would double-count entries
-                # (each entry appears under both bare-value and "value|dim" keys).
-                $hits = @($fidMap.Keys | Where-Object { $_ -notmatch '\|' } |
-                          Where-Object { $fidMap[$_].MalCount -gt 0 }).Count
-                Write-Host "    Legacy index lookup complete: $($itemMap.Count) artifacts, $hits with malware association" -ForegroundColor DarkGray
-                return $fidMap
-            } catch {
-                Write-Host "    [!] Legacy index load failed: $($_.Exception.Message) -- falling back to live scan" -ForegroundColor Yellow
-            }
-        } else {
+        if ($mode -eq 'no-index') {
             Write-Host "    [!] No fidelity index found at: $baselineRoot" -ForegroundColor Yellow
             Write-Host "    [!] Run Build-VTFidelityIndex once for full database coverage." -ForegroundColor Yellow
-            Write-Host "    [!] Falling back to partial live scan ($SamplePerCategory files/category)..." -ForegroundColor Yellow
-        }
-        # rebuild cleanInds compat for live fallback below
-        $cleanInds = @($itemMap.Keys)
-
-        # ---- FALLBACK: live partial scan (limited coverage, warns user) ----
-        # Iterate only $cleanInds (raw values), not $fidMap.Keys, because the
-        # latter now also contains composite "value|dim" keys.
-        foreach ($ind in $cleanInds) {
-            $fidMap[$ind] = @{ MalCount=0; GoodCount=0; Score=0; Unique=$false; Rare=$false;
-                               LegitNames=[System.Collections.Generic.List[string]]::new();
-                               RiskScore=0.0; Confidence=0.0; PMI=0.0; VerdictPoints=0;
-                               Dimension=$itemMap[$ind] }
+            Write-Host "    [!] Fidelity queries will return empty; consumers fall back to Get-IndicatorFidelity live scan." -ForegroundColor Yellow
+            return @{ ArtifactCount = $itemMap.Count; HitsCount = 0; Mode = $mode }
         }
 
-        $malPath = Join-Path $BaselineBehaviorsRoot "malicious"
-        if (Test-Path $malPath) {
-            foreach ($f in (Get-ChildItem $malPath -Filter "*.json" -ErrorAction SilentlyContinue | Select-Object -First $SamplePerCategory)) {
-                try {
-                    $content = [System.IO.File]::ReadAllText($f.FullName)
-                    foreach ($ind in $cleanInds) {
-                        if ($content.IndexOf($ind, [System.StringComparison]::OrdinalIgnoreCase) -ge 0) { $fidMap[$ind].MalCount++ }
-                    }
-                } catch {}
+        Write-Host "    Prefetching fidelity ($mode) for $($itemMap.Count) artifacts..." -ForegroundColor DarkGray
+        $hits = 0
+        try {
+            foreach ($ind in $itemMap.Keys) {
+                $dim = $itemMap[$ind]
+                # Get-ArtifactRiskScore lazy-loads $script:_fid[$dim] on first
+                # touch per dimension; this loop warms every dim the seed set
+                # requires. Consumers using _FidGet after this return get
+                # in-memory cache hits.
+                $rs = Get-ArtifactRiskScore -Value $ind -Dimension $dim
+                if ($rs -and [int]$rs.M -gt 0) { $hits++ }
             }
+        } catch {
+            Write-Host "    [!] Fidelity prefetch failed partway: $($_.Exception.Message)" -ForegroundColor Yellow
         }
-        foreach ($cat in @("SignedVerified","unsignedWin","unverified","drivers")) {
-            $catPath = Join-Path $BaselineBehaviorsRoot $cat
-            if (-not (Test-Path $catPath)) { continue }
-            foreach ($f in (Get-ChildItem $catPath -Filter "*.json" -ErrorAction SilentlyContinue | Select-Object -First $SamplePerCategory)) {
-                try {
-                    $content = [System.IO.File]::ReadAllText($f.FullName)
-                    $nameLoaded = $false; $legitName = ""
-                    foreach ($ind in $cleanInds) {
-                        if ($content.IndexOf($ind, [System.StringComparison]::OrdinalIgnoreCase) -ge 0) {
-                            $fidMap[$ind].GoodCount++
-                            if ($fidMap[$ind].LegitNames.Count -lt 3) {
-                                if (-not $nameLoaded) {
-                                    $mp = Join-Path $BaselineMainRoot "$cat\$($f.BaseName).json"
-                                    if (Test-Path $mp) {
-                                        try { $mj = Get-Content $mp -Raw | ConvertFrom-Json
-                                              $attr = $mj.data.attributes
-                                              $legitName = if ($attr.meaningful_name) { $attr.meaningful_name } elseif ($attr.names) { $attr.names[0] } else { "" }
-                                        } catch {}
-                                    }
-                                    $nameLoaded = $true
-                                }
-                                if ($legitName -and -not $fidMap[$ind].LegitNames.Contains($legitName)) { [void]$fidMap[$ind].LegitNames.Add($legitName) }
-                            }
-                        }
-                    }
-                } catch {}
-            }
-        }
-        foreach ($ind in $cleanInds) {
-            $r = $fidMap[$ind]
-            if ($r.MalCount -gt 0 -and $r.GoodCount -eq 0)    { $r.Score = 100; $r.Unique = $true }
-            elseif ($r.MalCount -gt 0 -and $r.GoodCount -le 3) { $r.Score = 95;  $r.Rare   = $true }
-            elseif ($r.MalCount -gt 0)                          { $r.Score = [Math]::Max(50, 95 - ($r.GoodCount * 5)) }
-            $r.RiskScore = if ($r.Score -gt 0) { [double]$r.Score / 100.0 } else { 0.0 }
-            # Also expose under composite key
-            $dim = $itemMap[$ind]
-            $fidMap["$ind|$dim"] = $r
-        }
-        return $fidMap
+        Write-Host "    Prefetch complete ($mode): $($itemMap.Count) artifacts, $hits with malware association" -ForegroundColor DarkGray
+        return @{ ArtifactCount = $itemMap.Count; HitsCount = $hits; Mode = $mode }
     }
 
     # -----------------------------------------------------------------------
@@ -4340,7 +4229,12 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
 
         $_fidMode = if ($script:_fidUseNewScoring) { 'dim-aware index' } else { 'legacy index' }
         Write-Host "`n[+] Batch fidelity scan: $($allArtifacts.Count) unique artifacts ($($indByDim.Count) dim-tagged, mode: $_fidMode)..." -ForegroundColor DarkCyan
-        $fidMap = Invoke-BatchFidelityScan -Indicators $allArtifacts -IndicatorsByDimension $indByDim
+        # PHASE B PART 2 CLEANUP: the batch scan now just prefetches into
+        # $script:_fid (via Import-FidelityIndices + Get-ArtifactRiskScore)
+        # and logs its own stats internally. Consumer reads route through
+        # _FidGet -> Get-ArtifactRiskScore (in-memory cache hits against
+        # the just-warmed $script:_fid). No local fidMap is retained.
+        [void](Invoke-BatchFidelityScan -Indicators $allArtifacts -IndicatorsByDimension $indByDim)
         # Per-dimension seed counts alongside the existing api_events count so analysts
         # can see how many process.Ext.api.name values entered the fidelity index. Actual
         # hit counts land in $script:_dimRiskStats after Add-FidelityHit runs.
@@ -4350,20 +4244,12 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         }
 
         # ---------------------------------------------------------------
-        # PHASE B MIGRATION (read sites):
-        #   _FidGet returns the per-(Value, Dimension) fidelity record
-        #   preferring the composite "value|dim" cache key over the bare
-        #   value (the bare key is last-write-wins across dims, so for
-        #   values that appear in multiple dimensions -- e.g. svchost.exe
-        #   in both 'process' and 'file' -- the composite key is the
-        #   only collision-free lookup).
-        #
-        #   When -Dimension is omitted, we use the Dimension field stored
-        #   on the entry itself (set by Invoke-BatchFidelityScan), then
-        #   fall back to $indByDim, then fall back to the bare entry.
-        #
-        #   Returns $null when the value is not in the cache (callers
-        #   already guard on $null / .ContainsKey).
+        # PHASE B PART 2 (read sites): _FidGet is now a thin wrapper over
+        # Get-ArtifactRiskScore. The batch scan above prefetched $script:_fid
+        # for every artifact in $indByDim, so _FidGet calls are in-memory
+        # cache hits. When -Dimension is omitted, _indByDimCache resolves it.
+        # Returns $null when the value is not in the index; callers already
+        # guard on $null and fall through to Get-IndicatorFidelity live scan.
         # ---------------------------------------------------------------
         $script:_indByDimCache = $indByDim
         function _FidGet {
@@ -4900,13 +4786,13 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                 }
             }
 
-            # Helper: annotate one indicator hit with its fidelity band
-            # Uses pre-computed $fidMap from batch scan; falls back to per-indicator scan.
-            # PHASE A MIGRATION:
-            #   - Accepts -Dimension explicitly (preferred), with -TypeKey kept
-            #     as alias for one release. Both map 1:1 to dimension name.
-            #   - fidMap is now double-keyed (Value, "Value|Dim"). We prefer
-            #     composite-key lookup to disambiguate svchost.exe across dims.
+            # Helper: annotate one indicator hit with its fidelity band.
+            # Reads via _FidGet -> Get-ArtifactRiskScore (per-dim v2 API,
+            # served from the $script:_fid cache warmed by the batch scan);
+            # falls back to Get-IndicatorFidelity per-indicator scan when
+            # the artifact is not in the index.
+            #   - Accepts -Dimension explicitly (preferred), with -TypeKey
+            #     kept as alias for one release. Both map 1:1 to dim name.
             #   - Tracks $maxArtifact_RiskScore / $maxArtifact_Confidence on
             #     the parent scope so the verdict block can read them.
             function Add-FidelityHit {
