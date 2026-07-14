@@ -1069,7 +1069,7 @@ function Invoke-ElasticAlertAgentAnalysis {
                                 $attr = $mj.data.attributes
                                 $name = if ($attr.meaningful_name) { $attr.meaningful_name }
                                         elseif ($attr.names)       { $attr.names[0] }
-                                        else                       { $f.BaseName.Substring(0,12) }
+                                        else                       { $f.BaseName.Substring(0, [Math]::Min(12, $f.BaseName.Length)) }
                                 if ($name -and -not $legitNames.Contains($name)) { $legitNames.Add($name) }
                             }
                         }
@@ -2203,13 +2203,21 @@ Significance: Installation of rogue root certificates enables MITM attacks and T
                         $certDomains = ($certEvents | ForEach-Object { $_.registry.key } | Select-Object -Unique -First 3) -join '; '
                         $timelineStr = "$($psTime.ToString('yyyy-MM-dd HH:mm:ss')) UTC"
 
+                        # Guard cert timestamps: event.created may be null/missing or lack the 'T'
+                        # separator on some Elastic ingest paths; the previous inline substring/split
+                        # threw when either was true. Extract HH:mm:ss safely, fall back to '?' on
+                        # non-conforming inputs so the finding still renders.
+                        $firstCreated = "$($certEvents[0].event.created)"
+                        $lastCreated  = "$($certEvents[-1].event.created)"
+                        $firstCertTime = if ($firstCreated -match 'T(\d{2}:\d{2}:\d{2})') { $Matches[1] } else { '?' }
+                        $lastCertTime  = if ($lastCreated.Length -ge 19) { $lastCreated.Substring(0, 19) } else { $lastCreated }
                         $hardeningDetails = @"
 Post-exploitation hardening framework detected:
   [Phase 1] PowerShell Script Block Logging disabled ($(($psTime).ToString('HH:mm:ss')) UTC)
   [Phase 2] Bulk file timestomping: $tsCount files modified (by $tsProcs)
-  [Phase 3] Root certificate installation: $($certEvents.Count) cert entries written ($(($certEvents[0].event.created -split 'T')[1].substring(0,8)) UTC)
+  [Phase 3] Root certificate installation: $($certEvents.Count) cert entries written ($firstCertTime UTC)
 
-Timeline: $($psTime.ToString('yyyy-MM-dd HH:mm:ss')) - $($certEvents[-1].event.created.Substring(0,19)) UTC
+Timeline: $($psTime.ToString('yyyy-MM-dd HH:mm:ss')) - $lastCertTime UTC
 
 Significance: This coordinated sequence is indicative of a post-exploitation framework (Mimikatz, Empire, etc.) hardening the compromised system for persistent covert access. Attacker is preparing for long-term dwelling and evading forensic timeline analysis.
 "@
@@ -7881,7 +7889,10 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closePanel()
             if ($block -match "NOT IN OFFLINE BASELINE") {
                 [void]$vtUnknownCtx.Add($AlertContext.ProcessHash)
             } else {
-                Write-Host "  $($AlertContext.ProcessName) ($($AlertContext.ProcessHash.Substring(0,16))...):" -NoNewline
+                # [Math]::Min guard matches the AdditionalHashes render at line ~7897;
+                # ProcessHash was only null/whitespace-guarded above (line 7879), not
+                # length-guarded, so a hash shorter than 16 chars would throw.
+                Write-Host "  $($AlertContext.ProcessName) ($($AlertContext.ProcessHash.Substring(0,[Math]::Min(16, $AlertContext.ProcessHash.Length)))...):" -NoNewline
                 if ($block -match "Category\s*:\s*malicious") { Write-Host " MALICIOUS" -ForegroundColor Red }
                 else { $catMatch = [regex]::Match($block,'Category\s*:\s*(\S+)'); Write-Host " $($catMatch.Groups[1].Value)" -ForegroundColor Green }
                 [void]$vtEnrichment.AppendLine($block)
