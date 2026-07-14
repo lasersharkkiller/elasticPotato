@@ -1131,18 +1131,25 @@ function Invoke-ElasticAlertAgentAnalysis {
         }
         if ($itemMap.Count -eq 0) { return $fidMap }
 
-        # ---- PRIMARY: manifest + per-dim indices ----
+        # PHASE B PART 2: warm $script:_fid unconditionally via a single
+        # Import-FidelityIndices call BEFORE the primary/legacy branch below.
+        # This is what makes downstream _FidGet calls (which route to
+        # Get-ArtifactRiskScore + read from $script:_fid) work even in the
+        # legacy-only path where the branch below reads the flat file
+        # directly into a local variable. Import-FidelityIndices handles all
+        # three states uniformly: manifest present, manifest absent + flat
+        # present (schema_version=1 legacy mode), or both absent (warning +
+        # empty sentinel). -ForceLegacy guarantees the flat shim also loads
+        # even on a calibrated manifest so the A/B calibration lane works.
         $baselineRoot = Join-Path $PSScriptRoot "..\output-baseline"
         $manifestPath = Join-Path $baselineRoot 'fidelity-manifest.json'
         $legacyPath   = Join-Path $baselineRoot 'fidelity-index.json'
+        [void](Import-FidelityIndices -BaselineRoot $baselineRoot -ForceLegacy:$UseLegacyFidelity)
 
+        # ---- PRIMARY: manifest + per-dim indices ----
         if (Test-Path $manifestPath) {
             Write-Host "    Loading fidelity manifest + per-dimension indices..." -ForegroundColor DarkGray
             try {
-                # -ForceLegacy guarantees $script:_fid['_legacy_flat'] is populated so
-                # legacy-mode Get-ArtifactRiskScore returns real data, not the empty
-                # sentinel (Review consumer CRITICAL fix).
-                [void](Import-FidelityIndices -BaselineRoot $baselineRoot -ForceLegacy:$UseLegacyFidelity)
                 $hits = 0
                 foreach ($ind in $itemMap.Keys) {
                     $dim = $itemMap[$ind]
@@ -4360,30 +4367,44 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         # ---------------------------------------------------------------
         $script:_indByDimCache = $indByDim
         function _FidGet {
+            # PHASE B PART 2 MIGRATION:
+            # Reads go direct to Get-ArtifactRiskScore (per-dim v2 API) instead of
+            # the deprecated $fidMap composite-key hashtable. Invoke-BatchFidelityScan
+            # already warmed $script:_fid[$Dimension] by calling Get-ArtifactRiskScore
+            # per artifact (see line ~1149), so this call is an in-memory cache hit,
+            # not a disk read.
+            #
+            # Return shape is translated back from the new API (M/G/U/R/Score100)
+            # to the legacy shape (MalCount/GoodCount/Unique/Rare/Score) that all
+            # downstream consumers already speak. Keeping the translation in ONE
+            # place (this helper) means the caller-side edits stay minimal.
             [CmdletBinding()]
             param(
                 [Parameter(Mandatory)] [string]$Value,
                 [string]$Dimension = $null
             )
             if ([string]::IsNullOrEmpty($Value)) { return $null }
-            if (-not $fidMap) { return $null }
-            if ($Dimension) {
-                $ck = "$Value|$Dimension"
-                if ($fidMap.ContainsKey($ck)) { return $fidMap[$ck] }
+            # Dimension can be omitted; fall back to the value->dim map that
+            # Invoke-BatchFidelityScan built.
+            if (-not $Dimension -and $script:_indByDimCache -and $script:_indByDimCache.ContainsKey($Value)) {
+                $Dimension = $script:_indByDimCache[$Value]
             }
-            $bare = if ($fidMap.ContainsKey($Value)) { $fidMap[$Value] } else { $null }
-            if (-not $bare) { return $null }
-            # Re-key via composite using the entry's own Dimension when caller didn't pass one.
-            if (-not $Dimension) {
-                $dimOnEntry = if ($bare.Dimension) { $bare.Dimension } `
-                              elseif ($script:_indByDimCache -and $script:_indByDimCache.ContainsKey($Value)) { $script:_indByDimCache[$Value] } `
-                              else { $null }
-                if ($dimOnEntry) {
-                    $ck2 = "$Value|$dimOnEntry"
-                    if ($fidMap.ContainsKey($ck2)) { return $fidMap[$ck2] }
-                }
+            if (-not $Dimension) { return $null }
+            $rs = Get-ArtifactRiskScore -Value $Value -Dimension $Dimension
+            if (-not $rs -or -not $rs.FoundInIndex) { return $null }
+            return @{
+                MalCount      = [int]$rs.M
+                GoodCount     = [int]$rs.G
+                Score         = [int]$rs.Score100
+                Unique        = [bool]$rs.U
+                Rare          = [bool]$rs.R
+                LegitNames    = @($rs.LegitNames)
+                RiskScore     = [double]$rs.RiskScore
+                Confidence    = [double]$rs.Confidence
+                PMI           = [double]$rs.PMI
+                VerdictPoints = [int]$rs.VerdictPoints
+                Dimension     = $Dimension
             }
-            return $bare
         }
 
         # -------- Cert impersonation joint heuristic (T1036.001) --------
@@ -4400,13 +4421,22 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         }
 
         # Summarize direct artifact fidelity hits.
-        # $fidMap is double-keyed (bare-value AND "value|dim") so the same entry
-        # appears twice in .Keys. Filter to BARE-VALUE keys only (no pipe) before
-        # counting / rendering, otherwise directUnique.Count, finding text,
-        # rareDirectBonus cap, and HTML rows are all doubled.
-        $bareKeys     = @($fidMap.Keys | Where-Object { $_ -notmatch '\|' })
-        $directUnique = @($bareKeys | Where-Object { $fidMap[$_].Unique })
-        $directRare   = @($bareKeys | Where-Object { $fidMap[$_].Rare })
+        # PHASE B PART 2: enumerate the (value -> dim) seed set built by
+        # Invoke-BatchFidelityScan and query via _FidGet (per-dim v2 API +
+        # shape-translate). No composite-key building, no double-keying. The
+        # underlying batch scan already warmed $script:_fid so each _FidGet
+        # here is an in-memory cache hit.
+        $directUnique = @()
+        $directRare   = @()
+        if ($script:_indByDimCache) {
+            foreach ($v in $script:_indByDimCache.Keys) {
+                $fid = _FidGet -Value $v -Dimension $script:_indByDimCache[$v]
+                if ($fid) {
+                    if     ($fid.Unique) { $directUnique += $v }
+                    elseif ($fid.Rare)   { $directRare   += $v }
+                }
+            }
+        }
         Write-Host "    Direct artifact fidelity: UNIQUE=$($directUnique.Count)  RARE=$($directRare.Count)" -ForegroundColor $(if ($directUnique.Count -gt 0) { "Red" } elseif ($directRare.Count -gt 0) { "Yellow" } else { "Cyan" })
 
         # Per-process artifact summary: file / network / registry / alert counts
@@ -4899,10 +4929,11 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                     '^(behavior\.win_api_call|win_api_call|WinApiCall)$' { 'behavior.win_api_call'; break }
                     default                                            { $Dimension }
                 }
-                $composite = "$Value|$dimCanon"
-                $fid = if ($fidMap.ContainsKey($composite)) { $fidMap[$composite] }
-                       elseif ($fidMap.ContainsKey($Value)) { $fidMap[$Value] }
-                       else { Get-IndicatorFidelity -Indicator $Value }
+                # PHASE B PART 2: route via _FidGet (per-dim v2 API + shape-translate)
+                # instead of building composite keys against $fidMap. Falls back to the
+                # per-indicator live scan when the artifact is not in the index at all.
+                $fid = _FidGet -Value $Value -Dimension $dimCanon
+                if (-not $fid) { $fid = Get-IndicatorFidelity -Indicator $Value }
 
                 # Track max risk score / confidence across all artifact hits.
                 # Used by the verdict disjunct (RiskScore>=0.95 AND Conf>=0.4 -> COMPROMISED).
@@ -5049,14 +5080,12 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             $nl = "$n".ToLowerInvariant().Trim()
             if (-not $nl -or $hoistedApiSeen.ContainsKey($nl)) { continue }
             $hoistedApiSeen[$nl] = $true
-            if ($fidMap.ContainsKey("$nl|behavior.win_api_call")) {
-                $e = $fidMap["$nl|behavior.win_api_call"]
-                $mCount = 0; $gCount = 0
-                try { $mCount = [int]$e.MalCount } catch {}
-                try { $gCount = [int]$e.GoodCount } catch {}
-                if (($mCount + $gCount) -gt 0) {
-                    Add-FidelityHit -Label "WIN-API:" -Value $nl -Dimension 'behavior.win_api_call'
-                }
+            # PHASE B PART 2: query the per-dim v2 API instead of a composite $fidMap
+            # key. _FidGet warms $script:_fid via Get-ArtifactRiskScore and returns
+            # the legacy shape used below.
+            $e = _FidGet -Value $nl -Dimension 'behavior.win_api_call'
+            if ($e -and ([int]$e.MalCount + [int]$e.GoodCount) -gt 0) {
+                Add-FidelityHit -Label "WIN-API:" -Value $nl -Dimension 'behavior.win_api_call'
             }
         }
         if ($behMitreMap) {
