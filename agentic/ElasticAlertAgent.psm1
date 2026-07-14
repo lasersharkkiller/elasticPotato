@@ -5027,6 +5027,7 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
 
         $attributionText = "THREAT ATTRIBUTION: Insufficient indicators."
         $topActors = @()
+        $topFrameworks = @()   # populated by the C2 framework detection block below (line ~5731)
         if ($attrObs.Count -gt 0) {
             try {
                 $attrResults = Get-ThreatAttribution -Observations $attrObs.ToArray() -PassThru -MinRarityScore 90 -ErrorAction Stop
@@ -5738,6 +5739,22 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             $score += $addPts
             $findings.Add("C2 framework attribution: $fwName ($confLabel confidence, $fwScore/100, +$addPts pts) - evidence: $fwEvidence")
             $nextSteps.Add("Map $fwName-specific behaviour: review documented TTPs and search bodyfile/network logs for the framework's beacon timing, named pipe naming, and default port choices")
+
+            # Surface the framework in the THREAT ATTRIBUTION header so it stops
+            # showing 'Insufficient indicators' / 'Unavailable' when KEY FINDINGS
+            # correctly attributed a framework from behavioral evidence. APT-actor
+            # attribution (Tier-1 IoC-to-APT matches) and framework attribution
+            # are semantically distinct, so we surface both when both exist:
+            # frameworks read as the C2 tooling used, actors read as the group.
+            $topFrameworks += $fwName
+            $fwLine = "C2 FRAMEWORK: $fwName ($confLabel, $fwScore/100) - $fwEvidence"
+            if ($attributionText -match '^THREAT ATTRIBUTION: (Insufficient indicators|Unavailable|No high-confidence)') {
+                # Nothing useful in the header yet - replace the placeholder.
+                $attributionText = "THREAT ATTRIBUTION: $fwLine"
+            } else {
+                # Tier-1 APT actor block already populated; append framework as an extra line.
+                $attributionText = $attributionText.TrimEnd() + "`n  " + $fwLine
+            }
         }
 
         # =======================================================================
@@ -7314,8 +7331,18 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             $stepsHtml = ""; $si2=1
             foreach ($st in $nextSteps) { $stepsHtml += "<div class='step'><span class='step-n'>$si2.</span>$(_He $st)</div>`n"; $si2++ }
             $attrHtml = if ($attributionText -and $attributionText.Trim() -notmatch "^No Threat|^$") { "<div class='ablock'>$(_He $attributionText)</div>" } else { "<div class='art info'>No Tier-1 attribution from current indicators.</div>" }
-            $actorBadgeHtml = if ($topActors -and $topActors.Count -gt 0) {
-                $badges = ($topActors | ForEach-Object { "<span class='actbadge'>$(_He $_)</span>" }) -join ""
+            $actorBadgeHtml = if (($topActors -and $topActors.Count -gt 0) -or ($topFrameworks -and $topFrameworks.Count -gt 0)) {
+                # Actor badges (APT groups from IoC-to-APT matches) and framework
+                # badges (C2 tooling from behavioral evidence) are semantically
+                # distinct; render both when both are populated. Framework
+                # badges reuse the actbadge class for visual consistency.
+                $badges = ""
+                if ($topActors -and $topActors.Count -gt 0) {
+                    $badges += ($topActors     | ForEach-Object { "<span class='actbadge'>$(_He $_)</span>" }) -join ""
+                }
+                if ($topFrameworks -and $topFrameworks.Count -gt 0) {
+                    $badges += ($topFrameworks | ForEach-Object { "<span class='actbadge'>$(_He "C2:$_")</span>" }) -join ""
+                }
                 "<div class='actarea'><div class='slbl'>POSSIBLE THREAT ATTRIBUTION</div><div class='actlist'>$badges</div></div>"
             } else { "" }
 
