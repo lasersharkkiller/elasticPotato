@@ -665,6 +665,66 @@ function Invoke-ElasticLinuxTriage {
         return $leaf.ToLowerInvariant()
     }
 
+    function Import-GTFOBinsRules {
+        # Load the curated GTFOBins abuse-syntax bundle
+        # (detections\kibanaImport\gtfobins-detections.ndjson). Each non-meta line
+        # is a Kibana-importable rule PLUS agent-side extension fields
+        # (gtfobin/technique/mitre/fidelity_notes/benign_scenarios/abuse_regex).
+        # The abuse_regex is precompiled once per rule for hot-path matching.
+        # Returns @() if the bundle is missing so triage degrades gracefully.
+        param([string]$BundlePath)
+        if (-not (Test-Path -LiteralPath $BundlePath)) {
+            Write-Host "[LP-ELX] GTFOBins bundle not found at $BundlePath (skipping GTFOBins rules)" -ForegroundColor DarkGray
+            return @()
+        }
+        $out = [System.Collections.Generic.List[psobject]]::new()
+        foreach ($line in Get-Content -LiteralPath $BundlePath -Encoding UTF8) {
+            if (-not $line.Trim()) { continue }
+            try { $rec = $line | ConvertFrom-Json -ErrorAction Stop } catch { continue }
+            if ($rec.type -eq 'meta') { continue }
+            if (-not $rec.abuse_regex) { continue }
+            try {
+                $rx = [regex]::new($rec.abuse_regex, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+            } catch { continue }   # skip a rule whose regex won't compile rather than abort the load
+            $rec | Add-Member -NotePropertyName _Rx -NotePropertyValue $rx -Force
+            $out.Add($rec)
+        }
+        return ,$out
+    }
+
+    function Test-GTFOBinsAbuse {
+        # Match one process event's command line against the GTFOBins rule set.
+        # The abuse_regex patterns are anchored on abuse-only tokens (-p, BEGIN{system(,
+        # --checkpoint-action=exec, -u#-1, listener+exec flags, credential-file reads, ...)
+        # and were adversarially FP-tested to 0 false positives on a benign admin/dev/CI
+        # corpus, so a regex hit alone is the signal. If a rule ever carries an optional
+        # `context` object (requires_root_effective / requires_binary_basename /
+        # requires_parent_process), it is honored as an additional narrowing filter;
+        # absent context (current bundle) means regex-only.
+        param(
+            [string]$CommandLine,
+            [string]$Executable = '',
+            [string]$EffectiveUser = '',
+            [string]$ParentName = '',
+            [System.Collections.IList]$Rules
+        )
+        if ([string]::IsNullOrWhiteSpace($CommandLine) -or -not $Rules) { return @() }
+        $exeBase = if ($Executable) { Get-BaseNameLowerL $Executable } else { '' }
+        $hits = [System.Collections.Generic.List[psobject]]::new()
+        foreach ($r in $Rules) {
+            if (-not $r._Rx.IsMatch($CommandLine)) { continue }
+            $ctx = $r.PSObject.Properties['context']
+            if ($ctx -and $ctx.Value) {
+                $c = $ctx.Value
+                if ($c.requires_root_effective -and $EffectiveUser -and ($EffectiveUser.ToLower() -ne 'root')) { continue }
+                if ($c.requires_binary_basename -and $c.requires_binary_basename.Count -gt 0 -and $exeBase -and ($c.requires_binary_basename -notcontains $exeBase)) { continue }
+                if ($c.requires_parent_process -and $c.requires_parent_process.Count -gt 0 -and $ParentName -and ($c.requires_parent_process -notcontains $ParentName.ToLower())) { continue }
+            }
+            $hits.Add($r)
+        }
+        return ,$hits
+    }
+
     function Test-IsLinuxShellLikeProcess {
         # Detect classic shells, shell wrappers, and renamed/copied shell binaries.
         param(
@@ -925,6 +985,17 @@ function Invoke-ElasticLinuxTriage {
     $shellObsByProc = @{}
     $renamedShellCandidates = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
 
+    # One-time load of the curated GTFOBins abuse-syntax rules. These upgrade the
+    # name-only Module 2f below to syntax-anchored detection across ~22 binaries
+    # (find/awk/tar/nc/socat/python/perl/vim/sudo/apt/gdb/...). Bundle absence is
+    # non-fatal (returns @() -> the per-process loop below simply finds no hits).
+    $gtfoBundlePath = Join-Path $PSScriptRoot '..\detections\kibanaImport\gtfobins-detections.ndjson'
+    $gtfoRules = Import-GTFOBinsRules -BundlePath $gtfoBundlePath
+    if ($gtfoRules.Count -gt 0) {
+        Write-Host "[LP-ELX] Loaded $($gtfoRules.Count) GTFOBins abuse-syntax rules" -ForegroundColor DarkGray
+    }
+    $gtfoSeen = [System.Collections.Generic.HashSet[string]]::new()   # dedupe (rule_id|cmd) so a repeated cmd fires once
+
     foreach ($pe in $procEvents) {
         $pName   = To-Str (Get-Field $pe 'process.name')
         $pExe    = To-Str (Get-Field $pe 'process.executable')
@@ -1009,11 +1080,35 @@ function Invoke-ElasticLinuxTriage {
         }
 
         # 2f. Sudo GTFOBins (privilege escalation via allowed binaries)
+        # NOTE: name-only heuristic kept as a coarse net; 2f.1 below adds the
+        # high-fidelity syntax-anchored layer.
         if ($pNL -eq 'sudo' -and $pCmd -match '(?i)\s(bash|sh|python\d?|perl|ruby|vi|vim|less|more|man|awk|find|cp|mv|chmod|chown|env|install|make|nmap|tcpdump|openssl)\b') {
             Add-FindingL 'HIGH' 'Process' `
                 "Sudo GTFOBins Abuse: $pCmd" `
                 "sudo used to run a binary known for privilege escalation (GTFOBins). User: $pUser." `
                 @('T1548.003')
+        }
+
+        # 2f.1 GTFOBins abuse-syntax rules (curated bundle). Fires on the specific
+        # abuse token combinations (-p, BEGIN{system(, --checkpoint-action=exec,
+        # listener+exec, credential-file reads, -u#-1 CVE, ...) — not binary names —
+        # so it catches non-sudo SUID/capability abuse the name-only 2f misses and
+        # does not double-fire on benign use of the same binaries. fidelity_notes and
+        # any known-benign scenarios are surfaced verbatim in the finding Detail per
+        # the CLAUDE.md attribution-honesty philosophy.
+        if ($gtfoRules.Count -gt 0) {
+            $pEffUser = To-Str (Get-Field $pe 'user.effective.name')
+            foreach ($hit in (Test-GTFOBinsAbuse -CommandLine $pCmd -Executable $pExe -EffectiveUser $pEffUser -ParentName $parent -Rules $gtfoRules)) {
+                $dedupeKey = "$($hit.rule_id)|$pCmd"
+                if (-not $gtfoSeen.Add($dedupeKey)) { continue }
+                $sev = switch ("$($hit.severity)".ToLower()) { 'critical' { 'CRITICAL' } 'high' { 'HIGH' } 'medium' { 'MEDIUM' } default { 'LOW' } }
+                $benign = if ($hit.benign_scenarios -and @($hit.benign_scenarios).Count -gt 0) { ' | Known-benign to rule out: ' + (@($hit.benign_scenarios) -join '; ') } else { '' }
+                $cmdSnip = $pCmd.Substring(0, [Math]::Min(300, $pCmd.Length))
+                Add-FindingL $sev 'Privilege Escalation' `
+                    "GTFOBins [$($hit.gtfobin)/$($hit.technique)]: $($hit.name)" `
+                    "Rule $($hit.rule_id) matched. Fidelity: $($hit.fidelity_notes)$benign. User=$pUser Effective=$pEffUser Parent=$parent Cmd=$cmdSnip" `
+                    @($hit.mitre)
+            }
         }
 
         # 2g. Crontab modification
