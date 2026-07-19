@@ -108,7 +108,7 @@ function Get-PurpleTeamMetrics {
     try { $kibanaUrl = (Get-Secret -Name 'Kibana_URL'  -AsPlainText -ErrorAction Stop).Trim().TrimEnd('/') } catch { }
     try { $esUrl     = (Get-Secret -Name 'Elastic_URL' -AsPlainText -ErrorAction Stop).Trim().TrimEnd('/') } catch { }
     if (-not $kibanaUrl) { $kibanaUrl = (Read-Host 'Kibana URL (e.g. https://192.168.71.10  or  https://kibana.lab:5601)').Trim().TrimEnd('/') }
-    if (-not $esUrl)     { $esUrl     = (Read-Host 'Elasticsearch URL (e.g. https://192.168.71.10/elasticsearch  or  https://elasticsearch.lab:9200)').Trim().TrimEnd('/') }
+    if (-not $esUrl)     { $esUrl     = (Read-Host 'Elasticsearch URL (e.g. https://192.168.71.10:9200  or  https://elasticsearch.lab:9200)').Trim().TrimEnd('/') }
 
     Write-Host ("  Auth ES : {0}" -f $esAuthMode) -ForegroundColor DarkGray
     Write-Host ("  Auth Kb : {0}" -f $kbAuthMode) -ForegroundColor DarkGray

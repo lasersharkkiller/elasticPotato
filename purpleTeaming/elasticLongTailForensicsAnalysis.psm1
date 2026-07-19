@@ -45,7 +45,7 @@ function Get-ElasticForensicLongTailAnalysis {
     try { $esPass   = (Get-Secret -Name 'Elastic_Pass'   -AsPlainText -ErrorAction Stop).Trim() } catch {}
 
     if ([string]::IsNullOrWhiteSpace($esUrl)) {
-        $esUrl = (Read-Host "[?] Elastic URL not in vault (e.g. https://192.168.71.10/elasticsearch  or  https://elasticsearch.lab:9200)").TrimEnd('/')
+        $esUrl = (Read-Host "[?] Elastic URL not in vault (e.g. https://192.168.71.10:9200  or  https://elasticsearch.lab:9200)").TrimEnd('/')
     }
     if ([string]::IsNullOrWhiteSpace($esUrl)) { Write-Error "Elastic URL required."; return }
 

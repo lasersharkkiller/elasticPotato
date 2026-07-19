@@ -65,7 +65,7 @@ function Get-ElasticProcessBaseline {
     try { $vtKey = (Get-Secret -Name 'VT_API_Key_1' -AsPlainText -ErrorAction Stop).Trim() } catch {}
 
     if ([string]::IsNullOrWhiteSpace($esUrl)) {
-        $esUrl = Read-Host "[?] Elastic URL not found in vault (e.g. https://192.168.71.10/elasticsearch or https://elasticsearch.lab:9200)"
+        $esUrl = Read-Host "[?] Elastic URL not found in vault (e.g. https://192.168.71.10:9200 or https://elasticsearch.lab:9200)"
         $esUrl = $esUrl.TrimEnd('/')
     }
     if ([string]::IsNullOrWhiteSpace($esUrl)) { Write-Error "Elastic URL required."; return }
