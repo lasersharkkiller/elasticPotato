@@ -807,7 +807,20 @@ function Invoke-ElasticAlertAgentAnalysis {
         # Alias -ReturnVerdict preserves the previous switch name for callers.
         [Parameter(Mandatory=$false)]
         [Alias('ReturnVerdict')]
-        [switch]$SuppressVerdictBanner
+        [switch]$SuppressVerdictBanner,
+        # -----------------------------------------------------------------
+        # OFFLINE / NO-VAULT ELASTIC CREDENTIALS (live-mode pull path)
+        # Override the Elastic_URL / Elastic_ApiKey / Elastic_User / Elastic_Pass
+        # vault secrets when there is no SecretManagement vault (e.g. an air-gapped
+        # test stack). Used only by the live (-not $offlineMode) branch below; the
+        # offline -DetonationLogsDir branch reads NDJSON off disk and needs no creds.
+        # When neither these parameters nor the vault provide credentials, the live
+        # path PROMPTS for them rather than erroring.
+        # -----------------------------------------------------------------
+        [string]$ElasticUrl,
+        [string]$ElasticApiKey,
+        [string]$ElasticUser,
+        [string]$ElasticPass
     )
 
     # Guard: the two new switches only take effect in the DetonationLogsDir
@@ -1226,8 +1239,36 @@ function Invoke-ElasticAlertAgentAnalysis {
             try { $esApiKey = (Get-Secret -Name 'Elastic_ApiKey' -AsPlainText -ErrorAction Stop).Trim() } catch {}
             try { $esUser   = (Get-Secret -Name 'Elastic_User'   -AsPlainText -ErrorAction Stop).Trim() } catch {}
             try { $esPass   = (Get-Secret -Name 'Elastic_Pass'   -AsPlainText -ErrorAction Stop).Trim() } catch {}
+            # Explicit parameters override the vault (offline / no-vault use).
+            if (-not [string]::IsNullOrWhiteSpace($ElasticUrl))    { $esUrl    = $ElasticUrl.Trim().TrimEnd('/') }
+            if (-not [string]::IsNullOrWhiteSpace($ElasticApiKey)) { $esApiKey = $ElasticApiKey.Trim() }
+            if (-not [string]::IsNullOrWhiteSpace($ElasticUser))   { $esUser   = $ElasticUser.Trim() }
+            if (-not [string]::IsNullOrWhiteSpace($ElasticPass))   { $esPass   = $ElasticPass.Trim() }
             if ([string]::IsNullOrWhiteSpace($esUrl)) { $esUrl = (Read-Host "[?] Elastic URL (e.g. https://192.168.71.10/elasticsearch  or  https://elasticsearch.lab:9200)").TrimEnd('/') }
             if ($esUrl -notmatch '^https?://') { $esUrl = "https://$esUrl" }
+
+            # Interactive credential fallback (offline / no vault): prompt instead
+            # of erroring when nothing came from the vault OR parameters. Mirrors the
+            # URL prompt above. Blank API-key answer falls through to user + password.
+            if ([string]::IsNullOrWhiteSpace($esApiKey) -and
+                ([string]::IsNullOrWhiteSpace($esUser) -or [string]::IsNullOrWhiteSpace($esPass))) {
+                Write-Host "[?] No Elastic credentials in vault or parameters - enter them now:" -ForegroundColor Yellow
+                $inKey = Read-Host "    Elastic API key as 'id:api_key' or base64 (blank = use username/password)"
+                if (-not [string]::IsNullOrWhiteSpace($inKey)) {
+                    $esApiKey = $inKey.Trim()
+                } else {
+                    $inUser = Read-Host "    Elastic username"
+                    if (-not [string]::IsNullOrWhiteSpace($inUser)) {
+                        $esUser  = $inUser.Trim()
+                        $secPass = Read-Host "    Elastic password" -AsSecureString
+                        if ($secPass -and $secPass.Length -gt 0) {
+                            $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secPass)
+                            try   { $esPass = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr) }
+                            finally { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
+                        }
+                    }
+                }
+            }
 
             $esAuthMode = ''
             if (-not [string]::IsNullOrWhiteSpace($esApiKey)) {
@@ -1242,9 +1283,15 @@ function Invoke-ElasticAlertAgentAnalysis {
                 $esHdr = @{ 'Authorization' = "Basic $esB64"; 'Content-Type' = 'application/json' }
                 $esAuthMode = "Basic ($esUser)"
             } else {
-                Write-Host "[ERROR] No Elastic credentials in vault. Set ONE of:" -ForegroundColor Red
-                Write-Host "  Set-Secret -Name Elastic_ApiKey -Secret '<id>:<api_key>'   (or pre-encoded base64)" -ForegroundColor DarkGray
-                Write-Host "  Set-Secret -Name Elastic_User   -Secret '<user>'           (and Elastic_Pass)" -ForegroundColor DarkGray
+                Write-Host "[ERROR] No Elastic credentials supplied (vault, parameters, and prompt all empty). Provide ONE of:" -ForegroundColor Red
+                Write-Host ""
+                Write-Host "  Option A - store in the SecretManagement vault:" -ForegroundColor Yellow
+                Write-Host "    Set-Secret -Name Elastic_ApiKey -Secret '<id>:<api_key>'   (or pre-encoded base64)" -ForegroundColor DarkGray
+                Write-Host "    Set-Secret -Name Elastic_User   -Secret '<user>'           (and Elastic_Pass)" -ForegroundColor DarkGray
+                Write-Host ""
+                Write-Host "  Option B - pass directly as parameters (offline / no vault):" -ForegroundColor Yellow
+                Write-Host "    Invoke-ElasticAlertAgentAnalysis -ElasticUrl '<url>' -ElasticApiKey '<id>:<api_key>'" -ForegroundColor DarkGray
+                Write-Host "    Invoke-ElasticAlertAgentAnalysis -ElasticUrl '<url>' -ElasticUser '<user>' -ElasticPass '<pass>'" -ForegroundColor DarkGray
                 return
             }
             Write-Host "  Auth    : $esAuthMode" -ForegroundColor DarkGray

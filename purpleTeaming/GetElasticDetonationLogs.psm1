@@ -8,6 +8,20 @@
         "20:00", "2026-03-18 20:00 EST"). Queries process, network, file,
         registry, and alert events separately and saves each as NDJSON + a
         combined summary CSV.
+    .PARAMETER ElasticUrl
+        Elastic base URL. Overrides the Elastic_URL vault secret. Use this in
+        offline / no-vault environments (e.g. 'https://elasticsearch.lab:9200').
+    .PARAMETER ElasticApiKey
+        Elastic API key as 'id:api_key' (or pre-encoded base64). Overrides the
+        Elastic_ApiKey vault secret. Preferred auth for SO 3.0 / proxied stacks.
+    .PARAMETER ElasticUser
+        Elastic username for Basic auth. Overrides Elastic_User (use with -ElasticPass).
+    .PARAMETER ElasticPass
+        Elastic password for Basic auth. Overrides Elastic_Pass.
+    .EXAMPLE
+        # Offline / no vault - pass credentials directly:
+        Get-ElasticDetonationLogs -ElasticUrl 'https://elasticsearch.lab:9200' -ElasticApiKey 'id:api_key'
+        Get-ElasticDetonationLogs -ElasticUrl 'https://elasticsearch.lab:9200' -ElasticUser 'elastic' -ElasticPass 'changeme'
     .NOTES
         Auth precedence (first available wins):
           1. ApiKey  -  vault secret Elastic_ApiKey  (preferred; required for
@@ -24,6 +38,13 @@
         is firewalled off). For vanilla Elastic the URL is the :9200 endpoint
         directly, e.g. 'https://elasticsearch.lab:9200'.
     #>
+    [CmdletBinding()]
+    param(
+        [string]$ElasticUrl,
+        [string]$ElasticApiKey,
+        [string]$ElasticUser,
+        [string]$ElasticPass
+    )
 
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
@@ -45,6 +66,17 @@
     try { $esUser   = (Get-Secret -Name 'Elastic_User'   -AsPlainText -ErrorAction Stop).Trim() } catch {}
     try { $esPass   = (Get-Secret -Name 'Elastic_Pass'   -AsPlainText -ErrorAction Stop).Trim() } catch {}
 
+    # Explicit parameters override the vault. This is the offline / no-vault path:
+    # pass -ElasticUrl plus (-ElasticApiKey  OR  -ElasticUser + -ElasticPass) directly,
+    # e.g. Get-ElasticDetonationLogs -ElasticUrl '...' -ElasticApiKey 'id:api_key'.
+    # The Get-Secret calls above are wrapped in try/catch, so a missing vault (or the
+    # SecretManagement module not being installed at all) leaves these null and the
+    # parameters / prompts below fill them in.
+    if (-not [string]::IsNullOrWhiteSpace($ElasticUrl))    { $esUrl    = $ElasticUrl.Trim().TrimEnd('/') }
+    if (-not [string]::IsNullOrWhiteSpace($ElasticApiKey)) { $esApiKey = $ElasticApiKey.Trim() }
+    if (-not [string]::IsNullOrWhiteSpace($ElasticUser))   { $esUser   = $ElasticUser.Trim() }
+    if (-not [string]::IsNullOrWhiteSpace($ElasticPass))   { $esPass   = $ElasticPass.Trim() }
+
     if ([string]::IsNullOrWhiteSpace($esUrl)) {
         $esUrl = Read-Host "[?] Elastic URL not found in vault (e.g. https://192.168.71.10/elasticsearch or https://elasticsearch.lab:9200)"
         $esUrl = $esUrl.TrimEnd('/')
@@ -59,6 +91,32 @@
         if (-not $uri.Host) { throw "No host" }
     } catch {
         Write-Host "[ERROR] Elastic URL is not valid: '$esUrl'" -ForegroundColor Red; return
+    }
+
+    # Interactive credential fallback (offline / no vault): if nothing came from
+    # the vault OR parameters, prompt rather than erroring - mirrors the URL prompt
+    # above. Leave the API-key answer blank to fall through to username + password.
+    if ([string]::IsNullOrWhiteSpace($esApiKey) -and
+        ([string]::IsNullOrWhiteSpace($esUser) -or [string]::IsNullOrWhiteSpace($esPass))) {
+        Write-Host "[?] No Elastic credentials in vault or parameters - enter them now:" -ForegroundColor Yellow
+        $inKey = Read-Host "    Elastic API key as 'id:api_key' or base64 (blank = use username/password)"
+        if (-not [string]::IsNullOrWhiteSpace($inKey)) {
+            $esApiKey = $inKey.Trim()
+        } else {
+            $inUser = Read-Host "    Elastic username"
+            if (-not [string]::IsNullOrWhiteSpace($inUser)) {
+                $esUser  = $inUser.Trim()
+                # Read the password as a SecureString so it is not echoed, then
+                # convert to plain text for the Basic header (matches the vault's
+                # -AsPlainText usage). BSTR is zeroed/freed immediately after.
+                $secPass = Read-Host "    Elastic password" -AsSecureString
+                if ($secPass -and $secPass.Length -gt 0) {
+                    $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secPass)
+                    try   { $esPass = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr) }
+                    finally { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
+                }
+            }
+        }
     }
 
     # Build the auth header. Prefer API key when present; fall back to Basic.
@@ -80,9 +138,15 @@
         $esHdr = @{ 'Authorization' = "Basic $b64"; 'Content-Type' = 'application/json' }
         $authMode = "Basic ($esUser)"
     } else {
-        Write-Host "[ERROR] No Elastic credentials in vault. Set ONE of:" -ForegroundColor Red
-        Write-Host "  Set-Secret -Name Elastic_ApiKey -Secret '<id>:<api_key>'   (or pre-encoded base64)" -ForegroundColor DarkGray
-        Write-Host "  Set-Secret -Name Elastic_User   -Secret '<user>'           (and Elastic_Pass)" -ForegroundColor DarkGray
+        Write-Host "[ERROR] No Elastic credentials supplied (vault, parameters, and prompt all empty). Provide ONE of:" -ForegroundColor Red
+        Write-Host ""
+        Write-Host "  Option A - store in the SecretManagement vault:" -ForegroundColor Yellow
+        Write-Host "    Set-Secret -Name Elastic_ApiKey -Secret '<id>:<api_key>'   (or pre-encoded base64)" -ForegroundColor DarkGray
+        Write-Host "    Set-Secret -Name Elastic_User   -Secret '<user>'           (and Elastic_Pass)" -ForegroundColor DarkGray
+        Write-Host ""
+        Write-Host "  Option B - pass directly as parameters (offline / no vault):" -ForegroundColor Yellow
+        Write-Host "    Get-ElasticDetonationLogs -ElasticUrl '<url>' -ElasticApiKey '<id>:<api_key>'" -ForegroundColor DarkGray
+        Write-Host "    Get-ElasticDetonationLogs -ElasticUrl '<url>' -ElasticUser '<user>' -ElasticPass '<pass>'" -ForegroundColor DarkGray
         return
     }
     Write-Host "  Auth    : $authMode" -ForegroundColor DarkGray
