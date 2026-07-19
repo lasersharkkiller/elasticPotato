@@ -77,6 +77,9 @@ Import-Module -Name ".\purpleTeaming\Invoke-TorchElasticQuery.psm1" -Force -Erro
 Import-Module -Name ".\detections\Update-LolDriversCache.psm1"
 Import-Module -Name ".\detections\Update-ElasticYaraRules.psm1"
 
+# Push + enable local NDJSON detection rules into the Kibana SIEM (3i)
+Import-Module -Name ".\detections\Sync-ElasticDetections.psm1"
+
 # Thor/Loki IOC + YARA scanner (3e)
 Import-Module -Name ".\baseline\Invoke-LokiScan.psm1"
 
@@ -125,6 +128,7 @@ Write-Host "3e) Run IOC/YARA Scanner Against Downloaded Malicious Files (Thor/Lo
 Write-Host "3f) [AI Agent] Offline Analysis + IOC/YARA Scan (Windows)" -ForegroundColor DarkRed
 Write-Host "3g) Update LOL Drivers Cache (loldrivers.io + LOLDrivers Sigma + SigmaHQ)" -ForegroundColor DarkRed
 Write-Host "3h) Update Elastic YARA Rules (elastic/protections-artifacts -> detections\yara\)" -ForegroundColor DarkRed
+Write-Host "3i) Push + Enable Detection Rules to Kibana SIEM (GTFOBins/Adaptix/persistence/Signal)" -ForegroundColor DarkRed
 Write-Host ""
 
 # -- GROUP 4: Elastic Baseline (was Group 12 in Loaded-Potato) ----------------
@@ -384,6 +388,11 @@ elseif ($functionChoice -eq "3g") {
 }
 elseif ($functionChoice -eq "3h") {
     Update-ElasticYaraRules
+}
+elseif ($functionChoice -eq "3i") {
+    # Push local NDJSON rule bundles to the Kibana SIEM and enable them.
+    # Prompts for Kibana URL + auth (or reads Kibana_URL / Kibana_ApiKey secrets).
+    Sync-ElasticDetections -Enable
 }
 
 # -- GROUP 4: Elastic Baseline (was Group 12 in Loaded-Potato) ----------------

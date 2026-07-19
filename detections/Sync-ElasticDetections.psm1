@@ -102,7 +102,12 @@ function Sync-ElasticDetections {
         [switch]$DryRun,
 
         # Path to folder containing *.ndjson detection files.
-        [string]$DetectionsPath
+        [string]$DetectionsPath,
+
+        # After pushing, ENABLE the rules: newly-created rules are turned on, and any
+        # rules that already existed in the SIEM are switched on too. Without this,
+        # rules are created disabled (Kibana default) and you enable them by hand.
+        [switch]$Enable
     )
 
     # ---- Resolve DetectionsPath ---------------------------------------------------
@@ -274,10 +279,12 @@ function Sync-ElasticDetections {
     $countPresent = 0
     $countError   = 0
     $missingRules = [System.Collections.Generic.List[PSCustomObject]]::new()
+    $presentRules = [System.Collections.Generic.List[PSCustomObject]]::new()
 
     foreach ($rule in $localRules) {
         if ($existingRuleIds.Contains($rule.rule_id)) {
             $countPresent++
+            $presentRules.Add($rule)
         } else {
             $missingRules.Add($rule)
         }
@@ -304,6 +311,8 @@ function Sync-ElasticDetections {
             if ($prop -eq 'id') { continue }
             $bodyHash[$prop] = $rule.$prop
         }
+        # -Enable: create the rule already switched on (overrides the NDJSON enabled=false).
+        if ($Enable) { $bodyHash['enabled'] = $true }
 
         $body = ConvertTo-Json $bodyHash -Depth 20 -Compress
 
@@ -319,6 +328,25 @@ function Sync-ElasticDetections {
             Write-Host "      msg     : $errMsg" -ForegroundColor DarkGray
             $countError++
         }
+    }
+
+    # ---- Enable already-present rules (only with -Enable) ------------------------
+    $countEnabled   = 0
+    $countEnableErr = 0
+    if ($Enable -and -not $DryRun -and $presentRules.Count -gt 0) {
+        Write-Host ""
+        Write-Host "[*] Enabling $($presentRules.Count) rule(s) that already existed in the SIEM..." -ForegroundColor Cyan
+        foreach ($pr in $presentRules) {
+            try {
+                $patchBody = ConvertTo-Json @{ rule_id = $pr.rule_id; enabled = $true } -Compress
+                Invoke-KibanaRequest -Uri "$KibanaUrl/api/detection_engine/rules" -Method PATCH -Headers $postHeaders -Body $patchBody | Out-Null
+                $countEnabled++
+            } catch {
+                $countEnableErr++
+                Write-Host "  [!] Enable failed: $($pr.name)  ($($_.Exception.Message))" -ForegroundColor DarkGray
+            }
+        }
+        Write-Host "    Enabled $countEnabled already-present rule(s)." -ForegroundColor Green
     }
 
     # ---- Summary -----------------------------------------------------------------
@@ -338,9 +366,16 @@ function Sync-ElasticDetections {
     }
     Write-Host ""
 
-    if (-not $DryRun -and $countAdded -gt 0) {
-        Write-Host "  All new rules are created with enabled=false." -ForegroundColor DarkGray
-        Write-Host "  Review and enable in Kibana: Stack Management -> Security -> Detection Rules." -ForegroundColor DarkGray
+    if (-not $DryRun) {
+        if ($Enable) {
+            $totalOn = $countAdded + $countEnabled
+            Write-Host "  Rules enabled         : $totalOn  ($countAdded new + $countEnabled already-present)" -ForegroundColor Green
+            if ($countEnableErr -gt 0) { Write-Host "  Enable errors         : $countEnableErr" -ForegroundColor Yellow }
+            Write-Host "  Verify in Kibana: Security -> Rules (Detection Rules)." -ForegroundColor DarkGray
+        } elseif ($countAdded -gt 0) {
+            Write-Host "  New rules were created DISABLED. Re-run with -Enable to turn them on," -ForegroundColor DarkGray
+            Write-Host "  or enable in Kibana: Security -> Rules (Detection Rules)." -ForegroundColor DarkGray
+        }
         Write-Host ""
     }
 }
