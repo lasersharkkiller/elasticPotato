@@ -29,7 +29,7 @@ function Get-ElasticAlertsAndThreats {
     # --- TLS + CERT SETUP ---
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     if ($PSVersionTable.PSVersion.Major -lt 6) {
-        [Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
+        if (-not ([System.Management.Automation.PSTypeName]'ElasticPotatoCertBypass').Type) { Add-Type -TypeDefinition 'using System.Net;using System.Net.Security;using System.Security.Cryptography.X509Certificates;public static class ElasticPotatoCertBypass{public static void Enable(){ServicePointManager.ServerCertificateValidationCallback=delegate(object s,X509Certificate c,X509Chain ch,SslPolicyErrors e){return true;};}}' }; [ElasticPotatoCertBypass]::Enable()  # PS5.1: compiled delegate avoids the "no Runspace" cert-callback crash
     }
     $restArgs = if ($PSVersionTable.PSVersion.Major -ge 6) { @{ SkipCertificateCheck = $true } } else { @{} }
 

@@ -1,4 +1,4 @@
-﻿function Get-ElasticDetonationLogs {
+function Get-ElasticDetonationLogs {
     <#
     .SYNOPSIS
         Pulls all Elastic logs from a detonation window and saves them to a
@@ -33,10 +33,14 @@
 
         Required regardless: vault secret Elastic_URL.
 
-        For Security Onion 3.0 the URL is usually the proxy path, e.g.
-        'https://192.168.71.10/elasticsearch' (not the :9200 endpoint, which
-        is firewalled off). For vanilla Elastic the URL is the :9200 endpoint
-        directly, e.g. 'https://elasticsearch.lab:9200'.
+        For Security Onion the Elasticsearch REST API is on port :9200, e.g.
+        'https://192.168.71.10:9200'. It is FIREWALLED from external hosts by
+        default - allow your workstation IP in the SOC UI under
+        Administration > Configuration > firewall > hostgroups > elasticsearch_rest,
+        then Options > SYNCHRONIZE GRID. (Some SO builds instead front ES with an
+        nginx proxy at 'https://<host>/elasticsearch'; if the :9200 probe returns a
+        302 the tool auto-offers the SSH connector.) For vanilla Elastic the URL is
+        the :9200 endpoint directly, e.g. 'https://elasticsearch.lab:9200'.
     #>
     [CmdletBinding()]
     param(
@@ -51,7 +55,7 @@
     # Bypass self-signed certificate validation for internal Elasticsearch clusters.
     # PS 5.1 uses ServicePointManager; PS 7+ uses -SkipCertificateCheck per call.
     if ($PSVersionTable.PSVersion.Major -lt 6) {
-        [Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
+        if (-not ([System.Management.Automation.PSTypeName]'ElasticPotatoCertBypass').Type) { Add-Type -TypeDefinition 'using System.Net;using System.Net.Security;using System.Security.Cryptography.X509Certificates;public static class ElasticPotatoCertBypass{public static void Enable(){ServicePointManager.ServerCertificateValidationCallback=delegate(object s,X509Certificate c,X509Chain ch,SslPolicyErrors e){return true;};}}' }; [ElasticPotatoCertBypass]::Enable()  # PS5.1: compiled delegate avoids the "no Runspace" cert-callback crash
     }
     $restArgs = if ($PSVersionTable.PSVersion.Major -ge 6) { @{ SkipCertificateCheck = $true } } else { @{} }
 
@@ -78,7 +82,7 @@
     if (-not [string]::IsNullOrWhiteSpace($ElasticPass))   { $esPass   = $ElasticPass.Trim() }
 
     if ([string]::IsNullOrWhiteSpace($esUrl)) {
-        $esUrl = Read-Host "[?] Elastic URL not found in vault (e.g. https://192.168.71.10/elasticsearch or https://elasticsearch.lab:9200)"
+        $esUrl = Read-Host "[?] Elastic URL not found in vault (e.g. https://192.168.71.10:9200 or https://elasticsearch.lab:9200)"
         $esUrl = $esUrl.TrimEnd('/')
     }
     if ([string]::IsNullOrWhiteSpace($esUrl)) { Write-Error "Elastic URL required."; return }
@@ -361,6 +365,8 @@
         Write-Host "    2. Wrong credentials stored in vault" -ForegroundColor DarkYellow
         Write-Host "    3. Elasticsearch requires an API key instead of Basic auth" -ForegroundColor DarkYellow
         Write-Host "    4. Firewall blocking the connection from this machine" -ForegroundColor DarkYellow
+        Write-Host "    5. PowerShell 5.1 cert-callback bug - if the inner error mentions 'no Runspace'," -ForegroundColor DarkYellow
+        Write-Host "       re-run in PowerShell 7 (pwsh) or update elasticPotato (bypass is now runspace-safe)" -ForegroundColor DarkYellow
         return
     }
 

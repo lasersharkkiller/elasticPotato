@@ -1,4 +1,4 @@
-﻿# =========================================================================
+# =========================================================================
 # MODULE-SCOPE FIDELITY INDEX LAYER (Option-B per-dimension orthogonal index)
 # -------------------------------------------------------------------------
 # Public:
@@ -1230,7 +1230,7 @@ function Invoke-ElasticAlertAgentAnalysis {
         if (-not $offlineMode) {
             [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
             if ($PSVersionTable.PSVersion.Major -lt 6) {
-                [Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
+                if (-not ([System.Management.Automation.PSTypeName]'ElasticPotatoCertBypass').Type) { Add-Type -TypeDefinition 'using System.Net;using System.Net.Security;using System.Security.Cryptography.X509Certificates;public static class ElasticPotatoCertBypass{public static void Enable(){ServicePointManager.ServerCertificateValidationCallback=delegate(object s,X509Certificate c,X509Chain ch,SslPolicyErrors e){return true;};}}' }; [ElasticPotatoCertBypass]::Enable()  # PS5.1: compiled delegate avoids the "no Runspace" cert-callback crash
             }
             $esRestArgs = if ($PSVersionTable.PSVersion.Major -ge 6) { @{ SkipCertificateCheck = $true } } else { @{} }
 
@@ -1244,7 +1244,7 @@ function Invoke-ElasticAlertAgentAnalysis {
             if (-not [string]::IsNullOrWhiteSpace($ElasticApiKey)) { $esApiKey = $ElasticApiKey.Trim() }
             if (-not [string]::IsNullOrWhiteSpace($ElasticUser))   { $esUser   = $ElasticUser.Trim() }
             if (-not [string]::IsNullOrWhiteSpace($ElasticPass))   { $esPass   = $ElasticPass.Trim() }
-            if ([string]::IsNullOrWhiteSpace($esUrl)) { $esUrl = (Read-Host "[?] Elastic URL (e.g. https://192.168.71.10/elasticsearch  or  https://elasticsearch.lab:9200)").TrimEnd('/') }
+            if ([string]::IsNullOrWhiteSpace($esUrl)) { $esUrl = (Read-Host "[?] Elastic URL (e.g. https://192.168.71.10:9200  or  https://elasticsearch.lab:9200)").TrimEnd('/') }
             if ($esUrl -notmatch '^https?://') { $esUrl = "https://$esUrl" }
 
             # Interactive credential fallback (offline / no vault): prompt instead
@@ -3511,7 +3511,7 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         # redirect unauthenticated Basic requests to a SOC login page.
         [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
         if ($PSVersionTable.PSVersion.Major -lt 6) {
-            [Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
+            if (-not ([System.Management.Automation.PSTypeName]'ElasticPotatoCertBypass').Type) { Add-Type -TypeDefinition 'using System.Net;using System.Net.Security;using System.Security.Cryptography.X509Certificates;public static class ElasticPotatoCertBypass{public static void Enable(){ServicePointManager.ServerCertificateValidationCallback=delegate(object s,X509Certificate c,X509Chain ch,SslPolicyErrors e){return true;};}}' }; [ElasticPotatoCertBypass]::Enable()  # PS5.1: compiled delegate avoids the "no Runspace" cert-callback crash
         }
         $esRestArgs = if ($PSVersionTable.PSVersion.Major -ge 6) { @{ SkipCertificateCheck = $true } } else { @{} }
 
@@ -3522,7 +3522,7 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         try { $esApiKey = (Get-Secret -Name 'Elastic_ApiKey' -AsPlainText -ErrorAction Stop).Trim() } catch {}
         try { $esUser   = (Get-Secret -Name 'Elastic_User'   -AsPlainText -ErrorAction Stop).Trim() } catch {}
         try { $esPass   = (Get-Secret -Name 'Elastic_Pass'   -AsPlainText -ErrorAction Stop).Trim() } catch {}
-        if ([string]::IsNullOrWhiteSpace($esUrl)) { $esUrl = (Read-Host "[?] Elastic URL (e.g. https://192.168.71.10/elasticsearch  or  https://elasticsearch.lab:9200)").TrimEnd('/') }
+        if ([string]::IsNullOrWhiteSpace($esUrl)) { $esUrl = (Read-Host "[?] Elastic URL (e.g. https://192.168.71.10:9200  or  https://elasticsearch.lab:9200)").TrimEnd('/') }
         if ($esUrl -notmatch '^https?://') { $esUrl = "https://$esUrl" }
 
         # Build auth header. Prefer API key when present; fall back to Basic.

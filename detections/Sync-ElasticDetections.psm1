@@ -72,7 +72,7 @@ function Invoke-KibanaRequest {
 
     } else {
         # PS 5.1 / .NET Framework — always HTTP/1.1, no HTTP/2 risk
-        [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
+        if (-not ([System.Management.Automation.PSTypeName]'ElasticPotatoCertBypass').Type) { Add-Type -TypeDefinition 'using System.Net;using System.Net.Security;using System.Security.Cryptography.X509Certificates;public static class ElasticPotatoCertBypass{public static void Enable(){ServicePointManager.ServerCertificateValidationCallback=delegate(object s,X509Certificate c,X509Chain ch,SslPolicyErrors e){return true;};}}' }; [ElasticPotatoCertBypass]::Enable()  # PS5.1: compiled delegate avoids the "no Runspace" cert-callback crash
         [System.Net.ServicePointManager]::SecurityProtocol =
             [System.Net.SecurityProtocolType]::Tls12
 
