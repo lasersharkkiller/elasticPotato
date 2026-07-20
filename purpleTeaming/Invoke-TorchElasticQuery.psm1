@@ -52,6 +52,25 @@ function Resolve-TorchSecret {
 }
 
 # -----------------------------------------------------------------------------
+# Resolve the sudo password for so-elasticsearch-query. A password carried on the
+# SSH session object (set by Get-TorchSSHSession from a -SshPass / -SudoPass param
+# or an interactive prompt) wins; otherwise fall back to the TORCH_SSH_SudoPass /
+# TORCH_SSH_Pass vault secrets. This lets the SO pull run offline with no vault.
+function Resolve-TorchSudoPass {
+    param($Session)
+    if ($Session -and ($Session.PSObject.Properties.Name -contains 'SudoPass') -and
+        -not [string]::IsNullOrWhiteSpace($Session.SudoPass)) {
+        return $Session.SudoPass
+    }
+    $sp = $null
+    try { $sp = (Get-Secret -Name 'TORCH_SSH_SudoPass' -AsPlainText -ErrorAction Stop).Trim() } catch {}
+    if ([string]::IsNullOrWhiteSpace($sp)) {
+        try { $sp = (Get-Secret -Name 'TORCH_SSH_Pass' -AsPlainText -ErrorAction Stop).Trim() } catch {}
+    }
+    return $sp
+}
+
+# -----------------------------------------------------------------------------
 function Assert-PoshSSH {
     if (-not (Get-Module -ListAvailable -Name 'Posh-SSH')) {
         throw "Posh-SSH module is required but not installed. Run: Install-Module -Name Posh-SSH -Scope CurrentUser -Force"
@@ -83,6 +102,13 @@ function Get-TorchSSHSession {
 #>
     [CmdletBinding()]
     param(
+        # Direct SSH credentials (offline / no vault). Each overrides the matching
+        # TORCH_SSH_* vault secret below; anything still missing is prompted for.
+        [string]$SshHost,
+        [string]$SshUser,
+        [string]$SshPass,
+        [string]$SshKeyPath,
+        [string]$SudoPass,
         [string]$VaultHost    = 'TORCH_SSH_Host',
         [string]$VaultUser    = 'TORCH_SSH_User',
         [string]$VaultPass    = 'TORCH_SSH_Pass',
@@ -92,20 +118,41 @@ function Get-TorchSSHSession {
 
     Assert-PoshSSH
 
-    $sshHost = Resolve-TorchSecret -Name $VaultHost -AsPlainText
-    $sshUser = Resolve-TorchSecret -Name $VaultUser -AsPlainText
-    $sshKey  = Resolve-TorchSecret -Name $VaultKeyPath -AsPlainText
-    $sshPass = Resolve-TorchSecret -Name $VaultPass
+    # Precedence: explicit parameter > vault secret > interactive prompt.
+    $sshHost = if (-not [string]::IsNullOrWhiteSpace($SshHost))    { $SshHost }    else { Resolve-TorchSecret -Name $VaultHost -AsPlainText }
+    $sshUser = if (-not [string]::IsNullOrWhiteSpace($SshUser))    { $SshUser }    else { Resolve-TorchSecret -Name $VaultUser -AsPlainText }
+    $sshKey  = if (-not [string]::IsNullOrWhiteSpace($SshKeyPath)) { $SshKeyPath } else { Resolve-TorchSecret -Name $VaultKeyPath -AsPlainText }
+    $sshPass = if (-not [string]::IsNullOrWhiteSpace($SshPass))    { $SshPass }    else { Resolve-TorchSecret -Name $VaultPass }
+
+    # Interactive fallback (offline / no vault): prompt for anything still missing.
+    if ([string]::IsNullOrWhiteSpace($sshHost)) { $sshHost = (Read-Host "[?] Security Onion SSH host / IP").Trim() }
+    if ([string]::IsNullOrWhiteSpace($sshUser)) { $sshUser = (Read-Host "[?] SO SSH username").Trim() }
+    if ([string]::IsNullOrWhiteSpace($sshKey) -and -not $sshPass) {
+        $__sp = Read-Host "[?] SO SSH password (blank to use a private key file instead)" -AsSecureString
+        if ($__sp -and $__sp.Length -gt 0) { $sshPass = $__sp }
+        else { $sshKey = (Read-Host "[?] SO SSH private key path").Trim() }
+    }
 
     $missing = @()
-    if ([string]::IsNullOrWhiteSpace($sshHost)) { $missing += $VaultHost }
-    if ([string]::IsNullOrWhiteSpace($sshUser)) { $missing += $VaultUser }
-    if ([string]::IsNullOrWhiteSpace($sshKey) -and -not $sshPass) {
-        $missing += "$VaultKeyPath or $VaultPass"
-    }
+    if ([string]::IsNullOrWhiteSpace($sshHost)) { $missing += 'host' }
+    if ([string]::IsNullOrWhiteSpace($sshUser)) { $missing += 'user' }
+    if ([string]::IsNullOrWhiteSpace($sshKey) -and -not $sshPass) { $missing += 'password or key' }
     if ($missing.Count -gt 0) {
-        throw "Missing vault secret(s): $($missing -join ', '). Set with: Set-Secret -Name <name> -Secret <value>"
+        throw "Missing SSH credential(s): $($missing -join ', '). Pass -SshHost/-SshUser/-SshPass (or -SshKeyPath), set TORCH_SSH_* vault secrets, or answer the prompts."
     }
+
+    # Normalize the login password to plaintext for sudo reuse: so-elasticsearch-query
+    # needs it via `sudo -S`. Stored on the returned session as .SudoPass; -SudoPass
+    # overrides when the sudo password differs from the SSH login password.
+    $sshPassPlain = $null
+    if ($sshPass -is [securestring]) {
+        $__b = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($sshPass)
+        try   { $sshPassPlain = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($__b) }
+        finally { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($__b) }
+    } elseif ($sshPass) {
+        $sshPassPlain = [string]$sshPass
+    }
+    $sudoPassPlain = if (-not [string]::IsNullOrWhiteSpace($SudoPass)) { $SudoPass } else { $sshPassPlain }
 
     try {
         if ($sshKey -and (Test-Path $sshKey)) {
@@ -142,6 +189,7 @@ function Get-TorchSSHSession {
         Host      = $sshHost
         User      = $sshUser
         AuthMode  = $authMode
+        SudoPass  = $sudoPassPlain   # plaintext, reused for `sudo -S so-elasticsearch-query`
         OpenedAt  = (Get-Date).ToUniversalTime()
     }
 }
@@ -220,13 +268,9 @@ function Invoke-TorchElasticQuery {
         # SudoPass secret first; fall back to TORCH_SSH_Pass (which is the
         # same SSH login password on most SO 3.0 setups since the secon
         # account uses the same password for both).
-        $sudoPass = $null
-        try { $sudoPass = (Get-Secret -Name 'TORCH_SSH_SudoPass' -AsPlainText -ErrorAction Stop).Trim() } catch {}
+        $sudoPass = Resolve-TorchSudoPass -Session $Session
         if ([string]::IsNullOrWhiteSpace($sudoPass)) {
-            try { $sudoPass = (Get-Secret -Name 'TORCH_SSH_Pass' -AsPlainText -ErrorAction Stop).Trim() } catch {}
-        }
-        if ([string]::IsNullOrWhiteSpace($sudoPass)) {
-            throw "sudo so-elasticsearch-query requires a password but neither TORCH_SSH_SudoPass nor TORCH_SSH_Pass is set in the vault. Set one with Set-Secret, or ask the SO admin to configure NOPASSWD sudo for /usr/sbin/so-elasticsearch-query."
+            throw "sudo so-elasticsearch-query requires a password but none was available (session, TORCH_SSH_SudoPass, or TORCH_SSH_Pass). Provide -SshPass/-SudoPass to Save-TorchElasticDetonationLogs, set the vault secret, or configure NOPASSWD sudo for /usr/sbin/so-elasticsearch-query."
         }
 
         # --- build remote command ---
@@ -400,13 +444,9 @@ function Invoke-TorchElasticDiagnose {
             # shape ('<index>/_search?size=N') in Invoke-TorchElasticQuery
             # cannot produce _cat output. Call so-elasticsearch-query
             # directly over the existing SSH session for this one probe.
-            $sudoPass = $null
-            try { $sudoPass = (Get-Secret -Name 'TORCH_SSH_SudoPass' -AsPlainText -ErrorAction Stop).Trim() } catch {}
+            $sudoPass = Resolve-TorchSudoPass -Session $Session
             if ([string]::IsNullOrWhiteSpace($sudoPass)) {
-                try { $sudoPass = (Get-Secret -Name 'TORCH_SSH_Pass' -AsPlainText -ErrorAction Stop).Trim() } catch {}
-            }
-            if ([string]::IsNullOrWhiteSpace($sudoPass)) {
-                Write-Warning "[A] Cannot run _cat/indices probe - no sudo password in vault."
+                Write-Warning "[A] Cannot run _cat/indices probe - no sudo password available (session or vault)."
             } else {
                 $sudoPassQuoted = $sudoPass -replace "'", "'\''"
                 $catCmd = "printf '%s\n' '$sudoPassQuoted' | sudo -S -p '' so-elasticsearch-query '_cat/indices?v&s=index'"
@@ -1008,7 +1048,15 @@ function Save-TorchElasticDetonationLogs {
         [string]$SessionInfoCampaign,
         [int]$PageSize = 1000,
         [int]$MaxPages = 200,
-        [switch]$Diagnose
+        [switch]$Diagnose,
+        # Offline / no-vault SSH credentials. Override the TORCH_SSH_* vault secrets;
+        # anything still missing is prompted for. -SudoPass defaults to -SshPass (SO
+        # typically uses the same password for SSH login and sudo).
+        [string]$SshHost,
+        [string]$SshUser,
+        [string]$SshPass,
+        [string]$SshKeyPath,
+        [string]$SudoPass
     )
 
     Assert-PoshSSH
@@ -1080,7 +1128,10 @@ function Save-TorchElasticDetonationLogs {
 
     $datasets = @($datasetAliases.Keys)
 
-    $session = Get-TorchSSHSession
+    # Open one SSH session and reuse it for every dataset. Credential params flow
+    # through here (offline / no vault); the resolved sudo password rides on the
+    # returned session and is read by Invoke-TorchElasticQuery / -Diagnose.
+    $session = Get-TorchSSHSession -SshHost $SshHost -SshUser $SshUser -SshPass $SshPass -SshKeyPath $SshKeyPath -SudoPass $SudoPass
     $summary = @()
 
     # When no -HostFilter was supplied, we still want session_info.txt to

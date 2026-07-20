@@ -367,6 +367,42 @@ function Get-ElasticDetonationLogs {
         Write-Host "    4. Firewall blocking the connection from this machine" -ForegroundColor DarkYellow
         Write-Host "    5. PowerShell 5.1 cert-callback bug - if the inner error mentions 'no Runspace'," -ForegroundColor DarkYellow
         Write-Host "       re-run in PowerShell 7 (pwsh) or update elasticPotato (bypass is now runspace-safe)" -ForegroundColor DarkYellow
+
+        # A network-level failure (timeout / refused / unreachable) means HTTP cannot
+        # reach ES at all. On Security Onion, ES is usually bound internal-only, so
+        # direct :9200 from a workstation never answers - offer the SSH connector,
+        # which pulls via so-elasticsearch-query and never touches :9200. The window
+        # inputs (start/end/host/label/outdir) were already collected above, and the
+        # connector prompts for SSH creds when no vault/params are present.
+        $connMsg = "$($_.Exception.Message) $(if ($_.Exception.InnerException) { $_.Exception.InnerException.Message })"
+        if ($connMsg -match 'did not properly respond|timed out|actively refused|[Uu]nable to connect|failed to respond|No such host|unreachable') {
+            Write-Host ""
+            Write-Host "  This is a network-level failure reaching $esUrl (not an auth error)." -ForegroundColor Cyan
+            Write-Host "  On Security Onion, Elasticsearch is usually internal-only, so direct :9200 from a" -ForegroundColor Cyan
+            Write-Host "  workstation never answers - the supported path there is the SSH connector." -ForegroundColor Cyan
+            $sshAns = Read-Host "  Fall back to the SSH connector (pull over SSH via so-elasticsearch-query)? [y/N]"
+            if ($sshAns -and $sshAns.Trim().ToUpper().StartsWith('Y')) {
+                $connectorPath = Join-Path $PSScriptRoot 'Invoke-TorchElasticQuery.psm1'
+                if (Test-Path $connectorPath) {
+                    try { Import-Module $connectorPath -Force -DisableNameChecking -ErrorAction Stop | Out-Null } catch {}
+                }
+                if (Get-Command Save-TorchElasticDetonationLogs -ErrorAction SilentlyContinue) {
+                    try {
+                        Save-TorchElasticDetonationLogs `
+                            -StartTime  $startUtc `
+                            -EndTime    $endUtc `
+                            -OutputDir  $outDir `
+                            -HostFilter $hostFilter `
+                            -SessionInfoCampaign $label -ErrorAction Stop | Out-Null
+                        return $outDir
+                    } catch {
+                        Write-Host "  [ERROR] SSH pull failed: $($_.Exception.Message)" -ForegroundColor Red
+                    }
+                } else {
+                    Write-Host "  [ERROR] Save-TorchElasticDetonationLogs not available - is the Posh-SSH module installed? (Install-Module Posh-SSH -Scope CurrentUser)" -ForegroundColor Red
+                }
+            }
+        }
         return
     }
 
