@@ -108,25 +108,41 @@ function Invoke-TorchNativeSshCommand {
     $cmdB64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($Command))
     $remote = "echo $cmdB64 | base64 -d | bash"
 
-    $sb = [System.Text.StringBuilder]::new()
-    [void]$sb.Append("-p $($Session.Port) -o StrictHostKeyChecking=accept-new -o ConnectTimeout=15 -o LogLevel=ERROR")
-    if ($Session.KeyPath)     { [void]$sb.Append(" -o BatchMode=yes -i `"$($Session.KeyPath)`"") }
-    if ($Session.ControlPath) { [void]$sb.Append(" -o `"ControlPath=$($Session.ControlPath)`"") }
-    [void]$sb.Append(" $($Session.User)@$($Session.Host) `"$remote`"")
+    $argv = New-Object System.Collections.Generic.List[string]
+    $argv.Add('-p'); $argv.Add([string]$Session.Port)
+    $argv.Add('-o'); $argv.Add('StrictHostKeyChecking=accept-new')
+    $argv.Add('-o'); $argv.Add('ConnectTimeout=15')
+    $argv.Add('-o'); $argv.Add('LogLevel=ERROR')
+    if ($Session.KeyPath) { $argv.Add('-o'); $argv.Add('BatchMode=yes'); $argv.Add('-i'); $argv.Add([string]$Session.KeyPath) }
+    $argv.Add("$($Session.User)@$($Session.Host)")
+    $argv.Add($remote)
+    # Quote only the args that contain whitespace (the base64-wrapped remote cmd; a key path).
+    $quoted = $argv | ForEach-Object { if ($_ -match '\s') { '"' + $_ + '"' } else { $_ } }
 
     $psi = New-Object System.Diagnostics.ProcessStartInfo
     $psi.FileName               = $Session.SshExe
-    $psi.Arguments              = $sb.ToString()
+    $psi.Arguments              = ($quoted -join ' ')
+    $psi.UseShellExecute        = $false
     $psi.RedirectStandardOutput = $true
     $psi.RedirectStandardError  = $true
-    $psi.UseShellExecute        = $false
-    $psi.CreateNoWindow         = $true
+    if ($Session.Interactive) {
+        # Password-prompt fallback: keep the console (don't redirect stdin) so ssh can read the
+        # password from CONIN$; stdout/stderr are still captured via the pipes above.
+        $psi.RedirectStandardInput = $false
+        $psi.CreateNoWindow        = $false
+    } else {
+        # Non-interactive: key (-i/BatchMode) or SSH_ASKPASS (env). No TTY -> ssh uses askpass.
+        $psi.RedirectStandardInput = $true
+        $psi.CreateNoWindow        = $true
+    }
 
     $proc = [System.Diagnostics.Process]::Start($psi)
+    if (-not $Session.Interactive) { try { $proc.StandardInput.Close() } catch {} }
     # Read both streams concurrently (async) to avoid a pipe-buffer deadlock on large output.
     $outTask = $proc.StandardOutput.ReadToEndAsync()
     $errTask = $proc.StandardError.ReadToEndAsync()
-    if (-not $proc.WaitForExit($TimeOut * 1000)) {
+    $waitMs  = if ($Session.Interactive) { [int]::MaxValue } else { $TimeOut * 1000 }
+    if (-not $proc.WaitForExit($waitMs)) {
         try { $proc.Kill() } catch {}
         return [PSCustomObject]@{ Output = ''; Error = "native ssh command timed out after $TimeOut s"; ExitStatus = 124 }
     }
@@ -156,12 +172,10 @@ function Close-TorchSSHSession {
     param($Session)
     if (-not $Session) { return }
     if ($Session.Transport -eq 'native') {
-        if ($Session.ControlPath) {
-            try { & $Session.SshExe -O exit -o "ControlPath=$($Session.ControlPath)" "$($Session.User)@$($Session.Host)" 2>$null | Out-Null } catch {}
+        if ($Session.AskpassExe) {
+            try { Remove-Item -Force -ErrorAction SilentlyContinue $Session.AskpassExe } catch {}
         }
-        if ($Session.MasterProc -and -not $Session.MasterProc.HasExited) {
-            try { $Session.MasterProc.Kill() } catch {}
-        }
+        $env:SSH_ASKPASS = $null; $env:SSH_ASKPASS_REQUIRE = $null; $env:DISPLAY = $null; $env:TORCH_ASKPASS_VALUE = $null
         return
     }
     if ($null -ne $Session.SessionId) {
@@ -292,32 +306,57 @@ function Get-TorchSSHSession {
 
     # --- Native OpenSSH client transport (offline / no PSGallery) --------------------
     # Posh-SSH is absent, so use the built-in Windows ssh.exe. Key auth is fully
-    # non-interactive; password auth multiplexes via ControlMaster so the operator
-    # authenticates ONCE (one interactive prompt) for the whole pull.
+    # non-interactive. Password auth can't be passed on the command line, and Windows
+    # OpenSSH ControlMaster multiplexing is broken (getsockname/EBADF), so we feed the
+    # password via SSH_ASKPASS + a helper exe compiled on the fly (non-interactive); if
+    # the local OpenSSH won't honor it, we fall back to a per-command console prompt.
     $sshExe = Get-TorchSshExe
     if (-not $sshExe) {
         throw "Posh-SSH is not installed and the native OpenSSH client (ssh.exe) was not found. Install Posh-SSH (Install-Module -Name Posh-SSH -Scope CurrentUser -Force) or enable Windows' built-in OpenSSH Client."
     }
     $keyPath     = if ($sshKey -and (Test-Path $sshKey)) { $sshKey } else { $null }
-    $controlPath = $null
-    $masterProc  = $null
+    $askpassExe  = $null
+    $interactive = $false
     if (-not $keyPath) {
-        $controlPath = Join-Path ([System.IO.Path]::GetTempPath()) "torch_ssh_$([guid]::NewGuid().ToString('N')).ctl"
-        Write-Host "[SSH] Opening a multiplexed OpenSSH connection to $sshUser@$sshHost - enter the SSH password once if prompted..." -ForegroundColor DarkCyan
-        $masterArgs = "-o ControlMaster=yes -o `"ControlPath=$controlPath`" -o ControlPersist=600 -o StrictHostKeyChecking=accept-new -o ConnectTimeout=15 -p $Port -N $sshUser@$sshHost"
-        $masterProc = Start-Process -FilePath $sshExe -ArgumentList $masterArgs -NoNewWindow -PassThru
-        $ready = $false
-        for ($i = 0; $i -lt 60; $i++) {
-            Start-Sleep -Milliseconds 500
-            if ($masterProc.HasExited) { break }
-            & $sshExe -O check -o "ControlPath=$controlPath" "$sshUser@$sshHost" 2>$null | Out-Null
-            if ($LASTEXITCODE -eq 0) { $ready = $true; break }
+        if ([string]::IsNullOrWhiteSpace($sshPassPlain)) {
+            throw "Native ssh password auth needs the password but none was resolved. Provide -SshPass / TORCH_SSH_Pass, use a key (-SshKeyPath / TORCH_SSH_KeyPath), or install Posh-SSH."
         }
-        if (-not $ready) {
-            if ($masterProc -and -not $masterProc.HasExited) { try { $masterProc.Kill() } catch {} }
-            throw "Could not establish a multiplexed native-ssh connection to $sshUser@$sshHost (Windows OpenSSH ControlMaster unsupported, or auth failed). For offline password auth, use an SSH key (-SshKeyPath / TORCH_SSH_KeyPath) or install Posh-SSH."
+        # Compile a tiny askpass helper that echoes an env var (unique class name so a second
+        # pull in the same session doesn't collide on the type).
+        $askClass   = "TorchAskpass_$([guid]::NewGuid().ToString('N'))"
+        $askpassExe = Join-Path ([System.IO.Path]::GetTempPath()) "torch_askpass_$([guid]::NewGuid().ToString('N')).exe"
+        try {
+            Add-Type -OutputType ConsoleApplication -OutputAssembly $askpassExe -ErrorAction Stop `
+                     -TypeDefinition "using System; class $askClass { static void Main() { string v = Environment.GetEnvironmentVariable(`"TORCH_ASKPASS_VALUE`"); Console.WriteLine(v == null ? `"`" : v); } }"
+        } catch {
+            $askpassExe = $null
+            Write-Host "[SSH] askpass helper compile failed ($($_.Exception.Message)); will prompt per command." -ForegroundColor DarkYellow
         }
-        Write-Host "[SSH] Multiplexed native-ssh connection established." -ForegroundColor DarkGreen
+        $env:TORCH_ASKPASS_VALUE = $sshPassPlain
+        if ($askpassExe -and (Test-Path $askpassExe)) {
+            $env:SSH_ASKPASS         = $askpassExe
+            $env:SSH_ASKPASS_REQUIRE = 'force'
+            $env:DISPLAY             = 'localhost:0.0'
+            Write-Host "[SSH] Testing non-interactive password auth to $sshUser@$sshHost (SSH_ASKPASS)..." -ForegroundColor DarkCyan
+            $probeSession = [PSCustomObject]@{ Transport = 'native'; SshExe = $sshExe; Host = $sshHost; User = $sshUser; Port = $Port; KeyPath = $null; Interactive = $false }
+            $askOk = $false
+            try {
+                $probe = Invoke-TorchNativeSshCommand -Session $probeSession -Command 'echo torch_probe_ok' -TimeOut 25
+                if ($probe -and ($probe.Output -match 'torch_probe_ok')) { $askOk = $true }
+            } catch {}
+            if ($askOk) {
+                Write-Host "[SSH] Non-interactive password auth established (SSH_ASKPASS)." -ForegroundColor DarkGreen
+            } else {
+                Remove-Item -Force -ErrorAction SilentlyContinue $askpassExe
+                $askpassExe = $null
+                $env:SSH_ASKPASS = $null; $env:SSH_ASKPASS_REQUIRE = $null; $env:DISPLAY = $null; $env:TORCH_ASKPASS_VALUE = $null
+                $interactive = $true
+                Write-Host "[SSH] Non-interactive auth unavailable - you'll be prompted for the SSH password once per query (use -SshKeyPath for zero prompts)." -ForegroundColor DarkYellow
+            }
+        } else {
+            $env:TORCH_ASKPASS_VALUE = $null
+            $interactive = $true
+        }
     }
 
     return [PSCustomObject]@{
@@ -329,9 +368,9 @@ function Get-TorchSSHSession {
         User        = $sshUser
         Port        = $Port
         KeyPath     = $keyPath
-        ControlPath = $controlPath
-        MasterProc  = $masterProc
-        AuthMode    = if ($keyPath) { 'key' } else { 'password' }
+        AskpassExe  = $askpassExe
+        Interactive = $interactive
+        AuthMode    = if ($keyPath) { 'key' } elseif ($interactive) { 'password-prompt' } else { 'password-askpass' }
         SudoPass    = $sudoPassPlain   # plaintext, reused for `sudo -S so-elasticsearch-query`
         OpenedAt    = (Get-Date).ToUniversalTime()
     }
