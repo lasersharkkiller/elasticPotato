@@ -225,22 +225,36 @@ function Get-ElasticDetonationLogs {
     $soDegradedDetected = $false
     if (-not $soKratosDetected) {
         try {
-            $capBody     = @{ size = 1; track_total_hits = $true; query = @{ match_all = @{} } } | ConvertTo-Json -Compress
-            $cap         = Invoke-RestMethod -Uri "$esUrl/_search?ignore_unavailable=true" -Headers $esHdr -Method Post -Body $capBody @restArgs
-            $capTotal    = if ($cap.hits -and $cap.hits.total) { if ($cap.hits.total.PSObject.Properties.Name -contains 'value') { $cap.hits.total.value } else { $cap.hits.total } } else { 0 }
-            $capHits     = if ($cap.hits.hits) { @($cap.hits.hits).Count } else { 0 }
-            $capNoShards = ($null -eq $cap._shards)
-            if ($capTotal -gt 0 -and $capHits -eq 0 -and $capNoShards) {
-                $soDegradedDetected = $true
-                Write-Host "[INFO] Endpoint '$esUrl' answers _count/_search but returns NO documents and NO _shards" -ForegroundColor Cyan
-                Write-Host "       (match_all hits.total=$capTotal, hits.hits=0). This is a proxied / coordinating-only" -ForegroundColor Cyan
-                Write-Host "       endpoint (e.g. Security Onion's nginx-proxied ES) that cannot serve document bodies" -ForegroundColor Cyan
-                Write-Host "       over HTTP - a direct pull retrieves 0 docs. Will auto-route through the SSH connector" -ForegroundColor Cyan
-                Write-Host "       after collecting window inputs." -ForegroundColor Cyan
-                Write-Host "       Required vault secrets: TORCH_SSH_Host, TORCH_SSH_User, TORCH_SSH_Pass (or TORCH_SSH_KeyPath)." -ForegroundColor DarkGray
+            # Do documents exist at all? _count works even on proxied / coordinating endpoints.
+            $capCountBody = @{ query = @{ match_all = @{} } } | ConvertTo-Json -Compress
+            $capCountResp = Invoke-RestMethod -Uri "$esUrl/_count" -Headers $esHdr -Method Post -Body $capCountBody @restArgs
+            $capCount     = if ($capCountResp -and $null -ne $capCountResp.count) { [int]$capCountResp.count } else { 0 }
+            if ($capCount -gt 0) {
+                # A raw ES node ALWAYS returns a _shards block on _search. If docs exist but
+                # _search comes back without _shards / no hits (or errors / redirects), the
+                # endpoint cannot serve document bodies -> route to the SSH connector. (Do NOT
+                # gate on hits.total: a proxied endpoint returns it as null, not 0.)
+                $capServesDocs = $true
+                try {
+                    $capBody     = @{ size = 1; query = @{ match_all = @{} } } | ConvertTo-Json -Compress
+                    $cap         = Invoke-RestMethod -Uri "$esUrl/_search?ignore_unavailable=true" -Headers $esHdr -Method Post -Body $capBody @restArgs
+                    $capHits     = if ($cap -and $cap.hits -and $cap.hits.hits) { @($cap.hits.hits).Count } else { 0 }
+                    $capNoShards = (-not $cap) -or ($null -eq $cap._shards)
+                    if ($capHits -eq 0 -and $capNoShards) { $capServesDocs = $false }
+                } catch {
+                    $capServesDocs = $false   # _search errors while _count works = cannot serve docs
+                }
+                if (-not $capServesDocs) {
+                    $soDegradedDetected = $true
+                    Write-Host "[INFO] Endpoint '$esUrl' has $capCount doc(s) (via _count) but _search returns no documents / no _shards." -ForegroundColor Cyan
+                    Write-Host "       This is a proxied / coordinating-only endpoint (e.g. Security Onion's nginx-proxied ES)" -ForegroundColor Cyan
+                    Write-Host "       that cannot serve document bodies over HTTP - a direct pull retrieves 0 docs. Will" -ForegroundColor Cyan
+                    Write-Host "       auto-route through the SSH connector after collecting window inputs." -ForegroundColor Cyan
+                    Write-Host "       Required vault secrets: TORCH_SSH_Host, TORCH_SSH_User, TORCH_SSH_Pass (or TORCH_SSH_KeyPath)." -ForegroundColor DarkGray
+                }
             }
         } catch {
-            # Probe failure is non-fatal - fall through to the normal HTTP path / other detection.
+            # Probe failure (e.g. _count unreachable) is non-fatal - fall through to the normal path.
         }
     }
 
