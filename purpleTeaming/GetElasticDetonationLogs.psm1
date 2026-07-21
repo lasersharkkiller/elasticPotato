@@ -18,10 +18,27 @@ function Get-ElasticDetonationLogs {
         Elastic username for Basic auth. Overrides Elastic_User (use with -ElasticPass).
     .PARAMETER ElasticPass
         Elastic password for Basic auth. Overrides Elastic_Pass.
+    .PARAMETER SshHost
+        Security Onion SSH host/IP for the SSH connector, used when the pull
+        auto-routes to Save-TorchElasticDetonationLogs (SO 3.0 / proxied ES).
+        Overrides the TORCH_SSH_Host vault secret; missing values are prompted for.
+    .PARAMETER SshUser
+        SO SSH username. Overrides TORCH_SSH_User.
+    .PARAMETER SshPass
+        SO SSH password. Overrides TORCH_SSH_Pass. Also used for sudo unless -SudoPass is set.
+    .PARAMETER SshKeyPath
+        Path to an OpenSSH private key (alternative to -SshPass). Overrides TORCH_SSH_KeyPath.
+    .PARAMETER SudoPass
+        Password for 'sudo so-elasticsearch-query' on the SO box (defaults to -SshPass).
     .EXAMPLE
         # Offline / no vault - pass credentials directly:
         Get-ElasticDetonationLogs -ElasticUrl 'https://elasticsearch.lab:9200' -ElasticApiKey 'id:api_key'
         Get-ElasticDetonationLogs -ElasticUrl 'https://elasticsearch.lab:9200' -ElasticUser 'elastic' -ElasticPass 'changeme'
+    .EXAMPLE
+        # Security Onion, fully offline (no vault) - Elastic auth + SSH connector creds so the
+        # auto-route to the SSH pull runs prompt-free:
+        Get-ElasticDetonationLogs -ElasticUrl 'https://192.168.71.10:9200' -ElasticApiKey 'id:api_key' `
+            -SshHost '192.168.71.10' -SshUser 'onion' -SshPass 'P@ss'
     .NOTES
         Auth precedence (first available wins):
           1. ApiKey  -  vault secret Elastic_ApiKey  (preferred; required for
@@ -47,7 +64,15 @@ function Get-ElasticDetonationLogs {
         [string]$ElasticUrl,
         [string]$ElasticApiKey,
         [string]$ElasticUser,
-        [string]$ElasticPass
+        [string]$ElasticPass,
+        # Offline / no-vault SSH connector credentials, used when the pull auto-routes
+        # to Save-TorchElasticDetonationLogs (SO 3.0 / proxied ES). Override the
+        # TORCH_SSH_* vault secrets; anything still missing is prompted for.
+        [string]$SshHost,
+        [string]$SshUser,
+        [string]$SshPass,
+        [string]$SshKeyPath,
+        [string]$SudoPass
     )
 
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -190,6 +215,35 @@ function Get-ElasticDetonationLogs {
         # Continue regardless; non-302 errors fall through to the main query.
     }
 
+    # Capability probe: some endpoints (Security Onion's nginx-proxied ES, a
+    # coordinating/aggregating proxy, or a document-level-security-restricted user)
+    # answer _cluster/health and _count but CANNOT return document bodies from
+    # _search - the response comes back with hits.total>0 yet zero hits and NO
+    # _shards block (a raw ES node always returns _shards). Detect that signature
+    # here so we route to the SSH connector instead of running a full HTTP pull that
+    # retrieves nothing (the "reported N docs but 0 retrieved" symptom on SO).
+    $soDegradedDetected = $false
+    if (-not $soKratosDetected) {
+        try {
+            $capBody     = @{ size = 1; track_total_hits = $true; query = @{ match_all = @{} } } | ConvertTo-Json -Compress
+            $cap         = Invoke-RestMethod -Uri "$esUrl/_search?ignore_unavailable=true" -Headers $esHdr -Method Post -Body $capBody @restArgs
+            $capTotal    = if ($cap.hits -and $cap.hits.total) { if ($cap.hits.total.PSObject.Properties.Name -contains 'value') { $cap.hits.total.value } else { $cap.hits.total } } else { 0 }
+            $capHits     = if ($cap.hits.hits) { @($cap.hits.hits).Count } else { 0 }
+            $capNoShards = ($null -eq $cap._shards)
+            if ($capTotal -gt 0 -and $capHits -eq 0 -and $capNoShards) {
+                $soDegradedDetected = $true
+                Write-Host "[INFO] Endpoint '$esUrl' answers _count/_search but returns NO documents and NO _shards" -ForegroundColor Cyan
+                Write-Host "       (match_all hits.total=$capTotal, hits.hits=0). This is a proxied / coordinating-only" -ForegroundColor Cyan
+                Write-Host "       endpoint (e.g. Security Onion's nginx-proxied ES) that cannot serve document bodies" -ForegroundColor Cyan
+                Write-Host "       over HTTP - a direct pull retrieves 0 docs. Will auto-route through the SSH connector" -ForegroundColor Cyan
+                Write-Host "       after collecting window inputs." -ForegroundColor Cyan
+                Write-Host "       Required vault secrets: TORCH_SSH_Host, TORCH_SSH_User, TORCH_SSH_Pass (or TORCH_SSH_KeyPath)." -ForegroundColor DarkGray
+            }
+        } catch {
+            # Probe failure is non-fatal - fall through to the normal HTTP path / other detection.
+        }
+    }
+
     # --- TIME PARSING HELPER ---
     # Accepts flexible input: "8PM EST", "20:00", "8:28 PM", "2026-03-18 20:00 EST", etc.
     # If no date is given, assumes today. Converts to UTC for the ES query.
@@ -300,15 +354,19 @@ function Get-ElasticDetonationLogs {
     $hostFilter = Read-Host "[?] Filter by sandbox hostname (leave blank for all hosts)"
     $hostFilter = $hostFilter.Trim()
 
-    # --- SO 3.0 / KRATOS AUTO-ROUTE ----------------------------------------
-    # If the URL probe at the top of the function returned HTTP 302 we know
-    # headless HTTP auth will fail. All the inputs the SSH connector needs
-    # (start/end/host/label/outdir) have been collected by this point, so we
-    # hand off to Save-TorchElasticDetonationLogs and return its output dir
-    # instead of running the HTTP pull.
-    if ($soKratosDetected) {
+    # --- SO 3.0 / KRATOS / PROXIED-ES AUTO-ROUTE ---------------------------
+    # Route the pull through the SSH connector when EITHER (a) the URL probe
+    # returned HTTP 302 (SO 3.0 / Kratos login redirect - headless HTTP auth
+    # unsupported), OR (b) the capability probe found a proxied/coordinating
+    # endpoint that answers counts but returns no documents / no _shards. In both
+    # cases the direct HTTP pull retrieves nothing. All inputs the SSH connector
+    # needs (start/end/host/label/outdir) have been collected by this point, so we
+    # hand off to Save-TorchElasticDetonationLogs and return its output dir instead
+    # of running the futile HTTP pull.
+    if ($soKratosDetected -or $soDegradedDetected) {
+        $routeReason = if ($soKratosDetected) { 'SO 3.0 / Kratos 302 redirect' } else { 'proxied ES (answers counts but returns no documents)' }
         Write-Host ""
-        Write-Host "[Auto-Route] SO 3.0 / Kratos detected - calling Save-TorchElasticDetonationLogs (SSH connector)..." -ForegroundColor DarkCyan
+        Write-Host "[Auto-Route] $routeReason detected - calling Save-TorchElasticDetonationLogs (SSH connector)..." -ForegroundColor DarkCyan
         $connectorPath = Join-Path $PSScriptRoot 'Invoke-TorchElasticQuery.psm1'
         if (Test-Path $connectorPath) {
             try { Import-Module $connectorPath -Force -DisableNameChecking -ErrorAction Stop | Out-Null } catch {
@@ -333,6 +391,7 @@ function Get-ElasticDetonationLogs {
                     -EndTime    $endUtc `
                     -OutputDir  $outDir `
                     -HostFilter $hostFilter `
+                    -SshHost $SshHost -SshUser $SshUser -SshPass $SshPass -SshKeyPath $SshKeyPath -SudoPass $SudoPass `
                     -SessionInfoCampaign $label -ErrorAction Stop | Out-Null
                 return $outDir
             } catch {
@@ -393,6 +452,7 @@ function Get-ElasticDetonationLogs {
                             -EndTime    $endUtc `
                             -OutputDir  $outDir `
                             -HostFilter $hostFilter `
+                            -SshHost $SshHost -SshUser $SshUser -SshPass $SshPass -SshKeyPath $SshKeyPath -SudoPass $SudoPass `
                             -SessionInfoCampaign $label -ErrorAction Stop | Out-Null
                         return $outDir
                     } catch {
@@ -431,6 +491,72 @@ function Get-ElasticDetonationLogs {
         }
     } catch {
         Write-Host "  [WARN] Could not list indices, proceeding with default pattern." -ForegroundColor Yellow
+    }
+
+    # --- AUTO-CATEGORIZE & TARGET (offline-adaptive) ---
+    # A bare "*" fan-out hits every index (Kibana/security/ILM/monitoring/async-search/
+    # etc.). Across a big offline cluster the scroll search then lands on shards that pass
+    # the query phase but fail the FETCH phase -> "ES reported N docs but 0 retrieved".
+    # Resolve what is actually present, drop system/internal noise, and query only the
+    # security-relevant index families. No external calls - safe air-gapped.
+    Write-Host ""
+    Write-Host "[Pre-flight] Auto-categorizing indices for this environment..." -ForegroundColor DarkCyan
+    $targetSet  = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+    $catBuckets = [ordered]@{ endpoint = 0; windows = 0; network = 0; other = 0 }
+
+    $isSystemName = {
+        param([string]$n)
+        if ([string]::IsNullOrWhiteSpace($n)) { return $true }
+        if ($n.StartsWith('.ds-'))            { return $true }   # data-stream backing index (reached via its data stream)
+        if ($n[0] -eq '.')                    { return $true }   # any other dotted index = internal/system
+        foreach ($p in @('ilm-history', 'slm-history', 'apm-', 'metrics-endpoint.metadata')) {
+            if ($n.StartsWith($p)) { return $true }
+        }
+        return $false
+    }
+    $familyOf = {
+        param([string]$n)
+        if ($n -match '^(.+?)-\d') { return "$($matches[1])-*" }  # collapse rollover: foo-8.11.0-2024.01-000001 -> foo-*
+        return $n
+    }
+    $bucketOf = {
+        param([string]$n)
+        if     ($n -match '(?i)endpoint|defend')                        { return 'endpoint' }
+        elseif ($n -match '(?i)winlog|sysmon|windows|system\.security') { return 'windows' }
+        elseif ($n -match '(?i)network|packetbeat|netflow|zeek|suricata|firewall') { return 'network' }
+        else                                                            { return 'other' }
+    }
+
+    try {
+        $resolve = Invoke-RestMethod -Uri "$esUrl/_resolve/index/*?expand_wildcards=open" `
+                       -Headers $esHdr -Method Get @restArgs
+        Write-Host "  _resolve returned $(@($resolve.data_streams).Count) data stream(s), $(@($resolve.indices).Count) index/indices, $(@($resolve.aliases).Count) alias(es)" -ForegroundColor DarkGray
+        foreach ($ds in @($resolve.data_streams)) {
+            if (-not $ds -or -not $ds.name)  { continue }
+            if (& $isSystemName $ds.name)    { continue }
+            if ($ds.name -match '^(metrics|synthetics|profiling|traces)-') { continue }  # trim non-security fan-out
+            [void]$targetSet.Add((& $familyOf $ds.name)); $catBuckets[(& $bucketOf $ds.name)]++
+        }
+        foreach ($ix in @($resolve.indices)) {
+            if (-not $ix -or -not $ix.name)  { continue }
+            if ($ix.PSObject.Properties.Name -contains 'data_stream' -and $ix.data_stream) { continue }  # backing index
+            if (& $isSystemName $ix.name)    { continue }
+            if ($ix.name -match '^(metrics|synthetics|profiling|traces)-') { continue }
+            [void]$targetSet.Add((& $familyOf $ix.name)); $catBuckets[(& $bucketOf $ix.name)]++
+        }
+    } catch {
+        Write-Host "  [WARN] _resolve/index failed ($($_.Exception.Message))." -ForegroundColor Yellow
+    }
+
+    if ($targetSet.Count -gt 0) {
+        $defaultIndices = ($targetSet | Sort-Object) -join ','
+        Write-Host "  Targeting $($targetSet.Count) index family/families  [endpoint:$($catBuckets.endpoint) windows:$($catBuckets.windows) network:$($catBuckets.network) other:$($catBuckets.other)]" -ForegroundColor Green
+        $targetSet | Sort-Object | Select-Object -First 25 | ForEach-Object { Write-Host "    $_" -ForegroundColor DarkGray }
+        if ($targetSet.Count -gt 25) { Write-Host "    ... ($($targetSet.Count - 25) more)" -ForegroundColor DarkGray }
+    } else {
+        # Fallback: keep everything EXCEPT the noisy system families ("*" still matches data streams by name)
+        $defaultIndices = '*,-.kibana*,-.security*,-.fleet*,-.async-search*,-.geoip*,-.ml*,-.monitoring*,-.transform*,-.tasks,-.watches*,-.triggered_watches,-.apm-*,-.ilm-history*,-.slm-history*,-.enrich*,-.reporting*,-.logstash*,-.deprecation*,-.snapshot*,-.internal*,-.lists*,-.items*,-.alerts*'
+        Write-Host "  Could not resolve families - using system-exclusion pattern instead of bare '*'." -ForegroundColor DarkYellow
     }
 
     # Count all docs in the window before doing full pull
@@ -651,7 +777,7 @@ function Get-ElasticDetonationLogs {
         try {
             $countBody = @{ query = @{ bool = @{ must = $mustClauses; filter = @( $BoolFilter ) } } } |
                          ConvertTo-Json -Depth 20 -Compress
-            $countResp = Invoke-RestMethod -Uri "$esUrl/$Index/_count" -Headers $esHdr -Method Post -Body $countBody @restArgs
+            $countResp = Invoke-RestMethod -Uri "$esUrl/$Index/_count?ignore_unavailable=true" -Headers $esHdr -Method Post -Body $countBody @restArgs
             $esCount   = $countResp.count
             Write-Host "  $Label : ES reports $esCount matching document(s)" -ForegroundColor DarkGray
         } catch {
@@ -675,12 +801,26 @@ function Get-ElasticDetonationLogs {
         $body = $query | ConvertTo-Json -Depth 20 -Compress
 
         try {
-            $resp = Invoke-RestMethod -Uri "$esUrl/$Index/_search?scroll=$scrollTtl" `
+            $resp = Invoke-RestMethod -Uri "$esUrl/$Index/_search?scroll=$scrollTtl&ignore_unavailable=true" `
                         -Headers $esHdr -Method Post -Body $body @restArgs
         } catch {
             $code = $null; try { $code = $_.Exception.Response.StatusCode.value__ } catch {}
+            $errBody = $null; try { $errBody = $_.ErrorDetails.Message } catch {}
             Write-Host "  [WARN] $Label initial scroll query failed (HTTP $code): $($_.Exception.Message)" -ForegroundColor Yellow
+            if ($errBody) { Write-Host "    ES said: $errBody" -ForegroundColor DarkYellow }
             return $allDocs
+        }
+
+        # Surface shard-level FETCH failures. A data-stream / synthetic-_source shard can pass
+        # the query phase (so _count sees the doc) yet fail the fetch phase, returning 0 hits
+        # with NO top-level error - the real cause of "reported N docs but 0 retrieved".
+        if ($resp._shards -and $resp._shards.failed -and $resp._shards.failed -gt 0) {
+            Write-Host "  [WARN] $Label : $($resp._shards.failed)/$($resp._shards.total) shard(s) failed on the search - docs on those shards are lost:" -ForegroundColor Red
+            foreach ($f in @($resp._shards.failures | Select-Object -First 3)) {
+                $fIdx = $f.index
+                $fRsn = $null; try { $fRsn = $f.reason.reason; if (-not $fRsn) { $fRsn = $f.reason.type } } catch {}
+                Write-Host "    - '$fIdx' : $fRsn" -ForegroundColor DarkYellow
+            }
         }
 
         $scrollId = $resp._scroll_id
@@ -736,7 +876,41 @@ function Get-ElasticDetonationLogs {
         }
 
         if ($esCount -gt 0 -and $allDocs.Count -eq 0) {
-            Write-Host "  [WARN] ES reported $esCount docs but 0 were retrieved  -  printing query for diagnosis:" -ForegroundColor Red
+            Write-Host "  [WARN] ES reported $esCount docs but 0 were retrieved  -  auto-diagnosing:" -ForegroundColor Red
+            # Probe: a PLAIN (non-scroll) search with an _index breakdown + shard stats.
+            #   - hits.hits > 0 here  => the SCROLL is the problem (not the query)
+            #   - hits.total = 0 but count > 0 / skipped shards => data on a SKIPPED shard
+            #     (frozen / cold searchable-snapshot tier that _count sees but _search skips)
+            #   - by_index shows exactly which index holds the counted doc
+            try {
+                $probeBody = @{
+                    size             = 1
+                    track_total_hits = $true
+                    query            = @{ bool = @{ must = $mustClauses; filter = @( $BoolFilter ) } }
+                    aggs             = @{ by_index = @{ terms = @{ field = "_index"; size = 10 } } }
+                } | ConvertTo-Json -Depth 20 -Compress
+                $probe    = Invoke-RestMethod -Uri "$esUrl/$Index/_search?ignore_unavailable=true" -Headers $esHdr -Method Post -Body $probeBody @restArgs
+                $hitCount = if ($probe.hits.hits) { @($probe.hits.hits).Count } else { 0 }
+                $probeView = [ordered]@{
+                    took          = $probe.took
+                    timed_out     = $probe.timed_out
+                    _shards       = $probe._shards
+                    hits_total    = $probe.hits.total
+                    hits_returned = $hitCount
+                    by_index      = if ($probe.aggregations -and $probe.aggregations.by_index) { $probe.aggregations.by_index.buckets } else { $null }
+                }
+                Write-Host "    [diag] plain non-scroll _search result:" -ForegroundColor Cyan
+                Write-Host ($probeView | ConvertTo-Json -Depth 6) -ForegroundColor Cyan
+                if ($hitCount -gt 0) {
+                    Write-Host "    [diag] -> doc IS returnable without scroll: the SCROLL path is the problem." -ForegroundColor Cyan
+                } elseif ($probe._shards -and $probe._shards.skipped -gt 0) {
+                    Write-Host "    [diag] -> shard(s) SKIPPED with 0 returned: data on a frozen/cold tier _count sees but _search skips (needs ignore_throttled=false)." -ForegroundColor Cyan
+                } else {
+                    Write-Host "    [diag] -> total>0 but 0 returned, no skip/fail: inspect the 'by_index' index's state (closed? searchable-snapshot? _source disabled?)." -ForegroundColor Cyan
+                }
+            } catch {
+                Write-Host "    [diag] probe failed: $($_.Exception.Message)" -ForegroundColor DarkYellow
+            }
             $dbg = @{ query = @{ bool = @{ must = $mustClauses; filter = @( $BoolFilter ) } } } |
                    ConvertTo-Json -Depth 20
             Write-Host $dbg -ForegroundColor DarkGray
