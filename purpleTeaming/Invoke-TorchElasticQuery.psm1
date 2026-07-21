@@ -491,7 +491,9 @@ function Invoke-TorchElasticQuery {
         if ($Raw) { return $stdout }
 
         try {
-            return ($stdout | ConvertFrom-Json -Depth 20 -ErrorAction Stop)
+            # NOTE: ConvertFrom-Json has NO -Depth on Windows PowerShell 5.1 (added in PS6);
+            # 5.1 deserializes fully by default, so omit it for cross-version compatibility.
+            return ($stdout | ConvertFrom-Json -ErrorAction Stop)
         } catch {
             Write-Warning "ConvertFrom-Json failed: $($_.Exception.Message). Returning raw stdout."
             return $stdout
