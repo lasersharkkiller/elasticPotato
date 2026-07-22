@@ -3063,6 +3063,97 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             }
 
             # =====================================================================
+            # ECS BACKFILL for raw-Winlogbeat / Sysmon feeds
+            # SO / Elastic Agent ingest ECS-normalizes (docs carry BOTH process.* AND
+            # winlog.event_data.*). A raw-Winlogbeat feed with no ECS pipeline carries
+            # ONLY winlog.event_data.*, so every heuristic reading process.name /
+            # destination.ip / file.path / registry.key / event.action etc. goes blind.
+            # Backfill the ECS fields from winlog.event_data at load, ONLY when the ECS
+            # field is absent, so ECS-normalized (SO) docs are left completely untouched.
+            # =====================================================================
+            function _Set-EcsPath {
+                param($Doc, [string]$Path, $Value)
+                if ($null -eq $Value -or "$Value" -eq '') { return }
+                $parts = $Path -split '\.'
+                $cur = $Doc
+                for ($i = 0; $i -lt $parts.Count - 1; $i++) {
+                    $p = $parts[$i]
+                    $prop = $cur.PSObject.Properties[$p]
+                    if (-not $prop -or $null -eq $prop.Value) {
+                        $obj = [PSCustomObject]@{}
+                        $cur | Add-Member -NotePropertyName $p -NotePropertyValue $obj -Force
+                        $cur = $obj
+                    } else { $cur = $prop.Value }
+                }
+                $leaf = $parts[-1]
+                $lp = $cur.PSObject.Properties[$leaf]
+                if (-not $lp -or $null -eq $lp.Value -or "$($lp.Value)" -eq '') {
+                    $cur | Add-Member -NotePropertyName $leaf -NotePropertyValue $Value -Force
+                }
+            }
+            function _LeafName { param([string]$P) if ([string]::IsNullOrEmpty($P)) { return $null }; ($P -split '[\\/]')[-1] }
+            function _SysmonHash { param([string]$H, [string]$A) if ([string]::IsNullOrEmpty($H)) { return $null }; if ($H -match "(?i)$A=([0-9A-Fa-f]+)") { return $Matches[1] }; return $null }
+            function ConvertTo-EcsDoc {
+                param($Doc)
+                if (-not $Doc -or -not $Doc.winlog) { return $Doc }
+                $ed = $Doc.winlog.event_data
+                if (-not $ed) { return $Doc }
+                # process (EID 1/5; injection source EID 8/10 via SourceImage)
+                _Set-EcsPath $Doc 'process.name'                (_LeafName $ed.Image)
+                _Set-EcsPath $Doc 'process.name'                (_LeafName $ed.SourceImage)
+                _Set-EcsPath $Doc 'process.executable'          $ed.Image
+                _Set-EcsPath $Doc 'process.executable'          $ed.SourceImage
+                _Set-EcsPath $Doc 'process.command_line'        $ed.CommandLine
+                _Set-EcsPath $Doc 'process.pid'                 $ed.ProcessId
+                _Set-EcsPath $Doc 'process.pid'                 $ed.SourceProcessId
+                _Set-EcsPath $Doc 'process.parent.name'         (_LeafName $ed.ParentImage)
+                _Set-EcsPath $Doc 'process.parent.executable'   $ed.ParentImage
+                _Set-EcsPath $Doc 'process.parent.command_line' $ed.ParentCommandLine
+                _Set-EcsPath $Doc 'process.hash.sha256'         (_SysmonHash $ed.Hashes 'SHA256')
+                # network (EID 3)
+                _Set-EcsPath $Doc 'destination.ip'   $ed.DestinationIp
+                _Set-EcsPath $Doc 'destination.port' $ed.DestinationPort
+                _Set-EcsPath $Doc 'source.ip'        $ed.SourceIp
+                _Set-EcsPath $Doc 'source.port'      $ed.SourcePort
+                # dns (EID 22)
+                _Set-EcsPath $Doc 'dns.question.name' $ed.QueryName
+                # file (EID 11/15/23/26/29) + image load (EID 7)
+                _Set-EcsPath $Doc 'file.path' $ed.TargetFilename
+                _Set-EcsPath $Doc 'file.name' (_LeafName $ed.TargetFilename)
+                _Set-EcsPath $Doc 'file.hash.sha256' (_SysmonHash $ed.Hashes 'SHA256')
+                _Set-EcsPath $Doc 'file.path' $ed.ImageLoaded
+                _Set-EcsPath $Doc 'dll.path'  $ed.ImageLoaded
+                # registry (EID 12/13/14)
+                _Set-EcsPath $Doc 'registry.path'         $ed.TargetObject
+                _Set-EcsPath $Doc 'registry.key'          $ed.TargetObject
+                _Set-EcsPath $Doc 'registry.data.strings' $ed.Details
+                # user (Sysmon + Windows Security Subject/Target) + logon source ip
+                _Set-EcsPath $Doc 'user.name'        $ed.User
+                _Set-EcsPath $Doc 'user.name'        $ed.TargetUserName
+                _Set-EcsPath $Doc 'user.name'        $ed.SubjectUserName
+                _Set-EcsPath $Doc 'source.user.name' $ed.SubjectUserName
+                _Set-EcsPath $Doc 'user.target.name' $ed.TargetUserName
+                _Set-EcsPath $Doc 'source.ip'        $ed.IpAddress
+                # event.category / action / type from Sysmon EID (heuristics gate on these)
+                switch ("$($Doc.winlog.event_id)") {
+                    '1'  { _Set-EcsPath $Doc 'event.category' 'process';  _Set-EcsPath $Doc 'event.type' 'start'; _Set-EcsPath $Doc 'event.action' 'start' }
+                    '3'  { _Set-EcsPath $Doc 'event.category' 'network';  _Set-EcsPath $Doc 'event.action' 'connection' }
+                    '7'  { _Set-EcsPath $Doc 'event.category' 'library';  _Set-EcsPath $Doc 'event.action' 'load' }
+                    '8'  { _Set-EcsPath $Doc 'event.action' 'CreateRemoteThread' }
+                    '10' { _Set-EcsPath $Doc 'event.action' 'ProcessAccess' }
+                    '11' { _Set-EcsPath $Doc 'event.category' 'file';     _Set-EcsPath $Doc 'event.action' 'creation' }
+                    '12' { _Set-EcsPath $Doc 'event.category' 'registry'; _Set-EcsPath $Doc 'event.action' 'creation' }
+                    '13' { _Set-EcsPath $Doc 'event.category' 'registry'; _Set-EcsPath $Doc 'event.action' 'modification' }
+                    '14' { _Set-EcsPath $Doc 'event.category' 'registry'; _Set-EcsPath $Doc 'event.action' 'rename' }
+                    '22' { _Set-EcsPath $Doc 'event.category' 'dns' }
+                    '23' { _Set-EcsPath $Doc 'event.category' 'file';     _Set-EcsPath $Doc 'event.action' 'deletion' }
+                    '26' { _Set-EcsPath $Doc 'event.category' 'file';     _Set-EcsPath $Doc 'event.action' 'deletion' }
+                    default { }
+                }
+                return $Doc
+            }
+
+            # =====================================================================
             # WINLOGBEAT / SECURITY ONION PARTITION SHIM
             # The legacy offline path expects category-named files (process_events.
             # ndjson, network_events.ndjson, ...) produced by Get-ElasticDetonation
@@ -3110,6 +3201,7 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                     $sysmonAll = Read-Ndjson $sysmonPath
                     Write-Host "  Sysmon: $($sysmonAll.Count) doc(s) loaded; partitioning by event_id..." -ForegroundColor DarkGray
                     foreach ($d in $sysmonAll) {
+                        [void](ConvertTo-EcsDoc $d)   # backfill ECS fields on raw-winlog feeds (no-op when already ECS)
                         $eid = ''
                         if ($d.winlog -and $d.winlog.event_id) { $eid = "$($d.winlog.event_id)" }
                         elseif ($d.event -and $d.event.code)   { $eid = "$($d.event.code)" }
@@ -3175,7 +3267,7 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                 }
                 # ---- Windows Security log ---------------------------------------
                 if (Test-Path $secPath) {
-                    $offlinePartitions.security_log = Read-Ndjson $secPath
+                    $offlinePartitions.security_log = @(Read-Ndjson $secPath | ForEach-Object { ConvertTo-EcsDoc $_ })
                     Write-Host "  SecLog: $($offlinePartitions.security_log.Count) Windows Security event(s)" -ForegroundColor DarkGray
                 }
                 # ---- Windows Application log (Defender lives here: EID 1116/1117/1118) ----
@@ -5842,20 +5934,20 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         $persistScore = 0
         $runKeyRx = '(?i)(\\Software\\Microsoft\\Windows\\CurrentVersion\\Run(Once)?(Services|Ex)?\b|\\Software\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Run|\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\(Userinit|Shell|Notify)|\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\|\\Microsoft\\Windows NT\\CurrentVersion\\Windows\\AppInit_DLLs|\\Microsoft\\Windows\\CurrentVersion\\Explorer\\(Run|SharedTaskScheduler|ShellExecuteHooks)|\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\\Run)'
         $runKeyHits = @($regDocs | Where-Object {
-            "$($_.registry.key)$($_.winlog.event_data.TargetObject)" -match $runKeyRx
+            "$($_.registry.key)$($_.registry.path)$($_.winlog.event_data.TargetObject)" -match $runKeyRx
         })
         if ($runKeyHits.Count -gt 0) {
             $rkScore = [Math]::Min(70, $runKeyHits.Count * 25)
             $persistScore += $rkScore
             $sample = ($runKeyHits | ForEach-Object {
-                $k = if ($_.registry.key) { $_.registry.key } else { $_.winlog.event_data.TargetObject }
+                $k = if ($_.registry.key) { $_.registry.key } elseif ($_.registry.path) { $_.registry.path } else { $_.winlog.event_data.TargetObject }
                 "$k"
             } | Select-Object -Unique | Select-Object -First 3) -join ' | '
             $persistFindings.Add("CRITICAL: $($runKeyHits.Count) Run/RunOnce/Userinit/Winlogon/IFEO/AppInit autorun registry write(s) (+$rkScore pts) [T1547.001/T1546.012]: $sample")
         }
         $svcRx = '(?i)\\System\\CurrentControlSet\\(Services\\[^\\]+\\(ImagePath|ServiceDll)|Control\\Lsa)'
         $svcHits = @($regDocs | Where-Object {
-            "$($_.registry.key)$($_.winlog.event_data.TargetObject)" -match $svcRx
+            "$($_.registry.key)$($_.registry.path)$($_.winlog.event_data.TargetObject)" -match $svcRx
         })
         if ($svcHits.Count -gt 0) {
             $svcScore = [Math]::Min(80, $svcHits.Count * 35)
@@ -6657,7 +6749,7 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
             $brScore = [Math]::Min(80, $bootRegHits.Count * 25)
             $bootkitScore += $brScore
             $sample = ($bootRegHits | ForEach-Object {
-                $k = if ($_.registry.key) { $_.registry.key } else { $_.winlog.event_data.TargetObject }
+                $k = if ($_.registry.key) { $_.registry.key } elseif ($_.registry.path) { $_.registry.path } else { $_.winlog.event_data.TargetObject }
                 "$k"
             } | Select-Object -Unique | Select-Object -First 3) -join ' | '
             $bootkitFindings.Add("CRITICAL: $($bootRegHits.Count) BCD / Boot / SecureBoot / SafeBoot registry write(s) (+$brScore pts) [T1542.003]: $sample")
