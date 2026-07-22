@@ -30,11 +30,17 @@
 #   and exposes a -Diagnose switch to run probe-only without a full pull.
 # =============================================================================
 
-# --- Posh-SSH soft dependency check (warn-only at module load) ---------------
+# --- SSH transport soft check (warn-only at module load) ---------------------
+# Prefer Posh-SSH; fall back to the native Windows OpenSSH client (ssh.exe) so the
+# SSH connector still works on air-gapped hosts with no PSGallery access.
 if (-not (Get-Module -ListAvailable -Name 'Posh-SSH')) {
-    Write-Warning "Posh-SSH is not installed. Install with:"
-    Write-Warning "    Install-Module -Name Posh-SSH -Scope CurrentUser -Force"
-    Write-Warning "Functions in this module will fail until Posh-SSH is available."
+    if (Get-Command ssh.exe -ErrorAction SilentlyContinue) {
+        Write-Verbose "Posh-SSH not installed; the SSH connector will use the native OpenSSH client (ssh.exe)."
+    } else {
+        Write-Warning "Neither Posh-SSH nor the native OpenSSH client (ssh.exe) was found - the SSH connector will fail."
+        Write-Warning "Install Posh-SSH (Install-Module -Name Posh-SSH -Scope CurrentUser -Force), or enable the"
+        Write-Warning "built-in Windows OpenSSH Client (Settings > Optional Features > OpenSSH Client)."
+    }
 }
 
 # -----------------------------------------------------------------------------
@@ -71,11 +77,147 @@ function Resolve-TorchSudoPass {
 }
 
 # -----------------------------------------------------------------------------
+# Ensure SOME SSH transport is available. Posh-SSH is preferred (handles password
+# auth non-interactively); otherwise the native Windows OpenSSH client (ssh.exe) is
+# used. Throws only if NEITHER is present. (Name kept for existing call sites.)
 function Assert-PoshSSH {
-    if (-not (Get-Module -ListAvailable -Name 'Posh-SSH')) {
-        throw "Posh-SSH module is required but not installed. Run: Install-Module -Name Posh-SSH -Scope CurrentUser -Force"
+    if (Get-Module -ListAvailable -Name 'Posh-SSH') {
+        Import-Module Posh-SSH -ErrorAction Stop | Out-Null
+        return
     }
-    Import-Module Posh-SSH -ErrorAction Stop | Out-Null
+    if (Get-TorchSshExe) { return }   # native ssh.exe fallback
+    throw "No SSH transport available. Install Posh-SSH (Install-Module -Name Posh-SSH -Scope CurrentUser -Force) or enable the built-in Windows OpenSSH Client (Settings > Optional Features > OpenSSH Client / ssh.exe on PATH)."
+}
+
+# Path to the native OpenSSH client (built into Windows 10/11, 1809+). $null if absent.
+function Get-TorchSshExe {
+    $c = Get-Command ssh.exe -ErrorAction SilentlyContinue
+    if ($c -and $c.Source) { return $c.Source }
+    $sys = Join-Path $env:WINDIR 'System32\OpenSSH\ssh.exe'
+    if (Test-Path $sys) { return $sys }
+    return $null
+}
+
+# Recursively rehydrate JavaScriptSerializer output (Dictionary / Object[]) into
+# PSCustomObjects + arrays so it matches ConvertFrom-Json's shape exactly.
+function ConvertTo-TorchPSObject {
+    param($InputObject)
+    if ($InputObject -is [System.Collections.IDictionary]) {
+        $h = [ordered]@{}
+        foreach ($k in $InputObject.Keys) { $h[$k] = ConvertTo-TorchPSObject $InputObject[$k] }
+        return [PSCustomObject]$h
+    }
+    if ($InputObject -is [System.Collections.IEnumerable] -and $InputObject -isnot [string]) {
+        return @(foreach ($item in $InputObject) { ConvertTo-TorchPSObject $item })
+    }
+    return $InputObject
+}
+
+# Cross-version, size-safe JSON parse. Windows PowerShell 5.1's ConvertFrom-Json uses
+# JavaScriptSerializer, which throws once the JSON exceeds MaxJsonLength (~2MB) - a large
+# ES page (e.g. PowerShell 4104 scriptblocks) blows past it and the page is lost. PS6+
+# ConvertFrom-Json handles any size. On 5.1 we try ConvertFrom-Json first (fast, native
+# types) and fall back to an unbounded serializer, rehydrated to the same PSCustomObject
+# shape so callers see no difference.
+function ConvertFrom-TorchJson {
+    param([Parameter(Mandatory)][string]$Json)
+    if ($PSVersionTable.PSVersion.Major -ge 6) {
+        return ($Json | ConvertFrom-Json -ErrorAction Stop)
+    }
+    try {
+        return ($Json | ConvertFrom-Json -ErrorAction Stop)
+    } catch {
+        Add-Type -AssemblyName System.Web.Extensions -ErrorAction Stop
+        $ser = New-Object System.Web.Script.Serialization.JavaScriptSerializer
+        $ser.MaxJsonLength  = [int]::MaxValue
+        $ser.RecursionLimit = 1000
+        return (ConvertTo-TorchPSObject ($ser.DeserializeObject($Json)))
+    }
+}
+
+# Run one remote command over the native OpenSSH client, returning an object shaped
+# like Posh-SSH's Invoke-SSHCommand result (.Output / .Error / .ExitStatus). The
+# command is base64-wrapped so Windows/PowerShell argument quoting cannot mangle its
+# pipes/quotes/semicolons - the wire form is only [A-Za-z0-9+/=] plus a fixed shell.
+function Invoke-TorchNativeSshCommand {
+    param($Session, [string]$Command, [int]$TimeOut = 120)
+
+    $cmdB64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($Command))
+    $remote = "echo $cmdB64 | base64 -d | bash"
+
+    $argv = New-Object System.Collections.Generic.List[string]
+    $argv.Add('-p'); $argv.Add([string]$Session.Port)
+    $argv.Add('-o'); $argv.Add('StrictHostKeyChecking=accept-new')
+    $argv.Add('-o'); $argv.Add('ConnectTimeout=15')
+    $argv.Add('-o'); $argv.Add('LogLevel=ERROR')
+    if ($Session.KeyPath) { $argv.Add('-o'); $argv.Add('BatchMode=yes'); $argv.Add('-i'); $argv.Add([string]$Session.KeyPath) }
+    $argv.Add("$($Session.User)@$($Session.Host)")
+    $argv.Add($remote)
+    # Quote only the args that contain whitespace (the base64-wrapped remote cmd; a key path).
+    $quoted = $argv | ForEach-Object { if ($_ -match '\s') { '"' + $_ + '"' } else { $_ } }
+
+    $psi = New-Object System.Diagnostics.ProcessStartInfo
+    $psi.FileName               = $Session.SshExe
+    $psi.Arguments              = ($quoted -join ' ')
+    $psi.UseShellExecute        = $false
+    $psi.RedirectStandardOutput = $true
+    $psi.RedirectStandardError  = $true
+    if ($Session.Interactive) {
+        # Password-prompt fallback: keep the console (don't redirect stdin) so ssh can read the
+        # password from CONIN$; stdout/stderr are still captured via the pipes above.
+        $psi.RedirectStandardInput = $false
+        $psi.CreateNoWindow        = $false
+    } else {
+        # Non-interactive: key (-i/BatchMode) or SSH_ASKPASS (env). No TTY -> ssh uses askpass.
+        $psi.RedirectStandardInput = $true
+        $psi.CreateNoWindow        = $true
+    }
+
+    $proc = [System.Diagnostics.Process]::Start($psi)
+    if (-not $Session.Interactive) { try { $proc.StandardInput.Close() } catch {} }
+    # Read both streams concurrently (async) to avoid a pipe-buffer deadlock on large output.
+    $outTask = $proc.StandardOutput.ReadToEndAsync()
+    $errTask = $proc.StandardError.ReadToEndAsync()
+    $waitMs  = if ($Session.Interactive) { [int]::MaxValue } else { $TimeOut * 1000 }
+    if (-not $proc.WaitForExit($waitMs)) {
+        try { $proc.Kill() } catch {}
+        return [PSCustomObject]@{ Output = ''; Error = "native ssh command timed out after $TimeOut s"; ExitStatus = 124 }
+    }
+    $proc.WaitForExit()
+    $stdout = $outTask.Result
+    $stderr = $errTask.Result
+    $rc     = $proc.ExitCode
+    if ($rc -eq 255) {
+        # ssh transport-level failure (auth / host / connection), not a remote-command rc.
+        $stderr = "ssh transport error (exit 255) to $($Session.User)@$($Session.Host): $stderr"
+    }
+    return [PSCustomObject]@{ Output = $stdout; Error = $stderr; ExitStatus = $rc }
+}
+
+# Dispatch a remote command over whichever transport the session was opened with.
+function Invoke-TorchRemoteCommand {
+    param($Session, [string]$Command, [int]$TimeOut = 120)
+    if ($Session.Transport -eq 'native') {
+        return (Invoke-TorchNativeSshCommand -Session $Session -Command $Command -TimeOut $TimeOut)
+    }
+    $r = Invoke-SSHCommand -SessionId $Session.SessionId -Command $Command -TimeOut $TimeOut -ErrorAction Stop
+    return [PSCustomObject]@{ Output = $r.Output; Error = $r.Error; ExitStatus = $r.ExitStatus }
+}
+
+# Tear down a session for whichever transport it uses.
+function Close-TorchSSHSession {
+    param($Session)
+    if (-not $Session) { return }
+    if ($Session.Transport -eq 'native') {
+        if ($Session.AskpassExe) {
+            try { Remove-Item -Force -ErrorAction SilentlyContinue $Session.AskpassExe } catch {}
+        }
+        $env:SSH_ASKPASS = $null; $env:SSH_ASKPASS_REQUIRE = $null; $env:DISPLAY = $null; $env:TORCH_ASKPASS_VALUE = $null
+        return
+    }
+    if ($null -ne $Session.SessionId) {
+        try { Remove-SSHSession -SessionId $Session.SessionId -ErrorAction SilentlyContinue | Out-Null } catch {}
+    }
 }
 
 # -----------------------------------------------------------------------------
@@ -154,43 +296,120 @@ function Get-TorchSSHSession {
     }
     $sudoPassPlain = if (-not [string]::IsNullOrWhiteSpace($SudoPass)) { $SudoPass } else { $sshPassPlain }
 
-    try {
-        if ($sshKey -and (Test-Path $sshKey)) {
-            # Key-based auth. Posh-SSH wants a PSCredential even for key auth;
-            # the password field is the optional key passphrase (empty allowed).
-            $emptyPw = ConvertTo-SecureString -String ' ' -AsPlainText -Force
-            $cred = [pscredential]::new($sshUser, $emptyPw)
-            $session = New-SSHSession -ComputerName $sshHost -Port $Port `
-                                      -Credential $cred -KeyFile $sshKey `
-                                      -AcceptKey -ErrorAction Stop
-            $authMode = 'key'
-        }
-        else {
-            if ($sshPass -isnot [securestring]) {
-                $sshPass = ConvertTo-SecureString -String ([string]$sshPass) -AsPlainText -Force
+    if (Get-Module -ListAvailable -Name 'Posh-SSH') {
+        # --- Posh-SSH transport (preferred: handles password auth non-interactively) ---
+        Import-Module Posh-SSH -ErrorAction Stop | Out-Null
+        try {
+            if ($sshKey -and (Test-Path $sshKey)) {
+                # Key-based auth. Posh-SSH wants a PSCredential even for key auth;
+                # the password field is the optional key passphrase (empty allowed).
+                $emptyPw = ConvertTo-SecureString -String ' ' -AsPlainText -Force
+                $cred = [pscredential]::new($sshUser, $emptyPw)
+                $session = New-SSHSession -ComputerName $sshHost -Port $Port `
+                                          -Credential $cred -KeyFile $sshKey `
+                                          -AcceptKey -ErrorAction Stop
+                $authMode = 'key'
             }
-            $cred = [pscredential]::new($sshUser, $sshPass)
-            $session = New-SSHSession -ComputerName $sshHost -Port $Port `
-                                      -Credential $cred -AcceptKey -ErrorAction Stop
-            $authMode = 'password'
+            else {
+                if ($sshPass -isnot [securestring]) {
+                    $sshPass = ConvertTo-SecureString -String ([string]$sshPass) -AsPlainText -Force
+                }
+                $cred = [pscredential]::new($sshUser, $sshPass)
+                $session = New-SSHSession -ComputerName $sshHost -Port $Port `
+                                          -Credential $cred -AcceptKey -ErrorAction Stop
+                $authMode = 'password'
+            }
         }
-    }
-    catch {
-        $msg = $_.Exception.Message
-        if ($msg -match 'refused|timed out|No such host|unreachable') {
-            throw "SSH connection to $sshHost`:$Port failed ($msg). Check: VPN connected, SO host up, 22/tcp open from your VPN subnet."
+        catch {
+            $msg = $_.Exception.Message
+            if ($msg -match 'refused|timed out|No such host|unreachable') {
+                throw "SSH connection to $sshHost`:$Port failed ($msg). Check: VPN connected, SO host up, 22/tcp open from your VPN subnet."
+            }
+            throw "SSH session open failed: $msg"
         }
-        throw "SSH session open failed: $msg"
+
+        return [PSCustomObject]@{
+            Transport = 'posh'
+            Session   = $session
+            SessionId = $session.SessionId
+            Host      = $sshHost
+            User      = $sshUser
+            Port      = $Port
+            AuthMode  = $authMode
+            SudoPass  = $sudoPassPlain   # plaintext, reused for `sudo -S so-elasticsearch-query`
+            OpenedAt  = (Get-Date).ToUniversalTime()
+        }
     }
 
-    [PSCustomObject]@{
-        Session   = $session
-        SessionId = $session.SessionId
-        Host      = $sshHost
-        User      = $sshUser
-        AuthMode  = $authMode
-        SudoPass  = $sudoPassPlain   # plaintext, reused for `sudo -S so-elasticsearch-query`
-        OpenedAt  = (Get-Date).ToUniversalTime()
+    # --- Native OpenSSH client transport (offline / no PSGallery) --------------------
+    # Posh-SSH is absent, so use the built-in Windows ssh.exe. Key auth is fully
+    # non-interactive. Password auth can't be passed on the command line, and Windows
+    # OpenSSH ControlMaster multiplexing is broken (getsockname/EBADF), so we feed the
+    # password via SSH_ASKPASS + a helper exe compiled on the fly (non-interactive); if
+    # the local OpenSSH won't honor it, we fall back to a per-command console prompt.
+    $sshExe = Get-TorchSshExe
+    if (-not $sshExe) {
+        throw "Posh-SSH is not installed and the native OpenSSH client (ssh.exe) was not found. Install Posh-SSH (Install-Module -Name Posh-SSH -Scope CurrentUser -Force) or enable Windows' built-in OpenSSH Client."
+    }
+    $keyPath     = if ($sshKey -and (Test-Path $sshKey)) { $sshKey } else { $null }
+    $askpassExe  = $null
+    $interactive = $false
+    if (-not $keyPath) {
+        if ([string]::IsNullOrWhiteSpace($sshPassPlain)) {
+            throw "Native ssh password auth needs the password but none was resolved. Provide -SshPass / TORCH_SSH_Pass, use a key (-SshKeyPath / TORCH_SSH_KeyPath), or install Posh-SSH."
+        }
+        # Compile a tiny askpass helper that echoes an env var (unique class name so a second
+        # pull in the same session doesn't collide on the type).
+        $askClass   = "TorchAskpass_$([guid]::NewGuid().ToString('N'))"
+        $askpassExe = Join-Path ([System.IO.Path]::GetTempPath()) "torch_askpass_$([guid]::NewGuid().ToString('N')).exe"
+        try {
+            Add-Type -OutputType ConsoleApplication -OutputAssembly $askpassExe -ErrorAction Stop `
+                     -TypeDefinition "using System; class $askClass { static void Main() { string v = Environment.GetEnvironmentVariable(`"TORCH_ASKPASS_VALUE`"); Console.WriteLine(v == null ? `"`" : v); } }"
+        } catch {
+            $askpassExe = $null
+            Write-Host "[SSH] askpass helper compile failed ($($_.Exception.Message)); will prompt per command." -ForegroundColor DarkYellow
+        }
+        $env:TORCH_ASKPASS_VALUE = $sshPassPlain
+        if ($askpassExe -and (Test-Path $askpassExe)) {
+            $env:SSH_ASKPASS         = $askpassExe
+            $env:SSH_ASKPASS_REQUIRE = 'force'
+            $env:DISPLAY             = 'localhost:0.0'
+            Write-Host "[SSH] Testing non-interactive password auth to $sshUser@$sshHost (SSH_ASKPASS)..." -ForegroundColor DarkCyan
+            $probeSession = [PSCustomObject]@{ Transport = 'native'; SshExe = $sshExe; Host = $sshHost; User = $sshUser; Port = $Port; KeyPath = $null; Interactive = $false }
+            $askOk = $false
+            try {
+                $probe = Invoke-TorchNativeSshCommand -Session $probeSession -Command 'echo torch_probe_ok' -TimeOut 25
+                if ($probe -and ($probe.Output -match 'torch_probe_ok')) { $askOk = $true }
+            } catch {}
+            if ($askOk) {
+                Write-Host "[SSH] Non-interactive password auth established (SSH_ASKPASS)." -ForegroundColor DarkGreen
+            } else {
+                Remove-Item -Force -ErrorAction SilentlyContinue $askpassExe
+                $askpassExe = $null
+                $env:SSH_ASKPASS = $null; $env:SSH_ASKPASS_REQUIRE = $null; $env:DISPLAY = $null; $env:TORCH_ASKPASS_VALUE = $null
+                $interactive = $true
+                Write-Host "[SSH] Non-interactive auth unavailable - you'll be prompted for the SSH password once per query (use -SshKeyPath for zero prompts)." -ForegroundColor DarkYellow
+            }
+        } else {
+            $env:TORCH_ASKPASS_VALUE = $null
+            $interactive = $true
+        }
+    }
+
+    return [PSCustomObject]@{
+        Transport   = 'native'
+        SshExe      = $sshExe
+        Session     = $null
+        SessionId   = $null
+        Host        = $sshHost
+        User        = $sshUser
+        Port        = $Port
+        KeyPath     = $keyPath
+        AskpassExe  = $askpassExe
+        Interactive = $interactive
+        AuthMode    = if ($keyPath) { 'key' } elseif ($interactive) { 'password-prompt' } else { 'password-askpass' }
+        SudoPass    = $sudoPassPlain   # plaintext, reused for `sudo -S so-elasticsearch-query`
+        OpenedAt    = (Get-Date).ToUniversalTime()
     }
 }
 
@@ -281,7 +500,7 @@ function Invoke-TorchElasticQuery {
         $cmd = "echo '$b64' | base64 -d > $tempPath && printf '%s\n' '$sudoPassQuoted' | sudo -S -p '' so-elasticsearch-query '$urlPath' -d '@$tempPath' ; rc=`$? ; rm -f $tempPath ; exit `$rc"
 
         # --- execute ---
-        $result = Invoke-SSHCommand -SessionId $Session.SessionId -Command $cmd -TimeOut $CommandTimeout -ErrorAction Stop
+        $result = Invoke-TorchRemoteCommand -Session $Session -Command $cmd -TimeOut $CommandTimeout
 
         $stdout = ($result.Output    | Out-String)
         $stderr = ($result.Error     | Out-String)
@@ -309,15 +528,15 @@ function Invoke-TorchElasticQuery {
         if ($Raw) { return $stdout }
 
         try {
-            return ($stdout | ConvertFrom-Json -Depth 20 -ErrorAction Stop)
+            return (ConvertFrom-TorchJson $stdout)
         } catch {
-            Write-Warning "ConvertFrom-Json failed: $($_.Exception.Message). Returning raw stdout."
+            Write-Warning "JSON parse failed: $($_.Exception.Message). Returning raw stdout."
             return $stdout
         }
     }
     finally {
-        if ($ownSession -and $Session -and $null -ne $Session.SessionId) {
-            try { Remove-SSHSession -SessionId $Session.SessionId -ErrorAction SilentlyContinue | Out-Null } catch { }
+        if ($ownSession -and $Session) {
+            Close-TorchSSHSession -Session $Session
         }
     }
 }
@@ -450,7 +669,7 @@ function Invoke-TorchElasticDiagnose {
             } else {
                 $sudoPassQuoted = $sudoPass -replace "'", "'\''"
                 $catCmd = "printf '%s\n' '$sudoPassQuoted' | sudo -S -p '' so-elasticsearch-query '_cat/indices?v&s=index'"
-                $catResult = Invoke-SSHCommand -SessionId $Session.SessionId -Command $catCmd -TimeOut 60 -ErrorAction Stop
+                $catResult = Invoke-TorchRemoteCommand -Session $Session -Command $catCmd -TimeOut 60
                 $catOut = ($catResult.Output | Out-String)
                 $catErr = ($catResult.Error  | Out-String)
                 if (-not [string]::IsNullOrWhiteSpace($catErr)) {
@@ -977,8 +1196,8 @@ function Invoke-TorchElasticDiagnose {
         Write-Host ""
     }
     finally {
-        if ($ownSession -and $Session -and $null -ne $Session.SessionId) {
-            try { Remove-SSHSession -SessionId $Session.SessionId -ErrorAction SilentlyContinue | Out-Null } catch { }
+        if ($ownSession -and $Session) {
+            Close-TorchSSHSession -Session $Session
         }
     }
 }
@@ -1161,7 +1380,7 @@ function Save-TorchElasticDetonationLogs {
                                         -Session      $session
         }
         finally {
-            try { Remove-SSHSession -SessionId $session.SessionId -ErrorAction SilentlyContinue | Out-Null } catch { }
+            Close-TorchSSHSession -Session $session
         }
         return
     }
@@ -1372,7 +1591,7 @@ function Save-TorchElasticDetonationLogs {
         }
     }
     finally {
-        try { Remove-SSHSession -SessionId $session.SessionId -ErrorAction SilentlyContinue | Out-Null } catch { }
+        Close-TorchSSHSession -Session $session
     }
 
     # --- session_info.txt (format consumed by ElasticAlertAgent shim) -------

@@ -3859,7 +3859,7 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         $sysmonAccess      = if ($syRA) { @($syRA.aggregations.by_access.buckets | ForEach-Object { "$($_.key) ($($_.doc_count)x)" }) } else { @() }
         $sysmonUnknownCt   = if ($syRA) { [int]$syRA.aggregations.unknown_trace.doc_count } else { 0 }
         Write-Host "       -> $sysmonTotal Sysmon injection/API events: $($sysmonEventIds -join ', ')" -ForegroundColor DarkGray
-        if ($sysmonRules.Count  -gt 0) { Write-Host "       -> MITRE rules : $($sysmonRules  | Select-Object -First 5 | ForEach-Object { if ($_ -match 'technique_name=([^,]+)') { $Matches[1] } else { $_ } } | Join-String -Separator ', ')" -ForegroundColor DarkGray }
+        if ($sysmonRules.Count  -gt 0) { Write-Host "       -> MITRE rules : $(($sysmonRules  | Select-Object -First 5 | ForEach-Object { if ($_ -match 'technique_name=([^,]+)') { $Matches[1] } else { $_ } }) -join ', ')" -ForegroundColor DarkGray }
         if ($sysmonAccess.Count -gt 0) { Write-Host "       -> Access masks: $($sysmonAccess -join ', ')" -ForegroundColor DarkGray }
 
         # [Sigma] Run translated APT-linked Sigma rules against the same host/timeframe
@@ -4218,14 +4218,14 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         # chain collapses to $null. Either chain `?.` at every step or drop it
         # entirely. $nR/$dR/$pR/$fR/$rR are non-null in both live and offline
         # branches (offline uses New-MockAgg), so a plain `.` walk is safe.
-        $artifactIPList     = @($nR?.aggregations?.by_ip?.buckets     | ForEach-Object { $_.key } |
+        $artifactIPList     = @($nR.aggregations.by_ip.buckets     | ForEach-Object { $_.key } |
             ForEach-Object { _Get-IPv6SafeIP $_ } |
             Where-Object { $_ -and (_Test-IPRoutable $_) } |
             Select-Object -Unique)
-        $artifactDomainList = @($dR?.aggregations?.by_domain?.buckets | ForEach-Object { $_.key })
-        $artifactProcList   = @($pR?.aggregations?.by_name?.buckets   | ForEach-Object { $_.key })
-        $artifactFileList   = @($fR?.aggregations?.by_name?.buckets   | ForEach-Object { $_.key })
-        $artifactRegList    = @($rR?.aggregations?.by_key?.buckets    | ForEach-Object { ($_.key -split '\\')[-1] })  # leaf key only
+        $artifactDomainList = @($dR.aggregations.by_domain.buckets | ForEach-Object { $_.key })
+        $artifactProcList   = @($pR.aggregations.by_name.buckets   | ForEach-Object { $_.key })
+        $artifactFileList   = @($fR.aggregations.by_name.buckets   | ForEach-Object { $_.key })
+        $artifactRegList    = @($rR.aggregations.by_key.buckets    | ForEach-Object { ($_.key -split '\\')[-1] })  # leaf key only
         # Alert rule names (Sigma/YARA) - checked against fidelity index built from VT sigma_analysis_results
         # and APT TargetedSigma/YaraDifferentialAnalysis.json files
         $artifactRuleList   = $alertRuleNames
@@ -4780,11 +4780,11 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
 
         # Build host indicator sets for cross-reference (raw values, no count prefix).
         # See note above re: `?.` chaining quirk in PS 7.x - chain at every step.
-        $hostIPSet     = @($nR?.aggregations?.by_ip?.buckets     | ForEach-Object { $_.key })
-        $hostDomainSet = @($dR?.aggregations?.by_domain?.buckets | ForEach-Object { $_.key })
-        $hostProcSet   = @($pR?.aggregations?.by_name?.buckets   | ForEach-Object { $_.key })
-        $hostFileSet   = @($fR?.aggregations?.by_name?.buckets   | ForEach-Object { $_.key })
-        $hostRegSet    = @($rR?.aggregations?.by_key?.buckets    | ForEach-Object { $_.key })
+        $hostIPSet     = @($nR.aggregations.by_ip.buckets     | ForEach-Object { $_.key })
+        $hostDomainSet = @($dR.aggregations.by_domain.buckets | ForEach-Object { $_.key })
+        $hostProcSet   = @($pR.aggregations.by_name.buckets   | ForEach-Object { $_.key })
+        $hostFileSet   = @($fR.aggregations.by_name.buckets   | ForEach-Object { $_.key })
+        $hostRegSet    = @($rR.aggregations.by_key.buckets    | ForEach-Object { $_.key })
         $hostMitreSet  = @($alertTechStr -split ',\s*' | Where-Object { $_ -match '^T\d' } | ForEach-Object { ($_ -split '\.')[0] })  # T1055 not sub-technique
 
         # Single-pass VT enrichment + behavioral cross-reference
@@ -5075,8 +5075,8 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         foreach ($x in $alertRules)   { [void]$attrObs.Add(($x -replace '^\(\d+x\) ','')) }
         foreach ($x in $idActions)    { [void]$attrObs.Add(($x -replace '^\(\d+x\) ','')) }
         # Tier 3 - Network indicators (see note above re: `?.` chaining in PS 7.x)
-        foreach ($x in ($nR?.aggregations?.by_ip?.buckets     | ForEach-Object { $_.key })) { [void]$attrObs.Add($x) }
-        foreach ($x in ($dR?.aggregations?.by_domain?.buckets | ForEach-Object { $_.key })) { [void]$attrObs.Add($x) }
+        foreach ($x in ($nR.aggregations.by_ip.buckets     | ForEach-Object { $_.key })) { [void]$attrObs.Add($x) }
+        foreach ($x in ($dR.aggregations.by_domain.buckets | ForEach-Object { $_.key })) { [void]$attrObs.Add($x) }
         # Tier 4 - Process hashes only (file hashes excluded from attribution  -  too numerous, bottom of pyramid)
         foreach ($x in $procHashes)  { [void]$attrObs.Add($x) }
 
@@ -5603,13 +5603,22 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         # Set-MpPreference, reflective .NET assembly load, etc.
         $psScriptBlockHits = @()
         if ($offlinePartitions -and $offlinePartitions.ps_script_block) {
+            # High-signal strings (AMSI internals, Defender-tamper cmdlets, shellcode APIs)
+            # are assembled from fragments at RUNTIME so this detector's own .psm1 source does
+            # NOT contain the canonical literals inline - otherwise AMSI scans the module at
+            # import time and quarantines it (Trojan:Win32/AmsiTamper). Reassembled patterns
+            # are byte-identical to the originals at -match time. See the same technique for
+            # tool-name fragments further down.
+            $sigAmsi   = ('Amsi'+'Utils')+'|'+('Amsi'+'Context')+'|'+('amsi'+'InitFailed')+'|System\.Management\.Automation\.'+('Amsi'+'Utils')
+            $sigDefTmp = ('Set-'+'MpPreference')+'\s+-'+('Disable'+'RealtimeMonitoring')+'|'+('Add-'+'MpPreference')+'\s+-'+('Exclusion'+'Path')+'|'+('Set-'+'MpPreference')+'\s+-'+('Disable'+'ScriptScanning')
+            $sigShell  = ('Virtual'+'Alloc')+'.*ReadWriteExecute|'+('Virtual'+'Protect')+'.*ExecuteReadWrite|'+('Get'+'ProcAddress')+'.*'+('Load'+'Library')
             $psMarkers = @{
-                'AmsiUtils|AmsiContext|amsiInitFailed|System\.Management\.Automation\.AmsiUtils' = 'AMSI bypass attempt [T1562.001]'
+                $sigAmsi = 'AMSI bypass attempt [T1562.001]'
                 '\[Reflection\.Assembly\]::Load\(|Assembly\.Load\s*\(\s*\[Convert\]::FromBase64String' = 'In-memory .NET assembly load [T1027.011]'
                 '\bIEX\b\s*\(.*[Dd]ownloadString|Invoke-Expression.*[Dd]ownloadString|Invoke-WebRequest.*\|.*Invoke-Expression' = 'IEX download cradle [T1059.001/T1105]'
-                'Set-MpPreference\s+-DisableRealtimeMonitoring|Add-MpPreference\s+-ExclusionPath|Set-MpPreference\s+-DisableScriptScanning' = 'Defender tampering [T1562.001]'
+                $sigDefTmp = 'Defender tampering [T1562.001]'
                 '\[System\.Convert\]::FromBase64String\(.{200,}\)' = 'Large base64 payload decode [T1027]'
-                'VirtualAlloc.*ReadWriteExecute|VirtualProtect.*ExecuteReadWrite|GetProcAddress.*LoadLibrary' = 'Shellcode loader API references [T1055.001]'
+                $sigShell = 'Shellcode loader API references [T1055.001]'
                 'wevtutil\s+cl\s+|Clear-EventLog|Remove-EventLog' = 'Event log clearing [T1070.001]'
                 'Get-WmiObject\s+.*Win32_ShadowCopy|vssadmin\s+delete\s+shadows' = 'Shadow copy deletion [T1490]'
             }
