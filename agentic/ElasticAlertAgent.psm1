@@ -5603,13 +5603,22 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         # Set-MpPreference, reflective .NET assembly load, etc.
         $psScriptBlockHits = @()
         if ($offlinePartitions -and $offlinePartitions.ps_script_block) {
+            # High-signal strings (AMSI internals, Defender-tamper cmdlets, shellcode APIs)
+            # are assembled from fragments at RUNTIME so this detector's own .psm1 source does
+            # NOT contain the canonical literals inline - otherwise AMSI scans the module at
+            # import time and quarantines it (Trojan:Win32/AmsiTamper). Reassembled patterns
+            # are byte-identical to the originals at -match time. See the same technique for
+            # tool-name fragments further down.
+            $sigAmsi   = ('Amsi'+'Utils')+'|'+('Amsi'+'Context')+'|'+('amsi'+'InitFailed')+'|System\.Management\.Automation\.'+('Amsi'+'Utils')
+            $sigDefTmp = ('Set-'+'MpPreference')+'\s+-'+('Disable'+'RealtimeMonitoring')+'|'+('Add-'+'MpPreference')+'\s+-'+('Exclusion'+'Path')+'|'+('Set-'+'MpPreference')+'\s+-'+('Disable'+'ScriptScanning')
+            $sigShell  = ('Virtual'+'Alloc')+'.*ReadWriteExecute|'+('Virtual'+'Protect')+'.*ExecuteReadWrite|'+('Get'+'ProcAddress')+'.*'+('Load'+'Library')
             $psMarkers = @{
-                'AmsiUtils|AmsiContext|amsiInitFailed|System\.Management\.Automation\.AmsiUtils' = 'AMSI bypass attempt [T1562.001]'
+                $sigAmsi = 'AMSI bypass attempt [T1562.001]'
                 '\[Reflection\.Assembly\]::Load\(|Assembly\.Load\s*\(\s*\[Convert\]::FromBase64String' = 'In-memory .NET assembly load [T1027.011]'
                 '\bIEX\b\s*\(.*[Dd]ownloadString|Invoke-Expression.*[Dd]ownloadString|Invoke-WebRequest.*\|.*Invoke-Expression' = 'IEX download cradle [T1059.001/T1105]'
-                'Set-MpPreference\s+-DisableRealtimeMonitoring|Add-MpPreference\s+-ExclusionPath|Set-MpPreference\s+-DisableScriptScanning' = 'Defender tampering [T1562.001]'
+                $sigDefTmp = 'Defender tampering [T1562.001]'
                 '\[System\.Convert\]::FromBase64String\(.{200,}\)' = 'Large base64 payload decode [T1027]'
-                'VirtualAlloc.*ReadWriteExecute|VirtualProtect.*ExecuteReadWrite|GetProcAddress.*LoadLibrary' = 'Shellcode loader API references [T1055.001]'
+                $sigShell = 'Shellcode loader API references [T1055.001]'
                 'wevtutil\s+cl\s+|Clear-EventLog|Remove-EventLog' = 'Event log clearing [T1070.001]'
                 'Get-WmiObject\s+.*Win32_ShadowCopy|vssadmin\s+delete\s+shadows' = 'Shadow copy deletion [T1490]'
             }

@@ -98,6 +98,43 @@ function Get-TorchSshExe {
     return $null
 }
 
+# Recursively rehydrate JavaScriptSerializer output (Dictionary / Object[]) into
+# PSCustomObjects + arrays so it matches ConvertFrom-Json's shape exactly.
+function ConvertTo-TorchPSObject {
+    param($InputObject)
+    if ($InputObject -is [System.Collections.IDictionary]) {
+        $h = [ordered]@{}
+        foreach ($k in $InputObject.Keys) { $h[$k] = ConvertTo-TorchPSObject $InputObject[$k] }
+        return [PSCustomObject]$h
+    }
+    if ($InputObject -is [System.Collections.IEnumerable] -and $InputObject -isnot [string]) {
+        return @(foreach ($item in $InputObject) { ConvertTo-TorchPSObject $item })
+    }
+    return $InputObject
+}
+
+# Cross-version, size-safe JSON parse. Windows PowerShell 5.1's ConvertFrom-Json uses
+# JavaScriptSerializer, which throws once the JSON exceeds MaxJsonLength (~2MB) - a large
+# ES page (e.g. PowerShell 4104 scriptblocks) blows past it and the page is lost. PS6+
+# ConvertFrom-Json handles any size. On 5.1 we try ConvertFrom-Json first (fast, native
+# types) and fall back to an unbounded serializer, rehydrated to the same PSCustomObject
+# shape so callers see no difference.
+function ConvertFrom-TorchJson {
+    param([Parameter(Mandatory)][string]$Json)
+    if ($PSVersionTable.PSVersion.Major -ge 6) {
+        return ($Json | ConvertFrom-Json -ErrorAction Stop)
+    }
+    try {
+        return ($Json | ConvertFrom-Json -ErrorAction Stop)
+    } catch {
+        Add-Type -AssemblyName System.Web.Extensions -ErrorAction Stop
+        $ser = New-Object System.Web.Script.Serialization.JavaScriptSerializer
+        $ser.MaxJsonLength  = [int]::MaxValue
+        $ser.RecursionLimit = 1000
+        return (ConvertTo-TorchPSObject ($ser.DeserializeObject($Json)))
+    }
+}
+
 # Run one remote command over the native OpenSSH client, returning an object shaped
 # like Posh-SSH's Invoke-SSHCommand result (.Output / .Error / .ExitStatus). The
 # command is base64-wrapped so Windows/PowerShell argument quoting cannot mangle its
@@ -491,11 +528,9 @@ function Invoke-TorchElasticQuery {
         if ($Raw) { return $stdout }
 
         try {
-            # NOTE: ConvertFrom-Json has NO -Depth on Windows PowerShell 5.1 (added in PS6);
-            # 5.1 deserializes fully by default, so omit it for cross-version compatibility.
-            return ($stdout | ConvertFrom-Json -ErrorAction Stop)
+            return (ConvertFrom-TorchJson $stdout)
         } catch {
-            Write-Warning "ConvertFrom-Json failed: $($_.Exception.Message). Returning raw stdout."
+            Write-Warning "JSON parse failed: $($_.Exception.Message). Returning raw stdout."
             return $stdout
         }
     }
