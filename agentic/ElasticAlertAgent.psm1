@@ -3123,6 +3123,8 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                 _Set-EcsPath $Doc 'file.hash.sha256' (_SysmonHash $ed.Hashes 'SHA256')
                 _Set-EcsPath $Doc 'file.path' $ed.ImageLoaded
                 _Set-EcsPath $Doc 'dll.path'  $ed.ImageLoaded
+                _Set-EcsPath $Doc 'file.created'        $ed.CreationUtcTime          # EID 2 timestomp
+                _Set-EcsPath $Doc 'file.mtime_modified' $ed.PreviousCreationUtcTime  # EID 2 timestomp
                 # registry (EID 12/13/14)
                 _Set-EcsPath $Doc 'registry.path'         $ed.TargetObject
                 _Set-EcsPath $Doc 'registry.key'          $ed.TargetObject
@@ -3137,6 +3139,7 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
                 # event.category / action / type from Sysmon EID (heuristics gate on these)
                 switch ("$($Doc.winlog.event_id)") {
                     '1'  { _Set-EcsPath $Doc 'event.category' 'process';  _Set-EcsPath $Doc 'event.type' 'start'; _Set-EcsPath $Doc 'event.action' 'start' }
+                    '2'  { _Set-EcsPath $Doc 'event.category' 'file';     _Set-EcsPath $Doc 'event.action' 'metadata change' }
                     '3'  { _Set-EcsPath $Doc 'event.category' 'network';  _Set-EcsPath $Doc 'event.action' 'connection' }
                     '7'  { _Set-EcsPath $Doc 'event.category' 'library';  _Set-EcsPath $Doc 'event.action' 'load' }
                     '8'  { _Set-EcsPath $Doc 'event.action' 'CreateRemoteThread' }
