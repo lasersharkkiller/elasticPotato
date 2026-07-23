@@ -151,7 +151,12 @@ elseif ($functionChoice -eq "1b") { $functionChoice = "__deploy_kape__" }
 elseif ($functionChoice -eq "1c") { $functionChoice = "__deploy_dfirorc__" }
 
 # -- GROUP 1: Remote Collection Tool Deployment -------------------------------
-elseif ($functionChoice -eq "__deploy_uac__") {
+# NOTE: this MUST start a fresh `if` (not `elseif`). The 1a/1b/1c blocks above
+# only *rewrite* $functionChoice into a __deploy_*__ token; the dispatch below
+# then acts on that token. If this were chained to the block above with `elseif`,
+# a matched rewrite (e.g. 1b) would satisfy the chain and skip every dispatch
+# branch - the deploy would silently never run.
+if ($functionChoice -eq "__deploy_uac__") {
     $deployScript = Join-Path $PSScriptRoot "tools\deploy\Deploy-UAC.ps1"
     if (Test-Path -LiteralPath $deployScript) { & $deployScript } else { Write-Host "Deploy script not found: $deployScript" -ForegroundColor Red }
 }
