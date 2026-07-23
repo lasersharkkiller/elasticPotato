@@ -83,6 +83,14 @@ function Get-ElasticDetonationLogs {
         if (-not ([System.Management.Automation.PSTypeName]'ElasticPotatoCertBypass').Type) { Add-Type -TypeDefinition 'using System.Net;using System.Net.Security;using System.Security.Cryptography.X509Certificates;public static class ElasticPotatoCertBypass{public static void Enable(){ServicePointManager.ServerCertificateValidationCallback=delegate(object s,X509Certificate c,X509Chain ch,SslPolicyErrors e){return true;};}}' }; [ElasticPotatoCertBypass]::Enable()  # PS5.1: compiled delegate avoids the "no Runspace" cert-callback crash
     }
     $restArgs = if ($PSVersionTable.PSVersion.Major -ge 6) { @{ SkipCertificateCheck = $true } } else { @{} }
+    # Detection probes + pre-flight health check get a BOUNDED timeout. Invoke-RestMethod's
+    # Windows PowerShell 5.1 default is TimeoutSec=0 (indefinite), so a Security Onion :9200
+    # that accepts the TCP connection but never answers hangs the check forever. A finite
+    # timeout makes it fail fast and fall through to the SSH-connector offer. (The data-pull
+    # queries keep $restArgs unbounded so a large page is never cut off mid-transfer.)
+    $probeArgs = @{}
+    foreach ($__k in $restArgs.Keys) { $probeArgs[$__k] = $restArgs[$__k] }
+    $probeArgs['TimeoutSec'] = 20
 
     # --- AUTH ---
     # Pre-init so .Trim() on a null Get-Secret result does not throw
@@ -200,7 +208,7 @@ function Get-ElasticDetonationLogs {
     # (start/end/host/label), and skips the HTTP pull entirely.
     $soKratosDetected = $false
     try {
-        Invoke-WebRequest -Uri "$esUrl/_cluster/health" -Headers $esHdr -Method Get -MaximumRedirection 0 @restArgs -ErrorAction Stop | Out-Null
+        Invoke-WebRequest -Uri "$esUrl/_cluster/health" -Headers $esHdr -Method Get -MaximumRedirection 0 @probeArgs -ErrorAction Stop | Out-Null
     } catch {
         $resp = $_.Exception.Response
         if ($resp -and ([int]$resp.StatusCode) -eq 302) {
@@ -227,7 +235,7 @@ function Get-ElasticDetonationLogs {
         try {
             # Do documents exist at all? _count works even on proxied / coordinating endpoints.
             $capCountBody = @{ query = @{ match_all = @{} } } | ConvertTo-Json -Compress
-            $capCountResp = Invoke-RestMethod -Uri "$esUrl/_count" -Headers $esHdr -Method Post -Body $capCountBody @restArgs
+            $capCountResp = Invoke-RestMethod -Uri "$esUrl/_count" -Headers $esHdr -Method Post -Body $capCountBody @probeArgs
             $capCount     = if ($capCountResp -and $null -ne $capCountResp.count) { [int]$capCountResp.count } else { 0 }
             if ($capCount -gt 0) {
                 # A raw ES node ALWAYS returns a _shards block on _search. If docs exist but
@@ -237,7 +245,7 @@ function Get-ElasticDetonationLogs {
                 $capServesDocs = $true
                 try {
                     $capBody     = @{ size = 1; query = @{ match_all = @{} } } | ConvertTo-Json -Compress
-                    $cap         = Invoke-RestMethod -Uri "$esUrl/_search?ignore_unavailable=true" -Headers $esHdr -Method Post -Body $capBody @restArgs
+                    $cap         = Invoke-RestMethod -Uri "$esUrl/_search?ignore_unavailable=true" -Headers $esHdr -Method Post -Body $capBody @probeArgs
                     $capHits     = if ($cap -and $cap.hits -and $cap.hits.hits) { @($cap.hits.hits).Count } else { 0 }
                     $capNoShards = (-not $cap) -or ($null -eq $cap._shards)
                     if ($capHits -eq 0 -and $capNoShards) { $capServesDocs = $false }
@@ -423,7 +431,7 @@ function Get-ElasticDetonationLogs {
     Write-Host "  User    : $esUser" -ForegroundColor DarkGray
 
     try {
-        $health = Invoke-RestMethod -Uri "$esUrl/_cluster/health" -Headers $esHdr -Method Get @restArgs
+        $health = Invoke-RestMethod -Uri "$esUrl/_cluster/health" -Headers $esHdr -Method Get @probeArgs
         Write-Host "  Cluster : $($health.cluster_name)  Status: $($health.status)  Nodes: $($health.number_of_nodes)" -ForegroundColor Green
     } catch {
         Write-Host "  [ERROR] Cannot reach Elasticsearch." -ForegroundColor Red
