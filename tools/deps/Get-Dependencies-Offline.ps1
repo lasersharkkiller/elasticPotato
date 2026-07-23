@@ -254,7 +254,12 @@ if ($Mode -eq 'Install') {
             foreach ($modFolder in @(Get-ChildItem -LiteralPath $psmodDir -Directory -ErrorAction SilentlyContinue)) {
                 try {
                     Copy-Item -LiteralPath $modFolder.FullName -Destination $modDest -Recurse -Force
-                    Write-Dep "installed module: $($modFolder.Name)" 'Success'
+                    # Clear Mark-of-the-Web on the installed copy. Modules that ship native/managed
+                    # DLLs (Posh-SSH -> SSH.NET + BouncyCastle) fail to load when the DLLs carry the
+                    # "downloaded from another computer" zone - it surfaces as odd runtime errors like
+                    # a ::new overload failure inside the module. Unblock so the assemblies load.
+                    Get-ChildItem -LiteralPath (Join-Path $modDest $modFolder.Name) -Recurse -File -ErrorAction SilentlyContinue | Unblock-File -ErrorAction SilentlyContinue
+                    Write-Dep "installed module: $($modFolder.Name) (unblocked)" 'Success'
                 } catch { Write-Dep "copy $($modFolder.Name) failed: $($_.Exception.Message)" 'Warn' }
             }
             foreach ($n in 'Microsoft.PowerShell.SecretManagement', 'Microsoft.PowerShell.SecretStore') {
@@ -299,9 +304,12 @@ if ($Mode -eq 'Install') {
             $rtDest = Join-Path $repoRoot $t.Runtime
             if ($DryRun) { Write-Dep "would place $($t.Name): $src -> $rtDest" 'Info'; continue }
             try {
+                # Clear Mark-of-the-Web on the staged tool before placing it, so the copied
+                # exes/DLLs run without SmartScreen blocking on the offline host.
+                Get-ChildItem -LiteralPath $src -Recurse -File -ErrorAction SilentlyContinue | Unblock-File -ErrorAction SilentlyContinue
                 New-Item -ItemType Directory -Path $rtDest -Force | Out-Null
                 Copy-Item -LiteralPath (Join-Path $src '*') -Destination $rtDest -Recurse -Force
-                Write-Dep "placed $($t.Name) -> $rtDest" 'Success'
+                Write-Dep "placed $($t.Name) -> $rtDest (unblocked)" 'Success'
             } catch { Write-Dep "place $($t.Name) failed: $($_.Exception.Message)" 'Warn' }
         }
         Write-Dep "Note: archive tools (UAC .tar.gz, some Loki/YARA .zip) may need extracting in place." 'Info'
