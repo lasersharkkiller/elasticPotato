@@ -4416,7 +4416,7 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         # the manifest layer (see Get-ArtifactRiskScore feature-flag ~L453) unless
         # dimension_gates.'behavior.win_api_call'.verdict_points_enabled=true. Hits still
         # print and count in $script:_dimRiskStats.
-        foreach ($n in $apiNames) { if ($n) { $indByDim["$n".ToLowerInvariant()] = 'behavior.win_api_call' } }
+        foreach ($n in $apiNames) { & $_addToInd $n 'behavior.win_api_call' }
 
         $allArtifacts = @($indByDim.Keys) | Where-Object { $_ -and $_.Length -gt 0 } | Select-Object -Unique
 
