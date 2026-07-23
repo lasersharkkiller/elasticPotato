@@ -47,7 +47,7 @@ Tools — *are* fetched automatically by the helper.
    media / robocopy). The git-ignored KAPE payload copies at the filesystem level
    — `.gitignore` only affects git, not file copies.
 
-4. **On the VM**, run `elasticPotato_Main.ps1` → option **1b**. It auto-discovers
+4. **On the VM**, run `elasticPotato_Main.ps1` → option **2b**. It auto-discovers
    `tools\kape` and pushes KAPE to your Windows targets over SMB (default
    `C:\IRTools\KAPE`) with zero internet calls.
 

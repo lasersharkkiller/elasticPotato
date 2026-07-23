@@ -30,3 +30,21 @@ tools/kape
 tools/KAPE
 tools/kape.zip
 tools/KAPE.zip
+
+# Offline dependency staging (tools/deps/Get-Dependencies-Offline.ps1) + the tools
+# it distributes. Redistributable but heavy/machine-specific: staged locally, carried
+# to the air-gapped VM on disk, never committed. The helper script + README stay tracked.
+tools/deps/*
+!tools/deps/Get-Dependencies-Offline.ps1
+!tools/deps/README.md
+tools/uac
+tools/UAC
+tools/uac.tar.gz
+tools/uac.tgz
+tools/uac.zip
+tools/dfir-orc
+tools/dfir-orc.zip
+tools/loki
+codeScanning/yara64.exe
+codeScanning/scorecard.exe
+/NSRL
