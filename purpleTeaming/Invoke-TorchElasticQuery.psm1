@@ -326,12 +326,13 @@ function Get-TorchSSHSession {
     if (Get-Module -ListAvailable -Name 'Posh-SSH') {
         # --- Posh-SSH transport (preferred: handles password auth non-interactively) ---
         Import-Module Posh-SSH -ErrorAction Stop | Out-Null
+        $poshFailed = $false
         try {
             if ($sshKey -and (Test-Path $sshKey)) {
                 # Key-based auth. Posh-SSH wants a PSCredential even for key auth;
                 # the password field is the optional key passphrase (empty allowed).
                 $emptyPw = ConvertTo-SecureString -String ' ' -AsPlainText -Force
-                $cred = [pscredential]::new($sshUser, $emptyPw)
+                $cred = New-Object System.Management.Automation.PSCredential -ArgumentList $sshUser, $emptyPw
                 $session = New-SSHSession -ComputerName $sshHost -Port $Port `
                                           -Credential $cred -KeyFile $sshKey `
                                           -AcceptKey -ErrorAction Stop
@@ -341,7 +342,7 @@ function Get-TorchSSHSession {
                 if ($sshPass -isnot [securestring]) {
                     $sshPass = ConvertTo-SecureString -String ([string]$sshPass) -AsPlainText -Force
                 }
-                $cred = [pscredential]::new($sshUser, $sshPass)
+                $cred = New-Object System.Management.Automation.PSCredential -ArgumentList $sshUser, $sshPass
                 $session = New-SSHSession -ComputerName $sshHost -Port $Port `
                                           -Credential $cred -AcceptKey -ErrorAction Stop
                 $authMode = 'password'
@@ -352,20 +353,28 @@ function Get-TorchSSHSession {
             if ($msg -match 'refused|timed out|No such host|unreachable') {
                 throw "SSH connection to $sshHost`:$Port failed ($msg). Check: VPN connected, SO host up, 22/tcp open from your VPN subnet."
             }
-            throw "SSH session open failed: $msg"
+            # Posh-SSH is installed but failed to open the session (e.g. a broken install /
+            # SSH.NET version mismatch that surfaces as a ::new overload error). Do NOT hard
+            # fail - fall through to the native ssh.exe transport below, which is reliable for
+            # key auth on this host. (Native password auth still needs a working SSH_ASKPASS.)
+            Write-Warning "Posh-SSH session-open failed ($msg). Falling back to the native ssh.exe transport - use key auth (-SshKeyPath) for a clean non-interactive pull."
+            $poshFailed = $true
         }
 
-        return [PSCustomObject]@{
-            Transport = 'posh'
-            Session   = $session
-            SessionId = $session.SessionId
-            Host      = $sshHost
-            User      = $sshUser
-            Port      = $Port
-            AuthMode  = $authMode
-            SudoPass  = $sudoPassPlain   # plaintext, reused for `sudo -S so-elasticsearch-query`
-            OpenedAt  = (Get-Date).ToUniversalTime()
+        if (-not $poshFailed) {
+            return [PSCustomObject]@{
+                Transport = 'posh'
+                Session   = $session
+                SessionId = $session.SessionId
+                Host      = $sshHost
+                User      = $sshUser
+                Port      = $Port
+                AuthMode  = $authMode
+                SudoPass  = $sudoPassPlain   # plaintext, reused for `sudo -S so-elasticsearch-query`
+                OpenedAt  = (Get-Date).ToUniversalTime()
+            }
         }
+        # else: Posh-SSH failed - continue to the native OpenSSH transport below.
     }
 
     # --- Native OpenSSH client transport (offline / no PSGallery) --------------------
