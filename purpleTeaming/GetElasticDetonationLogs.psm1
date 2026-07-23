@@ -596,6 +596,7 @@ function Get-ElasticDetonationLogs {
     $countQuery = @{ query = @{ bool = @{ must = $countMust.ToArray() } } }
     $countBody = $countQuery | ConvertTo-Json -Depth 20 -Compress
 
+    $totalCount = -1   # -1 = count query failed/unknown; used by the SO-proxy auto-route below
     try {
         $countResp = Invoke-RestMethod -Uri "$esUrl/$defaultIndices/_count" `
                          -Headers $esHdr -Method Post -Body $countBody @restArgs
@@ -625,6 +626,7 @@ function Get-ElasticDetonationLogs {
     # ECS-normalized vs raw Sysmon/Winlogbeat field name differences.
     Write-Host ""
     Write-Host "[Pre-flight] Sampling a document to inspect field mapping..." -ForegroundColor DarkCyan
+    $sampleReturned = -1   # -1 = sample query failed/unknown; 0 = ran but returned no documents
     try {
         $sampleBody = @{
             size    = 1
@@ -635,7 +637,8 @@ function Get-ElasticDetonationLogs {
         } | ConvertTo-Json -Depth 20 -Compress
         $sampleResp = Invoke-RestMethod -Uri "$esUrl/$defaultIndices/_search" `
                           -Headers $esHdr -Method Post -Body $sampleBody @restArgs
-        if ($sampleResp.hits.hits.Count -gt 0) {
+        $sampleReturned = if ($sampleResp.hits -and $sampleResp.hits.hits) { @($sampleResp.hits.hits).Count } else { 0 }
+        if ($sampleReturned -gt 0) {
             $sd = $sampleResp.hits.hits[0]._source
             $topFields = ($sd | Get-Member -MemberType NoteProperty).Name
             Write-Host "  Top-level fields : $($topFields -join ', ')" -ForegroundColor DarkGray
@@ -646,6 +649,40 @@ function Get-ElasticDetonationLogs {
         }
     } catch {
         Write-Host "  [WARN] Sample query failed: $($_.Exception.Message)" -ForegroundColor Yellow
+    }
+
+    # SO 3.0 proxy auto-route (definitive signal): _count found documents in the window
+    # but the windowed _search returns none. The sample query is BROADER than the count
+    # (same window, no host filter), so on a real cluster sample >= count always - a
+    # count>0 / sample=0 result is impossible except on a proxied / coordinating :9200
+    # (Security Onion's nginx front) that answers counts but cannot serve document bodies
+    # over HTTP (_shards null, 0 hits). The early match_all probe does not always catch
+    # this; detect it here on the REAL windowed queries and hand off to the SSH connector
+    # (so-elasticsearch-query on the SO box) instead of running a pull that writes 0 docs.
+    if ($totalCount -gt 0 -and $sampleReturned -eq 0) {
+        Write-Host ""
+        Write-Host "[Auto-Route] Proxied Elasticsearch detected: $totalCount doc(s) counted in-window but _search returns none" -ForegroundColor DarkCyan
+        Write-Host "             (Security Onion nginx-proxied ES). Routing to the SSH connector (Save-TorchElasticDetonationLogs)..." -ForegroundColor DarkCyan
+        $connectorPath = Join-Path $PSScriptRoot 'Invoke-TorchElasticQuery.psm1'
+        if (Test-Path $connectorPath) {
+            try { Import-Module $connectorPath -Force -DisableNameChecking -ErrorAction Stop | Out-Null } catch {}
+        }
+        if (Get-Command Save-TorchElasticDetonationLogs -ErrorAction SilentlyContinue) {
+            try {
+                Save-TorchElasticDetonationLogs `
+                    -StartTime  $startUtc `
+                    -EndTime    $endUtc `
+                    -OutputDir  $outDir `
+                    -HostFilter $hostFilter `
+                    -SshHost $SshHost -SshUser $SshUser -SshPass $SshPass -SshKeyPath $SshKeyPath -SudoPass $SudoPass `
+                    -SessionInfoCampaign $label -ErrorAction Stop | Out-Null
+                return $outDir
+            } catch {
+                Write-Host "  [ERROR] SSH pull failed: $($_.Exception.Message) - falling through to the HTTP path (likely 0 docs)." -ForegroundColor Red
+            }
+        } else {
+            Write-Host "  [ERROR] Save-TorchElasticDetonationLogs not available - install Posh-SSH (Install-Module Posh-SSH -Scope CurrentUser -Force)." -ForegroundColor Red
+        }
     }
 
     # --- INDICES ---
