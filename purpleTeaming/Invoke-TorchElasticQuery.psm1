@@ -303,6 +303,26 @@ function Get-TorchSSHSession {
     }
     $sudoPassPlain = if (-not [string]::IsNullOrWhiteSpace($SudoPass)) { $SudoPass } else { $sshPassPlain }
 
+    # so-elasticsearch-query always runs under sudo. With password login the SSH
+    # password above doubles as the sudo password; with KEY login there is no typed
+    # password to reuse. If nothing has supplied one (no -SudoPass, no typed password,
+    # no TORCH_SSH_SudoPass / TORCH_SSH_Pass vault secret), prompt now so the pull
+    # doesn't stall at the sudo step.
+    if ([string]::IsNullOrWhiteSpace($sudoPassPlain)) {
+        $haveVaultSudo = $false
+        foreach ($__n in 'TORCH_SSH_SudoPass', 'TORCH_SSH_Pass') {
+            try { if (-not [string]::IsNullOrWhiteSpace((Get-Secret -Name $__n -AsPlainText -ErrorAction Stop))) { $haveVaultSudo = $true; break } } catch {}
+        }
+        if (-not $haveVaultSudo) {
+            $__su = Read-Host "[?] sudo password for so-elasticsearch-query on $sshHost (the SO account's password)" -AsSecureString
+            if ($__su -and $__su.Length -gt 0) {
+                $__b2 = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($__su)
+                try   { $sudoPassPlain = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($__b2) }
+                finally { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($__b2) }
+            }
+        }
+    }
+
     if (Get-Module -ListAvailable -Name 'Posh-SSH') {
         # --- Posh-SSH transport (preferred: handles password auth non-interactively) ---
         Import-Module Posh-SSH -ErrorAction Stop | Out-Null
