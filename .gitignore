@@ -20,3 +20,13 @@ output-baseline/IntezerStrings/
 
 # Heavy per-APT raw event maps — keep local only, summaries are committed
 apt/**/Targeted_Analysis_Map.csv
+
+# KAPE offline staging — Kroll's kape.exe / gkape.exe are NOT redistributable
+# (KAPE EULA: "licensed, not sold"; no copy/redistribute/transfer). Stage a
+# complete KAPE folder locally with tools/deploy/Get-KAPE-Offline.ps1; it rides
+# to the air-gapped VM on disk (a filesystem copy — gitignore does not block that)
+# and 1b deploys it. It must never enter git history on this public repo.
+tools/kape
+tools/KAPE
+tools/kape.zip
+tools/KAPE.zip
