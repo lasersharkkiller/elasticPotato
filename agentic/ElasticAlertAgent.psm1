@@ -159,6 +159,24 @@ function _Normalize-FidValue {
             $v = $v.ToString().Trim()
             break
         }
+        '^service(\.|$)' {
+            # Builder writes service names lowercased (Build-VTFidelityIndex ~line 768).
+            # Explicit ToLowerInvariant here documents intent and survives future
+            # container-type swaps that would drop @{}'s default case-insensitivity.
+            $v = $v.ToString().Trim().ToLowerInvariant()
+            break
+        }
+        '^scheduled-task(\.|$)' {
+            # Builder writes scheduled-task names lowercased (Build-VTFidelityIndex ~line 778).
+            $v = $v.ToString().Trim().ToLowerInvariant()
+            break
+        }
+        '^vt-tag$' {
+            # VirusTotal threat tags are case-insensitive labels; canonical form is
+            # lowercase per the builder's manifest contract for the vt-tag dim.
+            $v = $v.ToString().Trim().ToLowerInvariant()
+            break
+        }
         default {
             # Most dims are case-insensitive: builder lowercases simple keys
             $v = $v.ToString().Trim()
@@ -275,8 +293,10 @@ function _Load-DimensionLazy {
     try {
         $raw  = Get-Content $path -Raw
         $obj  = $raw | ConvertFrom-Json
-        $h    = @{}
-        # JSON object -> hashtable (case-insensitive lookup via .ContainsKey)
+        # Explicit OrdinalIgnoreCase container. PowerShell's default @{} already
+        # collates case-insensitively but this survives a future refactor that
+        # swaps in [Dictionary[string,object]] without an OrdinalIgnoreCase comparer.
+        $h    = [System.Collections.Hashtable]::new([System.StringComparer]::OrdinalIgnoreCase)
         foreach ($p in $obj.PSObject.Properties) { $h[$p.Name] = $p.Value }
         $script:_fid[$Dimension] = $h
     } catch {
@@ -436,7 +456,13 @@ function Get-ArtifactRiskScore {
         if (-not $e) { return $empty }
         $m   = [int]($e.M)
         $g   = [int]($e.G)
-        $s   = [int]($e.S)
+        # Prefer Score100 (Bayesian) when present on the flat entry; fall back
+        # to the legacy step-function S. New Build-VTFidelityIndex runs emit
+        # Score100/RiskScore/Confidence on the flat compat shim (per bayes
+        # research; on-disk emit was historically gappy for process-dim rows).
+        # This lets a rebuild move analyst-visible scores without a code change.
+        $s100Present = $e.PSObject.Properties['Score100']
+        if ($s100Present) { $s = [int]$e.Score100 } else { $s = [int]($e.S) }
         $u   = [bool]$e.U
         $r   = [bool]$e.R
         $rs  = if ($s -gt 0) { $s / 100.0 } else { 0.0 }
@@ -4355,19 +4381,36 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
 
         # Build dim-aware indicator map. Last-write wins for collisions (e.g.
         # svchost.exe appearing both as process and file -> defaults to file).
-        $indByDim = @{}
-        foreach ($v in $artifactIPList)            { if ($v) { $indByDim[$v] = 'ip' } }
-        foreach ($v in $artifactDomainList)        { if ($v) { $indByDim[$v] = 'dns' } }
-        foreach ($v in $artifactProcList)          { if ($v) { $indByDim[$v] = 'process' } }
-        foreach ($v in $artifactFileList)          { if ($v) { $indByDim[$v] = 'file' } }
-        foreach ($v in $artifactRegList)           { if ($v) { $indByDim[$v] = 'registry' } }
-        foreach ($v in $artifactRuleList)          { if ($v) { $indByDim[$v] = 'sigma-rule' } }
-        foreach ($v in $artifactDllList)           { if ($v) { $indByDim[$v] = 'module-load' } }
-        foreach ($v in $artifactInjList)           { if ($v) { $indByDim[$v] = 'process' } }
-        foreach ($v in $artifactCertStatusList)    { if ($v) { $indByDim[$v] = 'cert.status' } }
-        foreach ($v in $artifactCertPublisherList) { if ($v) { $indByDim[$v] = 'cert.publisher' } }
-        foreach ($v in $artifactServiceList)       { if ($v) { $indByDim[$v] = 'service' } }
-        foreach ($v in $artifactSchedTaskList)     { if ($v) { $indByDim[$v] = 'scheduled-task' } }
+        #
+        # Case-sensitivity contract: values are pushed through _Normalize-FidValue
+        # per-dim BEFORE insertion so 'NETSTAT.EXE' and 'netstat.exe' collapse to
+        # one canonical entry (the builder writes lowercase for process/file/module
+        # /registry/service/scheduled-task/dns/vt-tag). Without this, Elastic
+        # term-agg buckets that preserve raw case would appear as two distinct
+        # $indByDim entries, both looking up the same underlying row and
+        # inflating $directUnique display counts. OrdinalIgnoreCase container is
+        # belt-and-braces — @{} defaults to case-insensitive but this survives a
+        # future refactor that swaps in [Dictionary[string,string]].
+        $indByDim = [System.Collections.Hashtable]::new([System.StringComparer]::OrdinalIgnoreCase)
+        $_addToInd = {
+            param($val, $dim)
+            if (-not $val) { return }
+            $nv = _Normalize-FidValue -Value $val -Dimension $dim
+            if ([string]::IsNullOrWhiteSpace($nv)) { return }
+            $indByDim[$nv] = $dim
+        }
+        foreach ($v in $artifactIPList)            { & $_addToInd $v 'ip' }
+        foreach ($v in $artifactDomainList)        { & $_addToInd $v 'dns' }
+        foreach ($v in $artifactProcList)          { & $_addToInd $v 'process' }
+        foreach ($v in $artifactFileList)          { & $_addToInd $v 'file' }
+        foreach ($v in $artifactRegList)           { & $_addToInd $v 'registry' }
+        foreach ($v in $artifactRuleList)          { & $_addToInd $v 'sigma-rule' }
+        foreach ($v in $artifactDllList)           { & $_addToInd $v 'module-load' }
+        foreach ($v in $artifactInjList)           { & $_addToInd $v 'process' }
+        foreach ($v in $artifactCertStatusList)    { & $_addToInd $v 'cert.status' }
+        foreach ($v in $artifactCertPublisherList) { & $_addToInd $v 'cert.publisher' }
+        foreach ($v in $artifactServiceList)       { & $_addToInd $v 'service' }
+        foreach ($v in $artifactSchedTaskList)     { & $_addToInd $v 'scheduled-task' }
         # process.Ext.api.name from Elastic Defend api_events / injection_events. Fed into
         # the fidelity index as a tracked-only dimension - VerdictPoints are gated OFF at
         # the manifest layer (see Get-ArtifactRiskScore feature-flag ~L453) unless
