@@ -1,11 +1,11 @@
 <#
 .SYNOPSIS
-  Build a complete, OFFLINE-ready KAPE folder for elasticPotato option 1b.
+  Build a complete, OFFLINE-ready KAPE folder for elasticPotato option 2b.
 
 .DESCRIPTION
   Run this ONCE on an INTERNET-connected Windows host. It assembles a fully
   self-contained KAPE directory at <repo>\tools\kape so the air-gapped DFIR VM
-  can deploy KAPE to Windows targets via option 1b with zero internet access.
+  can deploy KAPE to Windows targets via option 2b with zero internet access.
 
   What it does NOT do: download kape.exe / gkape.exe for you. Kroll's KAPE
   binaries are proprietary ("licensed, not sold" - KAPE EULA) and are gated
@@ -303,5 +303,5 @@ Write-Host ''
 Write-Kape "Next steps:" 'Step'
 Write-Kape "  1. Copy the WHOLE elasticPotato tree to the air-gapped DFIR VM (removable media / robocopy)." 'Info'
 Write-Kape "     The git-ignored KAPE payload copies at the filesystem level - gitignore only affects git." 'Info'
-Write-Kape "  2. On the VM, run elasticPotato_Main.ps1 -> option 1b. It auto-discovers tools\kape and" 'Info'
+Write-Kape "  2. On the VM, run elasticPotato_Main.ps1 -> option 2b. It auto-discovers tools\kape and" 'Info'
 Write-Kape "     pushes KAPE to your Windows targets over SMB with no internet calls." 'Info'

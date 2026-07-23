@@ -810,7 +810,7 @@ function Invoke-ElasticAlertAgentAnalysis {
         # -----------------------------------------------------------------
         # CALIBRATION / DUAL-LANE TOGGLES (Phase 4 verdict regression)
         # Both default $false. When neither is supplied, callers see identical
-        # behavior to the pre-toggle contract - existing menu 3a/3b paths
+        # behavior to the pre-toggle contract - existing menu 4a/4b paths
         # pass no new switches and remain unchanged.
         # -----------------------------------------------------------------
         # -UseLegacyFidelity: force $script:_fidUseNewScoring=$false after
@@ -1370,7 +1370,7 @@ function Invoke-ElasticAlertAgentAnalysis {
                 $fbAns = Read-Host "Auto-fallback to SSH-pull-then-analyze? [Y/n]"
                 if ([string]::IsNullOrWhiteSpace($fbAns)) { $fbAns = 'Y' }
                 if ($fbAns.Trim().ToUpper() -ne 'Y') {
-                    Write-Host "Stopping. Run option 3d via SSH manually if needed, or use Save-TorchElasticDetonationLogs from the prompt." -ForegroundColor DarkGray
+                    Write-Host "Stopping. Run option 4d via SSH manually if needed, or use Save-TorchElasticDetonationLogs from the prompt." -ForegroundColor DarkGray
                     return
                 }
 
@@ -7023,7 +7023,7 @@ Significance: This coordinated sequence is indicative of a post-exploitation fra
         # verdict / confidence / risk-score computation above and the structured
         # return object below are unaffected. Downstream rich-detail blocks
         # (behavior overlaps, kill-chain rollup, findings, HTML report) remain
-        # outside this guard by design so that existing menu 3a/3b callers with
+        # outside this guard by design so that existing menu 4a/4b callers with
         # the switch absent see identical output. A truly silent calibration
         # invocation must additionally redirect streams at the call site since
         # the ~270 other Write-Host diagnostics are not gated here.

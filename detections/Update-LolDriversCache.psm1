@@ -23,7 +23,7 @@
     reports the cached count and returns silently. Partial success (some
     sources reachable) still writes an updated cache.
 
-    Auto-update is called from Elastic alert triage menu options (3b/3c/3f).
+    Auto-update is called from Elastic alert triage menu options (4b/4c/4f).
 
 .EXAMPLE
     Update-LolDriversCache

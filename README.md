@@ -10,53 +10,61 @@ Sister repo: [`statisticalDifferentialPotato`](https://github.com/lasersharkkill
 
 Launch: `.\elasticPotato_Main.ps1` — then pick an option.
 
-### Group 1 — Remote Collection Tool Deployment
+### Group 1 — Dependencies / Offline Setup
+
+Stage the toolkit's own runtime dependencies for an air-gapped VM (PS modules, pip packages, redistributable tools).
+
+| Opt | Function | Notes |
+|---|---|---|
+| **1a** | Download / install offline dependencies | `Get-Dependencies-Offline.ps1` — `Save-Module` + `pip download` + release tools into `tools\deps\` (git-ignored); `-Mode Install` distributes them on the offline VM. See [tools/deps/](tools/deps/) |
+
+### Group 2 — Remote Collection Tool Deployment
 
 Push offline forensic collectors to hosts you don't have EDR on.
 
 | Opt | Function | Notes |
 |---|---|---|
-| **1a** | Deploy [UAC Collector](https://github.com/tclahr/uac) to remote Linux host(s) | Runs `uac-<version>.tar.gz` from `.\tools\`; captures a full artefact snapshot |
-| **1b** | Deploy [KAPE](https://www.kroll.com/en/services/cyber/incident-response-litigation-support/kroll-artifact-parser-extractor-kape) to remote Windows host(s) | Requires KAPE staged under `.\tools\kape\` (licensed binary) |
-| **1c** | Deploy [DFIR-ORC](https://github.com/dfir-orc/dfir-orc) to remote Windows host(s) | Requires DFIR-ORC binaries under `.\tools\dfir-orc\` |
-| **1d** | `Save-RouterDump` (live SSH) | Pulls ~75 forensic commands from a live router; ~15 vendor platforms auto-detected (Cisco IOS-XE / NX-OS / Junos / FortiOS / PAN-OS / MikroTik / SEL / TP-Link / GL.iNet / Linksys). Saves offline dump for `2c` |
+| **2a** | Deploy [UAC Collector](https://github.com/tclahr/uac) to remote Linux host(s) | Runs `uac-<version>.tar.gz` from `.\tools\`; captures a full artefact snapshot |
+| **2b** | Deploy [KAPE](https://www.kroll.com/en/services/cyber/incident-response-litigation-support/kroll-artifact-parser-extractor-kape) to remote Windows host(s) | Requires KAPE staged under `.\tools\kape\` (licensed binary) |
+| **2c** | Deploy [DFIR-ORC](https://github.com/dfir-orc/dfir-orc) to remote Windows host(s) | Requires DFIR-ORC binaries under `.\tools\dfir-orc\` |
+| **2d** | `Save-RouterDump` (live SSH) | Pulls ~75 forensic commands from a live router; ~15 vendor platforms auto-detected (Cisco IOS-XE / NX-OS / Junos / FortiOS / PAN-OS / MikroTik / SEL / TP-Link / GL.iNet / Linksys). Saves offline dump for `3c` |
 
-### Group 2 — Linux / UAC Forensic Triage
+### Group 3 — Linux / UAC Forensic Triage
 
 Offline analysis of UAC dumps + edge-router captures. Rootkit detection, C2 attribution, credential-access scan, timeline, MITRE ATT&CK mapping.
 
 | Opt | Function | Notes |
 |---|---|---|
-| **2a** | `Invoke-UACTriage` on an extracted UAC dump | Rootkit / C2 / credential / timeline / attribution rollup. Uses `apt/` intel from sibling repo if available |
-| **2b** | Live SSH → Edge Router APT Triage | One-shot: pulls router dump AND runs full analysis in a single flow |
-| **2c** | Offline Edge Router APT Triage on a saved dump directory | Same analysis as `2b` on air-gapped output from `1d` |
+| **3a** | `Invoke-UACTriage` on an extracted UAC dump | Rootkit / C2 / credential / timeline / attribution rollup. Uses `apt/` intel from sibling repo if available |
+| **3b** | Live SSH → Edge Router APT Triage | One-shot: pulls router dump AND runs full analysis in a single flow |
+| **3c** | Offline Edge Router APT Triage on a saved dump directory | Same analysis as `3b` on air-gapped output from `2d` |
 
-### Group 3 — Elastic Alert Triage 🔥
+### Group 4 — Elastic Alert Triage 🔥
 
 The core of the toolkit. Query an Elastic stack, pull a detonation window, produce a forensic verdict with kill-chain rollup and C2 framework attribution.
 
 | Opt | Function | Notes |
 |---|---|---|
-| **3a** | **Pull + Triage** (recommended entry point) | Runs `3d` to pull logs, detects Windows vs Linux from filenames + `host.os.type` probe, dispatches to `3b` or `3c` automatically |
-| **3b** | `Invoke-ElasticAlertAgentAnalysis` (offline Windows) | Reads NDJSON from `-DetonationLogsDir`; 60+ finding categories (masquerade / persistence / lateral / credential / C2 / process injection); Bayesian fidelity scoring; HTML report |
-| **3c** | `Invoke-ElasticLinuxTriage` (offline Linux) | Auditd / auth / syslog / journald; MITRE ATT&CK coverage |
-| **3d** | Pull Elastic logs from a detonation window | Prompts for start/end (accepts `8PM EST` / `2026-03-18 20:00 UTC` etc.). **Auto-detects Security Onion 3.0** by 302 probe → routes through SSH connector. Vanilla ES → direct HTTP with vault Basic/ApiKey auth |
-| **3e** | Thor / Loki IOC + YARA scanner | Auto-detects which scanner is installed; runs against downloaded malicious files |
-| **3f** | Offline analysis + IOC/YARA scan | Runs `3b` then `3e` in one pass |
-| **3g** | `Update-LolDriversCache` | Refreshes `loldrivers.io` cache + LOLDrivers Sigma + SigmaHQ rules |
-| **3h** | `Update-ElasticYaraRules` | Pulls latest `elastic/protections-artifacts` into `.\detections\yara\` |
+| **4a** | **Pull + Triage** (recommended entry point) | Runs `4d` to pull logs, detects Windows vs Linux from filenames + `host.os.type` probe, dispatches to `4b` or `4c` automatically |
+| **4b** | `Invoke-ElasticAlertAgentAnalysis` (offline Windows) | Reads NDJSON from `-DetonationLogsDir`; 60+ finding categories (masquerade / persistence / lateral / credential / C2 / process injection); Bayesian fidelity scoring; HTML report |
+| **4c** | `Invoke-ElasticLinuxTriage` (offline Linux) | Auditd / auth / syslog / journald; MITRE ATT&CK coverage |
+| **4d** | Pull Elastic logs from a detonation window | Prompts for start/end (accepts `8PM EST` / `2026-03-18 20:00 UTC` etc.). **Auto-detects Security Onion 3.0** by 302 probe → routes through SSH connector. Vanilla ES → direct HTTP with vault Basic/ApiKey auth |
+| **4e** | Thor / Loki IOC + YARA scanner | Auto-detects which scanner is installed; runs against downloaded malicious files |
+| **4f** | Offline analysis + IOC/YARA scan | Runs `4b` then `4e` in one pass |
+| **4g** | `Update-LolDriversCache` | Refreshes `loldrivers.io` cache + LOLDrivers Sigma + SigmaHQ rules |
+| **4h** | `Update-ElasticYaraRules` | Pulls latest `elastic/protections-artifacts` into `.\detections\yara\` |
 
-### Group 4 — Elastic Baseline
+### Group 5 — Elastic Baseline
 
 Discover unusual processes / drivers in your environment.
 
 | Opt | Function | Notes |
 |---|---|---|
-| **4a** | Baseline a specific process name | Enrich via VirusTotal / APIVoid / signer / signer chain / hash rarity |
-| **4b** | New drivers in the environment | LOLDrivers matching + signer + last-30-day novelty |
-| **4c** | New unverified processes | Broken / expired / self-signed |
-| **4d** | New unsigned Windows processes | Prime hunting ground |
-| **4e** | New unsigned Linux processes | Elastic Agent on Linux endpoints |
+| **5a** | Baseline a specific process name | Enrich via VirusTotal / APIVoid / signer / signer chain / hash rarity |
+| **5b** | New drivers in the environment | LOLDrivers matching + signer + last-30-day novelty |
+| **5c** | New unverified processes | Broken / expired / self-signed |
+| **5d** | New unsigned Windows processes | Prime hunting ground |
+| **5e** | New unsigned Linux processes | Elastic Agent on Linux endpoints |
 
 ---
 
@@ -88,7 +96,7 @@ Auto-detection at pull time:
 | **Vanilla Elasticsearch** (self-managed / ECE / on-prem) | HTTP 200 on `/_cluster/health` | Basic (`Elastic_User` / `Elastic_Pass`) or ApiKey (`Elastic_ApiKey`) | Direct REST to `Elastic_URL` |
 | **Elastic Cloud Serverless** | Detected via `X-elastic-product` header | ApiKey mandatory | REST (no SSH) |
 
-The 3a orchestrator handles either capture format:
+The 4a orchestrator handles either capture format:
 - **Dataset-named** files (`windows.sysmon_operational.ndjson`, `linux.auditd.ndjson`) from the SSH path
 - **Category-named** files (`process_events.ndjson`, `network_events.ndjson`) from the HTTP path
 
@@ -102,7 +110,7 @@ PowerShell SecretManagement (`Microsoft.PowerShell.SecretStore`). Required:
 |---|---|---|
 | `Elastic_URL` | Cluster endpoint | e.g. `https://elastic-lab:9200` (vanilla) or `https://so-host/elasticsearch` (SO 3.0 proxy) |
 | `Elastic_ApiKey` OR `Elastic_User`+`Elastic_Pass` | Auth | ApiKey takes precedence when both are present |
-| `Kibana_URL` | Kibana endpoint | Only used by `4b`-`4e` process baselining |
+| `Kibana_URL` | Kibana endpoint | Only used by `5b`-`5e` process baselining |
 | `TORCH_SSH_Host` / `_User` / `_Pass` / `_KeyPath` | SO 3.0 SSH connector | Only used when the 302 probe fires. Safe to keep pointed at a decommissioned SO host — reactivates when it's back online |
 
 Optional third-party enrichment keys:
@@ -132,19 +140,19 @@ Also see `.\output\import-existing-detonations.ps1` for a one-shot orchestrator 
 
 ```
 elasticPotato/
-├── agentic/                     Elastic alert triage AI agents (3a/3b/3c/3f)
+├── agentic/                     Elastic alert triage AI agents (4a/4b/4c/4f)
 │   ├── ElasticAlertAgent.psm1       Windows offline analyzer (60+ findings)
 │   ├── Invoke-ElasticLinuxTriage.psm1  Linux/UAC analyzer
 │   └── Invoke-SigmaElasticScan.psm1 Sigma → Elastic query translator
 ├── purpleTeaming/               Detection engineering + capture
-│   ├── GetElasticDetonationLogs.psm1        Vanilla ES puller (3d)
+│   ├── GetElasticDetonationLogs.psm1        Vanilla ES puller (4d)
 │   ├── Invoke-TorchElasticQuery.psm1        SO 3.0 SSH connector
 │   ├── Push-DetonationLogsToElastic.psm1    Replay importer
 │   └── elasticAlertsandThreats.psm1         Sigma / YARA / threat feed sync
-├── NewProcsModules/             Baseline enrichment (4a-4e)
+├── NewProcsModules/             Baseline enrichment (5a-5e)
 ├── detections/                  Sigma / YARA / LOLDrivers rules
 ├── baseline/                    Loki / NSRL / VT baseline helpers
-├── forensics/                   UAC + router triage engines (1d / 2a-2c)
+├── forensics/                   UAC + router triage engines (2d / 3a-3c)
 ├── output-baseline/             Fidelity indices (produced by sibling repo)
 │   ├── fidelity-manifest.json       Manifest — scoring config + build_signature
 │   ├── fidelity-index.json          Legacy flat compat shim
