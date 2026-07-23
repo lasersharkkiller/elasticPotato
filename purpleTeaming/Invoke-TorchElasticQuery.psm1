@@ -161,23 +161,30 @@ function Invoke-TorchNativeSshCommand {
     $psi.Arguments              = ($quoted -join ' ')
     $psi.UseShellExecute        = $false
     $psi.RedirectStandardOutput = $true
-    $psi.RedirectStandardError  = $true
     if ($Session.Interactive) {
-        # Password-prompt fallback: keep the console (don't redirect stdin) so ssh can read the
-        # password from CONIN$; stdout/stderr are still captured via the pipes above.
-        $psi.RedirectStandardInput = $false
-        $psi.CreateNoWindow        = $false
+        # Console-prompt fallback: ssh must OWN the console to print "user@host's password:"
+        # and read the reply. Redirect ONLY stdout (to capture the JSON) and leave stdin AND
+        # stderr on the console. Redirecting stderr here was the bug: several Win32-OpenSSH
+        # builds check isatty(stderr) and refuse to prompt when it is a pipe, so the password
+        # entry silently failed. stderr (prompt + diagnostics) now flows to the console rather
+        # than into $result.Error.
+        $psi.RedirectStandardError  = $false
+        $psi.RedirectStandardInput  = $false
+        $psi.CreateNoWindow         = $false
     } else {
-        # Non-interactive: key (-i/BatchMode) or SSH_ASKPASS (env). No TTY -> ssh uses askpass.
-        $psi.RedirectStandardInput = $true
-        $psi.CreateNoWindow        = $true
+        # Non-interactive: key (-i/BatchMode) or SSH_ASKPASS (env). All streams redirected ->
+        # no TTY -> ssh uses the askpass helper.
+        $psi.RedirectStandardError  = $true
+        $psi.RedirectStandardInput  = $true
+        $psi.CreateNoWindow         = $true
     }
 
     $proc = [System.Diagnostics.Process]::Start($psi)
     if (-not $Session.Interactive) { try { $proc.StandardInput.Close() } catch {} }
     # Read both streams concurrently (async) to avoid a pipe-buffer deadlock on large output.
     $outTask = $proc.StandardOutput.ReadToEndAsync()
-    $errTask = $proc.StandardError.ReadToEndAsync()
+    # In interactive mode stderr is the console (not redirected), so there is no pipe to read.
+    $errTask = if ($Session.Interactive) { $null } else { $proc.StandardError.ReadToEndAsync() }
     $waitMs  = if ($Session.Interactive) { [int]::MaxValue } else { $TimeOut * 1000 }
     if (-not $proc.WaitForExit($waitMs)) {
         try { $proc.Kill() } catch {}
@@ -185,7 +192,7 @@ function Invoke-TorchNativeSshCommand {
     }
     $proc.WaitForExit()
     $stdout = $outTask.Result
-    $stderr = $errTask.Result
+    $stderr = if ($errTask) { $errTask.Result } else { '' }
     $rc     = $proc.ExitCode
     if ($rc -eq 255) {
         # ssh transport-level failure (auth / host / connection), not a remote-command rc.
