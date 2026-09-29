@@ -60,6 +60,7 @@ Import-Module -Name ".\agentic\Invoke-ElasticLinuxTriage.psm1"  -Force
 Import-Module -Name ".\forensics\Invoke-UACTriage.psm1"
 Import-Module -Name ".\forensics\Invoke-RouterTriage.psm1"
 Import-Module -Name ".\forensics\Invoke-CiscoPhoneTriage.psm1"
+Import-Module -Name ".\forensics\Invoke-CucmForensics.psm1"
 
 # Group 5 (Elastic Baseline) -- remaining enrichment deps
 Import-Module -Name ".\NewProcsModules\CheckAgainstVT.psm1"
@@ -116,6 +117,8 @@ Write-Host "2d) [Live SSH] Collect Router Forensic Dump (Save-RouterDump)" -Fore
 Write-Host "     -> Pulls ~75 forensic commands from a live router; saves files for offline 3c analysis" -ForegroundColor DarkGray
 Write-Host "2e) [Live] Collect Cisco IP Phone Forensic Dump (Save-CiscoPhoneDump)" -ForegroundColor DarkYellow
 Write-Host "     -> Pulls web device pages + SSH + CUCM TFTP SEP config; saves files for offline 3e analysis" -ForegroundColor DarkGray
+Write-Host "2f) [Live] Collect CUCM Forensic Data - AXL + CDR (Save-CucmForensicDump)" -ForegroundColor DarkYellow
+Write-Host "     -> AXL SQL queries + CDR call records from Call Manager; saves files for offline 3g analysis" -ForegroundColor DarkGray
 Write-Host ""
 
 # -- GROUP 3: Linux / UAC Forensic Triage (Offline) ---------------------------
@@ -127,6 +130,8 @@ Write-Host "3b) [Live SSH] Edge Router APT Triage - Full Expert Analysis" -Foreg
 Write-Host "3c) [Offline] Edge Router APT Triage - Analyze offline dump directory" -ForegroundColor DarkYellow
 Write-Host "3d) [Live] Cisco IP Phone Triage - Collect + Analyze (78xx/88xx/79xx)" -ForegroundColor DarkYellow
 Write-Host "3e) [Offline] Cisco IP Phone Triage - Analyze offline phone dump directory" -ForegroundColor DarkYellow
+Write-Host "3f) [Live] CUCM Forensic Triage - AXL accounts + CDR toll-fraud (collect + analyze)" -ForegroundColor DarkYellow
+Write-Host "3g) [Offline] CUCM Forensic Triage - Analyze offline CUCM dump directory" -ForegroundColor DarkYellow
 Write-Host ""
 
 # -- GROUP 4: Elastic Alerts ---------------------------------------------------
@@ -247,6 +252,42 @@ elseif ($functionChoice -eq "2e") {
         Write-Host "No target specified." -ForegroundColor Red
     }
 }
+elseif ($functionChoice -eq "2f") {
+    $cucm = (Read-Host "[?] CUCM (Call Manager) hostname or IP").Trim()
+    if ($cucm) {
+        $cred = $null
+        $useAxl = (Read-Host "[?] Provide AXL application-user credentials? [Y/n]").Trim()
+        if ($useAxl -notmatch '^[nN]') {
+            $u  = (Read-Host "[?] AXL username (needs 'Standard AXL API Access')").Trim()
+            $pw = Read-Host "[?] AXL password" -AsSecureString
+            if ($u) { $cred = [PSCredential]::new($u, $pw) }
+        }
+        $axlVer = (Read-Host "[?] AXL/schema version [default: 12.5]").Trim()
+        if (-not $axlVer) { $axlVer = '12.5' }
+        $cdrHost = (Read-Host "[?] CDR billing SFTP host (blank to skip CDR)").Trim()
+        $cdrCred = $null; $cdrPath = '/'
+        if ($cdrHost) {
+            $cu  = (Read-Host "[?] CDR SFTP username").Trim()
+            $cpw = Read-Host "[?] CDR SFTP password" -AsSecureString
+            if ($cu) { $cdrCred = [PSCredential]::new($cu, $cpw) }
+            $cdrPath = (Read-Host "[?] CDR remote path [default: /]").Trim()
+            if (-not $cdrPath) { $cdrPath = '/' }
+        }
+        $outPath = (Read-Host "[?] Output directory for dump files [default: .\output\cucmDumps]").Trim()
+        if (-not $outPath) { $outPath = ".\output\cucmDumps" }
+        $dumpParams = @{ CucmHost = $cucm; AxlVersion = $axlVer; OutputPath = $outPath }
+        if ($cred)    { $dumpParams['Credential'] = $cred }
+        if ($cdrHost) { $dumpParams['CdrSftpHost'] = $cdrHost; $dumpParams['CdrSftpPath'] = $cdrPath }
+        if ($cdrCred) { $dumpParams['CdrSftpCredential'] = $cdrCred }
+        $savedDir = Save-CucmForensicDump @dumpParams
+        if ($savedDir) {
+            Write-Host "[+] Dump saved to: $savedDir" -ForegroundColor Green
+            Write-Host "    Copy this directory to an air-gapped machine and run option 3g to analyze." -ForegroundColor DarkGray
+        }
+    } else {
+        Write-Host "No CUCM host specified." -ForegroundColor Red
+    }
+}
 
 # -- GROUP 3: Linux / UAC Forensic Triage (Offline) ---------------------------
 elseif ($functionChoice -eq "3a") {
@@ -328,6 +369,54 @@ elseif ($functionChoice -eq "3e") {
         $invokeParams = @{ DumpPath = $dumpDir; OutputPath = $outPath; OpenReport = $true }
         if ($expTftp) { $invokeParams['ExpectedTftp'] = @($expTftp -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ }) }
         Invoke-CiscoPhoneTriage @invokeParams
+    } else {
+        Write-Host "Path not found or not specified: $dumpDir" -ForegroundColor Red
+    }
+}
+elseif ($functionChoice -eq "3f") {
+    $cucm = (Read-Host "[?] CUCM (Call Manager) hostname or IP").Trim()
+    if ($cucm) {
+        $cred = $null
+        $u  = (Read-Host "[?] AXL username (needs 'Standard AXL API Access')").Trim()
+        $pw = Read-Host "[?] AXL password" -AsSecureString
+        if ($u) { $cred = [PSCredential]::new($u, $pw) }
+        $axlVer = (Read-Host "[?] AXL/schema version [default: 12.5]").Trim()
+        if (-not $axlVer) { $axlVer = '12.5' }
+        $cdrHost = (Read-Host "[?] CDR billing SFTP host (blank to skip CDR)").Trim()
+        $cdrCred = $null; $cdrPath = '/'
+        if ($cdrHost) {
+            $cu  = (Read-Host "[?] CDR SFTP username").Trim()
+            $cpw = Read-Host "[?] CDR SFTP password" -AsSecureString
+            if ($cu) { $cdrCred = [PSCredential]::new($cu, $cpw) }
+            $cdrPath = (Read-Host "[?] CDR remote path [default: /]").Trim()
+            if (-not $cdrPath) { $cdrPath = '/' }
+        }
+        $expAppUsers = (Read-Host "[?] Expected application user(s), comma-separated (blank = skip rogue check)").Trim()
+        $flagged = (Read-Host "[?] Flagged phone number substrings, comma-separated (blank to skip)").Trim()
+        $outPath = (Read-Host "[?] Output directory for HTML report [default: .\reports\cucmTriage]").Trim()
+        if (-not $outPath) { $outPath = ".\reports\cucmTriage" }
+        $invokeParams = @{ CucmHost = $cucm; AxlVersion = $axlVer; OutputPath = $outPath; OpenReport = $true }
+        if ($cred)    { $invokeParams['Credential'] = $cred }
+        if ($cdrHost) { $invokeParams['CdrSftpHost'] = $cdrHost; $invokeParams['CdrSftpPath'] = $cdrPath }
+        if ($cdrCred) { $invokeParams['CdrSftpCredential'] = $cdrCred }
+        if ($expAppUsers) { $invokeParams['ExpectedAppUsers'] = @($expAppUsers -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ }) }
+        if ($flagged) { $invokeParams['FlaggedNumbers'] = @($flagged -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ }) }
+        Invoke-CucmTriage @invokeParams
+    } else {
+        Write-Host "No CUCM host specified." -ForegroundColor Red
+    }
+}
+elseif ($functionChoice -eq "3g") {
+    $dumpDir = (Read-Host "[?] Path to offline CUCM dump directory (created by Save-CucmForensicDump)").Trim()
+    if ($dumpDir -and (Test-Path -LiteralPath $dumpDir)) {
+        $expAppUsers = (Read-Host "[?] Expected application user(s), comma-separated (blank = skip rogue check)").Trim()
+        $flagged = (Read-Host "[?] Flagged phone number substrings, comma-separated (blank to skip)").Trim()
+        $outPath = (Read-Host "[?] Output directory for HTML report [default: .\reports\cucmTriage]").Trim()
+        if (-not $outPath) { $outPath = ".\reports\cucmTriage" }
+        $invokeParams = @{ DumpPath = $dumpDir; OutputPath = $outPath; OpenReport = $true }
+        if ($expAppUsers) { $invokeParams['ExpectedAppUsers'] = @($expAppUsers -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ }) }
+        if ($flagged) { $invokeParams['FlaggedNumbers'] = @($flagged -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ }) }
+        Invoke-CucmTriage @invokeParams
     } else {
         Write-Host "Path not found or not specified: $dumpDir" -ForegroundColor Red
     }
