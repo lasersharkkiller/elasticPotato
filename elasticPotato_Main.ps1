@@ -59,6 +59,7 @@ Import-Module -Name ".\agentic\Invoke-ElasticLinuxTriage.psm1"  -Force
 # Forensic triage (Groups 2d, 3)
 Import-Module -Name ".\forensics\Invoke-UACTriage.psm1"
 Import-Module -Name ".\forensics\Invoke-RouterTriage.psm1"
+Import-Module -Name ".\forensics\Invoke-CiscoPhoneTriage.psm1"
 
 # Group 5 (Elastic Baseline) -- remaining enrichment deps
 Import-Module -Name ".\NewProcsModules\CheckAgainstVT.psm1"
@@ -113,6 +114,8 @@ Write-Host "2c) Deploy DFIR-ORC to Remote Windows Host(s)" -ForegroundColor Dark
 Write-Host "     -> Requires offline packages already staged under .\tools\" -ForegroundColor DarkGray
 Write-Host "2d) [Live SSH] Collect Router Forensic Dump (Save-RouterDump)" -ForegroundColor DarkYellow
 Write-Host "     -> Pulls ~75 forensic commands from a live router; saves files for offline 3c analysis" -ForegroundColor DarkGray
+Write-Host "2e) [Live] Collect Cisco IP Phone Forensic Dump (Save-CiscoPhoneDump)" -ForegroundColor DarkYellow
+Write-Host "     -> Pulls web device pages + SSH + CUCM TFTP SEP config; saves files for offline 3e analysis" -ForegroundColor DarkGray
 Write-Host ""
 
 # -- GROUP 3: Linux / UAC Forensic Triage (Offline) ---------------------------
@@ -122,6 +125,8 @@ Write-Host "  $([char]27)[4m+----------------------------------------------+$([c
 Write-Host "3a) [Offline] UAC Dump Triage - Full Expert Analysis (Rootkit/C2/Creds/Timeline/Attribution)" -ForegroundColor DarkYellow
 Write-Host "3b) [Live SSH] Edge Router APT Triage - Full Expert Analysis" -ForegroundColor DarkYellow
 Write-Host "3c) [Offline] Edge Router APT Triage - Analyze offline dump directory" -ForegroundColor DarkYellow
+Write-Host "3d) [Live] Cisco IP Phone Triage - Collect + Analyze (78xx/88xx/79xx)" -ForegroundColor DarkYellow
+Write-Host "3e) [Offline] Cisco IP Phone Triage - Analyze offline phone dump directory" -ForegroundColor DarkYellow
 Write-Host ""
 
 # -- GROUP 4: Elastic Alerts ---------------------------------------------------
@@ -210,6 +215,38 @@ elseif ($functionChoice -eq "2d") {
         Write-Host "No target specified." -ForegroundColor Red
     }
 }
+elseif ($functionChoice -eq "2e") {
+    $target = (Read-Host "[?] Cisco IP phone hostname or IP").Trim()
+    if ($target) {
+        $cred = $null; $sshKey = $null
+        $useCreds = (Read-Host "[?] Provide web-admin / SSH credentials? [y/N]").Trim()
+        if ($useCreds -match '^[yY]') {
+            $user  = (Read-Host "[?] Username").Trim()
+            $secPw = Read-Host "[?] Password (leave blank to use an SSH key)" -AsSecureString
+            $pwPlain = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($secPw))
+            if ($pwPlain) { $cred = [PSCredential]::new($user, $secPw) }
+            else { $sshKey = (Read-Host "[?] Path to SSH private key").Trim() }
+        }
+        $cucm = (Read-Host "[?] CUCM/TFTP server for SEP config pull (blank to skip)").Trim()
+        $mac  = (Read-Host "[?] Phone MAC (blank = auto-detect from web pages)").Trim()
+        $outPath = (Read-Host "[?] Output directory for dump files [default: .\output\phoneDumps]").Trim()
+        if (-not $outPath) { $outPath = ".\output\phoneDumps" }
+        $platform = (Read-Host "[?] Platform (auto/78xx/88xx/79xx) [default: auto]").Trim()
+        if (-not $platform) { $platform = 'auto' }
+        $dumpParams = @{ Target = $target; OutputPath = $outPath; Platform = $platform }
+        if ($cred)   { $dumpParams['Credential'] = $cred }
+        if ($sshKey) { $dumpParams['SshKey']     = $sshKey }
+        if ($cucm)   { $dumpParams['CucmHost']   = $cucm }
+        if ($mac)    { $dumpParams['Mac']        = $mac }
+        $savedDir = Save-CiscoPhoneDump @dumpParams
+        if ($savedDir) {
+            Write-Host "[+] Dump saved to: $savedDir" -ForegroundColor Green
+            Write-Host "    Copy this directory to an air-gapped machine and run option 3e to analyze." -ForegroundColor DarkGray
+        }
+    } else {
+        Write-Host "No target specified." -ForegroundColor Red
+    }
+}
 
 # -- GROUP 3: Linux / UAC Forensic Triage (Offline) ---------------------------
 elseif ($functionChoice -eq "3a") {
@@ -248,6 +285,49 @@ elseif ($functionChoice -eq "3c") {
         $outPath = (Read-Host "[?] Output directory for HTML report [default: .\reports\routerTriage]").Trim()
         if (-not $outPath) { $outPath = ".\reports\routerTriage" }
         Invoke-RouterTriage -DumpPath $dumpDir -OutputPath $outPath -OpenReport
+    } else {
+        Write-Host "Path not found or not specified: $dumpDir" -ForegroundColor Red
+    }
+}
+elseif ($functionChoice -eq "3d") {
+    $target = (Read-Host "[?] Cisco IP phone hostname or IP").Trim()
+    if ($target) {
+        $cred = $null; $sshKey = $null
+        $useCreds = (Read-Host "[?] Provide web-admin / SSH credentials? [y/N]").Trim()
+        if ($useCreds -match '^[yY]') {
+            $user  = (Read-Host "[?] Username").Trim()
+            $secPw = Read-Host "[?] Password (leave blank to use an SSH key)" -AsSecureString
+            $pwPlain = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($secPw))
+            if ($pwPlain) { $cred = [PSCredential]::new($user, $secPw) }
+            else { $sshKey = (Read-Host "[?] Path to SSH private key").Trim() }
+        }
+        $cucm    = (Read-Host "[?] CUCM/TFTP server for SEP config pull (blank to skip)").Trim()
+        $mac     = (Read-Host "[?] Phone MAC (blank = auto-detect)").Trim()
+        $expTftp = (Read-Host "[?] Known-good TFTP server(s), comma-separated (blank = skip rogue-provisioning check)").Trim()
+        $outPath = (Read-Host "[?] Output directory for HTML report [default: .\reports\phoneTriage]").Trim()
+        if (-not $outPath) { $outPath = ".\reports\phoneTriage" }
+        $platform = (Read-Host "[?] Platform (auto/78xx/88xx/79xx) [default: auto]").Trim()
+        if (-not $platform) { $platform = 'auto' }
+        $invokeParams = @{ Target = $target; OutputPath = $outPath; Platform = $platform; OpenReport = $true }
+        if ($cred)    { $invokeParams['Credential'] = $cred }
+        if ($sshKey)  { $invokeParams['SshKey']     = $sshKey }
+        if ($cucm)    { $invokeParams['CucmHost']   = $cucm }
+        if ($mac)     { $invokeParams['Mac']        = $mac }
+        if ($expTftp) { $invokeParams['ExpectedTftp'] = @($expTftp -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ }) }
+        Invoke-CiscoPhoneTriage @invokeParams
+    } else {
+        Write-Host "No target specified." -ForegroundColor Red
+    }
+}
+elseif ($functionChoice -eq "3e") {
+    $dumpDir = (Read-Host "[?] Path to offline Cisco phone dump directory (created by Save-CiscoPhoneDump)").Trim()
+    if ($dumpDir -and (Test-Path -LiteralPath $dumpDir)) {
+        $expTftp = (Read-Host "[?] Known-good TFTP server(s), comma-separated (blank = skip rogue-provisioning check)").Trim()
+        $outPath = (Read-Host "[?] Output directory for HTML report [default: .\reports\phoneTriage]").Trim()
+        if (-not $outPath) { $outPath = ".\reports\phoneTriage" }
+        $invokeParams = @{ DumpPath = $dumpDir; OutputPath = $outPath; OpenReport = $true }
+        if ($expTftp) { $invokeParams['ExpectedTftp'] = @($expTftp -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ }) }
+        Invoke-CiscoPhoneTriage @invokeParams
     } else {
         Write-Host "Path not found or not specified: $dumpDir" -ForegroundColor Red
     }
